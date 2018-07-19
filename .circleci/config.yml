@@ -27,7 +27,7 @@ jobs:
                         -e "action.auto_create_index=+apisearch_item_*_*_plugin_*,+apisearch_log_*,+apisearch_event_*,-apisearch*,+*" \
                         -e "node.max_local_storage_nodes=10" \
                         -e "discovery.type=single-node" \
-                         docker.elastic.co/elasticsearch/elasticsearch:6.2.4
+                         docker.elastic.co/elasticsearch/elasticsearch:6.3.0
 
             - run:
                 name: Run Redis
