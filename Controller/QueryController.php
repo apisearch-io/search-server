@@ -55,7 +55,7 @@ class QueryController extends ControllerWithBus
         if ([] === $queryAsArray) {
             $possibleQuery = $request->query->get(Http::QUERY_FIELD);
             if (is_string($possibleQuery)) {
-                $queryAsArray = json_decode($possibleQuery, true);
+                $queryAsArray = $this->decodeQuery($possibleQuery);
             }
         }
 
@@ -82,5 +82,22 @@ class QueryController extends ControllerWithBus
                 'Access-Control-Allow-Origin' => '*',
             ]
         );
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return array
+     *
+     * @throws InvalidFormatException
+     */
+    private function decodeQuery(string $query): array
+    {
+        $response = \json_decode($query, true);
+        if (JSON_ERROR_NONE !== \json_last_error()) {
+            throw InvalidFormatException::queryFormatNotValid($query);
+        }
+
+        return $response;
     }
 }
