@@ -29,9 +29,14 @@ config:
     monolog:
         handlers:
             main:
-                type: stream
+                type: fingers_crossed
                 path: '%kernel.logs_dir%/%kernel.environment%.log'
-                level: debug
+                handler: file_log
+                level: error
+
+            file_log:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
 
     rs_queue:
         server:
