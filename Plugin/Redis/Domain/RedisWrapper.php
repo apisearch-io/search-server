@@ -15,8 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Redis\Domain;
 
-use Redis;
-use RedisCluster;
+use Clue\React\Redis\Client;
 
 /**
  * Class RedisWrapper.
@@ -54,9 +53,9 @@ class RedisWrapper
     /**
      * Get client.
      *
-     * @return Redis|RedisCluster
+     * @return Client
      */
-    public function getClient()
+    public function getClient(): Client
     {
         return $this
             ->redisFactory
@@ -68,7 +67,7 @@ class RedisWrapper
      *
      * @return RedisConfig
      */
-    public function getRedisConfig()
+    public function getRedisConfig(): RedisConfig
     {
         return $this->redisConfig;
     }

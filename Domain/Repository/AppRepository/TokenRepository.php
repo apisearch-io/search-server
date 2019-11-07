@@ -17,6 +17,8 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use Apisearch\Repository\RepositoryReference;
+use React\Promise\PromiseInterface;
 
 /**
  * Interface TokenRepository.
@@ -26,26 +28,44 @@ interface TokenRepository
     /**
      * Add token.
      *
-     * @param Token $token
+     * @param RepositoryReference $repositoryReference
+     * @param Token               $token
+     *
+     * @return PromiseInterface
      */
-    public function addToken(Token $token);
+    public function addToken(
+        RepositoryReference $repositoryReference,
+        Token $token
+    ): PromiseInterface;
 
     /**
      * Delete token.
      *
-     * @param TokenUUID $tokenUUID
+     * @param RepositoryReference $repositoryReference
+     * @param TokenUUID           $tokenUUID
+     *
+     * @return PromiseInterface
      */
-    public function deleteToken(TokenUUID $tokenUUID);
+    public function deleteToken(
+        RepositoryReference $repositoryReference,
+        TokenUUID $tokenUUID
+    ): PromiseInterface;
 
     /**
      * Get tokens.
      *
-     * @return Token[]
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<Token[]>
      */
-    public function getTokens(): array;
+    public function getTokens(RepositoryReference $repositoryReference): PromiseInterface;
 
     /**
      * Delete all tokens.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function deleteTokens();
+    public function deleteTokens(RepositoryReference $repositoryReference): PromiseInterface;
 }

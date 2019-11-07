@@ -18,6 +18,8 @@ namespace Apisearch\Server\Domain\Token;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CredentialsTokenValidator.
@@ -35,7 +37,7 @@ class CredentialsTokenValidator implements TokenValidator
      * @param string    $referrer
      * @param string    $routeName
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
     public function isTokenValid(
         Token $token,
@@ -43,11 +45,11 @@ class CredentialsTokenValidator implements TokenValidator
         IndexUUID $indexUUID,
         string $referrer,
         string $routeName
-    ): bool {
+    ): PromiseInterface {
         $indexUUIDAsStringArray = $this->indexUUIDArrayToStringArray([$indexUUID]);
         $tokenIndexUUIDAsStringArray = $this->indexUUIDArrayToStringArray($token->getIndices());
 
-        return
+        return new FulfilledPromise(
             ($token instanceof Token) &&
             (
                 empty($appUUID->composeUUID()) ||
@@ -64,7 +66,7 @@ class CredentialsTokenValidator implements TokenValidator
                 empty($token->getEndpoints()) ||
                 in_array($routeName, $token->getEndpoints())
             )
-        ;
+        );
     }
 
     /**

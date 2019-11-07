@@ -24,6 +24,7 @@ use Apisearch\Server\Domain\Query\Query;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
 use Apisearch\Server\Exception\ExternalResourceException;
 use Ramsey\Uuid\Uuid;
+use React\Promise\PromiseInterface;
 
 /**
  * Class QueryHandler.
@@ -35,48 +36,47 @@ class QueryHandler extends WithRepositoryAndEventPublisher
      *
      * @param Query $query
      *
-     * @return Result
+     * @return PromiseInterface<Result>
      */
-    public function handle(Query $query)
+    public function handle(Query $query): PromiseInterface
     {
         $repositoryReference = $query->getRepositoryReference();
         $searchQuery = $query->getQuery();
+        $this->assignUUIDIfNeeded($query->getQuery());
         $from = microtime(true);
 
-        $this->assignUUIDIfNeeded($query->getQuery());
-
-        $this
+        return $this
             ->repository
-            ->setRepositoryReference($query->getRepositoryReference());
-
-        $result = $this
-            ->repository
-            ->query($searchQuery);
-
-        try {
-            $this
-                ->eventPublisher
-                ->publish(new DomainEventWithRepositoryReference(
-                    $repositoryReference,
-                    new QueryWasMade(
-                        $searchQuery->getQueryText(),
-                        $searchQuery->getSize(),
-                        array_map(function (Item $item) {
-                            return $item->getUUID();
-                        }, $result->getItems()),
-                        $searchQuery->getUser(),
-                        json_encode($query->getQuery()->toArray())
-                    ),
-                    (int) ((microtime(true) - $from) * 1000)
-                ));
-        } catch (ExternalResourceException $exception) {
-            // We should ignore external resources exceptions, as they are
-            // commonly related to connections. These exceptions should be
-            // transparent when making queries in order to always provide the
-            // best response time.
-        }
-
-        return $result;
+            ->query(
+                $repositoryReference,
+                $searchQuery
+            )
+            ->then(function (Result $result) use ($from, $repositoryReference, $searchQuery, $query) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new QueryWasMade(
+                            $searchQuery->getQueryText(),
+                            $searchQuery->getSize(),
+                            array_map(function (Item $item) {
+                                return $item->getUUID();
+                            }, $result->getItems()),
+                            $searchQuery->getUser(),
+                            json_encode($query->getQuery()->toArray())
+                        ),
+                        (int) ((microtime(true) - $from) * 1000)
+                    ))
+                    ->then(null, function (ExternalResourceException $exception) {
+                        // We should ignore external resources exceptions, as they are
+                        // commonly related to connections. These exceptions should be
+                        // transparent when making queries in order to always provide the
+                        // best response time.
+                    })
+                    ->then(function () use ($result) {
+                        return $result;
+                    });
+            });
     }
 
     /**

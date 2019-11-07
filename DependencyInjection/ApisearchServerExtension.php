@@ -72,6 +72,7 @@ class ApisearchServerExtension extends BaseExtension
             'domain',
             'controllers',
             'console',
+            'reactphp',
         ];
     }
 
@@ -95,10 +96,10 @@ class ApisearchServerExtension extends BaseExtension
 
         return [
             'apisearch_server.environment' => Env::get('APISEARCH_ENV', $config['environment']),
-            'apisearch_server.middleware_domain_events_service' => [
-                'inline' => 'apisearch_server.middleware.inline_events',
-                'enqueue' => 'apisearch_server.middleware.enqueue_events',
-                'ignore' => 'apisearch_server.middleware.ignore_events',
+            'apisearch_server.event_publisher_service' => [
+                'inline' => 'apisearch_server.inline_event_publisher',
+                'enqueue' => 'apisearch_server.enqueue_event_publisher',
+                'ignore' => 'apisearch_server.ignore_event_publisher',
             ][$domainEventsAdapter],
             'apisearch_server.command_bus_service' => [
                 'inline' => 'apisearch_server.command_bus.inline',

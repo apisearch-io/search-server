@@ -51,9 +51,7 @@ class PauseConsumersCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this
-            ->commandBus
-            ->handle(new PauseConsumers($input->getOption('type')));
+        $this->handleSynchronously(new PauseConsumers($input->getOption('type')));
     }
 
     /**

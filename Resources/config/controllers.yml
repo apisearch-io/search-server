@@ -137,10 +137,10 @@ services:
     #
     # Controller listener
     #
-    apisearch_server.php_exception_to_json_response_listener:
+    apisearch_server.php_exception_to_json_response:
         class: Apisearch\Server\Controller\Listener\PHPExceptionToJsonResponse
         tags:
-            - { name: kernel.event_listener, event: kernel.exception }
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     apisearch_server.content_type_validation_over_http:
         class: Apisearch\Server\Controller\Listener\ContentTypeValidationOverHTTP
@@ -151,13 +151,14 @@ services:
         class: Apisearch\Server\Controller\Listener\TokenCheckOverHTTP
         arguments:
             - "@apisearch_server.token_manager"
+            - "@reactphp.event_loop"
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: checkTokenOnKernelRequest, priority: 8 }
 
     apisearch_server.router_redirection_to_json_response:
         class: Apisearch\Server\Controller\Listener\RouterRedirectionToJsonResponse
         tags:
-            - { name: kernel.event_listener, event: kernel.response }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
     apisearch_server.token_cache_over_http:
         class: Apisearch\Server\Controller\Listener\TokenCacheOverHTTP

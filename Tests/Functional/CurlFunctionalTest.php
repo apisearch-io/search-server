@@ -538,14 +538,19 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             ->getRouteCollection()
             ->get($routeName);
 
-        $routePath = $router->generate($routeName, $routeParameters);
+        $routePath = $route
+            ? $router->generate($routeName, $routeParameters)
+            : '/not-found';
 
         $headers[] = Http::TOKEN_ID_HEADER.': '.($token
             ? $token->getTokenUUID()->composeUUID()
             : self::getParameterStatic('apisearch_server.god_token'));
 
         $tmpFile = tempnam('/tmp', 'curl_tmp');
-        $method = $route->getMethods()[0];
+        $method = $route instanceof Route
+            ? $route->getMethods()[0]
+            : 'GET';
+
         $command = sprintf('curl -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://localhost:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
             $tmpFile,
             (
@@ -569,6 +574,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         );
 
         $command = str_replace("-d'[]'", '', $command);
+
         $responseCode = exec($command);
         list($httpCode, $contentLength) = explode('-', $responseCode, 2);
         $content = file_get_contents($tmpFile);
@@ -581,11 +587,15 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
 
         $result = [
             'code' => $httpCode,
-            'body' => json_decode($content, true),
+            'body' => json_decode($content, true) ?? $content,
             'length' => $contentLength,
         ];
-        unlink($tmpFile);
 
+        if (is_string($result['body'])) {
+            $result['body'] = ['message' => $result['body']];
+        }
+
+        unlink($tmpFile);
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;

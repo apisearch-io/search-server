@@ -15,6 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Token;
 
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+
 /**
  * Class TokenLocators.
  */
@@ -40,19 +43,21 @@ class TokenLocators
     /**
      * Get valid token locators.
      *
-     * @return TokenLocator[]
+     * @return PromiseInterface<TokenLocator[]>
      */
-    public function getValidTokenLocators(): array
+    public function getValidTokenLocators(): PromiseInterface
     {
-        $tokenLocators = [];
+        $promise = new FulfilledPromise([]);
         foreach ($this->tokenLocators as $tokenLocator) {
-            if (!$tokenLocator->isValid()) {
-                continue;
-            }
+            $promise = $promise->then(function (array $tokenLocators) use ($tokenLocator) {
+                if ($tokenLocator->isValid()) {
+                    $tokenLocators[] = $tokenLocator;
+                }
 
-            $tokenLocators[] = $tokenLocator;
+                return $tokenLocators;
+            });
         }
 
-        return $tokenLocators;
+        return $promise;
     }
 }

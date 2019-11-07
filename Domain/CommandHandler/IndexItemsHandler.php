@@ -20,6 +20,7 @@ use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereIndexed;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class IndexItemsHandler.
@@ -30,27 +31,29 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
      * Index items.
      *
      * @param IndexItems $indexItems
+     *
+     * @return PromiseInterface
      */
-    public function handle(IndexItems $indexItems)
+    public function handle(IndexItems $indexItems): PromiseInterface
     {
         $repositoryReference = $indexItems->getRepositoryReference();
         $items = $indexItems->getItems();
 
-        $this
+        return $this
             ->repository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
-            ->repository
-            ->addItems($items);
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
+            ->addItems(
                 $repositoryReference,
-                new ItemsWereIndexed(array_map(function (Item $item) {
-                    return $item->getUUID();
-                }, $items))
-            ));
+                $items
+            )
+            ->then(function () use ($repositoryReference, $items) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new ItemsWereIndexed(array_map(function (Item $item) {
+                            return $item->getUUID();
+                        }, $items))
+                    ));
+            });
     }
 }

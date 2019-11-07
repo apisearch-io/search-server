@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ConfigureEnvironment;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ConfigureEnvironmentHandler.
@@ -26,9 +28,11 @@ class ConfigureEnvironmentHandler
      * Add token.
      *
      * @param ConfigureEnvironment $configureEnvironment
+     *
+     * @return PromiseInterface
      */
-    public function handle(ConfigureEnvironment $configureEnvironment)
+    public function handle(ConfigureEnvironment $configureEnvironment): PromiseInterface
     {
-        // Nothing happen by default
+        return new FulfilledPromise();
     }
 }

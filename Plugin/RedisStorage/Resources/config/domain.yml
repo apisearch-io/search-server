@@ -23,7 +23,8 @@ services:
             - "@apisearch_plugin.redis_storage.redis_wrapper"
             - "%apisearch_plugin.redis_storage.locator_enabled%"
         tags:
-            - { name: "apisearch_server.app_repository" }
             - { name: "apisearch_server.token_locator" }
             - { name: "apisearch_server.token_provider" }
 
+    apisearch_server.token_repository:
+        alias: apisearch_plugin.redis_storage.redis_token_repository

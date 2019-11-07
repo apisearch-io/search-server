@@ -19,6 +19,8 @@ use Apisearch\Server\Domain\Command\AddInteraction;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\InteractionWasAdded;
 use Apisearch\Server\Domain\WithEventPublisher;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class AddInteractionHandler.
@@ -29,8 +31,10 @@ class AddInteractionHandler extends WithEventPublisher
      * Add interaction.
      *
      * @param AddInteraction $addInteraction
+     *
+     * @return PromiseInterface
      */
-    public function handle(AddInteraction $addInteraction)
+    public function handle(AddInteraction $addInteraction): PromiseInterface
     {
         $repositoryReference = $addInteraction->getRepositoryReference();
         $interaction = $addInteraction->getInteraction();
@@ -41,5 +45,7 @@ class AddInteractionHandler extends WithEventPublisher
                 $repositoryReference,
                 new InteractionWasAdded($interaction)
             ));
+
+        return new FulfilledPromise();
     }
 }

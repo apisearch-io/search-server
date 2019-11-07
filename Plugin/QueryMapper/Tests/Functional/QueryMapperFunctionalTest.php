@@ -18,12 +18,12 @@ namespace Apisearch\Plugin\QueryMapper\Tests\Functional;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
 use Apisearch\Plugin\QueryMapper\Tests\Functional\Mappers\SimpleQueryMapper;
 use Apisearch\Plugin\QueryMapper\Tests\Functional\Mappers\SimpleResultMapper;
-use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class QueryMapperFunctionalTest.
  */
-abstract class QueryMapperFunctionalTest extends ServiceFunctionalTest
+abstract class QueryMapperFunctionalTest extends HttpFunctionalTest
 {
     /**
      * Decorate bundles.
@@ -53,6 +53,7 @@ abstract class QueryMapperFunctionalTest extends ServiceFunctionalTest
         $configuration['apisearch_plugin_query_mapper']['query_mappers'] = [
             SimpleQueryMapper::class,
         ];
+
         $configuration['apisearch_plugin_query_mapper']['result_mappers'] = [
             SimpleResultMapper::class,
         ];

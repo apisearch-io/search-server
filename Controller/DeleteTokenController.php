@@ -18,6 +18,7 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\DeleteToken;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,13 +32,13 @@ class DeleteTokenController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $tokenUUID = TokenUUID::createById($request->get('token_id', ''));
 
-        $this
+        return $this
             ->commandBus
             ->handle(new DeleteToken(
                 RepositoryReference::create(
@@ -45,8 +46,9 @@ class DeleteTokenController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $tokenUUID
-            ));
-
-        return new JsonResponse('Token deleted', $this->ok());
+            ))
+            ->then(function () {
+                return new JsonResponse('Token deleted', $this->ok());
+            });
     }
 }

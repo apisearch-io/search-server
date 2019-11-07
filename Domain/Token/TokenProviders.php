@@ -16,7 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Token;
 
 use Apisearch\Model\AppUUID;
-use Apisearch\Model\Token;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class TokenProviders.
@@ -45,15 +46,22 @@ class TokenProviders
      *
      * @param AppUUID $appUUID
      *
-     * @return Token[]
+     * @return PromiseInterface<Token[]>
      */
-    public function getTokensByAppUUID(AppUUID $appUUID): array
+    public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        $tokens = [];
+        $promise = new FulfilledPromise([]);
+
         foreach ($this->tokenProviders as $tokenProvider) {
-            $tokens = array_merge($tokens, $tokenProvider->getTokensByAppUUID($appUUID));
+            $promise = $promise->then(function (array $tokens) use ($tokenProvider, $appUUID) {
+                return $tokenProvider
+                    ->getTokensByAppUUID($appUUID)
+                    ->then(function (array $newTokens) use ($tokens) {
+                        return array_merge($tokens, $newTokens);
+                    });
+            });
         }
 
-        return $tokens;
+        return $promise;
     }
 }

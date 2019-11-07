@@ -47,7 +47,6 @@ class BasicUsageTest extends ELKFunctionalTest
             2,
             $redis->lLen('apisearch_test.elk')
         );
-
         $body = json_decode($redis->lPop('apisearch_test.elk'), true);
         $message = json_decode($body['@message'], true);
 

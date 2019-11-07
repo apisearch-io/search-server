@@ -19,6 +19,8 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\Redis\Domain\RedisWrapper;
 use Apisearch\Repository\RepositoryReference;
+use React\Promise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RedisMetadataRepository.
@@ -58,23 +60,30 @@ class RedisMetadataRepository
      *
      * @param RepositoryReference $repositoryReference
      * @param Item[]              $items
+     *
+     * @return PromiseInterface
      */
     public function saveItemsMetadata(
         RepositoryReference $repositoryReference,
         array $items
-    ) {
+    ): PromiseInterface {
+        $promises = [];
+
         array_walk($items, function (Item $item) use ($repositoryReference) {
-            $this
+            $promises[] = $this
                 ->redisWrapper
                 ->getClient()
                 ->hSet(
                     $this->key,
                     $this->composeKey($repositoryReference, $item->getUUID()),
                     json_encode($item->getMetadata())
-                );
-
-            $item->setMetadata([]);
+                )
+                ->then(function () use ($item) {
+                    $item->setMetadata([]);
+                });
         });
+
+        return Promise\all($promises);
     }
 
     /**
@@ -82,26 +91,33 @@ class RedisMetadataRepository
      *
      * @param RepositoryReference $repositoryReference
      * @param Item[]              $items
+     *
+     * @return PromiseInterface
      */
     public function loadItemsMetadata(
         RepositoryReference $repositoryReference,
         array $items
-    ) {
+    ): PromiseInterface {
+        $promises = [];
+
         array_walk($items, function (Item $item) use ($repositoryReference) {
-            $metadata = $this
+            $promises[] = $this
                 ->redisWrapper
                 ->getClient()
                 ->hGet(
                     $this->key,
                     $this->composeKey($repositoryReference, $item->getUUID())
-                );
-
-            $item->setMetadata(
-                (false === $metadata)
-                    ? []
-                    : json_decode($metadata, true)
-            );
+                )
+                ->then(function ($metadata) use ($item) {
+                    $item->setMetadata(
+                        (false === $metadata)
+                            ? []
+                            : json_decode($metadata, true)
+                    );
+                });
         });
+
+        return Promise\all($promises);
     }
 
     /**
@@ -109,13 +125,17 @@ class RedisMetadataRepository
      *
      * @param RepositoryReference $repositoryReference
      * @param ItemUUID[]          $itemsUUID
+     *
+     * @return PromiseInterface
      */
     public function deleteItemsMetadata(
         RepositoryReference $repositoryReference,
         array $itemsUUID
-    ) {
+    ): PromiseInterface {
+        $promises = [];
+
         array_walk($itemsUUID, function (ItemUUID $itemUUID) use ($repositoryReference) {
-            $this
+            $promises[] = $this
                 ->redisWrapper
                 ->getClient()
                 ->hDel(
@@ -123,6 +143,8 @@ class RedisMetadataRepository
                     $this->composeKey($repositoryReference, $itemUUID)
                 );
         });
+
+        return Promise\all($promises);
     }
 
     /**

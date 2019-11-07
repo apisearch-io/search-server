@@ -13,23 +13,22 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Middleware\DomainEvents;
+namespace Apisearch\Server\Domain\EventPublisher;
 
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
-use League\Tactician\Middleware;
+use React\Promise\PromiseInterface;
 
 /**
- * Class IgnoreDomainEventsMiddleware.
+ * Interface EventPublisher.
  */
-class IgnoreDomainEventsMiddleware extends DomainEventsMiddleware implements Middleware
+interface EventPublisher
 {
     /**
-     * Process events.
+     * Publish event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function processEvent(DomainEventWithRepositoryReference $domainEventWithRepositoryReference)
-    {
-        // Silent pass
-    }
+    public function publish(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface;
 }

@@ -51,9 +51,7 @@ class ResumeConsumersCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this
-            ->commandBus
-            ->handle(new ResumeConsumers($input->getOption('type')));
+        $this->handleSynchronously(new ResumeConsumers($input->getOption('type')));
     }
 
     /**

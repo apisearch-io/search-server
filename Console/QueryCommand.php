@@ -91,14 +91,12 @@ class QueryCommand extends CommandWithBusAndGodToken
             $input,
             $output,
             function (ModelQuery $query) use ($objects, $parameters) {
-                return $this
-                    ->commandBus
-                    ->handle(new Query(
-                        $objects['repository_reference'],
-                        $objects['token'],
-                        $query,
-                        $parameters
-                    ));
+                return $this->handleSynchronously(new Query(
+                    $objects['repository_reference'],
+                    $objects['token'],
+                    $query,
+                    $parameters
+                ));
             }
         );
     }

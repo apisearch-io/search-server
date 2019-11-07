@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\MostRelevantWords\Domain\Middleware;
 use Apisearch\Plugin\MostRelevantWords\Domain\ItemRelevantWords;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
+use React\Promise\PromiseInterface;
 
 /**
  * Class IndexItemsMiddleware.
@@ -47,12 +48,12 @@ class IndexItemsMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
+    ): PromiseInterface {
         array_map(
             [$this->itemRelevantWords, 'reduceItemSearchableFields'],
             $command->getItems()

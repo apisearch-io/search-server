@@ -22,29 +22,44 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Index as ApisearchIndex;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Plugin\Elastica\Adapter\AsyncBulk;
+use Apisearch\Plugin\Elastica\Adapter\AsyncClient;
+use Apisearch\Plugin\Elastica\Adapter\AsyncMultiSearch;
+use Apisearch\Plugin\Elastica\Adapter\AsyncSearch;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Exception\ParsedCreatingIndexException;
 use Apisearch\Server\Exception\ParsedResourceNotAvailableException;
-use Elastica\Client;
-use Elastica\Document;
+use Apisearch\Server\Exception\ResponseException;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
-use Elastica\Exception\ResponseException;
+use Elastica\Document;
 use Elastica\Index;
-use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
-use Elastica\Multi\Search as ElasticaMultiSearch;
 use Elastica\Query;
-use Elastica\ResultSet as ElasticaResultSet;
+use Elastica\Request;
+use Elastica\Response;
 use Elastica\Search as ElasticaSearch;
-use Elastica\Type;
+use Apisearch\Plugin\Elastica\Domain\Polyfill;
+use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Endpoints\Bulk;
 use Elasticsearch\Endpoints\Cat\Aliases;
 use Elasticsearch\Endpoints\Cat\Indices;
+use Elasticsearch\Endpoints\Cluster\Health;
+use Elasticsearch\Endpoints\DeleteByQuery;
+use Elasticsearch\Endpoints\Indices\Alias\Delete as DeleteAlias;
+use Elasticsearch\Endpoints\Indices\Aliases\Update as UpdateAlias;
+use Elasticsearch\Endpoints\Indices\Create as CreateIndex;
+use Elasticsearch\Endpoints\Indices\Delete as DeleteIndex;
 use Elasticsearch\Endpoints\Indices\Mapping as MappingEndpoint;
+use Elasticsearch\Endpoints\Indices\Refresh;
 use Elasticsearch\Endpoints\Reindex;
+use Elasticsearch\Serializers\ArrayToJSONSerializer;
+use React\Promise;
+use React\Promise\PromiseInterface;
+use React\Promise\RejectedPromise;
 
 /**
- * Class ItemElasticaWrapper.
+ * Class ElasticaWrapper.
  */
-class ItemElasticaWrapper
+class ElasticaWrapper implements AsyncRequestAccessor
 {
     /**
      * @var string
@@ -54,20 +69,32 @@ class ItemElasticaWrapper
     const ITEM_TYPE = 'item';
 
     /**
-     * @var Client
+     * @var AsyncClient
      *
      * Elastica client
      */
     private $client;
 
     /**
+     * @var string
+     *
+     * Version
+     */
+    private $version;
+
+    /**
      * Construct.
      *
-     * @param Client $client
+     * @param AsyncClient $client
+     * @param string $version
      */
-    public function __construct(Client $client)
+    public function __construct(
+        AsyncClient $client,
+        string $version
+    )
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
@@ -230,20 +257,20 @@ class ItemElasticaWrapper
         $indexConfiguration['analysis']['analyzer']['default']['filter'] = array_values($defaultAnalyzerFilter);
         $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = array_values($searchAnalyzerFilter);
 
-        return $indexConfiguration;
+        return ['settings' => $indexConfiguration];
     }
 
     /**
      * Build index mapping.
      *
-     * @param Type\Mapping $mapping
-     * @param Config       $config
+     * @param Config $config
+     *
+     * @return array
      */
-    public function buildIndexMapping(
-        Type\Mapping $mapping,
-        Config $config
-    ) {
-        $mapping->setParam('dynamic_templates', [
+    public function getIndexMapping(Config $config) : array
+    {
+        $mapping = [];
+        $mapping['dynamic_templates'] = [
             [
                 'dynamic_metadata_as_keywords' => [
                     'path_match' => 'indexed_metadata.*',
@@ -280,7 +307,7 @@ class ItemElasticaWrapper
                     ],
                 ],
             ],
-        ]);
+        ];
 
         $sourceExcludes = [];
         if (!$config->shouldSearchableMetadataBeStored()) {
@@ -290,9 +317,8 @@ class ItemElasticaWrapper
             ];
         }
 
-        $mapping->setSource(['excludes' => $sourceExcludes]);
-
-        $mapping->setProperties([
+        $mapping['_source'] = ['excludes' => $sourceExcludes];
+        $mapping['properties'] = [
             'uuid' => [
                 'type' => 'object',
                 'dynamic' => 'strict',
@@ -327,7 +353,9 @@ class ItemElasticaWrapper
                 'analyzer' => 'search_analyzer',
                 'search_analyzer' => 'search_analyzer',
             ],
-        ]);
+        ];
+
+        return $mapping;
     }
 
     /**
@@ -351,9 +379,9 @@ class ItemElasticaWrapper
      *
      * @param RepositoryReference $repositoryReference
      *
-     * @return ApisearchIndex[]
+     * @return PromiseInterface<ApisearchIndex[]>
      */
-    public function getIndices(RepositoryReference $repositoryReference): array
+    public function getIndices(RepositoryReference $repositoryReference): PromiseInterface
     {
         $appUUIDComposed = $repositoryReference->getAppUUID() instanceof AppUUID
             ? $repositoryReference
@@ -379,52 +407,69 @@ class ItemElasticaWrapper
                 )
             );
 
-        $elasticaResponse = $this->client->requestEndpoint((new Indices())->setIndex($indexSearchKeyword));
-        $elasticaMappingResponse = $this->client->requestEndpoint((new MappingEndpoint\Get())->setIndex($indexSearchKeyword));
-        $mappingData = $this->getMappingMetadataByResponse($elasticaMappingResponse->getData());
+        $indicesPromise = $this
+            ->client
+            ->requestAsyncEndpoint((new Indices())->setIndex($indexSearchKeyword));
 
-        if (empty($elasticaResponse->getData())) {
-            return [];
-        }
+        $mappingPromise = $this
+            ->client
+            ->requestAsyncEndpoint((new MappingEndpoint\Get())->setIndex($indexSearchKeyword));
 
-        $regexToParse = '/^'.
-            '(?P<color>[^\ ]+)\s+'.
-            '(?P<status>[^\ ]+)\s+'.
-            '(?P<fullname>apisearch_\d+_item_(?P<app_id>[^_]+)_(?P<id>[^\ ]+))\s+'.
-            '(?P<uuid>[^\ ]+)\s+'.
-            '(?P<primary_shards>[^\ ]+)\s+'.
-            '(?P<replica_shards>[^\ ]+)\s+'.
-            '(?P<doc_count>[^\ ]+)\s+'.
-            '(?P<doc_deleted>[^\ ]+)\s+'.
-            '(?P<index_size>[^\ ]+)\s+'.
-            '(?P<storage_size>[^\ ]+)'.
-            '$/im';
+        return
 
-        $indices = [];
-        preg_match_all($regexToParse, $elasticaResponse->getData()['message'], $matches, PREG_SET_ORDER, 0);
-        if ($matches) {
-            foreach ($matches as $metaData) {
-                $indices[] = new ApisearchIndex(
-                    IndexUUID::createById($metaData['id']),
-                    AppUUID::createById($metaData['app_id']),
-                    (
-                        'open' === $metaData['status'] &&
-                        in_array($metaData['color'], ['green', 'yellow'])
-                    ),
-                    (int) $metaData['doc_count'],
-                    (string) $metaData['index_size'],
-                    (int) $metaData['primary_shards'],
-                    (int) $metaData['replica_shards'],
-                    $mappingData[$metaData['fullname']] ?? [],
-                    [
-                        'allocated' => ('green' === $metaData['color']),
-                        'doc_deleted' => (int) $metaData['doc_deleted'],
-                    ]
-                );
-            }
-        }
+            Promise\resolve(Promise\all([
+                $indicesPromise,
+                $mappingPromise,
+            ]))
+            ->then(function (array $responses) {
+                list($elasticaResponse, $elasticaMappingResponse) = $responses;
+                $mappingData = $this->getMappingMetadataByResponse($elasticaMappingResponse->getData());
+                if (empty($elasticaResponse->getData())) {
+                    return [];
+                }
 
-        return $indices;
+                $regexToParse = '/^'.
+                    '(?P<color>[^\ ]+)\s+'.
+                    '(?P<status>[^\ ]+)\s+'.
+                    '(?P<fullname>apisearch_\d+_item_(?P<app_id>[^_]+)_(?P<id>[^\ ]+))\s+'.
+                    '(?P<uuid>[^\ ]+)\s+'.
+                    '(?P<primary_shards>[^\ ]+)\s+'.
+                    '(?P<replica_shards>[^\ ]+)\s+'.
+                    '(?P<doc_count>[^\ ]+)\s+'.
+                    '(?P<doc_deleted>[^\ ]+)\s+'.
+                    '(?P<index_size>[^\ ]+)\s+'.
+                    '(?P<storage_size>[^\ ]+)'.
+                    '$/im';
+
+                $indices = [];
+                preg_match_all($regexToParse, $elasticaResponse->getData()['message'], $matches, PREG_SET_ORDER, 0);
+                if ($matches) {
+                    foreach ($matches as $metaData) {
+                        $indices[] = new ApisearchIndex(
+                            IndexUUID::createById($metaData['id']),
+                            AppUUID::createById($metaData['app_id']),
+                            (
+                                'open' === $metaData['status'] &&
+                                in_array($metaData['color'], ['green', 'yellow'])
+                            ),
+                            (int) $metaData['doc_count'],
+                            (string) $metaData['index_size'],
+                            (int) $metaData['primary_shards'],
+                            (int) $metaData['replica_shards'],
+                            $mappingData[$metaData['fullname']] ?? [],
+                            [
+                                'allocated' => ('green' === $metaData['color']),
+                                'doc_deleted' => (int) $metaData['doc_deleted'],
+                            ]
+                        );
+                    }
+                }
+
+                return $indices;
+            })
+            ->then(null, function (\Exception $e) {
+                return [];
+            });
     }
 
     /**
@@ -490,14 +535,16 @@ class ItemElasticaWrapper
      * @param RepositoryReference $repositoryReference
      * @param Config              $config
      *
+     * @return PromiseInterface
+     *
      * @throws ResourceExistsException
      */
     public function createIndex(
         RepositoryReference $repositoryReference,
         Config $config
-    ) {
+    ): PromiseInterface {
         if (!is_null($this->getOriginalIndexName($repositoryReference))) {
-            throw ResourceExistsException::indexExists();
+            return new RejectedPromise(ResourceExistsException::indexExists());
         }
 
         $indexAliasName = $this->getIndexAliasName($repositoryReference);
@@ -506,14 +553,21 @@ class ItemElasticaWrapper
             ->client
             ->getIndex($indexName);
 
-        try {
-            $searchIndex->create(
-                $this->getImmutableIndexConfiguration($config)
-            );
-            $searchIndex->addAlias($indexAliasName);
-        } catch (ResponseException $exception) {
-            throw ParsedCreatingIndexException::parse($exception->getMessage());
-        }
+        $endpoint = new CreateIndex();
+        $endpoint->setBody($this->getImmutableIndexConfiguration($config));
+        $endpoint->setIndex($searchIndex->getName());
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint)
+            ->then(function () use ($searchIndex, $indexAliasName) {
+                return $this->addAlias(
+                    $searchIndex,
+                    $indexAliasName
+                );
+            }, function (ResponseException $exception) {
+                throw ParsedCreatingIndexException::parse($exception->getMessage());
+            });
     }
 
     /**
@@ -521,31 +575,102 @@ class ItemElasticaWrapper
      *
      * @param RepositoryReference $repositoryReference
      *
+     * @return PromiseInterface
+     *
+     * @throws ResourceNotAvailableException
+     *
+     * @SYNC
+     */
+    public function deleteIndex(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        $originalIndexName = $this->getOriginalIndexName($repositoryReference);
+        if (is_null($originalIndexName)) {
+            return new RejectedPromise(
+                ResourceNotAvailableException::indexNotAvailable(
+                    $repositoryReference->compose()
+                )
+            );
+        }
+
+        $indexAliasName = $this->getIndexAliasName($repositoryReference);
+        $indexOriginalName = $this->getOriginalIndexName($repositoryReference);
+        $searchIndex = $this
+            ->client
+            ->getIndex($indexOriginalName);
+
+        return $this
+            ->removeAlias($searchIndex, $indexAliasName)
+            ->then(function () use ($searchIndex) {
+                return $this->deleteIndexByName($searchIndex->getName());
+            }, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
+    }
+
+    /**
+     * Delete index by name.
+     *
+     * @param string $indexName
+     *
+     * @return PromiseInterface
+     *
      * @throws ResourceNotAvailableException
      */
-    public function deleteIndex(RepositoryReference $repositoryReference)
+    public function deleteIndexByName(string $indexName): PromiseInterface
     {
-        try {
-            $originalIndexName = $this->getOriginalIndexName($repositoryReference);
-            if (is_null($originalIndexName)) {
-                throw ResourceNotAvailableException::indexNotAvailable($repositoryReference->compose());
-            }
+        $endpoint = new DeleteIndex();
+        $endpoint->setIndex($indexName);
 
-            $indexAliasName = $this->getIndexAliasName($repositoryReference);
-            $indexOriginalName = $this->getOriginalIndexName($repositoryReference);
-            $searchIndex = $this
-                ->client
-                ->getIndex($indexOriginalName);
-            $searchIndex->removeAlias($indexAliasName);
-            $searchIndex->clearCache();
-            $searchIndex->delete();
-        } catch (ResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-            throw $this->getIndexNotAvailableException($exception->getMessage());
-        }
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint)
+            ->then(null, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
+    }
+
+    /**
+     * Remove alias.
+     *
+     * @param Index  $index
+     * @param string $alias
+     *
+     * @return PromiseInterface
+     */
+    private function removeAlias(
+        Index $index,
+        string $alias
+    ): PromiseInterface {
+        $endpoint = new DeleteAlias();
+        $endpoint->setName($alias);
+
+        return $this->requestAsyncEndpoint($endpoint, $index);
+    }
+
+    /**
+     * Adds an alias to an index.
+     *
+     * @param Index  $index
+     * @param string $name
+     *
+     * @return PromiseInterface
+     */
+    public function addAlias(
+        Index $index,
+        string $name
+    ) {
+        $data = ['actions' => [
+            ['add' => [
+                'index' => $index->getName(),
+                'alias' => $name,
+            ],
+        ], ]];
+        $endpoint = new UpdateAlias();
+        $endpoint->setBody($data);
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint);
     }
 
     /**
@@ -553,25 +678,28 @@ class ItemElasticaWrapper
      *
      * @param RepositoryReference $repositoryReference
      *
-     * @throws ResourceNotAvailableException
+     * @return PromiseInterface
      */
-    public function resetIndex(RepositoryReference $repositoryReference)
+    public function resetIndex(RepositoryReference $repositoryReference): PromiseInterface
     {
-        try {
-            $indexAliasName = $this->getIndexAliasName($repositoryReference);
-            $searchIndex = $this
-                ->client
-                ->getIndex($indexAliasName);
+        $indexAliasName = $this->getIndexAliasName($repositoryReference);
+        $searchIndex = $this
+            ->client
+            ->getIndex($indexAliasName);
 
-            $searchIndex->clearCache();
-            $searchIndex->deleteByQuery(new Query\MatchAll());
-        } catch (ResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-            throw $this->getIndexNotAvailableException($exception->getMessage());
-        }
+        $query = new Query\MatchAll();
+        $query = Query::create($query)->getQuery();
+        $endpoint = new DeleteByQuery();
+        $endpoint->setBody(['query' => is_array($query) ? $query : $query->toArray()]);
+        $endpoint->setParams([
+            'refresh' => true,
+        ]);
+
+        return $this
+            ->requestAsyncEndpoint($endpoint, $searchIndex)
+            ->then(null, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
     }
 
     /**
@@ -580,12 +708,14 @@ class ItemElasticaWrapper
      * @param RepositoryReference $repositoryReference
      * @param Config              $config
      *
+     * @return PromiseInterface
+     *
      * @throws ResourceExistsException
      */
     public function configureIndex(
         RepositoryReference $repositoryReference,
         Config $config
-    ) {
+    ): PromiseInterface {
         $indexAliasName = $this->getIndexAliasName($repositoryReference);
         $indexOriginalOldName = $this->getOriginalIndexName($repositoryReference);
         $indexOriginalNewName = $this->getRandomIndexName($repositoryReference);
@@ -598,65 +728,41 @@ class ItemElasticaWrapper
             ->client
             ->getIndex($indexOriginalNewName);
 
-        $newIndex->create(
-            $this->getImmutableIndexConfiguration($config)
-        );
+        $newIndex->create($this->getImmutableIndexConfiguration($config));
 
-        $this->createIndexMappingByIndexName(
-            $indexOriginalNewName,
-            $config
-        );
+        return
+            $this->createIndexMappingByIndexName(
+                $indexOriginalNewName,
+                $config
+            )
+            ->then(function () use ($indexOriginalOldName, $indexOriginalNewName) {
+                $reindex = new Reindex();
+                $reindex->setParams([
+                    'wait_for_completion' => true,
+                    'refresh' => true,
+                ]);
+                $reindex->setBody([
+                    'source' => [
+                        'index' => $indexOriginalOldName,
+                    ],
+                    'dest' => [
+                        'index' => $indexOriginalNewName,
+                    ],
+                ]);
 
-        $reindex = new Reindex();
-        $reindex->setParams([
-            'wait_for_completion' => true,
-        ]);
-        $reindex->setBody([
-            'source' => [
-                'index' => $indexOriginalOldName,
-            ],
-            'dest' => [
-                'index' => $indexOriginalNewName,
-            ],
-        ]);
-
-        $this
-            ->client
-            ->requestEndpoint($reindex);
-
-        $oldIndex->removeAlias($indexAliasName);
-        $newIndex->addAlias($indexAliasName);
-        $oldIndex->clearCache();
-        $oldIndex->delete();
-    }
-
-    /**
-     * Get item type by index name.
-     *
-     * @param RepositoryReference $repositoryReference
-     *
-     * @return Type
-     */
-    public function getItemTypeByRepositoryReference(RepositoryReference $repositoryReference): Type
-    {
-        return $this
-            ->getIndex($repositoryReference)
-            ->getType(self::ITEM_TYPE);
-    }
-
-    /**
-     * Get item type by index name.
-     *
-     * @param string $indexName
-     *
-     * @return Type
-     */
-    public function getItemTypeByIndexName(string $indexName): Type
-    {
-        return $this
-            ->client
-            ->getIndex($indexName)
-            ->getType(self::ITEM_TYPE);
+                return $this
+                    ->client
+                    ->requestAsyncEndpoint($reindex);
+            })
+            ->then(function () use ($indexAliasName, $oldIndex) {
+                return $this->removeAlias($oldIndex, $indexAliasName);
+            })
+            ->then(function () use ($indexAliasName, $newIndex) {
+                return $this->addAlias($newIndex, $indexAliasName);
+            })
+            ->then(function () use ($indexOriginalOldName) {
+                return $this->deleteIndexByName($indexOriginalOldName);
+            });
     }
 
     /**
@@ -665,32 +771,28 @@ class ItemElasticaWrapper
      * @param RepositoryReference $repositoryReference
      * @param Search              $search
      *
-     * @return ElasticaResultSet
+     * @return PromiseInterface
      */
     public function simpleSearch(
         RepositoryReference $repositoryReference,
         Search $search
-    ): ElasticaResultSet {
+    ): PromiseInterface {
         $index = $this->getIndex($repositoryReference);
         $client = $index->getClient();
 
-        try {
-            $elasticsearchSearch = new ElasticaSearch($client);
-            $elasticsearchSearch->addIndex($index);
-            $resultSet = $elasticsearchSearch->search($search->getQuery(), [
+        $elasticsearchSearch = new AsyncSearch($client);
+        $elasticsearchSearch->addIndex($index);
+
+        return $elasticsearchSearch
+            ->searchAsync($search->getQuery(), [
                 'from' => $search->getFrom(),
                 'size' => $search->getSize(),
-            ]);
-        } catch (ResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-
-            throw $this->getIndexNotAvailableException($exception->getMessage());
-        }
-
-        return $resultSet;
+            ])
+            ->then(null, function ($exception) {
+                throw ($exception instanceof ResponseException)
+                    ? $this->getIndexNotAvailableException($exception->getMessage())
+                    : $exception;
+            });
     }
 
     /**
@@ -699,13 +801,13 @@ class ItemElasticaWrapper
      * @param RepositoryReference[] $repositoryReferences
      * @param Search[]              $searches
      *
-     * @return ElasticaMultiResultSet
+     * @return PromiseInterface
      */
     public function multisearch(
         array $repositoryReferences,
         array $searches
-    ): ElasticaMultiResultSet {
-        $elasticsearchMultiSearch = new ElasticaMultiSearch($this->client);
+    ): PromiseInterface {
+        $elasticsearchMultiSearch = new AsyncMultiSearch($this->client);
         foreach ($searches as $position => $search) {
             $index = $this->getIndex($repositoryReferences[$position]);
             $elasticsearchSearch = new ElasticaSearch($this->client);
@@ -717,19 +819,26 @@ class ItemElasticaWrapper
             $elasticsearchMultiSearch->addSearch($elasticsearchSearch, $search->getName());
         }
 
-        return $elasticsearchMultiSearch->search();
+        return $elasticsearchMultiSearch->searchAsync();
     }
 
     /**
      * Refresh.
      *
-     * @param RepositoryReference $repositoryReference
+     * @param string $indexName
+     *
+     * @return PromiseInterface
      */
-    public function refresh(RepositoryReference $repositoryReference)
+    public function refresh(string $indexName = null): PromiseInterface
     {
-        $this
-            ->getIndex($repositoryReference)
-            ->refresh();
+        $endpoint = new Refresh();
+        if (!is_null($indexName)) {
+            $endpoint->setIndex($indexName);
+        }
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint);
     }
 
     /**
@@ -738,13 +847,15 @@ class ItemElasticaWrapper
      * @param RepositoryReference $repositoryReference
      * @param Config              $config
      *
+     * @return PromiseInterface
+     *
      * @throws ResourceExistsException
      */
     public function createIndexMapping(
         RepositoryReference $repositoryReference,
         Config $config
-    ) {
-        $this->createIndexMappingByIndexName(
+    ): PromiseInterface {
+        return $this->createIndexMappingByIndexName(
             $this->getIndexAliasName($repositoryReference),
             $config
         );
@@ -756,24 +867,25 @@ class ItemElasticaWrapper
      * @param string $indexName
      * @param Config $config
      *
+     * @return PromiseInterface
+     *
      * @throws ResourceExistsException
      */
     public function createIndexMappingByIndexName(
         string $indexName,
         Config $config
-    ) {
-        try {
-            $itemMapping = new Type\Mapping();
-            $itemMapping->setType($this->getItemTypeByIndexName($indexName));
-            $this->buildIndexMapping($itemMapping, $config);
-            $itemMapping->send();
-        } catch (ResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-            throw $this->getIndexNotAvailableException($exception->getMessage());
-        }
+    ): PromiseInterface {
+        $endpoint = new MappingEndpoint\Put();
+        $endpoint->setBody($this->getIndexMapping($config));
+        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        $index = $this->getIndexByName($indexName);
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint, $index)
+            ->then(null, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
     }
 
     /**
@@ -781,24 +893,41 @@ class ItemElasticaWrapper
      *
      * @param RepositoryReference $repositoryReference
      * @param Document[]          $documents
+     * @param bool                $refresh
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceExistsException
      */
     public function addDocuments(
         RepositoryReference $repositoryReference,
-        array $documents
-    ) {
-        try {
-            $this
-                ->getItemTypeByRepositoryReference($repositoryReference)
-                ->addDocuments($documents);
-        } catch (BulkResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-            throw $this->getIndexNotAvailableException($exception->getMessage());
+        array $documents,
+        bool $refresh
+    ): PromiseInterface {
+        $index = $this->getIndex($repositoryReference);
+        $endpoint = new Bulk(new ArrayToJSONSerializer());
+        $data = [];
+        foreach ($documents as $document) {
+            $data[] = ['update' => ['_id' => $document->getId(), '_index' => $index->getName()]];
+            $data[] = ['doc' => $document->getData(), 'doc_as_upsert' => true];
         }
+        $endpoint->setBody($data);
+        $endpoint->setParams([
+            'refresh' => $refresh
+        ]);
+        Polyfill\Type::setEndpointType($endpoint, $this->version);
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint, $index)
+            ->then(null, function (\Exception $exception) {
+                throw (
+                    $exception instanceof ResponseException ||
+                    $exception instanceof BulkResponseException
+                )
+                    ? $this->getIndexNotAvailableException($exception->getMessage())
+                    : $exception;
+            });
     }
 
     /**
@@ -806,24 +935,49 @@ class ItemElasticaWrapper
      *
      * @param RepositoryReference $repositoryReference
      * @param string[]            $documentsId
+     * @param bool                $refresh
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceExistsException
      */
     public function deleteDocumentsByIds(
         RepositoryReference $repositoryReference,
-        array $documentsId
-    ) {
-        try {
-            $this
-                ->getItemTypeByRepositoryReference($repositoryReference)
-                ->deleteByQuery(new Query\Ids(array_values($documentsId)));
-        } catch (ResponseException $exception) {
-            /*
-             * The index resource cannot be deleted.
-             * This means that the resource is not available
-             */
-            throw $this->getIndexNotAvailableException($exception->getMessage());
-        }
+        array $documentsId,
+        bool $refresh
+    ): PromiseInterface {
+        $index = $this->getIndex($repositoryReference);
+        $query = Query::create(new Query\Ids(array_values($documentsId)));
+
+        $endpoint = new DeleteByQuery();
+        $endpoint->setBody($query->toArray());
+        $endpoint->setParams([
+            'refresh' => $refresh,
+        ]);
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint, $index)
+            ->then(null, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
+    }
+
+    /**
+     * Get cluster status.
+     *
+     * @return PromiseInterface
+     */
+    public function getClusterStatus(): PromiseInterface
+    {
+        $endpoint = new Health();
+        $endpoint->setParams(['level' => 'shards']);
+
+        return $this
+            ->requestAsyncEndpoint($endpoint)
+            ->then(function (Response $response) {
+                return $response->getData()['status'];
+            });
     }
 
     /**
@@ -881,5 +1035,70 @@ class ItemElasticaWrapper
         preg_match($regexToParse, $elasticaResponse->getData()['message'], $match);
 
         return $match['index_name'] ?? null;
+    }
+
+    /**
+     * Makes calls to the elasticsearch server based on this index.
+     *
+     * It's possible to make any REST query directly over this method
+     *
+     * @param string       $path        Path to call
+     * @param string       $method      Rest method to use (GET, POST, DELETE, PUT)
+     * @param array|string $data        OPTIONAL Arguments as array or pre-encoded string
+     * @param array        $query       OPTIONAL Query params
+     * @param string       $contentType Content-Type sent with this request
+     *
+     * @return PromiseInterface
+     */
+    public function requestAsync(
+        string $path,
+        string $method = Request::GET,
+        $data = [],
+        array $query = [],
+        $contentType = Request::DEFAULT_CONTENT_TYPE
+    ): PromiseInterface {
+        return $this
+            ->client
+            ->requestAsync(
+                $path,
+                $method,
+                $data,
+                $query,
+                $contentType
+            );
+    }
+
+    /**
+     * Makes calls to the elasticsearch server with usage official client Endpoint based on this index.
+     *
+     * @param AbstractEndpoint $endpoint
+     * @param Index            $index
+     *
+     * @return PromiseInterface
+     */
+    public function requestAsyncEndpoint(
+        AbstractEndpoint $endpoint,
+        ?Index $index = null
+    ): PromiseInterface {
+        return $this
+            ->client
+            ->requestAsyncEndpoint(
+                $endpoint,
+                $index
+            );
+    }
+
+    /**
+     * Get index by name
+     *
+     * @param string $indexName
+     *
+     * @return Index
+     */
+    private function getIndexByName(string $indexName) : Index
+    {
+        return $this
+            ->client
+            ->getIndex($indexName);
     }
 }

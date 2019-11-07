@@ -5,11 +5,11 @@ services:
         arguments:
             - '@apisearch_plugin.query_mapper.query_mapper_loader'
         tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 24 }
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelAsyncRequest, priority: 4 }
 
     apisearch_plugin.query_mapper.check_mapped_result:
         class: Apisearch\Plugin\QueryMapper\Listener\CheckMappedResult
         arguments:
             - '@apisearch_plugin.query_mapper.result_mapper_loader'
         tags:
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: -24 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelAsyncResponse, priority: -24 }

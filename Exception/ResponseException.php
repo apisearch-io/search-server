@@ -13,19 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Repository\Repository;
+namespace Apisearch\Server\Exception;
 
-use Apisearch\Model\Item;
+use Exception;
 
 /**
- * Interface IndexRepository.
+ * Class ResponseException.
  */
-interface IndexRepository
+class ResponseException extends Exception
 {
-    /**
-     * Generate items documents.
-     *
-     * @param Item[] $items
-     */
-    public function addItems(array $items);
 }

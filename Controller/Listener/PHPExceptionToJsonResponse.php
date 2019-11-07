@@ -18,6 +18,8 @@ namespace Apisearch\Server\Controller\Listener;
 use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Exception\TransportableException;
 use Exception;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -31,21 +33,29 @@ class PHPExceptionToJsonResponse
      * When controller gets exception.
      *
      * @param GetResponseForExceptionEvent $event
+     *
+     * @return PromiseInterface
      */
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event): PromiseInterface
     {
-        $exception = $event->getException();
-        $exception = $this->toOwnException($exception);
-        $exceptionErrorCode = $exception instanceof TransportableException
-            ? $exception::getTransportableHTTPError()
-            : 500;
+        return (new FulfilledPromise($event))
+            ->then(function (GetResponseForExceptionEvent $event) {
+                $exception = $event->getException();
 
-        $event->setResponse(new JsonResponse([
-            'message' => $exception->getMessage(),
-            'code' => $exceptionErrorCode,
-        ], $exceptionErrorCode));
+                if ($exception instanceof Exception) {
+                    $exception = $this->toOwnException($exception);
+                }
 
-        $event->stopPropagation();
+                $exceptionErrorCode = $exception instanceof TransportableException
+                    ? $exception::getTransportableHTTPError()
+                    : 500;
+
+                $event->stopPropagation();
+                $event->setResponse(new JsonResponse([
+                    'message' => $exception->getMessage(),
+                    'code' => $exceptionErrorCode,
+                ], $exceptionErrorCode));
+            });
     }
 
     /**

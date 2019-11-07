@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\Plugin;
 
 use Apisearch\Server\Domain\Model\CrontabLine;
 use Apisearch\Server\Domain\Query\GetCrontab;
+use React\Promise\PromiseInterface;
 
 /**
  * Interface CrontabMiddleware.
@@ -29,12 +30,12 @@ abstract class CrontabMiddleware implements PluginMiddleware
      * @param GetCrontab $command
      * @param callable   $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
+    ): PromiseInterface {
         foreach ($this->getCrontabLines() as $crontabLine) {
             $command->addLine($crontabLine);
         }

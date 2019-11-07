@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Item;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\IndexItems;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,11 +33,11 @@ class IndexItemsController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      *
      * @throws InvalidFormatException
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $itemsAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -45,7 +46,7 @@ class IndexItemsController extends ControllerWithBus
             []
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new IndexItems(
                 RepositoryReference::create(
@@ -56,8 +57,9 @@ class IndexItemsController extends ControllerWithBus
                 array_map(function (array $object) {
                     return Item::createFromArray($object);
                 }, $itemsAsArray)
-            ));
-
-        return new JsonResponse('Items indexed', $this->created());
+            ))
+            ->then(function () {
+                return new JsonResponse('Items indexed', $this->created());
+            });
     }
 }

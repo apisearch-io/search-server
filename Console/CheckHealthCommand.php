@@ -42,9 +42,7 @@ class CheckHealthCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $health = $this
-            ->commandBus
-            ->handle(new CheckHealth());
+        $health = $this->handleSynchronously(new CheckHealth());
 
         $this->printInfoMessage($output, 'Memory Used', $health['process']['memory_used']);
         $this->printInfoMessage($output, 'Plugins', implode(', ', array_keys($health['info']['plugins'])));

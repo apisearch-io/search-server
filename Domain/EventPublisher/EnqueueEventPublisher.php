@@ -13,19 +13,18 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Middleware\DomainEvents;
+namespace Apisearch\Server\Domain\EventPublisher;
 
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
-use Apisearch\Server\Domain\Event\EventPublisher;
 use Apisearch\Server\Domain\EventEnqueuer\EventEnqueuer;
-use League\Tactician\Middleware;
+use React\Promise\PromiseInterface;
 
 /**
- * Class EnqueueDomainEventsMiddleware.
+ * Class EnqueueEventPublisher.
  */
-class EnqueueDomainEventsMiddleware extends DomainEventsMiddleware implements Middleware
+class EnqueueEventPublisher implements EventPublisher
 {
     /**
      * @var EventEnqueuer
@@ -37,31 +36,28 @@ class EnqueueDomainEventsMiddleware extends DomainEventsMiddleware implements Mi
     /**
      * DomainEventsMiddleware constructor.
      *
-     * @param EventPublisher $eventPublisher
-     * @param EventEnqueuer  $eventEnqueuer
+     * @param EventEnqueuer $eventEnqueuer
      */
-    public function __construct(
-        EventPublisher $eventPublisher,
-        EventEnqueuer $eventEnqueuer
-    ) {
-        parent::__construct($eventPublisher);
-
+    public function __construct(EventEnqueuer $eventEnqueuer)
+    {
         $this->eventEnqueuer = $eventEnqueuer;
     }
 
     /**
-     * Process events.
+     * Publish event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function processEvent(DomainEventWithRepositoryReference $domainEventWithRepositoryReference)
+    public function publish(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface
     {
         $repositoryReference = $domainEventWithRepositoryReference->getRepositoryReference();
         $domainEvent = $domainEventWithRepositoryReference->getDomainEvent();
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();
 
-        $this
+        return $this
             ->eventEnqueuer
             ->enqueueEvent(
                 [

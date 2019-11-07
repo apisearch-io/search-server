@@ -19,6 +19,7 @@ use Apisearch\Config\Config;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\CreateIndex;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,9 +33,9 @@ class CreateIndexController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $configAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -43,7 +44,7 @@ class CreateIndexController extends ControllerWithBus
             []
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new CreateIndex(
                 RepositoryReference::create(
@@ -52,11 +53,12 @@ class CreateIndexController extends ControllerWithBus
                 RequestAccessor::getTokenFromRequest($request),
                 RequestAccessor::getIndexUUIDFromRequest($request),
                 Config::createFromArray($configAsArray)
-            ));
-
-        return new JsonResponse(
-            'Index created with given configuration',
-            $this->created()
-        );
+            ))
+            ->then(function () {
+                return new JsonResponse(
+                    'Index created with given configuration',
+                    $this->created()
+                );
+            });
     }
 }

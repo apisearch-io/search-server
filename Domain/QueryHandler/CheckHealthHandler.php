@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\CheckHealth;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthHandler.
@@ -27,17 +29,17 @@ class CheckHealthHandler
      *
      * @param CheckHealth $checkHealth
      *
-     * @return array
+     * @return PromiseInterface<array>
      */
-    public function handle(CheckHealth $checkHealth): array
+    public function handle(CheckHealth $checkHealth): PromiseInterface
     {
-        return [
+        return new FulfilledPromise([
             'healthy' => true,
             'status' => [],
             'info' => [],
             'process' => [
                 'memory_used' => memory_get_usage(false),
             ],
-        ];
+        ]);
     }
 }

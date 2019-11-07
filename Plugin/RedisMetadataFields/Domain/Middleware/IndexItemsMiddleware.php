@@ -19,6 +19,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\RedisMetadataFields\Domain\Repository\RedisMetadataRepository;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
+use React\Promise\PromiseInterface;
 
 /**
  * Class IndexItemsMiddleware.
@@ -48,12 +49,12 @@ class IndexItemsMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
+    ): PromiseInterface {
         /**
          * @var IndexItems
          *
@@ -68,14 +69,15 @@ class IndexItemsMiddleware implements PluginMiddleware
             ->getRepositoryReference()
             ->changeIndex(IndexUUID::createById($composedIndexUUID));
 
-        $this
+        return $this
             ->metadataRepository
             ->saveItemsMetadata(
                 $filteredRepository,
                 $command->getItems()
-            );
-
-        return $next($command);
+            )
+            ->then(function () use ($next, $command) {
+                return $next($command);
+            });
     }
 
     /**

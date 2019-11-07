@@ -67,13 +67,11 @@ class ImportIndexCommand extends CommandWithBusAndGodToken
             $file,
             $output,
             function (array $items, bool $lastIteration) use ($objects) {
-                $this
-                    ->commandBus
-                    ->handle(new IndexItems(
-                        $objects['repository_reference'],
-                        $objects['token'],
-                        $items
-                    ));
+                $this->handleSynchronously(new IndexItems(
+                    $objects['repository_reference'],
+                    $objects['token'],
+                    $items
+                ));
             }
         );
     }

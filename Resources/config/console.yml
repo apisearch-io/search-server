@@ -8,6 +8,7 @@ services:
         abstract: true
         arguments:
             - "@apisearch_server.command_bus"
+            - "@reactphp.event_loop"
             - "%apisearch_server.god_token%"
 
     apisearch_server.command_with_query_bus_and_god_token:
@@ -15,6 +16,7 @@ services:
         abstract: true
         arguments:
             - "@apisearch_server.query_bus"
+            - "@reactphp.event_loop"
             - "%apisearch_server.god_token%"
 
     apisearch_server.configure_environment_command:

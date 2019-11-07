@@ -30,7 +30,7 @@ class InlineCommandBus extends CommandBus
     private $commandBus;
 
     /**
-     * InlineCommandIngestor constructor.
+     * AwaitCommandBus constructor.
      *
      * @param CommandBus $commandBus
      */
@@ -49,7 +49,7 @@ class InlineCommandBus extends CommandBus
      */
     public function handle($command)
     {
-        $this
+        return $this
             ->commandBus
             ->handle($command);
     }

@@ -17,6 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\ResetIndex;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,13 +31,13 @@ class ResetIndexController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
-        $this
+        return $this
             ->commandBus
             ->handle(new ResetIndex(
                 RepositoryReference::create(
@@ -45,8 +46,9 @@ class ResetIndexController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $indexUUID
-            ));
-
-        return new JsonResponse('Index reset', $this->ok());
+            ))
+            ->then(function () {
+                return new JsonResponse('Index reset', $this->ok());
+            });
     }
 }

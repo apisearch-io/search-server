@@ -20,9 +20,9 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\Elastica\Domain\Builder\QueryBuilder;
 use Apisearch\Plugin\Elastica\Domain\Builder\ResultBuilder;
-use Apisearch\Plugin\Elastica\Domain\ElasticaWrapperWithRepositoryReference;
-use Apisearch\Plugin\Elastica\Domain\ItemElasticaWrapper;
+use Apisearch\Plugin\Elastica\Domain\ElasticaWrapper;
 use Apisearch\Plugin\Elastica\Domain\Search;
+use Apisearch\Plugin\Elastica\Domain\WithElasticaWrapper;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
@@ -31,11 +31,13 @@ use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
 use Elastica\Query as ElasticaQuery;
 use Elastica\ResultSet as ElasticaResultSet;
 use Elastica\Suggest;
+use Apisearch\Plugin\Elastica\Domain\Polyfill;
+use React\Promise\PromiseInterface;
 
 /**
  * Class QueryRepository.
  */
-class QueryRepository extends ElasticaWrapperWithRepositoryReference implements QueryRepositoryInterface
+class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInterface
 {
     /**
      * @var QueryBuilder
@@ -54,13 +56,13 @@ class QueryRepository extends ElasticaWrapperWithRepositoryReference implements 
     /**
      * ElasticaSearchRepository constructor.
      *
-     * @param ItemElasticaWrapper $elasticaWrapper
-     * @param bool                $refreshOnWrite
-     * @param QueryBuilder        $queryBuilder
-     * @param ResultBuilder       $resultBuilder
+     * @param ElasticaWrapper $elasticaWrapper
+     * @param bool            $refreshOnWrite
+     * @param QueryBuilder    $queryBuilder
+     * @param ResultBuilder   $resultBuilder
      */
     public function __construct(
-        ItemElasticaWrapper $elasticaWrapper,
+        ElasticaWrapper $elasticaWrapper,
         bool $refreshOnWrite,
         QueryBuilder $queryBuilder,
         ResultBuilder $resultBuilder
@@ -77,33 +79,37 @@ class QueryRepository extends ElasticaWrapperWithRepositoryReference implements 
     /**
      * Search cross the index types.
      *
-     * @param Query $query
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
      *
-     * @return Result
+     * @return PromiseInterface
      */
-    public function query(Query $query): Result
-    {
-        $r = (count($query->getSubqueries()) > 0)
-            ? $this->makeMultiQuery($query)
-            : $this->makeSimpleQuery($query);
-
-        return $r;
+    public function query(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return (count($query->getSubqueries()) > 0)
+            ? $this->makeMultiQuery($repositoryReference, $query)
+            : $this->makeSimpleQuery($repositoryReference, $query);
     }
 
     /**
      * Make simple query.
      *
-     * @param Query $query
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
      *
-     * @return Result
+     * @return PromiseInterface
      */
-    private function makeSimpleQuery(Query $query)
-    {
-        $resultSet = $this
+    private function makeSimpleQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
             ->elasticaWrapper
             ->simpleSearch(
                 $this->getRepositoryReferenceIndexSpecific(
-                    $this->getRepositoryReference(),
+                    $repositoryReference,
                     $query->getIndexUUID()
                 ),
                 new Search(
@@ -115,28 +121,32 @@ class QueryRepository extends ElasticaWrapperWithRepositoryReference implements 
                         ? $query->getSize()
                         : 0
                 )
-            );
-
-        return $this->elasticaResultSetToResult(
-            $query,
-            $resultSet
-        );
+            )
+            ->then(function (ElasticaResultSet $resultSet) use ($query) {
+                return $this->elasticaResultSetToResult(
+                    $query,
+                    $resultSet
+                );
+            });
     }
 
     /**
      * Make multi query.
      *
-     * @param Query $query
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
      *
-     * @return Result
+     * @return PromiseInterface
      */
-    private function makeMultiQuery(Query $query)
-    {
+    private function makeMultiQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
         $searches = [];
         $repositoryReferencies = [];
         foreach ($query->getSubqueries() as $name => $subquery) {
             $repositoryReferencies[] = $this->getRepositoryReferenceIndexSpecific(
-                $this->getRepositoryReference(),
+                $repositoryReference,
                 $subquery->getIndexUUID()
             );
             $searches[] = new Search(
@@ -151,17 +161,18 @@ class QueryRepository extends ElasticaWrapperWithRepositoryReference implements 
             );
         }
 
-        $multiResultSet = $this
+        return $this
             ->elasticaWrapper
             ->multisearch(
                 $repositoryReferencies,
                 $searches
-            );
-
-        return $this->elasticaMultiResultSetToResult(
-            $query,
-            $multiResultSet
-        );
+            )
+            ->then(function (ElasticaMultiResultSet $multiResultSet) use ($query) {
+                return $this->elasticaMultiResultSetToResult(
+                    $query,
+                    $multiResultSet
+                );
+            });
     }
 
     /**
@@ -195,7 +206,7 @@ class QueryRepository extends ElasticaWrapperWithRepositoryReference implements 
         $result = new Result(
             $query->getUUID(),
             $resultsCount,
-            $resultSet->getTotalHits()
+            Polyfill\ResultSet::getTotalHits($resultSet)
         );
 
         /*

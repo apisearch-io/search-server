@@ -62,16 +62,12 @@ class AsynchronousCommandBus extends CommandBus
      */
     public function handle($command)
     {
-        if ($command instanceof AsynchronousableCommand) {
-            $this
+        return $command instanceof AsynchronousableCommand
+            ? $this
                 ->commandEnqueuer
-                ->enqueueCommand($command);
-
-            return;
-        }
-
-        $this
-            ->commandBus
-            ->handle($command);
+                ->enqueueCommand($command)
+            : $this
+                ->commandBus
+                ->handle($command);
     }
 }

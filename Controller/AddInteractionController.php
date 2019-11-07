@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\AddInteraction;
 use Apisearch\User\Interaction;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,9 +33,9 @@ class AddInteractionController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $interactionAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -42,7 +43,7 @@ class AddInteractionController extends ControllerWithBus
             InvalidFormatException::interactionFormatNotValid($request->getContent())
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new AddInteraction(
                 RepositoryReference::create(
@@ -50,8 +51,9 @@ class AddInteractionController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 Interaction::createFromArray($interactionAsArray)
-            ));
-
-        return new JsonResponse('Interaction added', $this->created());
+            ))
+            ->then(function () {
+                return new JsonResponse('Interaction added', $this->created());
+            });
     }
 }

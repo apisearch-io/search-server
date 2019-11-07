@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\CommandEnqueuer;
 
+use React\Promise\PromiseInterface;
+
 /**
  * Interface CommandEnqueuer.
  */
@@ -24,6 +26,8 @@ interface CommandEnqueuer
      * Enqueue a command.
      *
      * @param object $command
+     *
+     * @return PromiseInterface
      */
-    public function enqueueCommand($command);
+    public function enqueueCommand($command): PromiseInterface;
 }

@@ -21,7 +21,9 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
+use Clue\React\Block;
 use League\Tactician\CommandBus;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,6 +40,13 @@ abstract class CommandWithBusAndGodToken extends ApisearchFormattedCommand
     protected $commandBus;
 
     /**
+     * @var LoopInterface
+     *
+     * Event loop
+     */
+    private $loop;
+
+    /**
      * @var string
      *
      * God token
@@ -47,17 +56,36 @@ abstract class CommandWithBusAndGodToken extends ApisearchFormattedCommand
     /**
      * Controller constructor.
      *
-     * @param CommandBus $commandBus
-     * @param string     $godToken
+     * @param CommandBus    $commandBus
+     * @param LoopInterface $loop
+     * @param string        $godToken
      */
     public function __construct(
         CommandBus $commandBus,
+        LoopInterface $loop,
         string $godToken
     ) {
         parent::__construct();
 
         $this->commandBus = $commandBus;
+        $this->loop = $loop;
         $this->godToken = $godToken;
+    }
+
+    /**
+     * Handle command synchronously.
+     *
+     * @param object $command
+     *
+     * @return mixed
+     */
+    public function handleSynchronously($command)
+    {
+        $promise = $this
+            ->commandBus
+            ->handle($command);
+
+        return Block\await($promise, $this->loop);
     }
 
     /**

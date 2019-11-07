@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\Ping;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class PingHandler.
@@ -27,10 +29,10 @@ class PingHandler
      *
      * @param Ping $ping
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
-    public function handle(Ping $ping): bool
+    public function handle(Ping $ping): PromiseInterface
     {
-        return true;
+        return new FulfilledPromise(true);
     }
 }

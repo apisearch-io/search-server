@@ -18,6 +18,7 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Model\Index;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetIndices;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,27 +32,28 @@ class GetIndicesController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
-        $indices = $this
+        return $this
             ->commandBus
             ->handle(new GetIndices(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),
                 RequestAccessor::getTokenFromRequest($request)
-            ));
-
-        return new JsonResponse(
-            array_map(function (Index $index) {
-                return $index->toArray();
-            }, $indices),
-            200,
-            [
-                'Access-Control-Allow-Origin' => '*',
-            ]
-        );
+            ))
+            ->then(function (array $indices) {
+                return new JsonResponse(
+                    array_map(function (Index $index) {
+                        return $index->toArray();
+                    }, $indices),
+                    200,
+                    [
+                        'Access-Control-Allow-Origin' => '*',
+                    ]
+                );
+            });
     }
 }

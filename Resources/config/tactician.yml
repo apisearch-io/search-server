@@ -4,19 +4,15 @@ tactician:
         command:
             middleware:
                 - tactician.middleware.locking
-                - apisearch_server.middleware.domain_events
                 - apisearch_server.middleware.exceptions
                 - apisearch_server.middleware.repository_reference
                 - apisearch_server.middleware.plugins
-                # - apisearch_server.middleware.interactions
                 - tactician.middleware.command_handler
 
         query:
             middleware:
-                - apisearch_server.middleware.domain_events
                 - apisearch_server.middleware.exceptions
                 - apisearch_server.middleware.repository_reference
                 - apisearch_server.middleware.token_query
                 - apisearch_server.middleware.plugins
-                # - apisearch_server.middleware.interactions
                 - tactician.middleware.command_handler

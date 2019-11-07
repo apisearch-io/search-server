@@ -15,8 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Redis\Domain;
 
-use Redis;
-use RedisCluster;
+use Clue\React\Redis\Client;
+use Clue\React\Redis\Factory;
+use React\EventLoop\LoopInterface;
 
 /**
  * Class RedisFactory.
@@ -24,61 +25,64 @@ use RedisCluster;
 class RedisFactory
 {
     /**
-     * Redis instances.
+     * @var client[]
      *
-     * @param array
+     * Redis instances
      */
     private $redisInstances = [];
+
+    /**
+     * @var Factory
+     *
+     * Redis Async Factory
+     */
+    private $factory;
+
+    /**
+     * AsyncRedisFactory constructor.
+     *
+     * @param LoopInterface $eventLoop
+     */
+    public function __construct(LoopInterface $eventLoop)
+    {
+        $this->factory = new Factory($eventLoop);
+    }
 
     /**
      * Generate new Predis instance.
      *
      * @param RedisConfig $redisConfig
      *
-     * @return Redis|RedisCluster
+     * @return Client
      */
-    public function create(RedisConfig $redisConfig)
+    public function create(RedisConfig $redisConfig): Client
     {
         $key = md5($redisConfig->serialize());
         if (isset($this->redisInstances[$key])) {
             return $this->redisInstances[$key];
         }
 
-        $this->redisInstances[$key] = $redisConfig->isCluster()
-            ? $this->createCluster($redisConfig)
-            : $this->createSimple($redisConfig);
+        $this->redisInstances[$key] = $this->createSimple($redisConfig);
 
         return $this->redisInstances[$key];
     }
 
     /**
-     * Create cluster.
+     * Create simple.
      *
      * @param RedisConfig $redisConfig
      *
-     * @return RedisCluster
+     * @return Client
      */
-    private function createCluster(RedisConfig $redisConfig): RedisCluster
+    private function createSimple(RedisConfig $redisConfig): Client
     {
-        return new RedisCluster(null, [$redisConfig->getHost().':'.$redisConfig->getPort()]);
-    }
-
-    /**
-     * Create single redis.
-     *
-     * @param RedisConfig $redisConfig
-     *
-     * @return Redis
-     */
-    private function createSimple(RedisConfig $redisConfig): Redis
-    {
-        $redis = new Redis();
-        $redis->connect($redisConfig->getHost(), $redisConfig->getPort());
-        $redis->setOption(Redis::OPT_READ_TIMEOUT, '-1');
-        if (!empty($redisConfig->getDatabase())) {
-            $redis->select($redisConfig->getDatabase());
-        }
-
-        return $redis;
+        return $this
+            ->factory
+            ->createLazyClient(rtrim(sprintf(
+                '%s:%s/%s',
+                $redisConfig->getHost(),
+                $redisConfig->getPort(),
+                $redisConfig->getDatabase()
+            ), '/'));
     }
 }

@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\TokensWereDeleted;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DeleteTokensHandler.
@@ -29,24 +30,23 @@ class DeleteTokensHandler extends WithAppRepositoryAndEventPublisher
      * Delete token.
      *
      * @param DeleteTokens $deleteTokens
+     *
+     * @return PromiseInterface
      */
-    public function handle(DeleteTokens $deleteTokens)
+    public function handle(DeleteTokens $deleteTokens): PromiseInterface
     {
         $repositoryReference = $deleteTokens->getRepositoryReference();
 
-        $this
+        return $this
             ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
-            ->appRepository
-            ->deleteTokens();
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
-                $repositoryReference,
-                new TokensWereDeleted()
-            ));
+            ->deleteTokens($repositoryReference)
+            ->then(function () use ($repositoryReference) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new TokensWereDeleted()
+                    ));
+            });
     }
 }

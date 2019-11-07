@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Token;
 
 use Apisearch\Model\AppUUID;
-use Apisearch\Model\Token;
+use React\Promise\PromiseInterface;
 
 /**
  * Interface TokenProvider.
@@ -28,7 +28,7 @@ interface TokenProvider
      *
      * @param AppUUID $appUUID
      *
-     * @return Token[]
+     * @return PromiseInterface<Token[]>
      */
-    public function getTokensByAppUUID(AppUUID $appUUID): array;
+    public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface;
 }

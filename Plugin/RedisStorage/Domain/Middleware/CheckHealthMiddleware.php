@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\RedisStorage\Domain\Middleware;
 use Apisearch\Plugin\Redis\Domain\RedisWrapper;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthMiddleware.
@@ -47,39 +48,42 @@ class CheckHealthMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
-        $data = $next($command);
-        $redisStatus = $this->getRedisStatus();
-        $data['status']['redis'] = $redisStatus;
-        $data['healthy'] = $data['healthy'] && $redisStatus;
+    ): PromiseInterface {
+        return
+            $next($command)
+                ->then(function (array $data) {
+                    return $this
+                        ->getRedisStatus()
+                        ->then(function (bool $isHealth) use ($data) {
+                            $data['status']['redis'] = $isHealth;
+                            $data['healthy'] = $data['healthy'] && $isHealth;
 
-        return $data;
+                            return $data;
+                        });
+                });
     }
 
     /**
      * Get redis status.
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
-    private function getRedisStatus(): bool
+    private function getRedisStatus(): PromiseInterface
     {
-        try {
-            $pong = $this
-                ->redisWrapper
-                ->getClient()
-                ->ping();
-
-            return '+PONG' === $pong;
-        } catch (\RedisException $e) {
-            // Silent pass
-        }
-
-        return false;
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->ping()
+            ->then(function ($pong) {
+                return in_array($pong, ['PONG', '+PONG']);
+            }, function (\Exception $e) {
+                return false;
+            });
     }
 
     /**

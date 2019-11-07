@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\CheckIndex;
 use Apisearch\Server\Domain\WithAppRepository;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckIndexHandler.
@@ -28,19 +29,15 @@ class CheckIndexHandler extends WithAppRepository
      *
      * @param CheckIndex $checkIndex
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
-    public function handle(CheckIndex $checkIndex): bool
+    public function handle(CheckIndex $checkIndex): PromiseInterface
     {
-        $repositoryReference = $checkIndex->getRepositoryReference();
-        $indexUUID = $checkIndex->getIndexUUID();
-
-        $this
-            ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
         return $this
             ->appRepository
-            ->checkIndex($indexUUID);
+            ->checkIndex(
+                $checkIndex->getRepositoryReference(),
+                $checkIndex->getIndexUUID()
+            );
     }
 }

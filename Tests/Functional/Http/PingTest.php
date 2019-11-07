@@ -15,12 +15,16 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Exception\TransportableException;
+use Apisearch\Model\AppUUID;
+use Apisearch\Model\Token;
+use Apisearch\Model\TokenUUID;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
  * Class PingTest.
  */
-class PingTest extends HttpFunctionalTest
+class PingTest extends CurlFunctionalTest
 {
     /**
      * Test ping with different tokens.
@@ -34,20 +38,20 @@ class PingTest extends HttpFunctionalTest
         string $token,
         int $responseCode
     ) {
-        $client = $this->createClient();
-        $testRoute = static::get('router')->generate('apisearch_ping', [
-            'token' => $token,
-        ]);
+        try {
+            static::makeCurl(
+                'ping',
+                [],
+                new Token(
+                    TokenUUID::createById($token),
+                    AppUUID::createById(self::$appId)
+                )
+            );
 
-        $client->request(
-            'head',
-            $testRoute
-        );
-
-        $this->assertEquals(
-            $responseCode,
-            $client->getResponse()->getStatusCode()
-        );
+            $this->assertTrue(200 === $responseCode);
+        } catch (TransportableException $exception) {
+            $this->assertTrue(200 !== $responseCode);
+        }
     }
 
     /**

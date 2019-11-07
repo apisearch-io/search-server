@@ -90,20 +90,18 @@ class AddTokenCommand extends CommandWithBusAndGodToken
         $objects = $this->getAppTokenAndIndices($input, $output);
         $endpoints = $this->getEndpoints($input);
 
-        $this
-            ->commandBus
-            ->handle(new AddToken(
-                $objects['repository_reference'],
-                $this->createGodToken($objects['app_uuid']),
-                new Token(
-                    $objects['token_uuid'],
-                    $objects['app_uuid'],
-                    $objects['indices_uuid'],
-                    $endpoints,
-                    $input->getOption('plugin'),
-                    (int) $input->getOption('ttl')
-                )
-            ));
+        $this->handleSynchronously(new AddToken(
+            $objects['repository_reference'],
+            $this->createGodToken($objects['app_uuid']),
+            new Token(
+                $objects['token_uuid'],
+                $objects['app_uuid'],
+                $objects['indices_uuid'],
+                $endpoints,
+                $input->getOption('plugin'),
+                (int) $input->getOption('ttl')
+            )
+        ));
     }
 
     /**

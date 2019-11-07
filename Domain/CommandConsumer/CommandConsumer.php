@@ -17,9 +17,11 @@ namespace Apisearch\Server\Domain\CommandConsumer;
 
 use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\Consumer;
-use Exception;
 use League\Tactician\CommandBus;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * Class CommandConsumer.
@@ -48,39 +50,41 @@ class CommandConsumer extends Consumer
      *
      * @param OutputInterface $output
      * @param array           $data
+     *
+     * @return PromiseInterface
      */
     public function consumeCommand(
         OutputInterface $output,
         array $data
-    ) {
+    ): PromiseInterface {
         $class = 'Apisearch\Server\Domain\Command\\'.$data['class'];
         if (
             !class_exists($class) ||
             !in_array(AsynchronousableCommand::class, class_implements($class))
         ) {
-            return;
+            return new FulfilledPromise();
         }
 
-        $success = true;
-        $message = '';
         $command = $data['class'];
         $from = microtime(true);
-        try {
-            $this
-                ->commandBus
-                ->handle($class::fromArray($data));
-        } catch (Exception $exception) {
-            // Silent pass
-            $success = false;
-            $message = $exception->getMessage();
-        }
 
-        $this->logOutput(
-            $output,
-            $command,
-            $success,
-            $message,
-            $from
-        );
+        return $this
+            ->commandBus
+            ->handle($class::fromArray($data))
+            ->then(function () {
+                return [true, ''];
+            }, function (Throwable $throwable) {
+                return [false, $throwable->getMessage()];
+            })
+            ->then(function (array $parts) use ($command, $from, $output) {
+                list($success, $message) = $parts;
+                $this->logOutput(
+                    $output,
+                    $command,
+                    $success,
+                    $message,
+                    $from
+                );
+            });
     }
 }

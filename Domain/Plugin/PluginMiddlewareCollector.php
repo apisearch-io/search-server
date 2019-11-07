@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Plugin;
 
 use League\Tactician\Middleware;
+use React\Promise\PromiseInterface;
 
 /**
  * Class PluginMiddleware.
@@ -82,18 +83,16 @@ class PluginMiddlewareCollector implements Middleware
             }
         }
 
-        if (!empty($middlewares)) {
-            /*
-             * @var PluginMiddleware
-             */
-            foreach ($middlewares as $pluginMiddleware) {
-                $lastCallable = function ($command) use ($pluginMiddleware, $lastCallable) {
-                    return $pluginMiddleware->execute(
-                        $command,
-                        $lastCallable
-                    );
-                };
-            }
+        /*
+         * @var PluginMiddleware
+         */
+        foreach ($middlewares as $pluginMiddleware) {
+            $lastCallable = function ($command) use ($pluginMiddleware, $lastCallable): PromiseInterface {
+                return $pluginMiddleware->execute(
+                    $command,
+                    $lastCallable
+                );
+            };
         }
 
         return $lastCallable($command);

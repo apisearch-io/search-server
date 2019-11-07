@@ -16,9 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\RedisQueue\Domain;
 
 use Apisearch\Plugin\Redis\Domain\RedisWrapper;
-use Apisearch\Reconnect\PHPRedisReconnect;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
-use Redis;
+use Clue\React\Redis\Client;
+use React\Promise;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+use RuntimeException;
 
 /**
  * Class RedisQueueConsumerManager.
@@ -49,7 +52,7 @@ class RedisQueueConsumerManager extends ConsumerManager
     /**
      * Get Client.
      *
-     * @return Redis|RedisCluster
+     * @return Client
      */
     private function getClient()
     {
@@ -59,44 +62,24 @@ class RedisQueueConsumerManager extends ConsumerManager
     }
 
     /**
-     * Get config for PHPReconnect.
-     *
-     * @return array
-     */
-    private function getConfigForPHPReconnect(): array
-    {
-        $config = $this
-            ->redisWrapper
-            ->getRedisConfig();
-
-        return [
-            'host' => $config->getHost(),
-            'port' => $config->getPort(),
-            'database' => $config->getDatabase(),
-        ];
-    }
-
-    /**
     /**
      * Declare busy channel.
      *
      * @param string $type
      * @param mixed  $data
+     *
+     * @return PromiseInterface
      */
     public function enqueue(
         string $type,
         $data
-    ) {
-        PHPRedisReconnect::tryOrReconnect(
-            function ($client) use ($type, $data) {
-                $client->rPush(
-                    $this->queues['queues'][$type],
-                    json_encode($data)
-                );
-            },
-            $this->getClient(),
-            $this->getConfigForPHPReconnect()
-        );
+    ): PromiseInterface {
+        return $this
+            ->getClient()
+            ->rPush(
+                $this->queues['queues'][$type],
+                json_encode($data)
+            );
     }
 
     /**
@@ -104,23 +87,19 @@ class RedisQueueConsumerManager extends ConsumerManager
      *
      * @param string $type
      *
-     * @return int|null
+     * @return PromiseInterface<int|null>
      */
-    public function getQueueSize(string $type): ? int
+    public function getQueueSize(string $type): PromiseInterface
     {
         $queueName = $this->queues['queues'][$type] ?? null;
 
         if (is_null($queueName)) {
-            return false;
+            return new FulfilledPromise(false);
         }
 
-        return PHPRedisReconnect::tryOrReconnect(
-            function ($client) use ($queueName) {
-                return $client->lLen($queueName);
-            },
-            $this->getClient(),
-            $this->getConfigForPHPReconnect()
-        );
+        return $this
+            ->getClient()
+            ->lLen($queueName);
     }
 
     /**
@@ -128,21 +107,19 @@ class RedisQueueConsumerManager extends ConsumerManager
      *
      * @param string $queue
      * @param array  $payload
+     *
+     * @return PromiseInterface
      */
     public function reject(
         string $queue,
         array $payload
     ) {
-        PHPRedisReconnect::tryOrReconnect(
-            function ($client) use ($queue, $payload) {
-                $client->lPush(
-                    $queue,
-                    json_encode($payload)
-                );
-            },
-            $this->getClient(),
-            $this->getConfigForPHPReconnect()
-        );
+        return $this
+            ->getClient()
+            ->lPush(
+                $queue,
+                json_encode($payload)
+            );
     }
 
     /**
@@ -150,24 +127,23 @@ class RedisQueueConsumerManager extends ConsumerManager
      *
      * @param string $queueName
      *
-     * @return array
+     * @return PromiseInterface<array>
      */
-    public function consume(string $queueName): array
+    public function consume(string $queueName): PromiseInterface
     {
-        list($queueName, $payload) = PHPRedisReconnect::tryOrReconnect(
-            function ($client) use ($queueName) {
-                return $client->blPop(
-                    [
-                        $this->queues['busy_queues'][$queueName],
-                        $this->queues['queues'][$queueName],
-                    ], 0
-                );
-            },
-            $this->getClient(),
-            $this->getConfigForPHPReconnect()
-        );
-
-        return [$queueName, json_decode($payload, true)];
+        return $this
+            ->getClient()
+            ->blPop(
+                $this->queues['busy_queues'][$queueName],
+                $this->queues['queues'][$queueName],
+                0
+            )
+            ->then(function (array $result) {
+                return [$result[0], json_decode($result[1], true)];
+            })
+            ->then(null, function (RuntimeException $_) use ($queueName) {
+                return $this->consume($queueName);
+            });
     }
 
     /**
@@ -175,22 +151,23 @@ class RedisQueueConsumerManager extends ConsumerManager
      *
      * @param string[] $queues
      * @param bool     $value
+     *
+     * @return PromiseInterface
      */
     protected function sendBooleanToQueues(
         array $queues,
         bool $value
-    ) {
+    ): PromiseInterface {
+        $promises = [];
         foreach ($queues as $queue) {
-            PHPRedisReconnect::tryOrReconnect(
-                function ($client) use ($queue, $value) {
-                    return $client->rPush(
-                        $queue,
-                        json_encode($value)
-                    );
-                },
-                $this->getClient(),
-                $this->getConfigForPHPReconnect()
-            );
+            $promises[] = $this
+                ->getClient()
+                ->rPush(
+                    $queue,
+                    json_encode($value)
+                );
         }
+
+        return Promise\all($promises);
     }
 }

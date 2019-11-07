@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain;
 
-use Apisearch\App\AppRepository;
+use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
 
 /**
  * Class WithAppRepository.

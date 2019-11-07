@@ -17,6 +17,8 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Server\Domain\Command\ResumeConsumers;
+use React\Promise\PromiseInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,15 +28,15 @@ use Symfony\Component\HttpFoundation\Response;
 class ResumeConsumersController extends ControllerWithBus
 {
     /**
-     * Ping.
+     * Resume consumers.
      *
      * @param Request $request
      *
-     * @return Response
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request): PromiseInterface
     {
-        $this
+        return $this
             ->commandBus
             ->handle(new ResumeConsumers(
                 RequestAccessor::extractRequestContentObject(
@@ -43,8 +45,12 @@ class ResumeConsumersController extends ControllerWithBus
                     InvalidFormatException::queryFormatNotValid($request->getContent()),
                     []
                 )
-            ));
-
-        return new Response('Consumers are scheduled for being resumed', Response::HTTP_ACCEPTED);
+            ))
+            ->then(function () {
+                return new JsonResponse(
+                    'Consumers are scheduled for being resumed',
+                    Response::HTTP_ACCEPTED
+                );
+            });
     }
 }

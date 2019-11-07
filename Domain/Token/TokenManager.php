@@ -20,6 +20,8 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class TokenManager.
@@ -65,7 +67,7 @@ class TokenManager
      * @param string    $referrer
      * @param string    $routeName
      *
-     * @return Token $token
+     * @return PromiseInterface<Token>
      */
     public function checkToken(
         AppUUID $appUUID,
@@ -73,23 +75,26 @@ class TokenManager
         TokenUUID $tokenUUID,
         string $referrer,
         string $routeName
-    ): Token {
-        $token = $this->locateTokenByUUID($appUUID, $tokenUUID);
+    ): PromiseInterface {
+        return $this
+            ->locateTokenByUUID($appUUID, $tokenUUID)
+            ->then(function ($token) use ($appUUID, $tokenUUID, $indexUUID, $referrer, $routeName) {
+                return $this
+                    ->isTokenValid(
+                        $token,
+                        $appUUID,
+                        $indexUUID,
+                        $referrer,
+                        $routeName
+                    )
+                    ->then(function (bool $isValid) use ($tokenUUID, $token) {
+                        if (!$isValid) {
+                            throw InvalidTokenException::createInvalidTokenPermissions($tokenUUID->composeUUID());
+                        }
 
-        if (
-            !($token instanceof Token) ||
-            !$this->isTokenValid(
-                $token,
-                $appUUID,
-                $indexUUID,
-                $referrer,
-                $routeName
-            )
-        ) {
-            throw InvalidTokenException::createInvalidTokenPermissions($tokenUUID->composeUUID());
-        }
-
-        return $token;
+                        return $token;
+                    });
+            });
     }
 
     /**
@@ -98,28 +103,35 @@ class TokenManager
      * @param AppUUID   $appUUID
      * @param TokenUUID $tokenUUID
      *
-     * @return Token|null
+     * @return PromiseInterface<Token|null>
      */
     private function locateTokenByUUID(
         AppUUID $appUUID,
         TokenUUID $tokenUUID
-    ): ? Token {
-        $tokenLocators = $this
+    ): PromiseInterface {
+        return $this
             ->tokenLocators
-            ->getValidTokenLocators();
+            ->getValidTokenLocators()
+            ->then(function (array $tokenLocators) use ($appUUID, $tokenUUID) {
+                $promise = new FulfilledPromise();
 
-        foreach ($tokenLocators as $tokenLocator) {
-            $token = $tokenLocator->getTokenByUUID(
-                $appUUID,
-                $tokenUUID
-            );
+                foreach ($tokenLocators as $tokenLocator) {
+                    $promise = $promise
+                        ->then(function ($token) use ($tokenLocator, $appUUID, $tokenUUID) {
+                            if ($token instanceof Token) {
+                                return $token;
+                            }
 
-            if ($token instanceof Token) {
-                return $token;
-            }
-        }
+                            return $tokenLocator
+                                ->getTokenByUUID(
+                                    $appUUID,
+                                    $tokenUUID
+                                );
+                        });
+                }
 
-        return null;
+                return $promise;
+            });
     }
 
     /**
@@ -127,37 +139,47 @@ class TokenManager
      *
      * If is valid, return valid Token
      *
-     * @param AppUUID   $appUUID
-     * @param IndexUUID $indexUUID
-     * @param Token     $token
-     * @param string    $referrer
-     * @param string    $routeName
+     * @param Token|null $token
+     * @param AppUUID    $appUUID
+     * @param IndexUUID  $indexUUID
+     * @param string     $referrer
+     * @param string     $routeName
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
     public function isTokenValid(
-        Token $token,
+        ?Token $token,
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
         string $routeName
-    ): bool {
+    ): PromiseInterface {
+        if (is_null($token)) {
+            return new FulfilledPromise(false);
+        }
+
         $tokenValidators = $this
             ->tokenValidators
             ->getTokenValidators();
 
+        $promise = new FulfilledPromise(true);
+
         foreach ($tokenValidators as $tokenValidator) {
-            if (!$tokenValidator->isTokenValid(
-                $token,
-                $appUUID,
-                $indexUUID,
-                $referrer,
-                $routeName
-            )) {
-                return false;
-            }
+            $promise = $promise->then(function (bool $isValid) use ($token, $appUUID, $indexUUID, $referrer, $routeName, $tokenValidator) {
+                if (!$isValid) {
+                    return false;
+                }
+
+                return $tokenValidator->isTokenValid(
+                    $token,
+                    $appUUID,
+                    $indexUUID,
+                    $referrer,
+                    $routeName
+                );
+            });
         }
 
-        return true;
+        return $promise;
     }
 }

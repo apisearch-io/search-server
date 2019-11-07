@@ -15,9 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elastica\Domain\Middleware;
 
+use Apisearch\Plugin\Elastica\Domain\ElasticaWrapper;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
-use Elastica\Client;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthMiddleware.
@@ -25,20 +26,20 @@ use Elastica\Client;
 class CheckHealthMiddleware implements PluginMiddleware
 {
     /**
-     * @var Client
+     * @var ElasticaWrapper
      *
-     * Elasticsearch Client
+     * Elastica wrapper
      */
-    protected $client;
+    protected $elasticaWrapper;
 
     /**
      * QueryHandler constructor.
      *
-     * @param Client $client
+     * @param ElasticaWrapper $elasticaWrapper
      */
-    public function __construct(Client $client)
+    public function __construct(ElasticaWrapper $elasticaWrapper)
     {
-        $this->client = $client;
+        $this->elasticaWrapper = $elasticaWrapper;
     }
 
     /**
@@ -47,25 +48,28 @@ class CheckHealthMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
-        $data = $next($command);
-        $elasticsearchStatus = $this
-            ->client
-            ->getCluster()
-            ->getHealth()
-            ->getStatus();
-        $data['status']['elasticsearch'] = $elasticsearchStatus;
-        $data['healthy'] = $data['healthy'] && in_array(strtolower($elasticsearchStatus), [
-                'yellow',
-                'green',
-            ]);
+    ): PromiseInterface {
+        return
+            $next($command)
+                ->then(function ($data) {
+                    return $this
+                        ->elasticaWrapper
+                        ->getClusterStatus()
+                        ->then(function (string $elasticsearchStatus) use ($data) {
+                            $data['status']['elasticsearch'] = $elasticsearchStatus;
+                            $data['healthy'] = $data['healthy'] && in_array(strtolower($elasticsearchStatus), [
+                                    'yellow',
+                                    'green',
+                                ]);
 
-        return $data;
+                            return $data;
+                        });
+                });
     }
 
     /**

@@ -337,7 +337,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function checkHealth(Token $token = null): array
     {
-        throw new Exception('Cannot test ping with this endpoint');
+        throw new Exception('Cannot test health check with this endpoint');
     }
 
     /**

@@ -15,14 +15,18 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
+use Apisearch\Exception\TransportableException;
+use Apisearch\Model\AppUUID;
+use Apisearch\Model\Token;
+use Apisearch\Model\TokenUUID;
 use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Plugin\RedisStorage\RedisStoragePluginBundle;
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
  * Class HealthTest.
  */
-class HealthTest extends HttpFunctionalTest
+class HealthTest extends CurlFunctionalTest
 {
     /**
      * Test check health with different tokens.
@@ -36,24 +40,31 @@ class HealthTest extends HttpFunctionalTest
         string $token,
         int $responseCode
     ) {
-        $client = $this->createClient();
-        $testRoute = static::get('router')->generate('apisearch_check_health', [
-            'token' => $token,
-        ]);
+        try {
+            $result = static::makeCurl(
+                'check_health',
+                [],
+                new Token(
+                    TokenUUID::createById($token),
+                    AppUUID::createById(self::$appId)
+                )
+            );
+        } catch (TransportableException $exception) {
+            $this->assertEquals(
+                $responseCode,
+                $exception->getTransportableHTTPError()
+            );
 
-        $client->request(
-            'get',
-            $testRoute
-        );
+            return;
+        }
 
-        $response = $client->getResponse();
         $this->assertEquals(
             $responseCode,
-            $response->getStatusCode()
+            $result['code']
         );
 
         if (200 === $responseCode) {
-            $content = json_decode($response->getContent(), true);
+            $content = $result['body'];
             $this->assertTrue($content['healthy']);
             $this->assertTrue(
                 in_array(

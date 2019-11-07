@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Command\ConfigureIndex;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ConfigIndexHandler.
@@ -29,32 +30,32 @@ class ConfigureIndexHandler extends WithAppRepositoryAndEventPublisher
      * Configure the index.
      *
      * @param ConfigureIndex $configureIndex
+     *
+     * @return PromiseInterface
      */
-    public function handle(ConfigureIndex $configureIndex)
+    public function handle(ConfigureIndex $configureIndex): PromiseInterface
     {
         $repositoryReference = $configureIndex->getRepositoryReference();
         $indexUUID = $configureIndex->getIndexUUID();
         $config = $configureIndex->getConfig();
 
-        $this
-            ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
+        return $this
             ->appRepository
             ->configureIndex(
+                $repositoryReference,
                 $indexUUID,
                 $config
-            );
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
-                $repositoryReference,
-                new IndexWasConfigured(
-                    $indexUUID,
-                    $config
-                )
-            ));
+            )
+            ->then(function () use ($repositoryReference, $indexUUID, $config) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new IndexWasConfigured(
+                            $indexUUID,
+                            $config
+                        )
+                    ));
+            });
     }
 }

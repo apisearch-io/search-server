@@ -19,6 +19,7 @@ use Apisearch\Config\Config;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\ConfigureIndex;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,9 +33,9 @@ class ConfigureIndexController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
         $configAsArray = RequestAccessor::extractRequestContentObject(
@@ -43,7 +44,7 @@ class ConfigureIndexController extends ControllerWithBus
             InvalidFormatException::configFormatNotValid($request->getContent())
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new ConfigureIndex(
                 RepositoryReference::create(
@@ -53,11 +54,12 @@ class ConfigureIndexController extends ControllerWithBus
                 RequestAccessor::getTokenFromRequest($request),
                 $indexUUID,
                 Config::createFromArray($configAsArray)
-            ));
-
-        return new JsonResponse(
-            'Index configured with given configuration',
-            $this->ok()
-        );
+            ))
+            ->then(function () {
+                return new JsonResponse(
+                    'Index configured with given configuration',
+                    $this->ok()
+                );
+            });
     }
 }

@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Event;
 
+use React\Promise\PromiseInterface;
+
 /**
  * Interface EventSubscriber.
  */
@@ -33,6 +35,8 @@ interface EventSubscriber
      * Handle event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference);
+    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface;
 }

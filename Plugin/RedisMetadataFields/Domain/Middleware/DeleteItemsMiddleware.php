@@ -19,6 +19,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\RedisMetadataFields\Domain\Repository\RedisMetadataRepository;
 use Apisearch\Server\Domain\Command\DeleteItems;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DeleteItemsMiddleware.
@@ -48,12 +49,12 @@ class DeleteItemsMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
+    ): PromiseInterface {
         /**
          * @var DeleteItems
          *
@@ -68,14 +69,15 @@ class DeleteItemsMiddleware implements PluginMiddleware
             ->getRepositoryReference()
             ->changeIndex(IndexUUID::createById($composedIndexUUID));
 
-        $this
+        return $this
             ->metadataRepository
             ->deleteItemsMetadata(
                 $filteredRepository,
                 $command->getItemsUUID()
-            );
-
-        return $next($command);
+            )
+            ->then(function () use ($next, $command) {
+                return $next($command);
+            });
     }
 
     /**

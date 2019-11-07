@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\PauseConsumers;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
+use React\Promise\PromiseInterface;
 
 /**
  * Class PauseConsumersHandler.
@@ -44,10 +45,12 @@ class PauseConsumersHandler
      * Optimize the index.
      *
      * @param PauseConsumers $pauseConsumers
+     *
+     * @return PromiseInterface
      */
-    public function handle(PauseConsumers $pauseConsumers)
+    public function handle(PauseConsumers $pauseConsumers): PromiseInterface
     {
-        $this
+        return $this
             ->consumerManager
             ->pauseConsumers($pauseConsumers->getTypes());
     }

@@ -19,6 +19,8 @@ use Apisearch\Http\Http;
 use Apisearch\Model\Token;
 use Apisearch\Plugin\QueryMapper\Domain\ResultMapperLoader;
 use Apisearch\Result\Result;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
@@ -45,41 +47,49 @@ class CheckMappedResult
     }
 
     /**
-     * On kernel response.
+     * On kernel async response.
      *
      * @param FilterResponseEvent $event
+     *
+     * @return PromiseInterface
      */
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelAsyncResponse(FilterResponseEvent $event): PromiseInterface
     {
-        $request = $event->getRequest();
-        $route = $request->get('_route');
+        return
+            (new FulfilledPromise())
+            ->then(function () use ($event) {
+                $request = $event->getRequest();
+                $route = $request->get('_route');
 
-        if (
-            !in_array($route, [
-                'apisearch_v1_query',
-                'apisearch_v1_query_all_indices',
-            ]) ||
-            !$request->query->get(Http::TOKEN_FIELD) instanceof Token ||
-            !$request->get('result') instanceof Result
-        ) {
-            return;
-        }
+                if (
+                    !in_array($route, [
+                        'apisearch_v1_query',
+                        'apisearch_v1_query_all_indices',
+                    ]) ||
+                    !$request->query->get(Http::TOKEN_FIELD) instanceof Token ||
+                    !$request->get('result') instanceof Result
+                ) {
+                    return;
+                }
 
-        $response = $this
-            ->resultMapperLoader
-            ->getArrayFromResult(
-                $request->query->get(Http::TOKEN_FIELD)->getTokenUUID(),
-                $request->get('result')
-            );
+                $response = $this
+                    ->resultMapperLoader
+                    ->getArrayFromResult(
+                        $request->query->get(Http::TOKEN_FIELD)->getTokenUUID(),
+                        $request->get('result')
+                    );
 
-        if (is_array($response)) {
-            $event->setResponse(new JsonResponse(
-                $response,
-                200,
-                [
-                    'Access-Control-Allow-Origin' => '*',
-                ]
-            ));
-        }
+                if (is_array($response)) {
+                    $event->setResponse(
+                        new JsonResponse(
+                            $response,
+                            200,
+                            [
+                                'Access-Control-Allow-Origin' => '*',
+                            ]
+                        )
+                    );
+                }
+            });
     }
 }

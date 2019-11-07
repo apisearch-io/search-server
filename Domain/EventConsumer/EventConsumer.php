@@ -22,7 +22,8 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Consumer;
 use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
-use Apisearch\Server\Domain\Event\EventPublisher;
+use Apisearch\Server\Domain\EventPublisher\EventPublisher;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -52,11 +53,13 @@ class EventConsumer extends Consumer
      *
      * @param OutputInterface $output
      * @param array           $data
+     *
+     * @return PromiseInterface
      */
     public function consumeDomainEvent(
         OutputInterface $output,
         array $data
-    ) {
+    ): PromiseInterface {
         $appUUID = empty($data['app_uuid'])
             ? null
             : AppUUID::createFromArray($data['app_uuid']);
@@ -75,31 +78,32 @@ class EventConsumer extends Consumer
             ($data['time_cost'] ?? -1)
         );
 
-        $success = true;
-        $message = '';
         $from = microtime(true);
-        try {
-            $this
-                ->eventPublisher
-                ->publish($domainEventWithRepositoryReference);
-        } catch (TransportableException $exception) {
-            // Silent pass
-            $success = false;
-            $message = $exception->getMessage();
-        }
 
-        $domainEventClass = str_replace(
-            'Apisearch\Server\Domain\Event\\',
-            '',
-            get_class($domainEvent)
-        );
+        return $this
+            ->eventPublisher
+            ->publish($domainEventWithRepositoryReference)
+            ->then(function () {
+                return ['', true];
+            }, function (TransportableException $exception) {
+                // Silent pass
+                return [$exception->getMessage(), false];
+            })
+            ->then(function (array $parts) use ($domainEvent, $output, $from) {
+                list($message, $success) = $parts;
+                $domainEventClass = str_replace(
+                    'Apisearch\Server\Domain\Event\\',
+                    '',
+                    get_class($domainEvent)
+                );
 
-        $this->logOutput(
-            $output,
-            $domainEventClass,
-            $success,
-            $message,
-            $from
-        );
+                $this->logOutput(
+                    $output,
+                    $domainEventClass,
+                    $success,
+                    $message,
+                    $from
+                );
+            });
     }
 }

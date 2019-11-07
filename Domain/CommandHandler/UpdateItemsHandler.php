@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Command\UpdateItems;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereUpdated;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class UpdateItemsHandler.
@@ -29,32 +30,32 @@ class UpdateItemsHandler extends WithRepositoryAndEventPublisher
      * Update items.
      *
      * @param UpdateItems $updateItems
+     *
+     * @return PromiseInterface
      */
-    public function handle(UpdateItems $updateItems)
+    public function handle(UpdateItems $updateItems): PromiseInterface
     {
         $repositoryReference = $updateItems->getRepositoryReference();
         $query = $updateItems->getQuery();
         $changes = $updateItems->getChanges();
 
-        $this
-            ->repository
-            ->setRepositoryReference($updateItems->getRepositoryReference());
-
-        $this
+        return $this
             ->repository
             ->updateItems(
+                $repositoryReference,
                 $query,
                 $changes
-            );
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
-                $repositoryReference,
-                new ItemsWereUpdated(
-                    $query->getFilters(),
-                    $changes
-                )
-            ));
+            )
+            ->then(function () use ($repositoryReference, $query, $changes) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new ItemsWereUpdated(
+                            $query->getFilters(),
+                            $changes
+                        )
+                    ));
+            });
     }
 }

@@ -18,7 +18,9 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Http\Http;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Query\Query;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,16 +34,16 @@ class QueryController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      *
      * @throws InvalidFormatException
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $requestQuery = $request->query;
         $queryModel = RequestAccessor::extractQuery($request);
 
-        $result = $this
+        return $this
             ->commandBus
             ->handle(new Query(
                 RepositoryReference::create(
@@ -55,21 +57,22 @@ class QueryController extends ControllerWithBus
                         Http::TOKEN_FIELD,
                     ]);
                 }, ARRAY_FILTER_USE_KEY)
-            ));
+            ))
+            ->then(function (Result $result) use ($requestQuery) {
+                /*
+                 * To allow result manipulation during the response returning, and in
+                 * order to increase performance, we will save the Result instance as a
+                 * query attribute
+                 */
+                $requestQuery->set('result', $result);
 
-        /*
-         * To allow result manipulation during the response returning, and in
-         * order to increase performance, we will save the Result instance as a
-         * query attribute
-         */
-        $requestQuery->set('result', $result);
-
-        return new JsonResponse(
-            $result->toArray(),
-            200,
-            [
-                'Access-Control-Allow-Origin' => '*',
-            ]
-        );
+                return new JsonResponse(
+                    $result->toArray(),
+                    200,
+                    [
+                        'Access-Control-Allow-Origin' => '*',
+                    ]
+                );
+            });
     }
 }

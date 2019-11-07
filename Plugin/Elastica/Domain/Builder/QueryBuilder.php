@@ -902,7 +902,7 @@ class QueryBuilder
              * apply a random score per each result.
              */
             $functionScore = new ElasticaQuery\FunctionScore();
-            $functionScore->addRandomScoreFunction(uniqid());
+            $functionScore->addRandomScoreFunction(\rand());
             $functionScore->setQuery($boolQuery);
             $newMainQuery = new ElasticaQuery();
             $newMainQuery->setQuery($functionScore);

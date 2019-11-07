@@ -15,6 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Event;
 
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+
 /**
  * Class CollectInMemoryDomainEventSubscriber.
  */
@@ -43,10 +46,14 @@ class CollectInMemoryDomainEventSubscriber implements EventSubscriber
      * Handle event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference)
+    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface
     {
         $this->domainEventWithRepositoryReference[] = $domainEventWithRepositoryReference;
+
+        return new FulfilledPromise();
     }
 
     /**
@@ -57,13 +64,5 @@ class CollectInMemoryDomainEventSubscriber implements EventSubscriber
     public function getEvents(): array
     {
         return $this->domainEventWithRepositoryReference;
-    }
-
-    /**
-     * Flush events.
-     */
-    public function flushEvents()
-    {
-        $this->domainEventWithRepositoryReference = [];
     }
 }

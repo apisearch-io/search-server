@@ -57,13 +57,11 @@ class DeleteIndexCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
         try {
-            $this
-                ->commandBus
-                ->handle(new DeleteIndex(
-                    $objects['repository_reference'],
-                    $objects['token'],
-                    $objects['index_uuid']
-                ));
+            $this->handleSynchronously(new DeleteIndex(
+                $objects['repository_reference'],
+                $objects['token'],
+                $objects['index_uuid']
+            ));
         } catch (ResourceNotAvailableException $exception) {
             $this->printInfoMessage(
                 $output,

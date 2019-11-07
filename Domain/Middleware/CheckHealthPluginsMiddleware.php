@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\Middleware;
 
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthPluginsMiddleware.
@@ -46,21 +47,24 @@ class CheckHealthPluginsMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
-        $data = $next($command);
-        $plugins = [];
-        foreach ($this->enabledPlugins as $enabledPluginName => $enabledPluginConfig) {
-            $plugins[$enabledPluginName] = $enabledPluginConfig['namespace'];
-        }
+    ): PromiseInterface {
+        return
+            $next($command)
+                ->then(function (array $data) {
+                    $plugins = [];
+                    foreach ($this->enabledPlugins as $enabledPluginName => $enabledPluginConfig) {
+                        $plugins[$enabledPluginName] = $enabledPluginConfig['namespace'];
+                    }
 
-        $data['info']['plugins'] = $plugins;
+                    $data['info']['plugins'] = $plugins;
 
-        return $data;
+                    return $data;
+                });
     }
 
     /**

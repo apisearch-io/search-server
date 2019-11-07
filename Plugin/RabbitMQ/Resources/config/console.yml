@@ -9,6 +9,7 @@ services:
         arguments:
             - "@apiserach_plugin.rabbitmq.channel"
             - "@apisearch_server.consumer_manager"
+            - "@reactphp.event_loop"
             - "%apisearch_plugin.rabbitmq.seconds_to_wait_on_busy%"
 
     apisearch_server.commands_consumer:

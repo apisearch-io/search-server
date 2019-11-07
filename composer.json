@@ -12,56 +12,49 @@
     "require": {
         "php": ">=7.1",
 
-        "symfony/framework-bundle": "<4.1",
-        "symfony/http-kernel": "^4.0",
-        "symfony/console": "^4.0",
-        "symfony/dependency-injection" : "^4.0",
+        "symfony/framework-bundle": "^4.3",
+        "symfony/http-kernel": "^4.3",
+        "symfony/console": "^4.3",
+        "symfony/dependency-injection" : "^4.3",
+        "symfony/event-dispatcher" : "^4.3",
+        "symfony/dotenv" : "^4.3",
 
-        "mmoreram/base-bundle": "^1.0.10",
+        "drift/http-kernel": "dev-master@dev",
+        "drift/server": "dev-master@dev",
+
+        "php-http/promise": "^1.0.0",
+        "php-http/react-adapter": "*",
+        "guzzlehttp/psr7": "*",
+        "react/promise": "*",
+        "php-http/message": "*",
+        "clue/redis-react": "*",
+        "clue/block-react": "*",
+        "clue/buzz-react": "*",
+
+        "mmoreram/base-bundle": "^2.0.0",
         "mmoreram/symfony-bundle-dependencies": "^2.0.0",
-        "one-bundle-app/one-bundle-app": "^1.0.24",
+        "mmoreram/react-functions": "dev-master@dev",
         "apisearch-io/apisearch-bundle": "dev-master@dev",
         "apisearch-io/php-client": "dev-master@dev",
         "apisearch-io/php-reconnect": "dev-master@dev",
 
-        "ruflin/elastica": "^6.0",
+
+        "ruflin/elastica": "7.0.0-beta1",
         "league/tactician-bundle": "^1.1",
-        "nesbot/carbon": "^1.22",
+        "nesbot/carbon": "^2.0",
         "ramsey/uuid": "^3.7.1",
         "ekino/newrelic-bundle": "^2.0",
         "php-amqplib/php-amqplib": ">=2.6.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0.0",
-        "mmoreram/php-formatter": "^1.3.1",
-        "friendsofphp/php-cs-fixer": "^2.5.0",
-        "symfony/browser-kit": "^4.0"
+        "symfony/browser-kit": "^4.3"
     },
     "autoload": {
         "psr-4": {
+            "Drift\\": "Drift",
             "Apisearch\\Server\\": "",
             "Apisearch\\Plugin\\": "Plugin/"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "OneBundleApp\\App\\ComposerHook::installConsole",
-            "OneBundleApp\\App\\ComposerHook::installReactServer"
-        ],
-        "post-update-cmd": [
-            "OneBundleApp\\App\\ComposerHook::installConsole",
-            "OneBundleApp\\App\\ComposerHook::installReactServer"
-        ],
-        "fix-code": [
-            "vendor/bin/php-cs-fixer fix --config=.php_cs",
-            "vendor/bin/php-formatter f:h:f . --exclude=vendor --exclude=web --exclude=bin --exclude=var",
-            "vendor/bin/php-formatter f:s:f . --exclude=vendor --exclude=web --exclude=bin --exclude=var",
-            "vendor/bin/php-formatter f:u:s . --exclude=vendor --exclude=web --exclude=bin --exclude=var"
-        ],
-        "test": [
-            "vendor/bin/phpunit --testsuite=server",
-            "vendor/bin/phpunit --testsuite=plugins"
-        ]
     },
     "prefer-stable": true
 }

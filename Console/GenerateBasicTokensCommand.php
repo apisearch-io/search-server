@@ -90,18 +90,16 @@ class GenerateBasicTokensCommand extends CommandWithBusAndGodToken
     ) {
         $tokenId = Uuid::uuid4()->toString();
 
-        $this
-            ->commandBus
-            ->handle(new AddToken(
-                RepositoryReference::create($appUUID),
-                $godToken,
-                new Token(
-                    TokenUUID::createById($tokenId),
-                    $appUUID,
-                    [],
-                    $endpoints
-                )
-            ));
+        $this->handleSynchronously(new AddToken(
+            RepositoryReference::create($appUUID),
+            $godToken,
+            new Token(
+                TokenUUID::createById($tokenId),
+                $appUUID,
+                [],
+                $endpoints
+            )
+        ));
 
         $this->printInfoMessage(
             $output,

@@ -15,6 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Consumer;
 
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+
 /**
  * Class ConsumerManager.
  */
@@ -56,11 +59,11 @@ class ConsumerManager
      *
      * @param string $type
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
-    public function declareConsumer(string $type): bool
+    public function declareConsumer(string $type): PromiseInterface
     {
-        return false;
+        return new FulfilledPromise(false);
     }
 
     /**
@@ -68,11 +71,11 @@ class ConsumerManager
      *
      * @param string $type
      *
-     * @return string|null
+     * @return PromiseInterface<string|null>
      */
-    public function declareBusyChannel(string $type): ? string
+    public function declareBusyChannel(string $type): PromiseInterface
     {
-        return null;
+        return new FulfilledPromise(null);
     }
 
     /**
@@ -80,12 +83,14 @@ class ConsumerManager
      *
      * @param string $type
      * @param mixed  $data
+     *
+     * @return PromiseInterface
      */
     public function enqueue(
         string $type,
         $data
-    ) {
-        // Do nothing
+    ): PromiseInterface {
+        return new FulfilledPromise();
     }
 
     /**
@@ -93,21 +98,23 @@ class ConsumerManager
      *
      * @param string $type
      *
-     * @return int|null
+     * @return PromiseInterface<int|null>
      */
-    public function getQueueSize(string $type): ? int
+    public function getQueueSize(string $type): PromiseInterface
     {
-        return null;
+        return new FulfilledPromise();
     }
 
     /**
      * Pause consumers.
      *
      * @param string[] $types
+     *
+     * @return PromiseInterface
      */
-    public function pauseConsumers(array $types)
+    public function pauseConsumers(array $types): PromiseInterface
     {
-        $this
+        return $this
             ->sendBooleanToQueues(
                 $this->getQueuesByArrayOfTypes($types),
                 true
@@ -118,10 +125,12 @@ class ConsumerManager
      * Pause consumers.
      *
      * @param string[] $types
+     *
+     * @return PromiseInterface
      */
-    public function resumeConsumers(array $types)
+    public function resumeConsumers(array $types): PromiseInterface
     {
-        $this
+        return $this
             ->sendBooleanToQueues(
                 $this->getQueuesByArrayOfTypes($types),
                 false
@@ -148,7 +157,7 @@ class ConsumerManager
      *
      * @param array $types
      *
-     * @return array $queues
+     * @return string[]
      */
     protected function getQueuesByArrayOfTypes(array $types): array
     {
@@ -165,6 +174,8 @@ class ConsumerManager
      *
      * @param string[] $queues
      * @param bool     $value
+     *
+     * @return PromiseInterface
      */
     protected function sendBooleanToQueues(
         array $queues,

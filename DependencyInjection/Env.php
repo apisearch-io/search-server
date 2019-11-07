@@ -32,6 +32,6 @@ class Env
         string $variableName,
         $defaultValue
     ) {
-        return $_ENV[$variableName] ?? $_SERVER[$variableName] ?? $defaultValue;
+        return $_SERVER[$variableName] ?? $defaultValue;
     }
 }

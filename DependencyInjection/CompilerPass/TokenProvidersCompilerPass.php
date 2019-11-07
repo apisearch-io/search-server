@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
-use Mmoreram\BaseBundle\CompilerPass\TagCompilerPass;
+use Apisearch\DependencyInjection\CompilerPass\TagCompilerPass;
 
 /**
  * Class TokenProvidersCompilerPass.

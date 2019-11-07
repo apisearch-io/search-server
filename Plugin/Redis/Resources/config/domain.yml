@@ -2,9 +2,10 @@ services:
 
     apisearch_plugin.redis.redis_factory:
         class: Apisearch\Plugin\Redis\Domain\RedisFactory
+        arguments:
+            - "@reactphp.event_loop"
 
     apisearch_plugin.redis.redis_wrapper_factory:
         class: Apisearch\Plugin\Redis\Domain\RedisWrapperFactory
         arguments:
-
             - "@apisearch_plugin.redis.redis_factory"

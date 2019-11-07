@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Command\DeleteItems;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereDeleted;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DeleteItemsHandler.
@@ -29,25 +30,27 @@ class DeleteItemsHandler extends WithRepositoryAndEventPublisher
      * Reset the delete.
      *
      * @param DeleteItems $deleteItems
+     *
+     * @return PromiseInterface
      */
-    public function handle(DeleteItems $deleteItems)
+    public function handle(DeleteItems $deleteItems): PromiseInterface
     {
         $repositoryReference = $deleteItems->getRepositoryReference();
         $itemsUUID = $deleteItems->getItemsUUID();
 
-        $this
+        return $this
             ->repository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
-            ->repository
-            ->deleteItems($itemsUUID);
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
+            ->deleteItems(
                 $repositoryReference,
-                new ItemsWereDeleted($itemsUUID)
-            ));
+                $itemsUUID
+            )
+            ->then(function () use ($repositoryReference, $itemsUUID) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new ItemsWereDeleted($itemsUUID)
+                    ));
+            });
     }
 }

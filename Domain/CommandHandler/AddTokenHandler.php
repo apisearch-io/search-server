@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Command\AddToken;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\TokenWasAdded;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class AddTokenHandler.
@@ -29,25 +30,27 @@ class AddTokenHandler extends WithAppRepositoryAndEventPublisher
      * Add token.
      *
      * @param AddToken $addToken
+     *
+     * @return PromiseInterface
      */
-    public function handle(AddToken $addToken)
+    public function handle(AddToken $addToken): PromiseInterface
     {
         $repositoryReference = $addToken->getRepositoryReference();
         $token = $addToken->getNewToken();
 
-        $this
+        return $this
             ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
-            ->appRepository
-            ->addToken($token);
-
-        $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
+            ->addToken(
                 $repositoryReference,
-                new TokenWasAdded($token)
-            ));
+                $token
+            )
+            ->then(function () use ($repositoryReference, $token) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $repositoryReference,
+                        new TokenWasAdded($token)
+                    ));
+            });
     }
 }

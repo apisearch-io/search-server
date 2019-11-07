@@ -51,12 +51,10 @@ class DeleteTokensCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        $this
-            ->commandBus
-            ->handle(new DeleteTokens(
-                $objects['repository_reference'],
-                $objects['token']
-            ));
+        $this->handleSynchronously(new DeleteTokens(
+            $objects['repository_reference'],
+            $objects['token']
+        ));
     }
 
     /**

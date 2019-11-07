@@ -64,12 +64,10 @@ class PrintIndicesCommand extends CommandWithBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $indices = $this
-            ->commandBus
-            ->handle(new GetIndices(
-                $objects['repository_reference'],
-                $objects['token']
-            ));
+        $indices = $this->handleSynchronously(new GetIndices(
+            $objects['repository_reference'],
+            $objects['token']
+        ));
 
         BasePrintIndicesCommand::printIndices(
             $input,

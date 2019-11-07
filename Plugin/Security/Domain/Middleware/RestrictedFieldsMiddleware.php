@@ -19,6 +19,7 @@ use Apisearch\Model\Token;
 use Apisearch\Query\Query as ModelQuery;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\Query;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RestrictedFieldsMiddleware.
@@ -31,12 +32,12 @@ class RestrictedFieldsMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
+    ): PromiseInterface {
         /**
          * @var Query
          */

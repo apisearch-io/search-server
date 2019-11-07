@@ -17,6 +17,7 @@ namespace Apisearch\Plugin\RedisQueue\Domain;
 
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Domain\EventEnqueuer\EventEnqueuer;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RedisQueueEventEnqueuer.
@@ -44,10 +45,12 @@ class RedisQueueEventEnqueuer implements EventEnqueuer
      * Enqueue a domain event.
      *
      * @param array $event
+     *
+     * @return PromiseInterface
      */
-    public function enqueueEvent(array $event)
+    public function enqueueEvent(array $event): PromiseInterface
     {
-        $this
+        return $this
             ->consumerManager
             ->enqueue(
                 ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE,

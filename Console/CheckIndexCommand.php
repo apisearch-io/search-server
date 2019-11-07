@@ -63,13 +63,11 @@ class CheckIndexCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        return $this
-            ->commandBus
-            ->handle(new CheckIndex(
-                $objects['repository_reference'],
-                $objects['token'],
-                $objects['index_uuid']
-            ));
+        return $this->handleSynchronously(new CheckIndex(
+            $objects['repository_reference'],
+            $objects['token'],
+            $objects['index_uuid']
+        ));
     }
 
     /**

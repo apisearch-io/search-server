@@ -19,19 +19,17 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Plugin\Redis\Domain\RedisWrapper;
-use Apisearch\Repository\WithRepositoryReference;
-use Apisearch\Repository\WithRepositoryReferenceTrait;
+use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
+use React\Promise\PromiseInterface;
 
 /**
  * Class TokenRedisRepository.
  */
-class TokenRedisRepository implements TokenRepository, TokenLocator, TokenProvider, WithRepositoryReference
+class TokenRedisRepository implements TokenRepository, TokenLocator, TokenProvider
 {
-    use WithRepositoryReferenceTrait;
-
     /**
      * Redis hast id.
      *
@@ -68,6 +66,126 @@ class TokenRedisRepository implements TokenRepository, TokenLocator, TokenProvid
     }
 
     /**
+     * Add token.
+     *
+     * @param RepositoryReference $repositoryReference
+     * @param Token               $token
+     *
+     * @return PromiseInterface
+     */
+    public function addToken(
+        RepositoryReference $repositoryReference,
+        Token $token
+    ): PromiseInterface {
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->hSet(
+                $this->composeRedisKey($repositoryReference->getAppUUID()),
+                $token->getTokenUUID()->composeUUID(),
+                json_encode($token->toArray())
+            );
+    }
+
+    /**
+     * Delete token.
+     *
+     * @param RepositoryReference $repositoryReference
+     * @param TokenUUID           $tokenUUID
+     *
+     * @return PromiseInterface
+     */
+    public function deleteToken(
+        RepositoryReference $repositoryReference,
+        TokenUUID $tokenUUID
+    ): PromiseInterface {
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->hDel(
+                $this->composeRedisKey($repositoryReference->getAppUUID()),
+                $tokenUUID->composeUUID()
+            );
+    }
+
+    /**
+     * Get tokens.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<Token[]>
+     */
+    public function getTokens(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        return $this->getTokensByAppUUID($repositoryReference->getAppUUID());
+    }
+
+    /**
+     * Delete all tokens.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface
+     */
+    public function deleteTokens(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->del($this->composeRedisKey($repositoryReference->getAppUUID()));
+    }
+
+    /**
+     * Get token by uuid.
+     *
+     * @param AppUUID   $appUUID
+     * @param TokenUUID $tokenUUID
+     *
+     * @return PromiseInterface<Token|null>
+     */
+    public function getTokenByUUID(
+        AppUUID $appUUID,
+        TokenUUID $tokenUUID
+    ): PromiseInterface {
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->hGet(
+                $this->composeRedisKey($appUUID),
+                $tokenUUID->composeUUID()
+            )
+            ->then(function ($token) {
+                return is_string($token)
+                    ? Token::createFromArray(json_decode($token, true))
+                    : null;
+            });
+    }
+
+    /**
+     * Get tokens by AppUUID.
+     *
+     * @param AppUUID $appUUID
+     *
+     * @return PromiseInterface<Token[]>
+     */
+    public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
+    {
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->hGetAll($this->composeRedisKey($appUUID))
+            ->then(function (array $tokens) {
+                $tokens = array_filter($tokens, function (int $key) {
+                    return 1 === ($key % 2);
+                }, ARRAY_FILTER_USE_KEY);
+
+                return array_map(function (string $token) {
+                    return Token::createFromArray(json_decode($token, true));
+                }, $tokens);
+            });
+    }
+
+    /**
      * Locator is enabled.
      *
      * @return bool
@@ -87,103 +205,5 @@ class TokenRedisRepository implements TokenRepository, TokenLocator, TokenProvid
     private function composeRedisKey(AppUUID $appUUID): string
     {
         return $appUUID->composeUUID().'~~'.self::REDIS_KEY;
-    }
-
-    /**
-     * Add token.
-     *
-     * @param Token $token
-     */
-    public function addToken(Token $token)
-    {
-        $this
-            ->redisWrapper
-            ->getClient()
-            ->hSet(
-                $this->composeRedisKey($this->getAppUUID()),
-                $token->getTokenUUID()->composeUUID(),
-                json_encode($token->toArray())
-            );
-    }
-
-    /**
-     * Delete token.
-     *
-     * @param TokenUUID $tokenUUID
-     */
-    public function deleteToken(TokenUUID $tokenUUID)
-    {
-        $this
-            ->redisWrapper
-            ->getClient()
-            ->hDel(
-                $this->composeRedisKey($this->getAppUUID()),
-                $tokenUUID->composeUUID()
-            );
-    }
-
-    /**
-     * Get tokens.
-     *
-     * @return Token[]
-     */
-    public function getTokens(): array
-    {
-        return $this->getTokensByAppUUID($this->getAppUUID());
-    }
-
-    /**
-     * Delete all tokens.
-     */
-    public function deleteTokens()
-    {
-        $this
-            ->redisWrapper
-            ->getClient()
-            ->del($this->composeRedisKey($this->getAppUUID()));
-    }
-
-    /**
-     * Get token by uuid.
-     *
-     * @param AppUUID   $appUUID
-     * @param TokenUUID $tokenUUID
-     *
-     * @return Token|null
-     */
-    public function getTokenByUUID(
-        AppUUID $appUUID,
-        TokenUUID $tokenUUID
-    ): ? Token {
-        $token = $this
-            ->redisWrapper
-            ->getClient()
-            ->hGet(
-                $this->composeRedisKey($appUUID),
-                $tokenUUID->composeUUID()
-            );
-
-        return false === $token
-            ? null
-            : Token::createFromArray(json_decode($token, true));
-    }
-
-    /**
-     * Get tokens by AppUUID.
-     *
-     * @param AppUUID $appUUID
-     *
-     * @return Token[]
-     */
-    public function getTokensByAppUUID(AppUUID $appUUID): array
-    {
-        $tokens = $this
-            ->redisWrapper
-            ->getClient()
-            ->hGetAll($this->composeRedisKey($appUUID));
-
-        return array_map(function (string $token) {
-            return Token::createFromArray(json_decode($token, true));
-        }, $tokens);
     }
 }

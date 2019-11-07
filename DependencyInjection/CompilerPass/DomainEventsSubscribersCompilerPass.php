@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
-use Mmoreram\BaseBundle\CompilerPass\TagCompilerPass;
+use Apisearch\DependencyInjection\CompilerPass\TagCompilerPass;
 
 /**
  * Class DomainEventsSubscribersCompilerPass.
@@ -29,7 +29,7 @@ class DomainEventsSubscribersCompilerPass extends TagCompilerPass
      */
     public function getCollectorServiceName(): string
     {
-        return 'apisearch_server.event_publisher';
+        return 'apisearch_server.inline_event_publisher';
     }
 
     /**

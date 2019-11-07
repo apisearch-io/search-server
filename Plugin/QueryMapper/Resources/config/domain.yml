@@ -9,3 +9,10 @@ services:
         class: Apisearch\Plugin\QueryMapper\Domain\ResultMapperLoader
         arguments:
             - "%apisearch_plugin.query_mapper.result_mappers%"
+
+    apisearch_plugin.query_mapper.mapped_token_locator:
+        class: Apisearch\Plugin\QueryMapper\Domain\MappedTokenLocator
+        arguments:
+            - "@apisearch_plugin.query_mapper.query_mapper_loader"
+        tags:
+            - { name: "apisearch_server.token_locator" }

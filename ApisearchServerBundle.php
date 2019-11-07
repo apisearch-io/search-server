@@ -69,9 +69,8 @@ class ApisearchServerBundle extends BaseBundle
     public static function getBundleDependencies(KernelInterface $kernel): array
     {
         return [
-            ApisearchBundle::class,
             FrameworkBundle::class,
-            BaseBundle::class,
+            ApisearchBundle::class,
             new TacticianBundle(),
         ];
     }
@@ -84,9 +83,7 @@ class ApisearchServerBundle extends BaseBundle
     public function getCompilerPasses(): array
     {
         return [
-            new CompilerPass\ItemRepositoriesCompilerPass(),
-            new CompilerPass\DomainEventsMiddlewareCompilerPass(),
-            new CompilerPass\AppRepositoriesCompilerPass(),
+            new CompilerPass\EventPublisherCompilerPass(),
             new CompilerPass\CommandBusCompilerPass(),
             new CompilerPass\PluginsMiddlewareCompilerPass(),
             new CompilerPass\EnabledPluginsMiddlewareCompilerPass($this->kernel),

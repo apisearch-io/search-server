@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\RedisQueue\Tests\Functional;
 
 use Apisearch\Plugin\RedisQueue\RedisQueuePluginBundle;
+use Clue\React\Block;
+use React\Promise;
 
 /**
  * Class RedisQueueTestTrait.
@@ -42,12 +44,35 @@ trait RedisQueueTestTrait
      */
     protected function dropConnections()
     {
-        $redisClient = $this->get('apisearch_plugin.redis_queue.redis_wrapper')->getClient();
-        $openedClientsList = $redisClient->client('list');
-        foreach ($openedClientsList as $openedClient) {
-            if ('blpop' === strtolower($openedClient['cmd'])) {
-                $redisClient->client('kill', $openedClient['addr']);
-            }
-        }
+        $redisClient = $this
+            ->get('apisearch_plugin.redis_queue.redis_wrapper')
+            ->getClient();
+
+        $promise = $redisClient
+            ->client('list')
+            ->then(function ($openedClientsList) use ($redisClient) {
+                $parts = explode(PHP_EOL, trim($openedClientsList));
+                $parts = array_map(function (string $line) {
+                    return array_map(function (string $value) {
+                        return explode('=', $value);
+                    }, explode(' ', $line));
+                }, $parts);
+
+                $promises = [];
+                foreach ($parts as $part) {
+                    $line = [];
+                    foreach ($part as $item) {
+                        $line[$item[0]] = $item[1];
+                    }
+
+                    if ('blpop' === strtolower($line['cmd'])) {
+                        $promises[] = $redisClient->client('kill', $line['addr']);
+                    }
+                }
+
+                return Promise\all($promises);
+            });
+
+        Block\await($promise, $this->get('reactphp.event_loop'));
     }
 }

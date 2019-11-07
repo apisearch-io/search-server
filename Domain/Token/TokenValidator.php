@@ -18,6 +18,7 @@ namespace Apisearch\Server\Domain\Token;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
+use React\Promise\PromiseInterface;
 
 /**
  * Interface TokenValidator.
@@ -35,7 +36,7 @@ interface TokenValidator
      * @param string    $referrer
      * @param string    $routeName
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
     public function isTokenValid(
         Token $token,
@@ -43,5 +44,5 @@ interface TokenValidator
         IndexUUID $indexUUID,
         string $referrer,
         string $routeName
-    ): bool;
+    ): PromiseInterface;
 }

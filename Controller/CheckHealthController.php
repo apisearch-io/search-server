@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller;
 
 use Apisearch\Server\Domain\Query\CheckHealth;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -26,17 +27,18 @@ class CheckHealthController extends ControllerWithBus
     /**
      * Health controller.
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(): JsonResponse
+    public function __invoke(): PromiseInterface
     {
-        /**
+        /*
          * @var array
          */
-        $health = $this
+        return $this
             ->commandBus
-            ->handle(new CheckHealth());
-
-        return new JsonResponse($health);
+            ->handle(new CheckHealth())
+            ->then(function (array $health) {
+                return new JsonResponse($health);
+            });
     }
 }

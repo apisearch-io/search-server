@@ -15,9 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\QueryHandler;
 
-use Apisearch\Model\Index;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\WithAppRepository;
+use React\Promise\PromiseInterface;
 
 /**
  * Class GetIndicesHandler.
@@ -29,17 +29,12 @@ class GetIndicesHandler extends WithAppRepository
      *
      * @param GetIndices $getIndices
      *
-     * @return Index[]
+     * @return PromiseInterface<Index[]>
      */
-    public function handle(GetIndices $getIndices): array
+    public function handle(GetIndices $getIndices): PromiseInterface
     {
-        $repositoryReference = $getIndices->getRepositoryReference();
-        $this
-            ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
         return $this
             ->appRepository
-            ->getIndices();
+            ->getIndices($getIndices->getRepositoryReference());
     }
 }

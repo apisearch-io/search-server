@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Exception\UnsupportedContentTypeException;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
@@ -28,18 +30,23 @@ class ContentTypeValidationOverHTTP
      * Check content type.
      *
      * @param GetResponseEvent $event
+     *
+     * @return PromiseInterface
      */
     public function validateContentTypeOnKernelRequest(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
+        return (new FulfilledPromise($event))
+            ->then(function (GetResponseEvent $event) {
+                $request = $event->getRequest();
 
-        if (!in_array($request->getMethod(), [
-            Request::METHOD_GET,
-            Request::METHOD_HEAD,
-        ]) && ('json' !== $request->getContentType())
-            && !empty($request->getContent())
-        ) {
-            throw UnsupportedContentTypeException::createUnsupportedContentTypeException();
-        }
+                if (!in_array($request->getMethod(), [
+                    Request::METHOD_GET,
+                    Request::METHOD_HEAD,
+                ]) && ('json' !== $request->getContentType())
+                    && !empty($request->getContent())
+                ) {
+                    throw UnsupportedContentTypeException::createUnsupportedContentTypeException();
+                }
+            });
     }
 }

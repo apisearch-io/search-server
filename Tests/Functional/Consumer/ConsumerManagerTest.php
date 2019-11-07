@@ -19,6 +19,7 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Tests\Functional\AsynchronousFunctionalTest;
+use Clue\React\Block;
 
 /**
  * Class ConsumerManagerTest.
@@ -31,16 +32,15 @@ abstract class ConsumerManagerTest extends AsynchronousFunctionalTest
     public function testPauseAndResumeConsumers()
     {
         $consumerManager = $this->get('apisearch_server.consumer_manager');
+        $loop = $this->get('reactphp.event_loop');
 
-        $commandsInQueue = $consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE);
-        $eventsInQueue = $consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE);
+        $commandsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE), $loop);
+        $eventsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE), $loop);
         $this->assertEquals(0, $commandsInQueue);
         $this->assertEquals(0, $eventsInQueue);
 
-        $this->pauseConsumers([
-            ConsumerManager::COMMAND_CONSUMER_TYPE,
-            ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE,
-        ]);
+        $this->pauseConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+        $this->pauseConsumers([ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE]);
 
         sleep(1);
 
@@ -55,19 +55,17 @@ abstract class ConsumerManagerTest extends AsynchronousFunctionalTest
 
         sleep(1);
 
-        $commandsInQueue = $consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE);
-        $eventsInQueue = $consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE);
+        $commandsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE), $loop);
+        $eventsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE), $loop);
         $this->assertTrue(in_array($commandsInQueue, [2, 3]));
         $this->assertEquals(0, $eventsInQueue);
 
-        $this->resumeConsumers([
-            ConsumerManager::COMMAND_CONSUMER_TYPE,
-        ]);
+        $this->resumeConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
 
         sleep(2);
 
-        $commandsInQueue = $consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE);
-        $eventsInQueue = $consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE);
+        $commandsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE), $loop);
+        $eventsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE), $loop);
         $this->assertEquals(0, $commandsInQueue);
         $this->assertTrue(in_array($eventsInQueue, [2, 3]));
 
@@ -77,8 +75,8 @@ abstract class ConsumerManagerTest extends AsynchronousFunctionalTest
 
         sleep(2);
 
-        $commandsInQueue = $consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE);
-        $eventsInQueue = $consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE);
+        $commandsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::COMMAND_CONSUMER_TYPE), $loop);
+        $eventsInQueue = Block\await($consumerManager->getQueueSize(ConsumerManager::DOMAIN_EVENT_CONSUMER_TYPE), $loop);
         $this->assertEquals(0, $commandsInQueue);
         $this->assertEquals(0, $eventsInQueue);
     }

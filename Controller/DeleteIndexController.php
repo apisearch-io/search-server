@@ -17,6 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\DeleteIndex;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,13 +31,13 @@ class DeleteIndexController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
-        $this
+        return $this
             ->commandBus
             ->handle(new DeleteIndex(
                 RepositoryReference::create(
@@ -45,8 +46,9 @@ class DeleteIndexController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $indexUUID
-            ));
-
-        return new JsonResponse('Index deleted', $this->created());
+            ))
+            ->then(function () {
+                return new JsonResponse('Index deleted', $this->created());
+            });
     }
 }

@@ -13,12 +13,17 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Event;
+namespace Apisearch\Server\Domain\EventPublisher;
+
+use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
+use Apisearch\Server\Domain\Event\EventSubscriber;
+use React\Promise;
+use React\Promise\PromiseInterface;
 
 /**
- * Class EventPublisher.
+ * Class InlineEventPublisher.
  */
-class EventPublisher
+class InlineEventPublisher implements EventPublisher
 {
     /**
      * @var EventSubscriber[]
@@ -41,13 +46,18 @@ class EventPublisher
      * Publish event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function publish(DomainEventWithRepositoryReference $domainEventWithRepositoryReference)
+    public function publish(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface
     {
+        $promises = [];
         foreach ($this->subscribers as $subscriber) {
             if ($subscriber->shouldHandleEvent($domainEventWithRepositoryReference)) {
-                $subscriber->handle($domainEventWithRepositoryReference);
+                $promises[] = $subscriber->handle($domainEventWithRepositoryReference);
             }
         }
+
+        return Promise\all($promises);
     }
 }

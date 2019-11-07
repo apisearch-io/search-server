@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller;
 
 use Apisearch\Server\Domain\Query\Ping;
+use React\Promise\PromiseInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,16 +29,19 @@ class PingController extends ControllerWithBus
     /**
      * Ping.
      *
-     * @return Response
+     * @param Request $request
+     *
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request): PromiseInterface
     {
-        $alive = $this
+        return $this
             ->commandBus
-            ->handle(new Ping());
-
-        return true === $alive
-            ? new Response('', Response::HTTP_OK)
-            : new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            ->handle(new Ping())
+            ->then(function (bool $alive) {
+                return true === $alive
+                    ? new JsonResponse('', Response::HTTP_OK)
+                    : new JsonResponse('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            });
     }
 }

@@ -1,0 +1,11 @@
+services:
+
+    #
+    # Console commands
+    #
+    reactphp.event_loop:
+        class: React\EventLoop\LoopInterface
+        public: true
+        factory:
+            - React\EventLoop\Factory
+            - create

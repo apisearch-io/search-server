@@ -21,6 +21,8 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class TokenRedisRepository.
@@ -75,12 +77,12 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      * @param AppUUID   $appUUID
      * @param TokenUUID $tokenUUID
      *
-     * @return Token|null
+     * @return PromiseInterface<Token|null>
      */
     public function getTokenByUUID(
         AppUUID $appUUID,
         TokenUUID $tokenUUID
-    ): ? Token {
+    ): PromiseInterface {
         $tokens = array_values(
             array_filter(
                 $this->tokens,
@@ -95,9 +97,10 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             )
         );
 
-        return empty($tokens)
+        return new FulfilledPromise(empty($tokens)
             ? null
-            : $tokens[0];
+            : $tokens[0]
+        );
     }
 
     /**
@@ -105,17 +108,17 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      *
      * @param AppUUID $appUUID
      *
-     * @return Token[]
+     * @return PromiseInterface<Token[]>
      */
-    public function getTokensByAppUUID(AppUUID $appUUID): array
+    public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        return array_values(
+        return new FulfilledPromise(array_values(
             array_filter(
                 $this->tokens,
                 function (Token $token) use ($appUUID) {
                     return $token->getAppUUID()->composeUUID() === $appUUID->composeUUID();
                 }
             )
-        );
+        ));
     }
 }

@@ -17,6 +17,10 @@ namespace Apisearch\Plugin\RedisQueue\Console;
 
 use Apisearch\Command\ApisearchCommand;
 use Apisearch\Plugin\RedisQueue\Domain\RedisQueueConsumerManager;
+use Clue\React\Block;
+use React\EventLoop\LoopInterface;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -31,6 +35,13 @@ abstract class RedisQueueConsumer extends ApisearchCommand
      * Consumer Manager
      */
     protected $consumerManager;
+
+    /**
+     * @var LoopInterface
+     *
+     * Loop
+     */
+    protected $loop;
 
     /**
      * @var int
@@ -50,15 +61,18 @@ abstract class RedisQueueConsumer extends ApisearchCommand
      * RedisQueueConsumer constructor.
      *
      * @param RedisQueueConsumerManager $consumerManager
+     * @param LoopInterface             $loop
      * @param int                       $secondsToWaitOnBusy
      */
     public function __construct(
         RedisQueueConsumerManager $consumerManager,
+        LoopInterface   $loop,
         int $secondsToWaitOnBusy
     ) {
         parent::__construct();
 
         $this->consumerManager = $consumerManager;
+        $this->loop = $loop;
         $this->secondsToWaitOnBusy = $secondsToWaitOnBusy;
     }
 
@@ -81,33 +95,47 @@ abstract class RedisQueueConsumer extends ApisearchCommand
         $consumerBusyQueueName = $consumerManager->getQueueName($this->getQueueType(), true);
 
         while (true) {
-            list($givenQueue, $payload) = $consumerManager->consume($this->getQueueType());
+            $promise = $consumerManager
+                ->consume($this->getQueueType())
+                ->then(function (array $value) use ($consumerBusyQueueName, $output, $consumerManager) {
+                    list($givenQueue, $payload) = $value;
 
-            /*
-             * Busy queue
-             */
-            if ($givenQueue === $consumerBusyQueueName) {
-                $this->busy = boolval($payload);
+                    /*
+                     * Busy queue
+                     */
+                    if ($givenQueue === $consumerBusyQueueName) {
+                        $this->busy = boolval($payload);
 
-                $this->printInfoMessage($output, 'Redis', ($this->busy ? 'Paused' : 'Resumed').' consumer');
+                        $this->printInfoMessage($output, 'Redis', ($this->busy ? 'Paused' : 'Resumed').' consumer');
 
-            /*
-             * Regular queue + busy
-             */
-            } elseif ($this->busy) {
-                $output->writeln('Busy channel. Rejecting and waiting '.$this->secondsToWaitOnBusy.' seconds');
-                $consumerManager->reject($givenQueue, $payload);
-                sleep($this->secondsToWaitOnBusy);
+                        return new FulfilledPromise();
 
-            /*
-             * Regular queue
-             */
-            } else {
-                $this->consumeMessage(
-                    $payload,
-                    $output
-                );
-            }
+                    /*
+                     * Regular queue + busy
+                     */
+                    } elseif ($this->busy) {
+                        $output->writeln('Busy channel. Rejecting and waiting '.$this->secondsToWaitOnBusy.' seconds');
+
+                        return $consumerManager
+                            ->reject($givenQueue, $payload)
+                            ->then(function () {
+                                sleep($this->secondsToWaitOnBusy);
+
+                                return new FulfilledPromise();
+                            });
+
+                    /*
+                     * Regular queue
+                     */
+                    } else {
+                        return $this->consumeMessage(
+                            $payload,
+                            $output
+                        );
+                    }
+                });
+
+            Block\await($promise, $this->loop);
         }
 
         return 0;
@@ -125,9 +153,11 @@ abstract class RedisQueueConsumer extends ApisearchCommand
      *
      * @param array           $message
      * @param OutputInterface $output
+     *
+     * @return PromiseInterface
      */
     abstract protected function consumeMessage(
         array $message,
         OutputInterface $output
-    );
+    ): PromiseInterface;
 }

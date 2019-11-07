@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\DeleteItems;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,11 +33,11 @@ class DeleteItemsController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      *
      * @throws InvalidFormatException
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $itemsUUIDAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -45,7 +46,7 @@ class DeleteItemsController extends ControllerWithBus
             []
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new DeleteItems(
                 RepositoryReference::create(
@@ -56,8 +57,9 @@ class DeleteItemsController extends ControllerWithBus
                 array_map(function (array $object) {
                     return ItemUUID::createFromArray($object);
                 }, $itemsUUIDAsArray)
-            ));
-
-        return new JsonResponse('Items deleted', $this->ok());
+            ))
+            ->then(function () {
+                return new JsonResponse('Items deleted', $this->ok());
+            });
     }
 }

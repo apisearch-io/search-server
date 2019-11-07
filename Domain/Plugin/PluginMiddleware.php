@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Plugin;
 
+use React\Promise\PromiseInterface;
+
 /**
  * Interface PluginMiddleware.
  */
@@ -26,12 +28,12 @@ interface PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    );
+    ): PromiseInterface;
 
     /**
      * Commands subscribed namespace. Can refer to specific class namespace, any

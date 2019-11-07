@@ -20,6 +20,8 @@ use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Domain\EventConsumer\EventConsumer;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
+use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -39,18 +41,21 @@ class RabbitMQDomainEventsConsumer extends RabbitMQConsumer
      *
      * @param RabbitMQChannel $channel
      * @param ConsumerManager $consumerManager
+     * @param LoopInterface   $loop
      * @param int             $secondsToWaitOnBusy
      * @param EventConsumer   $eventConsumer
      */
     public function __construct(
         RabbitMQChannel        $channel,
         ConsumerManager $consumerManager,
+        LoopInterface $loop,
         int $secondsToWaitOnBusy,
         EventConsumer $eventConsumer
     ) {
         parent::__construct(
             $channel,
             $consumerManager,
+            $loop,
             $secondsToWaitOnBusy
         );
 
@@ -73,19 +78,22 @@ class RabbitMQDomainEventsConsumer extends RabbitMQConsumer
      * @param AMQPMessage     $message
      * @param AMQPChannel     $channel
      * @param OutputInterface $output
+     *
+     * @return PromiseInterface
      */
     protected function consumeMessage(
         AMQPMessage $message,
         AMQPChannel $channel,
         OutputInterface $output
-    ) {
-        $this
+    ): PromiseInterface {
+        return $this
             ->eventConsumer
             ->consumeDomainEvent(
                 $output,
                 json_decode($message->body, true)
-            );
-
-        $channel->basic_ack($message->delivery_info['delivery_tag']);
+            )
+            ->then(function () use ($channel, $message) {
+                $channel->basic_ack($message->delivery_info['delivery_tag']);
+            });
     }
 }

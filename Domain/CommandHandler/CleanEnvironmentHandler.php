@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\CleanEnvironment;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CleanEnvironmentHandler.
@@ -26,9 +28,11 @@ class CleanEnvironmentHandler
      * Add token.
      *
      * @param CleanEnvironment $cleanEnvironment
+     *
+     * @return PromiseInterface
      */
-    public function handle(CleanEnvironment $cleanEnvironment)
+    public function handle(CleanEnvironment $cleanEnvironment): PromiseInterface
     {
-        // Nothing happen by default
+        return new FulfilledPromise();
     }
 }

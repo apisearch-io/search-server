@@ -15,8 +15,11 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\RedisStorage\Tests\Functional;
 
+use Apisearch\Http\Http;
 use Apisearch\Plugin\RedisStorage\RedisStoragePluginBundle;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Clue\React\Block;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class HealthTest.
@@ -52,18 +55,20 @@ class HealthTest extends HttpFunctionalTest
      */
     public function testCheckHealth()
     {
-        $client = $this->createClient();
-        $testRoute = static::get('router')->generate('apisearch_check_health', [
-            'token' => static::$godToken,
-        ]);
+        $request = new Request();
+        $request->setMethod('GET');
+        $request->server->set('REQUEST_URI', '/health');
+        $request->headers->set(Http::TOKEN_ID_HEADER, self::$godToken);
+        $promise = static::$kernel
+            ->handleAsync($request)
+            ->then(function ($response) {
+                $content = json_decode($response->getContent(), true);
+                $this->assertTrue($content['status']['redis']);
+            });
 
-        $client->request(
-            'get',
-            $testRoute
+        Block\await(
+            $promise,
+            $this->get('reactphp.event_loop')
         );
-
-        $response = $client->getResponse();
-        $content = json_decode($response->getContent(), true);
-        $this->assertTrue($content['status']['redis']);
     }
 }

@@ -20,12 +20,8 @@ use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\EventSubscriber;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
 use Apisearch\Server\Domain\Formatter\TimeFormatBuilder;
-use Monolog\Formatter\LogstashFormatter;
-use Monolog\Handler\RedisHandler;
 use Monolog\Logger;
-use Monolog\Processor\MemoryPeakUsageProcessor;
-use Monolog\Processor\MemoryUsageProcessor;
-use RedisException;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DomainEventSubscriber.
@@ -59,13 +55,6 @@ class DomainEventSubscriber implements EventSubscriber
      * Service
      */
     private $service;
-
-    /**
-     * @var Logger
-     *
-     * Logger
-     */
-    private $logger;
 
     /**
      * @var string
@@ -110,39 +99,13 @@ class DomainEventSubscriber implements EventSubscriber
     }
 
     /**
-     * Get logger.
-     *
-     * @return Logger
-     */
-    public function getLogger()
-    {
-        if ($this->logger instanceof Logger) {
-            return $this->logger;
-        }
-
-        $redisHandler = new RedisHandler(
-            $this
-                ->redisWrapper
-                ->getClient(),
-            $this->key
-        );
-
-        $formatter = new LogstashFormatter('apisearch');
-        $redisHandler->setFormatter($formatter);
-        $this->logger = new Logger('apisearch_to_logstash', [$redisHandler], [
-            new MemoryUsageProcessor(),
-            new MemoryPeakUsageProcessor(),
-        ]);
-
-        return $this->logger;
-    }
-
-    /**
      * Handle event.
      *
      * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     *
+     * @return PromiseInterface
      */
-    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference)
+    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface
     {
         $event = $domainEventWithRepositoryReference->getDomainEvent();
         $level = $event instanceof ExceptionWasCached
@@ -155,22 +118,30 @@ class DomainEventSubscriber implements EventSubscriber
                 $event->occurredOn()
             );
 
-        try {
-            $this
-                ->getLogger()
-                ->addRecord(
-                    $level,
-                    json_encode([
-                            'environment' => $this->environment,
-                            'service' => $this->service,
-                            'repository_reference' => $domainEventWithRepositoryReference
-                                ->getRepositoryReference()
-                                ->compose(),
-                            'time_cost' => $domainEventWithRepositoryReference->getTimeCost(),
-                        ] + $reducedArray)
-                );
-        } catch (RedisException $exception) {
-            // Nothing to do.
-        }
+        $data = json_encode([
+            'environment' => $this->environment,
+            'service' => $this->service,
+            'repository_reference' => $domainEventWithRepositoryReference
+                ->getRepositoryReference()
+                ->compose(),
+            'time_cost' => $domainEventWithRepositoryReference->getTimeCost(),
+        ] + $reducedArray);
+
+        return $this
+            ->redisWrapper
+            ->getClient()
+            ->rpush($this->key, json_encode([
+                '@fields' => [
+                    'channel' => 'apisearch_to_logstash',
+                    'level' => $level,
+                    'memory_usage' => memory_get_usage(true),
+                    'memory_peak_usage' => memory_get_peak_usage(true),
+                ],
+                '@message' => $data,
+                '@type' => 'apisearch',
+                '@tags' => [
+                    'apisearch_to_logstash',
+                ],
+            ]));
     }
 }

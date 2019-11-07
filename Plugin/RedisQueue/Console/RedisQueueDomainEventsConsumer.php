@@ -18,6 +18,8 @@ namespace Apisearch\Plugin\RedisQueue\Console;
 use Apisearch\Plugin\RedisQueue\Domain\RedisQueueConsumerManager;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Domain\EventConsumer\EventConsumer;
+use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -36,16 +38,19 @@ class RedisQueueDomainEventsConsumer extends RedisQueueConsumer
      * RedisQueueConsumer constructor.
      *
      * @param RedisQueueConsumerManager $consumerManager
+     * @param LoopInterface             $loop
      * @param int                       $secondsToWaitOnBusy
      * @param EventConsumer             $eventConsumer
      */
     public function __construct(
         RedisQueueConsumerManager $consumerManager,
+        LoopInterface   $loop,
         int $secondsToWaitOnBusy,
         EventConsumer  $eventConsumer
     ) {
         parent::__construct(
             $consumerManager,
+            $loop,
             $secondsToWaitOnBusy
         );
 
@@ -67,12 +72,14 @@ class RedisQueueDomainEventsConsumer extends RedisQueueConsumer
      *
      * @param array           $message
      * @param OutputInterface $output
+     *
+     * @return PromiseInterface
      */
     protected function consumeMessage(
         array $message,
         OutputInterface $output
-    ) {
-        $this
+    ): PromiseInterface {
+        return $this
             ->eventConsumer
             ->consumeDomainEvent(
                 $output,

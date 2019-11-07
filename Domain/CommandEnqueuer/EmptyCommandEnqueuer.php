@@ -15,6 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\CommandEnqueuer;
 
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
+
 /**
  * Class EmptyCommandEnqueuer.
  */
@@ -24,9 +27,11 @@ class EmptyCommandEnqueuer implements CommandEnqueuer
      * Enqueue a command.
      *
      * @param object $command
+     *
+     * @return PromiseInterface
      */
-    public function enqueueCommand($command)
+    public function enqueueCommand($command): PromiseInterface
     {
-        // Doing nothing
+        return new FulfilledPromise();
     }
 }

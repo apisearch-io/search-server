@@ -19,6 +19,9 @@ use Apisearch\Plugin\RedisQueue\Domain\RedisQueueConsumerManager;
 use Apisearch\Server\Domain\CommandConsumer\CommandConsumer;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Domain\ExclusiveCommand;
+use React\EventLoop\LoopInterface;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,16 +41,19 @@ class RedisQueueCommandsConsumer extends RedisQueueConsumer
      * RedisQueueConsumer constructor.
      *
      * @param RedisQueueConsumerManager $consumerManager
+     * @param LoopInterface             $loop
      * @param int                       $secondsToWaitOnBusy
      * @param CommandConsumer           $commandConsumer
      */
     public function __construct(
         RedisQueueConsumerManager $consumerManager,
+        LoopInterface   $loop,
         int $secondsToWaitOnBusy,
         CommandConsumer  $commandConsumer
     ) {
         parent::__construct(
             $consumerManager,
+            $loop,
             $secondsToWaitOnBusy
         );
 
@@ -69,29 +75,40 @@ class RedisQueueCommandsConsumer extends RedisQueueConsumer
      *
      * @param array           $message
      * @param OutputInterface $output
+     *
+     * @return PromiseInterface
      */
     protected function consumeMessage(
         array $message,
         OutputInterface $output
-    ) {
+    ): PromiseInterface {
         $commandNamespace = 'Apisearch\Server\Domain\Command\\'.$message['class'];
         $reflectionCommand = new ReflectionClass($commandNamespace);
         $consumerManager = $this->consumerManager;
         $isExclusiveCommand = $reflectionCommand->implementsInterface(ExclusiveCommand::class);
+        $promise = new FulfilledPromise();
 
         if ($isExclusiveCommand) {
-            $consumerManager->pauseConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            $promise = $promise->then(function () use ($consumerManager) {
+                return $consumerManager->pauseConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            });
         }
 
-        $this
-            ->commandConsumer
-            ->consumeCommand(
-                $output,
-                $message
-            );
+        $promise = $promise->then(function () use ($output, $message) {
+            return $this
+                ->commandConsumer
+                ->consumeCommand(
+                    $output,
+                    $message
+                );
+        });
 
         if ($isExclusiveCommand) {
-            $consumerManager->resumeConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            $promise = $promise->then(function () use ($consumerManager) {
+                return $consumerManager->resumeConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            });
         }
+
+        return $promise;
     }
 }

@@ -43,9 +43,7 @@ class GenerateCrontabCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $lines = $this
-            ->commandBus
-            ->handle(new GetCrontab());
+        $lines = $this->handleSynchronously(new GetCrontab());
 
         $lines = array_map(function (CrontabLine $line) {
             return $line->toString(realpath(__DIR__.'/../'));

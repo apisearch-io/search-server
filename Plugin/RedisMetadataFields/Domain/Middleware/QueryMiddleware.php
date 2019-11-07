@@ -20,6 +20,7 @@ use Apisearch\Plugin\RedisMetadataFields\Domain\Repository\RedisMetadataReposito
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\Query;
+use React\Promise\PromiseInterface;
 
 /**
  * Class QueryMiddleware.
@@ -49,37 +50,39 @@ class QueryMiddleware implements PluginMiddleware
      * @param mixed    $command
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface
      */
     public function execute(
         $command,
         $next
-    ) {
-        $result = $next($command);
+    ): PromiseInterface {
+        return $next($command)
+            ->then(function (Result $result) use ($command) {
+                /**
+                 * @var Result
+                 * @var Query  $command
+                 *
+                 * We should strip all possible plugins applied on repository reference
+                 */
+                $composedIndexUUID = $command
+                    ->getIndexUUID()
+                    ->composeUUID();
 
-        /**
-         * @var Result
-         * @var Query  $command
-         *
-         * We should strip all possible plugins applied on repository reference
-         */
-        $composedIndexUUID = $command
-            ->getIndexUUID()
-            ->composeUUID();
+                $composedIndexUUID = preg_replace('~(-plugin.*?(?=-plugin|$))~', '', $composedIndexUUID);
+                $filteredRepository = $command
+                    ->getRepositoryReference()
+                    ->changeIndex(IndexUUID::createById($composedIndexUUID));
 
-        $composedIndexUUID = preg_replace('~(-plugin.*?(?=-plugin|$))~', '', $composedIndexUUID);
-        $filteredRepository = $command
-            ->getRepositoryReference()
-            ->changeIndex(IndexUUID::createById($composedIndexUUID));
-
-        $this
-            ->metadataRepository
-            ->loadItemsMetadata(
-                $filteredRepository,
-                $result->getItems()
-            );
-
-        return $result;
+                return $this
+                    ->metadataRepository
+                    ->loadItemsMetadata(
+                        $filteredRepository,
+                        $result->getItems()
+                    )
+                    ->then(function () use ($result) {
+                        return $result;
+                    });
+            });
     }
 
     /**

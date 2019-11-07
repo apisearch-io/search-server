@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CreateIndexHandler.
@@ -27,22 +28,17 @@ class CreateIndexHandler extends WithAppRepositoryAndEventPublisher
      * Create the index.
      *
      * @param CreateIndex $createIndex
+     *
+     * @return PromiseInterface
      */
-    public function handle(CreateIndex $createIndex)
+    public function handle(CreateIndex $createIndex): PromiseInterface
     {
-        $repositoryReference = $createIndex->getRepositoryReference();
-        $indexUUID = $createIndex->getIndexUUID();
-        $config = $createIndex->getConfig();
-
-        $this
-            ->appRepository
-            ->setRepositoryReference($repositoryReference);
-
-        $this
+        return $this
             ->appRepository
             ->createIndex(
-                $indexUUID,
-                $config
+                $createIndex->getRepositoryReference(),
+                $createIndex->getIndexUUID(),
+                $createIndex->getConfig()
             );
     }
 }

@@ -15,10 +15,11 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\QueryMapper\Tests\Functional;
 
-use Apisearch\Model\Item;
-use Apisearch\Model\ItemUUID;
+use Apisearch\Exception\TransportableException;
+use Apisearch\Model\AppUUID;
+use Apisearch\Model\Token;
+use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
-use Apisearch\Result\Result;
 
 /**
  * Class QueryMappedTest.
@@ -30,14 +31,16 @@ class QueryMappedTest extends QueryMapperFunctionalTest
      */
     public function testWithMappedQuery()
     {
-        $client = static::createClient();
-        $client->request(
-            'get',
-            sprintf('/v1/%s?token=%s', static::$appId, 'query-mapped-simple')
+        $result = $this->query(
+            Query::create(''),
+            static::$appId,
+            static::$index,
+            new Token(
+                TokenUUID::createById('query-mapped-simple'),
+                AppUUID::createById(static::$appId)
+            )
         );
 
-        $resultAsJson = $client->getResponse()->getContent();
-        $result = Result::createFromArray(json_decode($resultAsJson, true));
         $this->assertEquals(2, $result->getTotalHits());
         $this->assertEquals('2~product', $result->getItems()[0]->composeUUID());
         $this->assertEquals('4~bike', $result->getItems()[1]->composeUUID());
@@ -48,43 +51,20 @@ class QueryMappedTest extends QueryMapperFunctionalTest
      */
     public function testWithoutMappedQuery()
     {
-        $client = static::createClient();
-        $client->request(
-            'get',
-            sprintf('/v1/%s?token=%s', static::$appId, 'non-existing')
-        );
-
-        $resultAsJson = $client->getResponse()->getContent();
-        $resultAsArray = json_decode($resultAsJson, true);
-        $this->assertEquals(401, $resultAsArray['code']);
-    }
-
-    /**
-     * Test another endpoint.
-     */
-    public function testAnotherEndpoint()
-    {
-        $client = static::createClient();
-        $client->request(
-            'put',
-            sprintf('/v1/%s/indices/%s/items?token=%s',
+        try {
+            $this->query(
+                Query::create(''),
                 static::$appId,
                 static::$index,
-                static::$godToken
-            ),
-            [], [], [
-                'CONTENT_TYPE' => 'application/json',
-            ],
-            json_encode([
-                Item::create(
-                    ItemUUID::createByComposedUUID('10~lele')
-                )->toArray(),
-            ])
-        );
+                new Token(
+                    TokenUUID::createById('non-existing'),
+                    AppUUID::createById(static::$appId)
+                )
+            );
 
-        $this->assertCount(6, $this
-            ->query(Query::createMatchAll())
-            ->getItems()
-        );
+            $this->fail('An exception with code 401 should be thrown here');
+        } catch (TransportableException $exception) {
+            $this->assertEquals(401, $exception->getTransportableHTTPError());
+        }
     }
 }

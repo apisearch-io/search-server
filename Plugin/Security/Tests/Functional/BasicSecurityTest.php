@@ -120,6 +120,8 @@ class BasicSecurityTest extends SecurityFunctionalTest
      * @param array $referrers
      *
      * @dataProvider dataGoodReferrers
+     *
+     * @group lolo
      */
     public function testGoodReferrers(array $referrers)
     {
@@ -236,8 +238,6 @@ class BasicSecurityTest extends SecurityFunctionalTest
 
     /**
      * Test plugin is working with subqueries as well.
-     *
-     * @group lolo
      */
     public function testRestrictedFieldsInSubqueries()
     {

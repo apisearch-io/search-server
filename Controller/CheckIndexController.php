@@ -17,6 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\CheckIndex;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,13 +31,13 @@ class CheckIndexController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return Response
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(Request $request): PromiseInterface
     {
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
-        $alive = $this
+        return $this
             ->commandBus
             ->handle(new CheckIndex(
                 RepositoryReference::create(
@@ -44,10 +45,11 @@ class CheckIndexController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $indexUUID
-            ));
-
-        return true === $alive
-            ? new Response('', Response::HTTP_OK)
-            : new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            ))
+            ->then(function (bool $alive) {
+                return true === $alive
+                    ? new Response('', Response::HTTP_OK)
+                    : new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+            });
     }
 }

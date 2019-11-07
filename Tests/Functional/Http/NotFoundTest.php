@@ -15,33 +15,27 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Exception\TransportableException;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
  * Class NotFoundTest.
  */
-class NotFoundTest extends HttpFunctionalTest
+class NotFoundTest extends CurlFunctionalTest
 {
     /**
      * Test not found on some non existing path.
      */
     public function testNotFoundResponse()
     {
-        $client = self::createClient();
-        $client->request(
-            'get',
-            '/v2',
-            [
-                'app_id' => self::$appId,
-                'index' => self::$index,
-                'token' => self::$godToken,
-            ]
-        );
+        try {
+            static::makeCurl(
+                'v2', [], null
+            );
 
-        $response = $client->getResponse();
-        $this->assertEquals(
-            404,
-            $response->getStatusCode()
-        );
+            $this->fail('Route v2 should throw exception');
+        } catch (TransportableException $exception) {
+            $this->assertTrue(true);
+        }
     }
 }

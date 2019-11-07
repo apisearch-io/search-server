@@ -17,6 +17,7 @@ namespace Apisearch\Plugin\RedisQueue\Domain;
 
 use Apisearch\Server\Domain\CommandEnqueuer\CommandEnqueuer;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RedisQueueCommandEnqueuer.
@@ -44,12 +45,15 @@ class RedisQueueCommandEnqueuer implements CommandEnqueuer
      * Enqueue a command.
      *
      * @param object $command
+     *
+     * @return PromiseInterface
      */
-    public function enqueueCommand($command)
+    public function enqueueCommand($command): PromiseInterface
     {
         $commandAsArray = $command->toArray();
         $commandAsArray['class'] = str_replace('Apisearch\Server\Domain\Command\\', '', get_class($command));
-        $this
+
+        return $this
             ->consumerManager
             ->enqueue(
                 ConsumerManager::COMMAND_CONSUMER_TYPE,

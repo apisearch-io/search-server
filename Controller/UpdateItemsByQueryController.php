@@ -21,6 +21,7 @@ use Apisearch\Model\Changes;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\UpdateItems;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,11 +35,11 @@ class UpdateItemsByQueryController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      *
      * @throws InvalidFormatException
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $queryAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -52,7 +53,7 @@ class UpdateItemsByQueryController extends ControllerWithBus
             InvalidFormatException::changesFormatNotValid($request->getContent())
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new UpdateItems(
                 RepositoryReference::create(
@@ -62,8 +63,9 @@ class UpdateItemsByQueryController extends ControllerWithBus
                 RequestAccessor::getTokenFromRequest($request),
                 QueryModel::createFromArray($queryAsArray),
                 Changes::createFromArray($changesAsArray)
-            ));
-
-        return new JsonResponse('Items updated', $this->ok());
+            ))
+            ->then(function () {
+                return new JsonResponse('Items updated', $this->ok());
+            });
     }
 }

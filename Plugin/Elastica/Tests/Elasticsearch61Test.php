@@ -30,8 +30,18 @@ class Elasticsearch61Test extends ServiceRepositoryTest
     protected static function getElasticsearchEndpoint(): array
     {
         return [
-            'host' => 'apisearch.elasticsearch.6.1',
-            'port' => '9200',
+            'host' => '127.0.0.1',
+            'port' => '9201',
         ];
+    }
+
+    /**
+     * Get elasticsearch version.
+     *
+     * @return string
+     */
+    protected static function getElasticsearchVersion(): string
+    {
+        return '6';
     }
 }

@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\AddToken;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,9 +33,9 @@ class AddTokenController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
         $newTokenAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -42,7 +43,7 @@ class AddTokenController extends ControllerWithBus
             InvalidFormatException::tokenFormatNotValid($request->getContent())
         );
 
-        $this
+        return $this
             ->commandBus
             ->handle(new AddToken(
                 RepositoryReference::create(
@@ -50,8 +51,9 @@ class AddTokenController extends ControllerWithBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 Token::createFromArray($newTokenAsArray)
-            ));
-
-        return new JsonResponse('Token added', $this->created());
+            ))
+            ->then(function () {
+                return new JsonResponse('Token added', $this->created());
+            });
     }
 }

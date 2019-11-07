@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ResumeConsumers;
 use Apisearch\Server\Domain\Consumer\ConsumerManager;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ResumeConsumersHandler.
@@ -44,10 +45,12 @@ class ResumeConsumersHandler
      * Resume all consumers.
      *
      * @param ResumeConsumers $resumeConsumers
+     *
+     * @return PromiseInterface
      */
-    public function handle(ResumeConsumers $resumeConsumers)
+    public function handle(ResumeConsumers $resumeConsumers): PromiseInterface
     {
-        $this
+        return $this
             ->consumerManager
             ->resumeConsumers($resumeConsumers->getTypes());
     }

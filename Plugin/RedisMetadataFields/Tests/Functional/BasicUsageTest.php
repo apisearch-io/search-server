@@ -17,6 +17,7 @@ namespace Apisearch\Plugin\RedisMetadataFields\Tests\Functional;
 
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
+use Clue\React\Block;
 
 /**
  * Class BasicUsageTest.
@@ -29,7 +30,12 @@ class BasicUsageTest extends MetadataFieldsFunctionalTest
     public function testBasicUsage()
     {
         $redisClient = self::get('apisearch_plugin.redis_metadata_fields.redis_wrapper')->getClient();
-        $this->assertCount(5, $redisClient->hGetAll($this->getParameter('apisearch_plugin.redis_metadata_fields.key')));
+        $loop = $this->get('reactphp.event_loop');
+
+        /*
+         * 10 means 5 (5 keys + 5 values)
+         */
+        $this->assertCount(10, Block\await($redisClient->hGetAll($this->getParameter('apisearch_plugin.redis_metadata_fields.key')), $loop));
         $item = $this->query(Query::createMatchAll())->getFirstItem();
         $this->assertTrue(isset($item->getMetadata()['array_of_arrays']));
 
@@ -38,6 +44,10 @@ class BasicUsageTest extends MetadataFieldsFunctionalTest
             ItemUUID::createByComposedUUID('4~bike'),
             ItemUUID::createByComposedUUID('3~book'),
         ]);
-        $this->assertCount(3, $redisClient->hGetall($this->getParameter('apisearch_plugin.redis_metadata_fields.key')));
+
+        /*
+         * 6 means 3 (3 keys + 3 values)
+         */
+        $this->assertCount(6, Block\await($redisClient->hGetall($this->getParameter('apisearch_plugin.redis_metadata_fields.key')), $loop));
     }
 }

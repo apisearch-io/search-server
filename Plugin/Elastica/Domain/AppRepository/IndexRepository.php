@@ -20,122 +20,133 @@ use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
-use Apisearch\Plugin\Elastica\Domain\ElasticaWrapperWithRepositoryReference;
+use Apisearch\Plugin\Elastica\Domain\WithElasticaWrapper;
+use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\IndexRepository as IndexRepositoryInterface;
 use Elastica\Exception\ResponseException;
+use React\Promise\PromiseInterface;
 
 /**
  * Class IndexRepository.
  */
-class IndexRepository extends ElasticaWrapperWithRepositoryReference implements IndexRepositoryInterface
+class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInterface
 {
+    /**
+     * @var bool
+     *
+     * Async
+     */
+    private $async = false;
+
     /**
      * Get indices.
      *
-     * @return Index[]
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<Index[]>
      */
-    public function getIndices(): array
+    public function getIndices(RepositoryReference $repositoryReference): PromiseInterface
     {
-        try {
-            return $this
-                ->elasticaWrapper
-                ->getIndices($this->getRepositoryReference());
-        } catch (ResponseException $exception) {
-            // Silent pass
-        }
-
-        return [];
+        return $this
+            ->elasticaWrapper
+            ->getIndices($repositoryReference)
+            ->then(null, function (ResponseException $_) {
+                return [];
+            });
     }
 
     /**
      * Create an index.
      *
-     * @param IndexUUID $indexUUID
-     * @param Config    $config
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     * @param Config              $config
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceExistsException
      */
     public function createIndex(
+        RepositoryReference $repositoryReference,
         IndexUUID $indexUUID,
         Config $config
-    ) {
-        $newRepositoryReference = $this
-            ->getRepositoryReference()
-            ->changeIndex($indexUUID);
+    ): PromiseInterface {
+        $newRepositoryReference = $repositoryReference->changeIndex($indexUUID);
 
-        $this
+        return $this
             ->elasticaWrapper
             ->createIndex(
                 $newRepositoryReference,
                 $config
-            );
-
-        $this
-            ->elasticaWrapper
-            ->createIndexMapping(
-                $newRepositoryReference,
-                $config
-            );
-
-        $this->refresh($newRepositoryReference);
+            )->then(function ($_) use ($newRepositoryReference, $config) {
+                return $this
+                    ->elasticaWrapper
+                    ->createIndexMapping(
+                        $newRepositoryReference,
+                        $config
+                    );
+            });
     }
 
     /**
      * Delete the index.
      *
-     * @param IndexUUID $indexUUID
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     *
+     * @return PromiseInterface
      */
-    public function deleteIndex(IndexUUID $indexUUID)
-    {
-        $this
+    public function deleteIndex(
+        RepositoryReference $repositoryReference,
+        IndexUUID $indexUUID
+    ): PromiseInterface {
+        return $this
             ->elasticaWrapper
-            ->deleteIndex($this
-                ->getRepositoryReference()
-                ->changeIndex($indexUUID)
-            );
+            ->deleteIndex($repositoryReference->changeIndex($indexUUID));
     }
 
     /**
      * Reset the index.
      *
-     * @param IndexUUID $indexUUID
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     *
+     * @return PromiseInterface
      */
-    public function resetIndex(IndexUUID $indexUUID)
-    {
-        $repositoryReference = $this
-            ->getRepositoryReference()
-            ->changeIndex($indexUUID);
+    public function resetIndex(
+        RepositoryReference $repositoryReference,
+        IndexUUID $indexUUID
+    ): PromiseInterface {
+        $newRepositoryReference = $repositoryReference->changeIndex($indexUUID);
 
-        $this
+        return $this
             ->elasticaWrapper
-            ->resetIndex($repositoryReference);
-
-        $this->refresh($repositoryReference);
+            ->resetIndex($newRepositoryReference);
     }
 
     /**
      * Configure the index.
      *
-     * @param IndexUUID $indexUUID
-     * @param Config    $config
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     * @param Config              $config
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceNotAvailableException
      */
     public function configureIndex(
+        RepositoryReference $repositoryReference,
         IndexUUID $indexUUID,
         Config $config
-    ) {
-        $repositoryReference = $this
-            ->getRepositoryReference()
-            ->changeIndex($indexUUID);
+    ): PromiseInterface {
+        $newRepositoryReference = $repositoryReference->changeIndex($indexUUID);
 
-        $this
+        return $this
             ->elasticaWrapper
             ->configureIndex(
-                $repositoryReference,
+                $newRepositoryReference,
                 $config
             );
-
-        $this->refresh($repositoryReference);
     }
 }

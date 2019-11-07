@@ -68,13 +68,11 @@ class ExportIndexCommand extends CommandWithBusAndGodToken
             $file,
             $output,
             function (QueryModel $query) use ($objects) {
-                return $this
-                    ->commandBus
-                    ->handle(new Query(
-                        $objects['repository_reference'],
-                        $objects['token'],
-                        $query
-                    ));
+                return $this->handleSynchronously(new Query(
+                    $objects['repository_reference'],
+                    $objects['token'],
+                    $query
+                ));
             }
         );
     }

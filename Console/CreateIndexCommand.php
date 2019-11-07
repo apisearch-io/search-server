@@ -21,6 +21,7 @@ use Apisearch\Config\SynonymReader;
 use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Server\Domain\Command\CreateIndex;
 use League\Tactician\CommandBus;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -43,16 +44,19 @@ class CreateIndexCommand extends CommandWithBusAndGodToken
      *
      *
      * @param CommandBus    $commandBus
+     * @param LoopInterface $loop
      * @param string        $godToken
      * @param SynonymReader $synonymReader
      */
     public function __construct(
         CommandBus $commandBus,
+        LoopInterface $loop,
         string     $godToken,
         SynonymReader $synonymReader
     ) {
         parent::__construct(
             $commandBus,
+            $loop,
             $godToken
         );
 
@@ -141,22 +145,20 @@ class CreateIndexCommand extends CommandWithBusAndGodToken
             ->readSynonymsFromCommaSeparatedArray($input->getOption('synonym'));
 
         try {
-            $this
-                ->commandBus
-                ->handle(new CreateIndex(
-                    $objects['repository_reference'],
-                    $objects['token'],
-                    $objects['index_uuid'],
-                    Config::createFromArray([
-                        'language' => $input->getOption('language'),
-                        'store_searchable_metadata' => !$input->getOption('no-store-searchable-metadata'),
-                        'synonyms' => $synonyms = array_map(function (Synonym $synonym) {
-                            return $synonym->toArray();
-                        }, $synonyms),
-                        'shards' => $input->getOption('shards'),
-                        'replicas' => $input->getOption('replicas'),
-                    ])
-                ));
+            $this->handleSynchronously(new CreateIndex(
+                $objects['repository_reference'],
+                $objects['token'],
+                $objects['index_uuid'],
+                Config::createFromArray([
+                    'language' => $input->getOption('language'),
+                    'store_searchable_metadata' => !$input->getOption('no-store-searchable-metadata'),
+                    'synonyms' => $synonyms = array_map(function (Synonym $synonym) {
+                        return $synonym->toArray();
+                    }, $synonyms),
+                    'shards' => $input->getOption('shards'),
+                    'replicas' => $input->getOption('replicas'),
+                ])
+            ));
         } catch (ResourceExistsException $exception) {
             $this->printInfoMessage(
                 $output,

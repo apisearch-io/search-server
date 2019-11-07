@@ -18,8 +18,8 @@ namespace Apisearch\Server\Domain\Middleware;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
-use Apisearch\Server\Domain\Event\EventPublisher;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
+use Apisearch\Server\Domain\EventPublisher\EventPublisher;
 use Apisearch\Server\Exception\StorableException;
 use Exception;
 use League\Tactician\Middleware;
@@ -56,27 +56,25 @@ class ExceptionsMiddleware implements Middleware
      */
     public function execute($command, callable $next)
     {
-        try {
-            $result = $next($command);
-        } catch (Exception $exception) {
-            $this
-                ->eventPublisher
-                ->publish(new DomainEventWithRepositoryReference(
-                    $command instanceof WithRepositoryReference
-                        ? $command->getRepositoryReference()
-                        : RepositoryReference::create(),
-                    new ExceptionWasCached(new StorableException(
-                        $exception->getMessage(),
-                        (int) $exception->getCode(),
-                        $exception->getTraceAsString(),
-                        $exception->getFile(),
-                        (int) $exception->getLine()
+        return $next($command)
+            ->then(null, function ($exception) use ($command) {
+                return $this
+                    ->eventPublisher
+                    ->publish(new DomainEventWithRepositoryReference(
+                        $command instanceof WithRepositoryReference
+                            ? $command->getRepositoryReference()
+                            : RepositoryReference::create(),
+                        new ExceptionWasCached(new StorableException(
+                            $exception->getMessage(),
+                            (int) $exception->getCode(),
+                            $exception->getTraceAsString(),
+                            $exception->getFile(),
+                            (int) $exception->getLine()
+                        ))
                     ))
-                ));
-
-            throw $exception;
-        }
-
-        return $result;
+                    ->then(function () use ($exception) {
+                        throw $exception;
+                    });
+            });
     }
 }

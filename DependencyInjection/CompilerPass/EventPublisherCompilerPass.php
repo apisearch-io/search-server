@@ -19,9 +19,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * Class DomainEventsMiddlewareCompilerPass.
+ * Class EventPublisherCompilerPass.
  */
-class DomainEventsMiddlewareCompilerPass implements CompilerPassInterface
+class EventPublisherCompilerPass implements CompilerPassInterface
 {
     /**
      * You can modify the container here before it is dumped to PHP code.
@@ -30,7 +30,9 @@ class DomainEventsMiddlewareCompilerPass implements CompilerPassInterface
     {
         $container
             ->addAliases([
-                'apisearch_server.middleware.domain_events' => $container->getParameter('apisearch_server.middleware_domain_events_service'),
+                'apisearch_server.event_publisher' => $container->getParameter('apisearch_server.event_publisher_service'),
             ]);
+
+        $container->getAlias('apisearch_server.event_publisher')->setPublic(true);
     }
 }

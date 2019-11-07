@@ -20,6 +20,8 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Server\Domain\Token\TokenValidator;
 use Carbon\Carbon;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class SecondsValidTokenValidator.
@@ -37,7 +39,7 @@ class SecondsValidTokenValidator implements TokenValidator
      * @param string    $referrer
      * @param string    $routeName
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
     public function isTokenValid(
         Token $token,
@@ -45,11 +47,12 @@ class SecondsValidTokenValidator implements TokenValidator
         IndexUUID $indexUUID,
         string $referrer,
         string $routeName
-    ): bool {
+    ): PromiseInterface {
         $secondsValid = $token->getMetadataValue('seconds_valid', 0);
 
-        return
+        return new FulfilledPromise(
             0 === $secondsValid ||
-            $token->getUpdatedAt() + $secondsValid >= Carbon::now('UTC')->timestamp;
+            $token->getUpdatedAt() + $secondsValid >= Carbon::now('UTC')->timestamp
+        );
     }
 }

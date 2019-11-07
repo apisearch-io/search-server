@@ -18,6 +18,7 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetTokens;
+use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,27 +32,28 @@ class GetTokensController extends ControllerWithBus
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return PromiseInterface
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): PromiseInterface
     {
-        $tokens = $this
+        return $this
             ->commandBus
             ->handle(new GetTokens(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),
                 RequestAccessor::getTokenFromRequest($request)
-            ));
-
-        return new JsonResponse(
-            array_map(function (Token $token) {
-                return $token->toArray();
-            }, $tokens),
-            200,
-            [
-                'Access-Control-Allow-Origin' => '*',
-            ]
-        );
+            ))
+            ->then(function (array $tokens) {
+                return new JsonResponse(
+                    array_map(function (Token $token) {
+                        return $token->toArray();
+                    }, $tokens),
+                    200,
+                    [
+                        'Access-Control-Allow-Origin' => '*',
+                    ]
+                );
+            });
     }
 }

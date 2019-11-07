@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\EventEnqueuer;
 
+use React\Promise\PromiseInterface;
+
 /**
  * Interface EventEnqueuer.
  */
@@ -24,6 +26,8 @@ interface EventEnqueuer
      * Enqueue a domain event.
      *
      * @param array $event
+     *
+     * @return PromiseInterface
      */
-    public function enqueueEvent(array $event);
+    public function enqueueEvent(array $event): PromiseInterface;
 }

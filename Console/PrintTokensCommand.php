@@ -58,12 +58,10 @@ class PrintTokensCommand extends CommandWithBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $tokens = $this
-            ->commandBus
-            ->handle(new GetTokens(
-                $objects['repository_reference'],
-                $objects['token']
-            ));
+        $tokens = $this->handleSynchronously(new GetTokens(
+            $objects['repository_reference'],
+            $objects['token']
+        ));
 
         BasePrintTokensCommand::printTokens(
             $input,

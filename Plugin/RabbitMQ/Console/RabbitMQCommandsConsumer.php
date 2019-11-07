@@ -21,6 +21,9 @@ use Apisearch\Server\Domain\Consumer\ConsumerManager;
 use Apisearch\Server\Domain\ExclusiveCommand;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
+use React\EventLoop\LoopInterface;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -41,18 +44,21 @@ class RabbitMQCommandsConsumer extends RabbitMQConsumer
      *
      * @param RabbitMQChannel $channel
      * @param ConsumerManager $consumerManager
+     * @param LoopInterface   $loop
      * @param int             $secondsToWaitOnBusy
      * @param CommandConsumer $commandConsumer
      */
     public function __construct(
         RabbitMQChannel        $channel,
         ConsumerManager $consumerManager,
+        LoopInterface $loop,
         int $secondsToWaitOnBusy,
         CommandConsumer $commandConsumer
     ) {
         parent::__construct(
             $channel,
             $consumerManager,
+            $loop,
             $secondsToWaitOnBusy
         );
 
@@ -75,33 +81,44 @@ class RabbitMQCommandsConsumer extends RabbitMQConsumer
      * @param AMQPMessage     $message
      * @param AMQPChannel     $channel
      * @param OutputInterface $output
+     *
+     * @return PromiseInterface
      */
     protected function consumeMessage(
         AMQPMessage $message,
         AMQPChannel $channel,
         OutputInterface $output
-    ) {
+    ): PromiseInterface {
         $consumerManager = $this->consumerManager;
         $command = json_decode($message->body, true);
         $commandNamespace = 'Apisearch\Server\Domain\Command\\'.$command['class'];
         $reflectionCommand = new ReflectionClass($commandNamespace);
         $isExclusiveCommand = $reflectionCommand->implementsInterface(ExclusiveCommand::class);
+        $promise = new FulfilledPromise();
 
         if ($isExclusiveCommand) {
-            $consumerManager->pauseConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            $promise = $promise->then(function () use ($consumerManager) {
+                $consumerManager->pauseConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            });
         }
 
-        $this
-            ->commandConsumer
-            ->consumeCommand(
-                $output,
-                $command
-            );
+        $promise = $promise->then(function () use ($output, $command) {
+            return $this
+                ->commandConsumer
+                ->consumeCommand(
+                    $output,
+                    $command
+                );
+        });
 
         $channel->basic_ack($message->delivery_info['delivery_tag']);
 
         if ($isExclusiveCommand) {
-            $consumerManager->resumeConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            $promise = $promise->then(function () use ($consumerManager) {
+                $consumerManager->resumeConsumers([ConsumerManager::COMMAND_CONSUMER_TYPE]);
+            });
         }
+
+        return $promise;
     }
 }

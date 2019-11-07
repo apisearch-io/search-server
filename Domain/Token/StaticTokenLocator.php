@@ -19,6 +19,8 @@ use Apisearch\Http\Endpoints;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class StaticTokenLocator.
@@ -79,31 +81,31 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      * @param AppUUID   $appUUID
      * @param TokenUUID $tokenUUID
      *
-     * @return Token|null
+     * @return PromiseInterface<Token|null>
      */
     public function getTokenByUUID(
         AppUUID $appUUID,
         TokenUUID $tokenUUID
-    ): ? Token {
+    ): PromiseInterface {
         if ($tokenUUID->composeUUID() === $this->godToken) {
-            return $this->createGodToken($appUUID);
+            return new FulfilledPromise($this->createGodToken($appUUID));
         }
 
         if (
             !empty($this->readonlyToken) &&
             $tokenUUID->composeUUID() === $this->readonlyToken
         ) {
-            return $this->createReadOnlyToken($appUUID);
+            return new FulfilledPromise($this->createReadOnlyToken($appUUID));
         }
 
         if (
             !empty($this->pingToken) &&
             $tokenUUID->composeUUID() === $this->pingToken
         ) {
-            return $this->createPingToken();
+            return new FulfilledPromise($this->createPingToken());
         }
 
-        return null;
+        return new FulfilledPromise();
     }
 
     /**
@@ -178,13 +180,11 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      *
      * @param AppUUID $appUUID
      *
-     * @return Token[]
+     * @return PromiseInterface<Token[]>
      */
-    public function getTokensByAppUUID(AppUUID $appUUID): array
+    public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        $tokens = [
-            $this->createGodToken($appUUID),
-        ];
+        $tokens = [$this->createGodToken($appUUID)];
 
         if (!empty($this->readonlyToken)) {
             $tokens[] = $this->createReadOnlyToken($appUUID);
@@ -194,6 +194,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             $tokens[] = $this->createPingToken();
         }
 
-        return $tokens;
+        return new FulfilledPromise($tokens);
     }
 }

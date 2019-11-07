@@ -18,8 +18,9 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 use Apisearch\Config\Config;
 use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Exception\ResourceNotAvailableException;
-use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Repository\RepositoryReference;
+use React\Promise\PromiseInterface;
 
 /**
  * Interface IndexRepository.
@@ -29,51 +30,73 @@ interface IndexRepository
     /**
      * Get indices.
      *
-     * @return Index[]
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<Index[]>
      */
-    public function getIndices(): array;
+    public function getIndices(RepositoryReference $repositoryReference): PromiseInterface;
 
     /**
      * Create an index.
      *
-     * @param IndexUUID $indexUUID
-     * @param Config    $config
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     * @param Config              $config
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceExistsException
      */
     public function createIndex(
+        RepositoryReference $repositoryReference,
         IndexUUID $indexUUID,
         Config $config
-    );
+    ): PromiseInterface;
 
     /**
      * Config the index.
      *
-     * @param IndexUUID $indexUUID
-     * @param Config    $config
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     * @param Config              $config
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceNotAvailableException
      */
     public function configureIndex(
+        RepositoryReference $repositoryReference,
         IndexUUID $indexUUID,
         Config $config
-    );
+    ): PromiseInterface;
 
     /**
      * Delete an index.
      *
-     * @param IndexUUID $indexUUID
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceNotAvailableException
      */
-    public function deleteIndex(IndexUUID $indexUUID);
+    public function deleteIndex(
+        RepositoryReference $repositoryReference,
+        IndexUUID $indexUUID
+    ): PromiseInterface;
 
     /**
      * Reset the index.
      *
-     * @param IndexUUID $indexUUID
+     * @param RepositoryReference $repositoryReference
+     * @param IndexUUID           $indexUUID
+     *
+     * @return PromiseInterface
      *
      * @throws ResourceNotAvailableException
      */
-    public function resetIndex(IndexUUID $indexUUID);
+    public function resetIndex(
+        RepositoryReference $repositoryReference,
+        IndexUUID $indexUUID
+    ): PromiseInterface;
 }

@@ -22,6 +22,8 @@ use Apisearch\Model\Token;
 use Apisearch\Plugin\Redis\Domain\RedisWrapper;
 use Apisearch\Server\Domain\Token\TokenValidator;
 use DateTime;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RequestsLimitTokenValidator.
@@ -64,7 +66,7 @@ class RequestsLimitTokenValidator implements TokenValidator
      * @param string    $referrer
      * @param string    $routeName
      *
-     * @return bool
+     * @return PromiseInterface<bool>
      */
     public function isTokenValid(
         Token $token,
@@ -72,9 +74,14 @@ class RequestsLimitTokenValidator implements TokenValidator
         IndexUUID $indexUUID,
         string $referrer,
         string $routeName
-    ): bool {
+    ): PromiseInterface {
         $requestsLimit = $token->getMetadataValue('requests_limit', []);
         $now = new DateTime();
+        $promise = new FulfilledPromise(true);
+        $client = $this
+            ->redisWrapper
+            ->getClient();
+
         foreach ($requestsLimit as $element) {
             $parts = $this->getHitsAndTimePositionByData($element, $now);
             if (empty($parts)) {
@@ -89,24 +96,35 @@ class RequestsLimitTokenValidator implements TokenValidator
                 $parts[1]
             );
 
-            $client = $this
-                ->redisWrapper
-                ->getClient();
-            $accesses = (int) $client->get($key);
+            $promise = $promise
+                ->then(function () use ($client, $key) {
+                    return $client->get($key);
+                })
+                ->then(function ($accesses) use ($token, $parts) {
+                    $accesses = (int) $accesses;
+                    if ($accesses >= $parts[0]) {
+                        throw InvalidTokenException::createInvalidTokenPermissions($token->getTokenUUID()->composeUUID());
+                    }
+                })
+                ->then(function () use ($client) {
+                    $client->multi();
+                })
+                ->then(function () use ($client, $key) {
+                    $client->incr($key);
+                })
+                ->then(function () use ($client, $key, $parts) {
+                    if ($parts[2] > 0) {
+                        $client->expire($key, $parts[2]);
+                    }
+                })
+                ->then(function () use ($client) {
+                    $client->exec();
 
-            if ($accesses >= $parts[0]) {
-                throw InvalidTokenException::createInvalidTokenPermissions($token->getTokenUUID()->composeUUID());
-            }
-
-            $client->multi();
-            $client->incr($key);
-            if ($parts[2] > 0) {
-                $client->expire($key, $parts[2]);
-            }
-            $client->exec();
+                    return true;
+                });
         }
 
-        return true;
+        return $promise;
     }
 
     /**

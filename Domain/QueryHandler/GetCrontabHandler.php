@@ -15,8 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\QueryHandler;
 
-use Apisearch\Server\Domain\Model\CrontabLine;
 use Apisearch\Server\Domain\Query\GetCrontab;
+use React\Promise\FulfilledPromise;
+use React\Promise\PromiseInterface;
 
 /**
  * Class GetCrontabHandler.
@@ -28,10 +29,10 @@ class GetCrontabHandler
      *
      * @param GetCrontab $getCrontab
      *
-     * @return CrontabLine[]
+     * @return PromiseInterface<CrontabLine[]>
      */
-    public function handle(GetCrontab $getCrontab): array
+    public function handle(GetCrontab $getCrontab): PromiseInterface
     {
-        return $getCrontab->getLines();
+        return new FulfilledPromise($getCrontab->getLines());
     }
 }

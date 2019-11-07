@@ -15,28 +15,26 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
  * Class HttpParametersTest.
  */
-class HttpParametersTest extends HttpFunctionalTest
+class HttpParametersTest extends CurlFunctionalTest
 {
     /**
      * Test mandatory app_id parameter.
      */
     public function testMandatoryAppId()
     {
-        $client = $this->createClient();
-        $testRoute = static::get('router')->generate('apisearch_v1_query_all_indices', [
-            'token' => 'aaaa',
-            'app_id' => '1234',
-        ]);
-
-        $client->request(
-            'get',
-            $testRoute
+        static::makeCurl(
+            'v1_query_all_indices',
+            [
+                'app_id' => '1234',
+            ],
+            null
         );
+
         $this->assertTrue(true);
     }
 }
