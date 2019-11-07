@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elastica\Domain;
 
-use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Exception\ResponseException;
 use Elastica\Index;
 use Elastica\Request;
 use Elasticsearch\Endpoints\AbstractEndpoint;
@@ -56,47 +54,6 @@ abstract class WithElasticaWrapper implements AsyncRequestAccessor
     }
 
     /**
-     * Normalize Repository Reference for cross index.
-     *
-     * @param RepositoryReference $repositoryReference
-     *
-     * @return RepositoryReference
-     */
-    protected function normalizeRepositoryReferenceCrossIndices(RepositoryReference $repositoryReference)
-    {
-        if (is_null($repositoryReference->getIndexUUID())) {
-            return $repositoryReference;
-        }
-
-        $indices = $repositoryReference
-            ->getIndexUUID()
-            ->composeUUID();
-
-        $appUUIDComposed = $repositoryReference
-            ->getAppUUID()
-            ->composeUUID();
-
-        if ('*' === $indices) {
-            return RepositoryReference::create(
-                $appUUIDComposed,
-                'all'
-            );
-        }
-
-        $splittedIndices = explode(',', $indices);
-        if (count($splittedIndices) > 1) {
-            sort($splittedIndices);
-
-            return RepositoryReference::create(
-                $appUUIDComposed,
-                implode('_', $splittedIndices)
-            );
-        }
-
-        return $repositoryReference;
-    }
-
-    /**
      * Makes calls to the elasticsearch server based on this index.
      *
      * It's possible to make any REST query directly over this method
@@ -106,8 +63,6 @@ abstract class WithElasticaWrapper implements AsyncRequestAccessor
      * @param array|string $data        OPTIONAL Arguments as array or pre-encoded string
      * @param array        $query       OPTIONAL Query params
      * @param string       $contentType Content-Type sent with this request
-     *
-     * @throws ResponseException
      *
      * @return PromiseInterface
      */
@@ -136,8 +91,6 @@ abstract class WithElasticaWrapper implements AsyncRequestAccessor
      * @param Index            $index
      *
      * @return PromiseInterface
-     *
-     * @throws ResponseException
      */
     public function requestAsyncEndpoint(
         AbstractEndpoint $endpoint,

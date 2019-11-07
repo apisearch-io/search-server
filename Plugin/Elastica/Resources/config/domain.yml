@@ -19,6 +19,7 @@ services:
         class: Apisearch\Plugin\Elastica\Domain\ElasticaWrapper
         arguments:
             - "@apisearch_plugin.elastica.elastica_client"
+            - "%apisearch_plugin.elastica.version%"
 
     #
     # Elastica repositories

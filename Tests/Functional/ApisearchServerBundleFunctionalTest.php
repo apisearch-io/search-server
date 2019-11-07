@@ -161,6 +161,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
                 'cluster' => [
                     'localhost' => static::getElasticsearchEndpoint(),
                 ],
+                'version' => static::getElasticsearchVersion(),
                 'refresh_on_write' => true,
             ],
             'apisearch' => [
@@ -325,6 +326,16 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             'host' => $_ENV['ELASTICSEARCH_HOST'],
             'port' => $_ENV['ELASTICSEARCH_PORT'],
         ];
+    }
+
+    /**
+     * Get elasticsearch version.
+     *
+     * @return string
+     */
+    protected static function getElasticsearchVersion(): string
+    {
+        return '7';
     }
 
     /**

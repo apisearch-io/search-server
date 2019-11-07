@@ -18,9 +18,9 @@ namespace Apisearch\Plugin\Elastica;
 use Apisearch\Server\Tests\Functional\Domain\Repository\ServiceRepositoryTest;
 
 /**
- * Class Elasticsearch61Test.
+ * Class Elasticsearch68Test.
  */
-class Elasticsearch61Test extends ServiceRepositoryTest
+class Elasticsearch68Test extends ServiceRepositoryTest
 {
     /**
      * Get elasticsearch endpoint.
@@ -30,8 +30,8 @@ class Elasticsearch61Test extends ServiceRepositoryTest
     protected static function getElasticsearchEndpoint(): array
     {
         return [
-            'host' => '127.0.0.1',
-            'port' => '9201',
+            'host' => 'apisearch.elasticsearch.6.8',
+            'port' => '9200',
         ];
     }
 

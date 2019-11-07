@@ -31,6 +31,7 @@ use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
 use Elastica\Query as ElasticaQuery;
 use Elastica\ResultSet as ElasticaResultSet;
 use Elastica\Suggest;
+use Apisearch\Plugin\Elastica\Domain\Polyfill;
 use React\Promise\PromiseInterface;
 
 /**
@@ -205,7 +206,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         $result = new Result(
             $query->getUUID(),
             $resultsCount,
-            $resultSet->getTotalHits()
+            Polyfill\ResultSet::getTotalHits($resultSet)
         );
 
         /*

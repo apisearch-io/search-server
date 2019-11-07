@@ -17,6 +17,7 @@
         "symfony/console": "<4.3",
         "symfony/dependency-injection" : "<4.3",
         "symfony/event-dispatcher" : "<4.3",
+        "symfony/dotenv" : "<4.3",
 
         "php-http/promise": "^1.0.0",
         "php-http/react-adapter": "*",
@@ -29,14 +30,13 @@
 
         "mmoreram/base-bundle": "^1.0.11",
         "mmoreram/symfony-bundle-dependencies": "^2.0.0",
-        "one-bundle-app/one-bundle-app": "^1.0.32",
         "apisearch-io/apisearch-bundle": "dev-master@dev",
         "apisearch-io/php-client": "dev-master@dev",
         "apisearch-io/php-reconnect": "dev-master@dev",
         "apisearch-io/symfony-async-http-kernel": "dev-master@dev",
         "apisearch-io/symfony-react-server": "dev-master@dev",
 
-        "ruflin/elastica": "^6.0",
+        "ruflin/elastica": "7.0.0-beta1",
         "league/tactician-bundle": "^1.1",
         "nesbot/carbon": "^2.0",
         "ramsey/uuid": "^3.7.1",
@@ -57,11 +57,9 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "OneBundleApp\\App\\ComposerHook::installConsole",
             "Apisearch\\ReactSymfonyServer\\ComposerHook::installReactServer"
         ],
         "post-update-cmd": [
-            "OneBundleApp\\App\\ComposerHook::installConsole",
             "Apisearch\\ReactSymfonyServer\\ComposerHook::installReactServer"
         ],
         "fix-code": [

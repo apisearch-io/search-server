@@ -92,6 +92,7 @@ class ElasticaPluginExtension extends BaseExtension
     {
         return [
             'apisearch_plugin.elastica.cluster' => ['servers' => $config['cluster']],
+            'apisearch_plugin.elastica.version' => $config['version'],
             'apisearch_plugin.elastica.refresh_on_write' => (bool) Env::get('ELASTICSEARCH_REFRESH_ON_WRITE', $config['refresh_on_write']),
         ];
     }

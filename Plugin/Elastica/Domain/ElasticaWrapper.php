@@ -30,14 +30,16 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Exception\ParsedCreatingIndexException;
 use Apisearch\Server\Exception\ParsedResourceNotAvailableException;
 use Apisearch\Server\Exception\ResponseException;
-use Elastica\Document;
 use Elastica\Exception\Bulk\ResponseException as BulkResponseException;
+use Elastica\Document;
 use Elastica\Index;
 use Elastica\Query;
 use Elastica\Request;
+use Elastica\Response;
 use Elastica\Search as ElasticaSearch;
-use Elastica\Type;
+use Apisearch\Plugin\Elastica\Domain\Polyfill;
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use Elasticsearch\Endpoints\Bulk;
 use Elasticsearch\Endpoints\Cat\Aliases;
 use Elasticsearch\Endpoints\Cat\Indices;
 use Elasticsearch\Endpoints\Cluster\Health;
@@ -49,6 +51,7 @@ use Elasticsearch\Endpoints\Indices\Delete as DeleteIndex;
 use Elasticsearch\Endpoints\Indices\Mapping as MappingEndpoint;
 use Elasticsearch\Endpoints\Indices\Refresh;
 use Elasticsearch\Endpoints\Reindex;
+use Elasticsearch\Serializers\ArrayToJSONSerializer;
 use React\Promise;
 use React\Promise\PromiseInterface;
 use React\Promise\RejectedPromise;
@@ -73,13 +76,25 @@ class ElasticaWrapper implements AsyncRequestAccessor
     private $client;
 
     /**
+     * @var string
+     *
+     * Version
+     */
+    private $version;
+
+    /**
      * Construct.
      *
      * @param AsyncClient $client
+     * @param string $version
      */
-    public function __construct(AsyncClient $client)
+    public function __construct(
+        AsyncClient $client,
+        string $version
+    )
     {
         $this->client = $client;
+        $this->version = $version;
     }
 
     /**
@@ -242,20 +257,20 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $indexConfiguration['analysis']['analyzer']['default']['filter'] = array_values($defaultAnalyzerFilter);
         $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = array_values($searchAnalyzerFilter);
 
-        return $indexConfiguration;
+        return ['settings' => $indexConfiguration];
     }
 
     /**
      * Build index mapping.
      *
-     * @param Type\Mapping $mapping
-     * @param Config       $config
+     * @param Config $config
+     *
+     * @return array
      */
-    public function buildIndexMapping(
-        Type\Mapping $mapping,
-        Config $config
-    ) {
-        $mapping->setParam('dynamic_templates', [
+    public function getIndexMapping(Config $config) : array
+    {
+        $mapping = [];
+        $mapping['dynamic_templates'] = [
             [
                 'dynamic_metadata_as_keywords' => [
                     'path_match' => 'indexed_metadata.*',
@@ -292,7 +307,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                     ],
                 ],
             ],
-        ]);
+        ];
 
         $sourceExcludes = [];
         if (!$config->shouldSearchableMetadataBeStored()) {
@@ -302,9 +317,8 @@ class ElasticaWrapper implements AsyncRequestAccessor
             ];
         }
 
-        $mapping->setSource(['excludes' => $sourceExcludes]);
-
-        $mapping->setProperties([
+        $mapping['_source'] = ['excludes' => $sourceExcludes];
+        $mapping['properties'] = [
             'uuid' => [
                 'type' => 'object',
                 'dynamic' => 'strict',
@@ -339,7 +353,9 @@ class ElasticaWrapper implements AsyncRequestAccessor
                 'analyzer' => 'search_analyzer',
                 'search_analyzer' => 'search_analyzer',
             ],
-        ]);
+        ];
+
+        return $mapping;
     }
 
     /**
@@ -663,8 +679,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
      * @param RepositoryReference $repositoryReference
      *
      * @return PromiseInterface
-     *
-     * @throws ResourceNotAvailableException
      */
     public function resetIndex(RepositoryReference $repositoryReference): PromiseInterface
     {
@@ -749,35 +763,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
             ->then(function () use ($indexOriginalOldName) {
                 return $this->deleteIndexByName($indexOriginalOldName);
             });
-    }
-
-    /**
-     * Get item type by index name.
-     *
-     * @param RepositoryReference $repositoryReference
-     *
-     * @return Type
-     */
-    public function getItemTypeByRepositoryReference(RepositoryReference $repositoryReference): Type
-    {
-        return $this
-            ->getIndex($repositoryReference)
-            ->getType(self::ITEM_TYPE);
-    }
-
-    /**
-     * Get item type by index name.
-     *
-     * @param string $indexName
-     *
-     * @return Type
-     */
-    public function getItemTypeByIndexName(string $indexName): Type
-    {
-        return $this
-            ->client
-            ->getIndex($indexName)
-            ->getType(self::ITEM_TYPE);
     }
 
     /**
@@ -890,14 +875,10 @@ class ElasticaWrapper implements AsyncRequestAccessor
         string $indexName,
         Config $config
     ): PromiseInterface {
-        $itemMapping = new Type\Mapping();
-        $type = $this->getItemTypeByIndexName($indexName);
-        $index = $type->getIndex();
-        $itemMapping->setType($type);
-        $this->buildIndexMapping($itemMapping, $config);
         $endpoint = new MappingEndpoint\Put();
-        $endpoint->setBody($itemMapping->toArray());
-        $endpoint->setType($type->getName());
+        $endpoint->setBody($this->getIndexMapping($config));
+        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        $index = $this->getIndexByName($indexName);
 
         return $this
             ->client
@@ -923,21 +904,29 @@ class ElasticaWrapper implements AsyncRequestAccessor
         array $documents,
         bool $refresh
     ): PromiseInterface {
-        $type = $this->getItemTypeByRepositoryReference($repositoryReference);
-        $index = $type->getIndex();
+        $index = $this->getIndex($repositoryReference);
+        $endpoint = new Bulk(new ArrayToJSONSerializer());
+        $data = [];
         foreach ($documents as $document) {
-            $document->setIndex($index);
-            $document->setType($type);
+            $data[] = ['update' => ['_id' => $document->getId(), '_index' => $index->getName()]];
+            $data[] = ['doc' => $document->getData(), 'doc_as_upsert' => true];
         }
+        $endpoint->setBody($data);
+        $endpoint->setParams([
+            'refresh' => $refresh
+        ]);
+        Polyfill\Type::setEndpointType($endpoint, $this->version);
 
-        $bulk = new AsyncBulk($this->client);
-        $bulk->addDocuments($documents);
-        $bulk->setRequestParam('refresh', $refresh);
-
-        return $bulk
-            ->sendAsync()
-            ->then(null, function (BulkResponseException $exception) {
-                throw $this->getIndexNotAvailableException($exception->getMessage());
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint, $index)
+            ->then(null, function (\Exception $exception) {
+                throw (
+                    $exception instanceof ResponseException ||
+                    $exception instanceof BulkResponseException
+                )
+                    ? $this->getIndexNotAvailableException($exception->getMessage())
+                    : $exception;
             });
     }
 
@@ -957,8 +946,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         array $documentsId,
         bool $refresh
     ): PromiseInterface {
-        $type = $this->getItemTypeByRepositoryReference($repositoryReference);
-        $index = $type->getIndex();
+        $index = $this->getIndex($repositoryReference);
         $query = Query::create(new Query\Ids(array_values($documentsId)));
 
         $endpoint = new DeleteByQuery();
@@ -987,7 +975,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
 
         return $this
             ->requestAsyncEndpoint($endpoint)
-            ->then(function ($response) {
+            ->then(function (Response $response) {
                 return $response->getData()['status'];
             });
     }
@@ -1050,47 +1038,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
     }
 
     /**
-     * Normalize Repository Reference for cross index.
-     *
-     * @param RepositoryReference $repositoryReference
-     *
-     * @return RepositoryReference
-     */
-    protected function normalizeRepositoryReferenceCrossIndices(RepositoryReference $repositoryReference)
-    {
-        if (is_null($repositoryReference->getIndexUUID())) {
-            return $repositoryReference;
-        }
-
-        $indices = $repositoryReference
-            ->getIndexUUID()
-            ->composeUUID();
-
-        $appUUIDComposed = $repositoryReference
-            ->getAppUUID()
-            ->composeUUID();
-
-        if ('*' === $indices) {
-            return RepositoryReference::create(
-                $appUUIDComposed,
-                'all'
-            );
-        }
-
-        $splittedIndices = explode(',', $indices);
-        if (count($splittedIndices) > 1) {
-            sort($splittedIndices);
-
-            return RepositoryReference::create(
-                $appUUIDComposed,
-                implode('_', $splittedIndices)
-            );
-        }
-
-        return $repositoryReference;
-    }
-
-    /**
      * Makes calls to the elasticsearch server based on this index.
      *
      * It's possible to make any REST query directly over this method
@@ -1100,8 +1047,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
      * @param array|string $data        OPTIONAL Arguments as array or pre-encoded string
      * @param array        $query       OPTIONAL Query params
      * @param string       $contentType Content-Type sent with this request
-     *
-     * @throws ResponseException
      *
      * @return PromiseInterface
      */
@@ -1130,8 +1075,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
      * @param Index            $index
      *
      * @return PromiseInterface
-     *
-     * @throws ResponseException
      */
     public function requestAsyncEndpoint(
         AbstractEndpoint $endpoint,
@@ -1143,5 +1086,19 @@ class ElasticaWrapper implements AsyncRequestAccessor
                 $endpoint,
                 $index
             );
+    }
+
+    /**
+     * Get index by name
+     *
+     * @param string $indexName
+     *
+     * @return Index
+     */
+    private function getIndexByName(string $indexName) : Index
+    {
+        return $this
+            ->client
+            ->getIndex($indexName);
     }
 }

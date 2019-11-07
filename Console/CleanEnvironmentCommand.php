@@ -25,6 +25,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CleanEnvironmentCommand extends CommandWithBusAndGodToken
 {
     /**
+     * Configures the current command.
+     */
+    protected function configure()
+    {
+        $this->setDescription('Clean the environment before server stops');
+    }
+
+    /**
      * Dispatch domain event.
      *
      * @param InputInterface  $input

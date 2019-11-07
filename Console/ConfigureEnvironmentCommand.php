@@ -25,6 +25,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConfigureEnvironmentCommand extends CommandWithBusAndGodToken
 {
     /**
+     * Configures the current command.
+     */
+    protected function configure()
+    {
+        $this->setDescription('Configure the environment before server run');
+    }
+
+    /**
      * Dispatch domain event.
      *
      * @param InputInterface  $input

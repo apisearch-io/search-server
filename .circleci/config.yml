@@ -16,7 +16,7 @@ jobs:
         steps:
             - checkout
             - setup_remote_docker:
-                docker_layer_caching: true
+                docker_layer_caching: false
 
             - run:
                 name: Run elasticsearch ^6.1
@@ -29,14 +29,37 @@ jobs:
                         docker.elastic.co/elasticsearch/elasticsearch:6.1.4
 
             - run:
-                name: Run elasticsearch ^6.6
+                name: Run elasticsearch ^6.8
                 command: |
                     docker run -d \
-                        --name=apisearch.elasticsearch.6.6 \
+                        --name=apisearch.elasticsearch.6.8 \
                         -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
                         -e "discovery.type=single-node" \
                         -e "action.auto_create_index=-apisearch*,+*" \
-                        docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+                        docker.elastic.co/elasticsearch/elasticsearch:6.8.0
+
+
+
+            - run:
+                  name: Run elasticsearch ^7.0
+                  command: |
+                      docker run -d \
+                          --name=apisearch.elasticsearch.7.0 \
+                          -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
+                          -e "discovery.type=single-node" \
+                          -e "action.auto_create_index=-apisearch*,+*" \
+                          docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+
+            - run:
+                  name: Run elasticsearch ^7.4
+                  command: |
+                      docker run -d \
+                          --name=apisearch.elasticsearch.7.4 \
+                          -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
+                          -e "discovery.type=single-node" \
+                          -e "action.auto_create_index=-apisearch*,+*" \
+                          docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+
 
             - run:
                 name: Run Redis
@@ -65,13 +88,15 @@ jobs:
                         --name "apisearch.server" \
                         --link "apisearch.redis" \
                         --link "apisearch.elasticsearch.6.1" \
-                        --link "apisearch.elasticsearch.6.6" \
+                        --link "apisearch.elasticsearch.6.8" \
+                        --link "apisearch.elasticsearch.7.0" \
+                        --link "apisearch.elasticsearch.7.4" \
                         --link "apisearch.rabbitmq" \
                         -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
                         -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
                         -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
                         -e "APISEARCH_ENABLED_PLUGINS=redis_storage" \
-                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.6.6" \
+                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.7.4" \
                         -e "ELASTICSEARCH_PORT=9200" \
                         -e "ELASTICSEARCH_REFRESH_ON_WRITE=1" \
                         -e "REDIS_ELK_HOST=apisearch.redis" \
@@ -89,13 +114,13 @@ jobs:
                     docker run -d \
                         --name "apisearch.commands_consumer_redis" \
                         --link "apisearch.redis" \
-                        --link "apisearch.elasticsearch.6.6" \
+                        --link "apisearch.elasticsearch.7.4" \
                         -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
                         -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
                         -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
                         -e "APISEARCH_ENABLED_PLUGINS=redis_queues,redis_storage" \
                         -e "APISEARCH_DOMAIN_EVENTS_ADAPTER=enqueue" \
-                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.6.6" \
+                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.7.4" \
                         -e "ELASTICSEARCH_PORT=9200" \
                         -e "ELASTICSEARCH_REFRESH_ON_WRITE=1" \
                         -e "REDIS_STORAGE_HOST=apisearch.redis" \
@@ -116,12 +141,12 @@ jobs:
                     docker run -d \
                         --name "apisearch.domain_events_consumer_redis" \
                         --link "apisearch.redis" \
-                        --link "apisearch.elasticsearch.6.6" \
+                        --link "apisearch.elasticsearch.7.4" \
                         -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
                         -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
                         -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
                         -e "APISEARCH_ENABLED_PLUGINS=redis_queues,redis_storage" \
-                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.6.6" \
+                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.7.4" \
                         -e "ELASTICSEARCH_PORT=9200" \
                         -e "ELASTICSEARCH_REFRESH_ON_WRITE=1" \
                         -e "REDIS_STORAGE_HOST=apisearch.redis" \
@@ -142,14 +167,14 @@ jobs:
                     docker run -d \
                         --name "apisearch.commands_consumer_rabbitmq" \
                         --link "apisearch.redis" \
-                        --link "apisearch.elasticsearch.6.6" \
+                        --link "apisearch.elasticsearch.7.4" \
                         --link "apisearch.rabbitmq" \
                         -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
                         -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
                         -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
                         -e "APISEARCH_ENABLED_PLUGINS=rabbitmq,redis_storage" \
                         -e "APISEARCH_DOMAIN_EVENTS_ADAPTER=enqueue" \
-                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.6.6" \
+                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.7.4" \
                         -e "ELASTICSEARCH_PORT=9200" \
                         -e "ELASTICSEARCH_REFRESH_ON_WRITE=1" \
                         -e "REDIS_STORAGE_HOST=apisearch.redis" \
@@ -173,13 +198,13 @@ jobs:
                     docker run -d \
                         --name "apisearch.domain_events_consumer_rabbitmq" \
                         --link "apisearch.redis" \
-                        --link "apisearch.elasticsearch.6.6" \
+                        --link "apisearch.elasticsearch.7.4" \
                         --link "apisearch.rabbitmq" \
                         -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
                         -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
                         -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
                         -e "APISEARCH_ENABLED_PLUGINS=rabbitmq,redis_storage" \
-                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.6.6" \
+                        -e "ELASTICSEARCH_HOST=apisearch.elasticsearch.7.4" \
                         -e "ELASTICSEARCH_PORT=9200" \
                         -e "ELASTICSEARCH_REFRESH_ON_WRITE=1" \
                         -e "REDIS_STORAGE_HOST=apisearch.redis" \
