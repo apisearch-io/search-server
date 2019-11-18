@@ -32,6 +32,8 @@ class Elasticsearch70Test extends ServiceRepositoryTest
         return [
             'host' => 'apisearch.elasticsearch.7.0',
             'port' => '9200',
+            'username' => 'elastic',
+            'password' => 'test'
         ];
     }
 

@@ -101,11 +101,13 @@ class AsyncClient extends Client implements AsyncRequestAccessor
             ->httpClient
             ->send($request)
             ->then(function (ResponseInterface $response) {
+//                var_dump((string) $response->getBody())
                 return new Response(
                     (string) ($response->getBody()),
                     $response->getStatusCode()
                 );
-            }, function (ClueResponseException $exception) {
+            }, function (\Throwable $exception) {
+                var_dump($exception->getMessage());
                 throw new ResponseException(
                     $exception->getMessage(),
                     $exception->getCode()

@@ -324,6 +324,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
         return [
             'host' => $_ENV['ELASTICSEARCH_HOST'],
             'port' => $_ENV['ELASTICSEARCH_PORT'],
+            'username' => $_ENV['ELASTICSEARCH_USER'],
+            'password' => $_ENV['ELASTICSEARCH_PASS']
         ];
     }
 
