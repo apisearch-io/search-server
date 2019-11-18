@@ -2,3 +2,4 @@
 /var
 /.env
 /.php_cs.cache
+/.idea
