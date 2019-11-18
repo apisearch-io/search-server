@@ -47,8 +47,8 @@ jobs:
                           --name=apisearch.elasticsearch.7.0 \
                           -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
                           -e "discovery.type=single-node" \
-                          -e "xpack.security.enabled=true"
-                          -e "ELASTIC_PASSWORD=test"
+                          -e "xpack.security.enabled=true" \
+                          -e "ELASTIC_PASSWORD=test" \
                           -e "action.auto_create_index=-apisearch*,+*" \
                           docker.elastic.co/elasticsearch/elasticsearch:7.0.0
 
