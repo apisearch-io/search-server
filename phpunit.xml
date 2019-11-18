@@ -24,7 +24,7 @@
         <env name="APISEARCH_PING_TOKEN" value="6326d504-0a5f-f1ae-7344-8e70b75fcde9" force="true" />
         <env name="APISEARCH_ENABLED_PLUGINS" value="redis_storage" force="true" />
 
-        <env name="ELASTICSEARCH_HOST" value="localhost" force="true" />
+        <env name="ELASTICSEARCH_HOST" value="localhk" force="true" />
         <env name="ELASTICSEARCH_PORT" value="9200" force="true" />
         <env name="ELASTICSEARCH_USER" value="elastic" force="true" />
         <env name="ELASTICSEARCH_PASS" value="test" force="true" />
