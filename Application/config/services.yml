@@ -37,3 +37,5 @@ elastica_plugin:
         docker_elasticsearch_service:
             host: "%env(ELASTICSEARCH_HOST)%"
             port: "%env(ELASTICSEARCH_PORT)%"
+            username: 'elastic'
+            password: 'test'
