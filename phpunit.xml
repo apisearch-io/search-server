@@ -45,7 +45,7 @@
         <env name="REDIS_SECURITY_HOST" value="apisearch.redis" force="true" />
         <env name="REDIS_SECURITY_PORT" value="6379" force="true" />
 
-        <env name="REDIS_ELK_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_ELK_HOST" value="apisearch.redis"" force="true" />
         <env name="REDIS_ELK_PORT" value="6379" force="true" />
 
         <env name="REDIS_METADATA_FIELDS_HOST" value="apisearch.redis" force="true" />

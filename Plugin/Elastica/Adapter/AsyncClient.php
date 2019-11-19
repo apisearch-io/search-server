@@ -54,6 +54,8 @@ class AsyncClient extends Client implements AsyncRequestAccessor
         LoopInterface $eventLoop,
         array $config = []
     ) {
+        $config['username'] = 'elastic';
+        $config['password'] = 'test';
         parent::__construct($config);
         $this->httpClient = new Browser($eventLoop);
     }
@@ -86,7 +88,7 @@ class AsyncClient extends Client implements AsyncRequestAccessor
 
         $connection = $this->getConnection();
         $fullPath = sprintf('http://%s:%s/%s?%s',
-            $connection->getHost(),
+            ($connection->getUsername() === null ? $connection->getHost() : $connection->getUsername(). ':' .$connection->getPassword(). '@' .$connection->getHost()),
             $connection->getPort(),
             $path,
             $this->arrayValuesToQuery($query)
@@ -96,18 +98,17 @@ class AsyncClient extends Client implements AsyncRequestAccessor
         $request = $request->withBody(Psr7\stream_for($data));
         $request = $request->withHeader('Content-Type', $contentType);
         $request = $request->withHeader('Content-Length', strlen($data));
-
         return $this
             ->httpClient
             ->send($request)
             ->then(function (ResponseInterface $response) {
-//                var_dump((string) $response->getBody())
+                var_dump((string) $response->getBody());
                 return new Response(
                     (string) ($response->getBody()),
                     $response->getStatusCode()
                 );
             }, function (\Throwable $exception) {
-                var_dump($exception->getMessage());
+//                var_dump($exception->getMessage());
                 throw new ResponseException(
                     $exception->getMessage(),
                     $exception->getCode()
