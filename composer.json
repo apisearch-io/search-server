@@ -56,5 +56,6 @@
       "Apisearch\\Plugin\\": "Plugin/"
     }
   },
+  "minimum-stability": "dev",
   "prefer-stable": true
 }
