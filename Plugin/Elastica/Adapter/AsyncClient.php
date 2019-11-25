@@ -87,8 +87,9 @@ class AsyncClient extends Client implements AsyncRequestAccessor
         }
 
         $connection = $this->getConnection();
-        $fullPath = sprintf('http://%s:%s/%s?%s',
-            ($connection->getUsername() === null ? $connection->getHost() : $connection->getUsername(). ':' .$connection->getPassword(). '@' .$connection->getHost()),
+        $authentication = ($connection->getUsername() ? $connection->getUsername().':'.$connection->getPassword().'@' : null);
+        $fullPath = sprintf('http://'.$authentication.'%s:%s/%s?%s',
+            $connection->getHost(),
             $connection->getPort(),
             $path,
             $this->arrayValuesToQuery($query)
@@ -102,13 +103,11 @@ class AsyncClient extends Client implements AsyncRequestAccessor
             ->httpClient
             ->send($request)
             ->then(function (ResponseInterface $response) {
-                var_dump((string) $response->getBody());
                 return new Response(
                     (string) ($response->getBody()),
                     $response->getStatusCode()
                 );
             }, function (\Throwable $exception) {
-//                var_dump($exception->getMessage());
                 throw new ResponseException(
                     $exception->getMessage(),
                     $exception->getCode()

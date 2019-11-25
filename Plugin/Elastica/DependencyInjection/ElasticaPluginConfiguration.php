@@ -54,6 +54,7 @@ class ElasticaPluginConfiguration extends BaseConfiguration
                             ->scalarNode('password')
                                 ->defaultNull()
                             ->end()
+
                         ->end()
                     ->end()
                 ->end()
