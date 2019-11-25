@@ -55,7 +55,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
      *
      * External server port
      */
-    const HTTP_TEST_SERVICE_PORT = '8300';
+    const HTTP_TEST_SERVICE_PORT = '8200';
 
     /**
      * Get container service.
