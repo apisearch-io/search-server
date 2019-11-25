@@ -85,7 +85,8 @@ class AsyncClient extends Client implements AsyncRequestAccessor
         }
 
         $connection = $this->getConnection();
-        $fullPath = sprintf('http://%s:%s/%s?%s',
+        $authentication = ($connection->getUsername() ? $connection->getUsername().':'.$connection->getPassword().'@' : null);
+        $fullPath = sprintf('http://'.$authentication.'%s:%s/%s?%s',
             $connection->getHost(),
             $connection->getPort(),
             $path,

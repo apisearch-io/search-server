@@ -30,8 +30,10 @@ class Elasticsearch70Test extends ServiceRepositoryTest
     protected static function getElasticsearchEndpoint(): array
     {
         return [
-            'host' => 'apisearch.elasticsearch.7.0',
+            'host' => 'localhost',
             'port' => '9200',
+            'username' => 'elastic',
+            'password' => 'test'
         ];
     }
 

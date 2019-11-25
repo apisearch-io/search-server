@@ -550,8 +550,12 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         $method = $route instanceof Route
             ? $route->getMethods()[0]
             : 'GET';
-
-        $command = sprintf('curl -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://localhost:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
+        $credentials = self::getElasticsearchEndpoint();
+        $authentication = '';
+        if (!empty($credentials['username'])) {
+            $authentication = "-u ".$credentials['username'] . ':' . $credentials['password'];
+        }
+        $command = sprintf('curl '.$authentication.' -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://localhost:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
             $tmpFile,
             (
                 'head' === $method
@@ -572,6 +576,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ? $body
                 : json_encode($body)
         );
+
 
         $command = str_replace("-d'[]'", '', $command);
         $responseCode = exec($command);
