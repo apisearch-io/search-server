@@ -24,13 +24,13 @@
         <env name="APISEARCH_PING_TOKEN" value="6326d504-0a5f-f1ae-7344-8e70b75fcde9" force="true" />
         <env name="APISEARCH_ENABLED_PLUGINS" value="redis_storage" force="true" />
 
-        <env name="ELASTICSEARCH_HOST" value="apisearch.server.7.4" force="true" />
+        <env name="ELASTICSEARCH_HOST" value="localhost" force="true" />
         <env name="ELASTICSEARCH_PORT" value="9200" force="true" />
         <env name="ELASTICSEARCH_USER" value="elastic" force="true" />
         <env name="ELASTICSEARCH_PASS" value="test" force="true" />
         <env name="ELASTICSEARCH_VERSION" value="7" force="true" />
 
-        <env name="REDIS_QUEUE_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_QUEUE_HOST" value="localhost" force="true" />
         <env name="REDIS_QUEUE_PORT" value="6379" force="true" />
 
         <env name="RABBITMQ_QUEUE_HOST" value="apisearch.rabbitmq" force="true" />
@@ -39,16 +39,16 @@
         <env name="RABBITMQ_QUEUE_PASSWORD" value="guest" force="true" />
         <env name="RABBITMQ_QUEUE_SECONDS_TO_WAIT_ON_BUSY" value="1" force="true" />
 
-        <env name="REDIS_STORAGE_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_STORAGE_HOST" value="localhost" force="true" />
         <env name="REDIS_STORAGE_PORT" value="6379" force="true" />
 
-        <env name="REDIS_SECURITY_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_SECURITY_HOST" value="localhost" force="true" />
         <env name="REDIS_SECURITY_PORT" value="6379" force="true" />
 
-        <env name="REDIS_ELK_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_ELK_HOST" value="localhost" force="true" />
         <env name="REDIS_ELK_PORT" value="6379" force="true" />
 
-        <env name="REDIS_METADATA_FIELDS_HOST" value="apisearch.redis" force="true" />
+        <env name="REDIS_METADATA_FIELDS_HOST" value="localhost" force="true" />
         <env name="REDIS_METADATA_FIELDS_PORT" value="6379" force="true" />
     </php>
 </phpunit>

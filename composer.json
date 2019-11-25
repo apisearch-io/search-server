@@ -40,11 +40,13 @@
     "apisearch-io/php-reconnect": "dev-master@dev",
 
     "ruflin/elastica": "7.0.0-beta1",
+    "elasticsearch/elasticsearch": "7.3.0",
     "league/tactician-bundle": "^1.1",
     "nesbot/carbon": "^2.0",
     "ramsey/uuid": "^3.7.1",
     "ekino/newrelic-bundle": "^2.0",
-    "php-amqplib/php-amqplib": ">=2.6.1"
+    "php-amqplib/php-amqplib": ">=2.6.1",
+    "ext-curl": "*"
   },
   "require-dev": {
     "symfony/browser-kit": "^4.3"
