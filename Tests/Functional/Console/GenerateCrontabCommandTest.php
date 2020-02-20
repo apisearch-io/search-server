@@ -33,11 +33,8 @@ class GenerateCrontabCommandTest extends CommandTest
     {
         $configuration = parent::decorateConfiguration($configuration);
 
-        $configuration['services']['fake_crontab_middleware'] = [
-            'class' => FakeCrontabMiddleware::class,
-            'tags' => [
-                ['name' => 'apisearch_plugin.middleware'],
-            ],
+        $configuration['services'][FakeCrontabMiddleware::class] = [
+            'tags' => ['apisearch_plugin.middleware'],
         ];
 
         return $configuration;

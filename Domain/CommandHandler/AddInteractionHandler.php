@@ -16,16 +16,15 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\AddInteraction;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\InteractionWasAdded;
-use Apisearch\Server\Domain\WithEventPublisher;
+use Apisearch\Server\Domain\WithEventBus;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 
 /**
  * Class AddInteractionHandler.
  */
-class AddInteractionHandler extends WithEventPublisher
+class AddInteractionHandler extends WithEventBus
 {
     /**
      * Add interaction.
@@ -40,11 +39,11 @@ class AddInteractionHandler extends WithEventPublisher
         $interaction = $addInteraction->getInteraction();
 
         $this
-            ->eventPublisher
-            ->publish(new DomainEventWithRepositoryReference(
-                $repositoryReference,
-                new InteractionWasAdded($interaction)
-            ));
+            ->eventBus
+            ->dispatch(
+                (new InteractionWasAdded($interaction))
+                    ->withRepositoryReference($repositoryReference)
+            );
 
         return new FulfilledPromise();
     }

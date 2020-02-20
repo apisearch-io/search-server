@@ -26,8 +26,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class AddTokenCommand.
  */
-class AddTokenCommand extends CommandWithBusAndGodToken
+class AddTokenCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:add-token';
+
     /**
      * Configures the current command.
      */
@@ -90,7 +95,7 @@ class AddTokenCommand extends CommandWithBusAndGodToken
         $objects = $this->getAppTokenAndIndices($input, $output);
         $endpoints = $this->getEndpoints($input);
 
-        $this->handleSynchronously(new AddToken(
+        $this->executeCommand(new AddToken(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
             new Token(

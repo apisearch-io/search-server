@@ -361,30 +361,6 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Pause consumers.
-     *
-     * @param string[] $types
-     *
-     * @throws Exception
-     */
-    public function pauseConsumers(array $types)
-    {
-        throw new Exception('Cannot test ping with this endpoint');
-    }
-
-    /**
-     * Resume consumers.
-     *
-     * @param string[] $types
-     *
-     * @throws Exception
-     */
-    public function resumeConsumers(array $types)
-    {
-        throw new Exception('Cannot test ping with this endpoint');
-    }
-
-    /**
      * Configure repository.
      *
      * @param string $appId

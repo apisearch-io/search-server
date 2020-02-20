@@ -29,8 +29,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class GenerateBasicTokensCommand.
  */
-class GenerateBasicTokensCommand extends CommandWithBusAndGodToken
+class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:generate-basic-tokens';
+
     /**
      * Configures the current command.
      */
@@ -90,7 +95,7 @@ class GenerateBasicTokensCommand extends CommandWithBusAndGodToken
     ) {
         $tokenId = Uuid::uuid4()->toString();
 
-        $this->handleSynchronously(new AddToken(
+        $this->executeCommand(new AddToken(
             RepositoryReference::create($appUUID),
             $godToken,
             new Token(

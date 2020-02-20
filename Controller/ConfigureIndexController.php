@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ConfigureIndexController.
  */
-class ConfigureIndexController extends ControllerWithBus
+class ConfigureIndexController extends ControllerWithCommandBus
 {
     /**
      * Config the index.
@@ -46,7 +46,7 @@ class ConfigureIndexController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new ConfigureIndex(
+            ->execute(new ConfigureIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     $indexUUID

@@ -25,7 +25,6 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
-use Apisearch\Plugin\DiskStorage\DiskStoragePluginBundle;
 use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
@@ -33,12 +32,20 @@ use Apisearch\Server\ApisearchPluginsBundle;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Exception\ErrorException;
 use Apisearch\User\Interaction;
+use Drift\CommandBus\CommandBusBundle;
+use Drift\EventBus\EventBusBundle;
+use function Clue\React\Block\await;
+use function Clue\React\Block\awaitAll;
 use Mmoreram\BaseBundle\Kernel\DriftBaseKernel;
 use Mmoreram\BaseBundle\Tests\BaseFunctionalTest;
+use React\EventLoop\Factory as EventLoopFactory;
+use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
 
-set_error_handler(function ($code, $message, $file, $line, $context) {
+set_error_handler(function ($code, $message, $file, $line, $context = null) {
     if (0 == error_reporting()) {
         return;
     }
@@ -56,7 +63,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
      *
      * External server port
      */
-    const HTTP_TEST_SERVICE_PORT = '8200';
+    const HTTP_TEST_SERVICE_PORT = '8000';
 
     /**
      * Get container service.
@@ -105,26 +112,18 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
         self::$pingToken = $_ENV['APISEARCH_PING_TOKEN'];
         self::$readonlyToken = $_ENV['APISEARCH_READONLY_TOKEN'];
         $imports = [
-            ['resource' => '@ApisearchServerBundle/Resources/config/tactician.yml'],
-            [
-                'resource' => '@ApisearchServerBundle/app_deploy.yml',
-                'ignore_errors' => true,
-            ],
-            ['resource' => '@ApisearchServerBundle/Resources/test/subscribers.yml'],
-            ['resource' => '@ApisearchServerBundle/Resources/test/reactphp.yml'],
-            ['resource' => '@ApisearchServerBundle/Resources/test/tactician.yml'],
+            ['resource' => '@ApisearchServerBundle/Resources/config/command_bus.yml'],
+            ['resource' => '@ApisearchServerBundle/Resources/test/command_bus.yml'],
         ];
 
-        if (!static::logDomainEvents()) {
-            $imports[] = ['resource' => '@ApisearchServerBundle/Resources/test/middlewares.yml'];
-        }
-
         $bundles = [
+            FrameworkBundle::class,
             ApisearchServerBundle::class,
             ApisearchBundle::class,
             ElasticaPluginBundle::class,
             ApisearchPluginsBundle::class,
-            DiskStoragePluginBundle::class
+            CommandBusBundle::class,
+            EventBusBundle::class,
         ];
 
         $composedIndex = self::$index.','.self::$anotherIndex;
@@ -139,22 +138,18 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             ],
             'services' => [
                 '_defaults' => [
-                    'autowire' => false,
-                    'autoconfigure' => false,
                     'public' => true,
+                ],
+                'reactphp.event_loop' => [
+                    'class' => LoopInterface::class,
+                    'public' => true,
+                    'factory' => [
+                        EventLoopFactory::class,
+                        'create',
+                    ],
                 ],
             ],
             'apisearch_server' => [
-                'domain_events_adapter' => static::saveEvents()
-                    ? (
-                        static::asynchronousEvents()
-                            ? 'enqueue'
-                            : 'inline'
-                    )
-                    : 'ignore',
-                'commands_adapter' => static::asynchronousCommands()
-                    ? 'enqueue'
-                    : 'inline',
                 'god_token' => self::$godToken,
                 'ping_token' => self::$pingToken,
                 'readonly_token' => self::$readonlyToken,
@@ -218,60 +213,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             static::decorateBundles($bundles),
             static::decorateConfiguration($configuration),
             static::decorateRoutes([
-                '@ApisearchServerBundle/Resources/config/routing.yml',
+                '@ApisearchServerBundle/Resources/config/routes.yml',
             ]),
             'prod', false
         );
-    }
-
-    /**
-     * Log domain events.
-     *
-     * @return bool
-     */
-    protected static function logDomainEvents(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Use asynchronous commands.
-     *
-     * @return bool
-     */
-    protected static function asynchronousCommands(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Save events.
-     *
-     * @return bool
-     */
-    protected static function saveEvents(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Save asynchronous events.
-     *
-     * @return bool
-     */
-    protected static function asynchronousEvents(): bool
-    {
-        return false;
-    }
-
-    /**
-     * Save events.
-     *
-     * @return bool
-     */
-    protected static function tokensInRedis(): bool
-    {
-        return true;
     }
 
     /**
@@ -326,7 +271,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     {
         return [
             'host' => $_ENV['ELASTICSEARCH_HOST'],
-            'port' => $_ENV['ELASTICSEARCH_PORT'],
         ];
     }
 
@@ -752,20 +696,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     abstract public static function cleanEnvironment();
 
     /**
-     * Pause consumers.
-     *
-     * @param string[] $types
-     */
-    abstract public function pauseConsumers(array $types);
-
-    /**
-     * Resume consumers.
-     *
-     * @param string[] $types
-     */
-    abstract public function resumeConsumers(array $types);
-
-    /**
      * Get token id.
      *
      * @param Token $token
@@ -809,5 +739,35 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             echo sprintf('[ %s ] - %f', $item->composeUUID(), $item->getScore()).PHP_EOL;
         }
         echo PHP_EOL;
+    }
+
+    /**
+     * Await.
+     *
+     * @param PromiseInterface $promise
+     *
+     * @return mixed
+     */
+    protected static function await(PromiseInterface $promise)
+    {
+        return await(
+            $promise,
+            static::getStatic('reactphp.event_loop')
+        );
+    }
+
+    /**
+     * Await all.
+     *
+     * @param array $promises
+     *
+     * @return array
+     */
+    protected static function awaitAll(array $promises): array
+    {
+        return awaitAll(
+            $promises,
+            static::getStatic('reactphp.event_loop')
+        );
     }
 }

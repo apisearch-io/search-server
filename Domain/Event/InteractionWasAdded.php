@@ -20,7 +20,7 @@ use Apisearch\User\Interaction;
 /**
  * Class InteractionWasAdded.
  */
-class InteractionWasAdded extends DomainEvent
+final class InteractionWasAdded extends DomainEvent
 {
     /**
      * @var Interaction
@@ -34,7 +34,7 @@ class InteractionWasAdded extends DomainEvent
      */
     public function __construct(Interaction $interaction)
     {
-        $this->setNow();
+        parent::__construct();
         $this->interaction = $interaction;
     }
 
@@ -57,20 +57,6 @@ class InteractionWasAdded extends DomainEvent
             'interaction' => $this
                 ->interaction
                 ->toArray(),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            Interaction::createFromArray($arrayPayload['interaction']),
         ];
     }
 }

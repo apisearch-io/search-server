@@ -18,12 +18,11 @@ namespace Apisearch\Server\Domain\Middleware;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Server\Domain\Model\QueryMerger;
 use Apisearch\Server\Domain\Query\Query;
-use League\Tactician\Middleware;
 
 /**
  * Class TokenQueryMiddleware.
  */
-final class TokenQueryMiddleware implements Middleware
+final class TokenQueryMiddleware
 {
     /**
      * @var int
@@ -43,18 +42,18 @@ final class TokenQueryMiddleware implements Middleware
     }
 
     /**
-     * @param object   $command
+     * @param object   $query
      * @param callable $next
      *
      * @return mixed
      */
-    public function execute($command, callable $next)
+    public function execute($query, callable $next)
     {
-        if ($command instanceof Query) {
-            $token = $command->getToken();
-            $parameters = $command->getParameters();
+        if ($query instanceof Query) {
+            $token = $query->getToken();
+            $parameters = $query->getParameters();
 
-            $queryAsArray = $command
+            $queryAsArray = $query
                 ->getQuery()
                 ->toArray();
 
@@ -86,13 +85,13 @@ final class TokenQueryMiddleware implements Middleware
                 $queryAsArray = json_decode($queryJson, true);
             }
 
-            $command = new Query(
-                $command->getRepositoryReference(),
+            $query = new Query(
+                $query->getRepositoryReference(),
                 $token,
                 QueryModel::createFromArray($queryAsArray)
             );
         }
 
-        return $next($command);
+        return $next($query);
     }
 }

@@ -71,20 +71,20 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * Version
      */
-    private $version;
+    private $elasticaVersion;
 
     /**
      * Construct.
      *
      * @param AsyncClient $client
-     * @param string      $version
+     * @param string      $elasticaVersion
      */
     public function __construct(
         AsyncClient $client,
-        string $version
+        string $elasticaVersion
     ) {
         $this->client = $client;
-        $this->version = $version;
+        $this->elasticaVersion = $elasticaVersion;
     }
 
     /**
@@ -548,7 +548,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $endpoint = new CreateIndex();
         $endpoint->setBody($this->getImmutableIndexConfiguration($config));
         $endpoint->setIndex($searchIndex->getName());
-        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        Polyfill\Type::setEndpointType($endpoint, $this->elasticaVersion);
 
         return $this
             ->client
@@ -613,7 +613,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
     {
         $endpoint = new DeleteIndex();
         $endpoint->setIndex($indexName);
-        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        Polyfill\Type::setEndpointType($endpoint, $this->elasticaVersion);
 
         return $this
             ->client
@@ -871,7 +871,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
     ): PromiseInterface {
         $endpoint = new MappingEndpoint\Put();
         $endpoint->setBody($this->getIndexMapping($config));
-        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        Polyfill\Type::setEndpointType($endpoint, $this->elasticaVersion);
         $index = $this->getIndexByName($indexName);
 
         return $this
@@ -909,7 +909,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $endpoint->setParams([
             'refresh' => $refresh,
         ]);
-        Polyfill\Type::setEndpointType($endpoint, $this->version);
+        Polyfill\Type::setEndpointType($endpoint, $this->elasticaVersion);
 
         return $this
             ->client

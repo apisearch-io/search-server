@@ -21,7 +21,7 @@ use Apisearch\Model\User;
 /**
  * Class QueryWasMade.
  */
-class QueryWasMade extends DomainEvent
+final class QueryWasMade extends DomainEvent
 {
     /**
      * @var string
@@ -59,6 +59,11 @@ class QueryWasMade extends DomainEvent
     private $querySerialized;
 
     /**
+     * @var int
+     */
+    private $cost;
+
+    /**
      * QueryWasMade constructor.
      *
      * @param string     $queryText
@@ -66,20 +71,23 @@ class QueryWasMade extends DomainEvent
      * @param ItemUUID[] $itemsUUID
      * @param User|null  $user
      * @param string     $querySerialized
+     * @param int        $cost
      */
     public function __construct(
         string $queryText,
         int $size,
         array $itemsUUID,
         ? User $user,
-        string $querySerialized
+        string $querySerialized,
+        int $cost = -1
     ) {
+        parent::__construct();
         $this->queryText = $queryText;
         $this->size = $size;
         $this->itemsUUID = $itemsUUID;
         $this->user = $user;
-        $this->setNow();
         $this->querySerialized = $querySerialized;
+        $this->cost = $cost;
     }
 
     /**
@@ -104,28 +112,7 @@ class QueryWasMade extends DomainEvent
                 ? $this->user->toArray()
                 : null,
             'query_serialized' => $this->querySerialized,
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            $arrayPayload['q'],
-            $arrayPayload['size'],
-            array_map(function (string $composedItemUUID) {
-                return ItemUUID::createByComposedUUID($composedItemUUID);
-            }, $arrayPayload['item_uuid']),
-            isset($arrayPayload['user'])
-                ? User::createFromArray($arrayPayload['user'])
-                : null,
-            $arrayPayload['query_serialized'],
+            'cost' => $this->cost,
         ];
     }
 }

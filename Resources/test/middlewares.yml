@@ -1,4 +1,0 @@
-services:
-
-    apisearch_server.middleware.log_all_domain_events_to_elastica:
-        class: Apisearch\Server\Domain\Middleware\EmptyMiddleware

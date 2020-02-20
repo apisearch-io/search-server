@@ -19,25 +19,26 @@ use Apisearch\Http\Http;
 use Apisearch\Model\Token;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * Class TokenCacheOverHTTP.
  */
-class TokenCacheOverHTTP
+class TokenCacheOverHTTP implements EventSubscriberInterface
 {
     /**
      * Add cache control on kernel response.
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      *
      * @return PromiseInterface
      */
-    public function addCacheControlOnKernelResponse(FilterResponseEvent $event): PromiseInterface
+    public function addCacheControlOnKernelResponse(ResponseEvent $event): PromiseInterface
     {
         return (new FulfilledPromise($event))
-            ->then(function (FilterResponseEvent $event) {
+            ->then(function (ResponseEvent $event) {
                 $response = $event->getResponse();
                 $request = $event->getRequest();
                 $query = $request->query;
@@ -57,5 +58,17 @@ class TokenCacheOverHTTP
                     $response->setPrivate();
                 }
             });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            ResponseEvent::class => [
+                ['addCacheControlOnKernelResponse', 0],
+            ],
+        ];
     }
 }

@@ -18,7 +18,6 @@ namespace Apisearch\Plugin\ELK\DependencyInjection;
 use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * Class ELKPluginExtension.
@@ -72,7 +71,6 @@ class ELKPluginExtension extends BaseExtension
     {
         return [
             'domain',
-            'subscribers',
         ];
     }
 
@@ -91,27 +89,8 @@ class ELKPluginExtension extends BaseExtension
      */
     protected function getParametrizationValues(array $config): array
     {
-        $host = Env::get('REDIS_ELK_HOST', $config['host']);
-        if (is_null($host)) {
-            $exception = new InvalidConfigurationException('Please provide a host for redis elk plugin.');
-            $exception->setPath(sprintf('%s.%s', $this->getAlias(), 'host'));
-
-            throw $exception;
-        }
-
-        $port = Env::get('REDIS_ELK_PORT', $config['port']);
-        if (is_null($port)) {
-            $exception = new InvalidConfigurationException('Please provide a post for redis elk plugin.');
-            $exception->setPath(sprintf('%s.%s', $this->getAlias(), 'port'));
-
-            throw $exception;
-        }
-
         return [
-            'apisearch_plugin.elk.host' => (string) $host,
-            'apisearch_plugin.elk.port' => (int) $port,
-            'apisearch_plugin.elk.is_cluster' => (bool) Env::get('REDIS_ELK_IS_CLUSTER', $config['is_cluster']),
-            'apisearch_plugin.elk.database' => (string) Env::get('REDIS_ELK_DATABASE', $config['database']),
+            'apisearch_plugin.elk.redis_client' => (string) $config['redis_client'],
             'apisearch_plugin.elk.key' => (string) Env::get('REDIS_ELK_KEY', $config['key']),
             'apisearch_plugin.elk.service' => (string) Env::get('REDIS_ELK_SERVICE', $config['service']),
         ];

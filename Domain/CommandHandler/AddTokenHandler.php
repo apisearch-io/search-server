@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\AddToken;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\TokenWasAdded;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -46,11 +45,11 @@ class AddTokenHandler extends WithAppRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $token) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new TokenWasAdded($token)
-                    ));
+                    ->eventBus
+                    ->dispatch(
+                        (new TokenWasAdded($token))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

@@ -21,7 +21,7 @@ use Apisearch\Query\Filter;
 /**
  * Class ItemsWereUpdated.
  */
-class ItemsWereUpdated extends DomainEvent
+final class ItemsWereUpdated extends DomainEvent
 {
     /**
      * @var Filter[]
@@ -47,9 +47,9 @@ class ItemsWereUpdated extends DomainEvent
         array $appliedFilters,
         Changes $changes
     ) {
+        parent::__construct();
         $this->appliedFilters = $appliedFilters;
         $this->changes = $changes;
-        $this->setNow();
     }
 
     /**
@@ -64,25 +64,6 @@ class ItemsWereUpdated extends DomainEvent
                 return $filter->toArray();
             }, $this->appliedFilters)),
             'changes' => \json_encode($this->changes->toArray()),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            array_values(
-                array_map(function (array $filter) {
-                    return Filter::createFromArray($filter);
-                }, (\json_decode($arrayPayload['filters'], true)))
-            ),
-            Changes::createFromArray(\json_decode($arrayPayload['changes'], true)),
         ];
     }
 }

@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class DeleteItemsController.
  */
-class DeleteItemsController extends ControllerWithBus
+class DeleteItemsController extends ControllerWithCommandBus
 {
     /**
      * Delete items.
@@ -48,7 +48,7 @@ class DeleteItemsController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new DeleteItems(
+            ->execute(new DeleteItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)

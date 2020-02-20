@@ -20,7 +20,7 @@ use Apisearch\Model\TokenUUID;
 /**
  * Class TokenWasDeleted.
  */
-class TokenWasDeleted extends DomainEvent
+final class TokenWasDeleted extends DomainEvent
 {
     /**
      * @var TokenUUID
@@ -34,7 +34,7 @@ class TokenWasDeleted extends DomainEvent
      */
     public function __construct(TokenUUID $tokenUUID)
     {
-        $this->setNow();
+        parent::__construct();
         $this->tokenUUID = $tokenUUID;
     }
 
@@ -49,20 +49,6 @@ class TokenWasDeleted extends DomainEvent
             'token' => $this
                 ->tokenUUID
                 ->toArray(),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            TokenUUID::createFromArray($arrayPayload['token']),
         ];
     }
 }

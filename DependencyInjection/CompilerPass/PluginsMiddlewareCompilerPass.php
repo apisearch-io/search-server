@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
 use Apisearch\DependencyInjection\CompilerPass\TagCompilerPass;
+use Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector;
 
 /**
  * Class PluginsMiddlewareCompilerPass.
@@ -29,7 +30,7 @@ class PluginsMiddlewareCompilerPass extends TagCompilerPass
      */
     public function getCollectorServiceName(): string
     {
-        return 'apisearch_server.middleware.plugins';
+        return PluginMiddlewareCollector::class;
     }
 
     /**

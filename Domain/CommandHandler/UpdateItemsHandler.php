@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\UpdateItems;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereUpdated;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -48,14 +47,14 @@ class UpdateItemsHandler extends WithRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $query, $changes) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new ItemsWereUpdated(
+                    ->eventBus
+                    ->dispatch(
+                        (new ItemsWereUpdated(
                             $query->getFilters(),
                             $changes
-                        )
-                    ));
+                        ))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

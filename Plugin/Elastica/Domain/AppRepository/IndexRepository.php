@@ -32,13 +32,6 @@ use React\Promise\PromiseInterface;
 class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInterface
 {
     /**
-     * @var bool
-     *
-     * Async
-     */
-    private $async = false;
-
-    /**
      * Get indices.
      *
      * @param RepositoryReference $repositoryReference

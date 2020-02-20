@@ -1,0 +1,77 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            bool $commandsAsynchronous: false
+            string $godToken: "%apisearch_server.god_token%"
+            string $readonlyToken: "%apisearch_server.readonly_token%"
+            string $pingToken: "%apisearch_server.ping_token%"
+            int $numberOfResultsLimitation: "%apisearch_server.limitations_number_of_results%"
+            array $enabledPlugins: "%apisearch_server.enabled_plugins%"
+
+    Apisearch\Server\Controller\:
+        resource: '../../Controller'
+        tags: ["controller.service_arguments"]
+
+    Apisearch\Server\Console\:
+        resource: '../../Console/'
+        tags: ["console.command"]
+
+    Apisearch\Server\Domain\CommandHandler\:
+        resource: '../../Domain/CommandHandler/'
+        tags: ["command_handler"]
+
+    Apisearch\Server\Domain\QueryHandler\:
+        resource: '../../Domain/QueryHandler/'
+        tags: ["query_handler"]
+
+    #
+    # Domain Middlewares
+    #
+    Apisearch\Server\Domain\Middleware\:
+        resource: '../../Domain/Middleware/'
+
+    Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware:
+        tags:
+            - { name: apisearch_plugin.middleware }
+
+    #
+    # Repositories
+    #
+    Apisearch\Server\Domain\Repository\:
+        resource: '../../Domain/Repository/'
+
+    Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository:
+        tags:
+            - { name: apisearch_server.token_locator }
+            - { name: apisearch_server.token_provider }
+
+    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository
+
+    #
+    # Token
+    #
+    Apisearch\Server\Domain\Token\:
+        resource: '../../Domain/Token/'
+
+    Apisearch\Server\Domain\Token\StaticTokenLocator:
+        tags:
+            - { name: apisearch_server.token_locator }
+            - { name: apisearch_server.token_provider }
+
+    Apisearch\Server\Domain\Token\CredentialsTokenValidator:
+        tags:
+            - { name: apisearch_server.token_validator }
+
+    #
+    # Formatter
+    #
+    Apisearch\Server\Domain\Formatter\:
+        resource: '../../Domain/Formatter/'
+
+    #
+    # Plugin
+    #
+    Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector:

@@ -17,7 +17,6 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Model\Item;
 use Apisearch\Server\Domain\Command\IndexItems;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereIndexed;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -47,13 +46,13 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $items) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new ItemsWereIndexed(array_map(function (Item $item) {
+                    ->eventBus
+                    ->dispatch(
+                        (new ItemsWereIndexed(array_map(function (Item $item) {
                             return $item->getUUID();
-                        }, $items))
-                    ));
+                        }, $items)))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

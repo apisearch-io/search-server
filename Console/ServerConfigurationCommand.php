@@ -28,6 +28,11 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class ServerConfigurationCommand extends ApisearchFormattedCommand
 {
     /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:server-configuration';
+
+    /**
      * @var KernelInterface
      *
      * Kernel

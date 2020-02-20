@@ -27,13 +27,14 @@ use Apisearch\Server\Domain\Token\TokenManager;
 use React\EventLoop\LoopInterface;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
  * Class TokenCheckOverHTTP.
  */
-class TokenCheckOverHTTP
+class TokenCheckOverHTTP implements EventSubscriberInterface
 {
     /**
      * @var TokenManager
@@ -66,11 +67,11 @@ class TokenCheckOverHTTP
     /**
      * Validate token given a Request.
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      *
      * @return PromiseInterface
      */
-    public function checkTokenOnKernelRequest(GetResponseEvent $event): PromiseInterface
+    public function checkTokenOnKernelRequest(RequestEvent $event): PromiseInterface
     {
         $request = $event->getRequest();
 
@@ -166,5 +167,17 @@ class TokenCheckOverHTTP
         $indices = array_unique($indices);
 
         return IndexUUID::createById(implode(',', $indices));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            RequestEvent::class => [
+                ['checkTokenOnKernelRequest', 8],
+            ],
+        ];
     }
 }

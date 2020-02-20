@@ -15,27 +15,25 @@ declare(strict_types=1);
 
 namespace Apisearch\Server;
 
-use Apisearch\Plugin\DiskStorage\DiskStoragePluginBundle;
 use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Plugin\ELK\ELKPluginBundle;
 use Apisearch\Plugin\MostRelevantWords\MostRelevantWordsPluginBundle;
 use Apisearch\Plugin\NewRelic\NewRelicPluginBundle;
+use Apisearch\Plugin\PosgreSQLStorage\PostgreSQLStoragePluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
-use Apisearch\Plugin\RabbitMQ\RabbitMQPluginBundle;
 use Apisearch\Plugin\RedisMetadataFields\RedisMetadataFieldsPluginBundle;
-use Apisearch\Plugin\RedisQueue\RedisQueuePluginBundle;
-use Apisearch\Plugin\RedisStorage\RedisStoragePluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
 use Apisearch\Server\DependencyInjection\Env;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Mmoreram\BaseBundle\BaseBundle;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class ApisearchPluginsBundle.
  */
-class ApisearchPluginsBundle extends BaseBundle
+class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterface
 {
     /**
      * Return all bundle dependencies.
@@ -82,13 +80,10 @@ class ApisearchPluginsBundle extends BaseBundle
             'most_relevant_words' => MostRelevantWordsPluginBundle::class,
             'newrelic' => NewRelicPluginBundle::class,
             'redis_metadata_fields' => RedisMetadataFieldsPluginBundle::class,
-            'redis_storage' => RedisStoragePluginBundle::class,
-            'redis_queues' => RedisQueuePluginBundle::class,
+            'postgresql_storage' => PostgreSQLStoragePluginBundle::class,
             'static_tokens' => StaticTokensPluginBundle::class,
-            'rabbitmq' => RabbitMQPluginBundle::class,
             'security' => SecurityPluginBundle::class,
             'query_mapper' => QueryMapperPluginBundle::class,
-            'disk_storage' => DiskStoragePluginBundle::class,
         ];
 
         $combined = array_combine(

@@ -20,7 +20,7 @@ use Apisearch\Model\IndexUUID;
 /**
  * Class IndexWasReset.
  */
-class IndexWasReset extends DomainEvent
+final class IndexWasReset extends DomainEvent
 {
     /**
      * @var IndexUUID
@@ -36,8 +36,8 @@ class IndexWasReset extends DomainEvent
      */
     public function __construct(IndexUUID $indexUUID)
     {
+        parent::__construct();
         $this->indexUUID = $indexUUID;
-        $this->setNow();
     }
 
     /**
@@ -51,20 +51,6 @@ class IndexWasReset extends DomainEvent
             'index_uuid' => $this
                 ->indexUUID
                 ->composeUUID(),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            IndexUUID::createById($arrayPayload['index_uuid']),
         ];
     }
 }

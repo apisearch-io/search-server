@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ConfigureIndex;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -48,14 +47,14 @@ class ConfigureIndexHandler extends WithAppRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $indexUUID, $config) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new IndexWasConfigured(
+                    ->eventBus
+                    ->dispatch(
+                        (new IndexWasConfigured(
                             $indexUUID,
                             $config
-                        )
-                    ));
+                        ))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

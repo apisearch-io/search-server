@@ -68,14 +68,9 @@ final class CheckHealthPluginsMiddleware implements PluginMiddleware
     }
 
     /**
-     * Events subscribed namespace. Can refer to specific class namespace, any
-     * parent class or any interface.
-     *
-     * By returning an empty array, means coupled to all.
-     *
-     * @return string[]
+     * {@inheritdoc}
      */
-    public function getSubscribedCommands(): array
+    public function onlyHandle(): array
     {
         return [
             CheckHealth::class,

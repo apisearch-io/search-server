@@ -15,12 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
-use League\Tactician\Middleware;
-
 /**
  * Class EmptyMiddleware.
  */
-final class EmptyMiddleware implements Middleware
+final class EmptyMiddleware
 {
     /**
      * @param object   $command

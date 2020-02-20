@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Class CheckHealthController.
  */
-class CheckHealthController extends ControllerWithBus
+class CheckHealthController extends ControllerWithQueryBus
 {
     /**
      * Health controller.
@@ -35,8 +35,8 @@ class CheckHealthController extends ControllerWithBus
          * @var array
          */
         return $this
-            ->commandBus
-            ->handle(new CheckHealth())
+            ->queryBus
+            ->ask(new CheckHealth())
             ->then(function (array $health) {
                 return new JsonResponse($health);
             });

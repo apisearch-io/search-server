@@ -22,21 +22,35 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
+/**
+ * Class Kernel.
+ */
 class Kernel extends AsyncKernel
 {
     use MicroKernelTrait;
     use BundleDependenciesResolver;
 
+    /**
+     * @return iterable
+     */
     public function registerBundles(): iterable
     {
-        return $this->getBundleInstances($this, [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Apisearch\Server\ApisearchServerBundle($this),
-            new \Apisearch\Plugin\Elastica\ElasticaPluginBundle(),
-            new \Apisearch\Server\ApisearchPluginsBundle(),
-        ]);
+        $bundles = require $this->getApplicationLayerDir().'/config/bundles.php';
+        $bundles = array_filter($bundles, function ($envs, $class) {
+            return $envs[$this->environment] ?? $envs['all'] ?? false;
+        }, ARRAY_FILTER_USE_BOTH);
+        $bundles = array_keys($bundles);
+
+        $bundles = $this->resolveAndReturnBundleDependencies($this, $bundles);
+
+        foreach ($bundles as $bundle) {
+            yield new $bundle($this);
+        }
     }
 
+    /**
+     * @return string
+     */
     public function getProjectDir(): string
     {
         return \dirname(__DIR__);
@@ -50,6 +64,12 @@ class Kernel extends AsyncKernel
         return $this->getProjectDir().'/Drift';
     }
 
+    /**
+     * @param ContainerBuilder $container
+     * @param LoaderInterface  $loader
+     *
+     * @throws \Exception
+     */
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         $confDir = $this->getApplicationLayerDir().'/config';
@@ -57,6 +77,11 @@ class Kernel extends AsyncKernel
         $loader->load($confDir.'/services.yml');
     }
 
+    /**
+     * @param RouteCollectionBuilder $routes
+     *
+     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
         $confDir = $this->getApplicationLayerDir().'/config';

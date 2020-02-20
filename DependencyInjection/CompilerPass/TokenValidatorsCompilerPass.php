@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
 use Apisearch\DependencyInjection\CompilerPass\TagCompilerPass;
+use Apisearch\Server\Domain\Token\TokenValidators;
 
 /**
  * Class TokenValidatorsCompilerPass.
@@ -29,7 +30,7 @@ class TokenValidatorsCompilerPass extends TagCompilerPass
      */
     public function getCollectorServiceName(): string
     {
-        return 'apisearch_server.token_validators';
+        return TokenValidators::class;
     }
 
     /**

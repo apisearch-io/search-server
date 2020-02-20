@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class CreateIndexController.
  */
-class CreateIndexController extends ControllerWithBus
+class CreateIndexController extends ControllerWithCommandBus
 {
     /**
      * Create an index.
@@ -46,7 +46,7 @@ class CreateIndexController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new CreateIndex(
+            ->execute(new CreateIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

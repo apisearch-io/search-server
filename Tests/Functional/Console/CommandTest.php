@@ -36,16 +36,6 @@ abstract class CommandTest extends HttpFunctionalTest
     protected $token = '7db56b13-3a4f-d2d3-fd37-a702aca33225';
 
     /**
-     * Save events.
-     *
-     * @return bool
-     */
-    protected static function saveEvents(): bool
-    {
-        return false;
-    }
-
-    /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */

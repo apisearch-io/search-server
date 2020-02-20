@@ -20,13 +20,14 @@ use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Apisearch\Server\Domain\Plugin\SearchEnginePlugin;
 use Mmoreram\BaseBundle\BaseBundle;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class ElasticaPluginBundle.
  */
-class ElasticaPluginBundle extends BaseBundle implements Plugin, SearchEnginePlugin
+class ElasticaPluginBundle extends BaseBundle implements Plugin, SearchEnginePlugin, DependentBundleInterface
 {
     /**
      * Return all bundle dependencies.

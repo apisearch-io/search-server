@@ -25,8 +25,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * ExportIndexCommand.
  */
-class ExportIndexCommand extends CommandWithBusAndGodToken
+class ExportIndexCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:export-index';
+
     /**
      * Configures the current command.
      */
@@ -68,7 +73,7 @@ class ExportIndexCommand extends CommandWithBusAndGodToken
             $file,
             $output,
             function (QueryModel $query) use ($objects) {
-                return $this->handleSynchronously(new Query(
+                return $this->askQuery(new Query(
                     $objects['repository_reference'],
                     $objects['token'],
                     $query

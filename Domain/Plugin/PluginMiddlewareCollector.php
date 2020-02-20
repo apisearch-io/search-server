@@ -15,13 +15,13 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Plugin;
 
-use League\Tactician\Middleware;
+use Drift\CommandBus\Middleware\DiscriminableMiddleware;
 use React\Promise\PromiseInterface;
 
 /**
  * Class PluginMiddleware.
  */
-class PluginMiddlewareCollector implements Middleware
+class PluginMiddlewareCollector
 {
     /**
      * @var PluginMiddleware[]
@@ -37,20 +37,25 @@ class PluginMiddlewareCollector implements Middleware
      */
     public function addPluginMiddleware(PluginMiddleware $pluginMiddleware)
     {
-        $commandNamespaces = $pluginMiddleware->getSubscribedCommands();
-
-        if (empty($commandNamespaces)) {
+        if (!$pluginMiddleware instanceof DiscriminableMiddleware) {
             $this->pluginMiddlewares['_all'][] = $pluginMiddleware;
 
             return;
         }
 
-        foreach ($commandNamespaces as $commandNamespace) {
-            if (!isset($this->pluginMiddlewares[$commandNamespace])) {
-                $this->pluginMiddlewares[$commandNamespace] = [];
+        $objectsToHandle = $pluginMiddleware->onlyHandle();
+        if (empty($objectsToHandle)) {
+            $this->pluginMiddlewares['_all'][] = $pluginMiddleware;
+
+            return;
+        }
+
+        foreach ($objectsToHandle as $objects) {
+            if (!isset($this->pluginMiddlewares[$objects])) {
+                $this->pluginMiddlewares[$objects] = [];
             }
 
-            $this->pluginMiddlewares[$commandNamespace][] = $pluginMiddleware;
+            $this->pluginMiddlewares[$objects][] = $pluginMiddleware;
         }
     }
 

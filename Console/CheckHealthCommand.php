@@ -22,8 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class CheckHealthCommand.
  */
-class CheckHealthCommand extends CommandWithBusAndGodToken
+class CheckHealthCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:check-health';
+
     /**
      * Configures the current command.
      */
@@ -42,7 +47,7 @@ class CheckHealthCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $health = $this->handleSynchronously(new CheckHealth());
+        $health = $this->askQuery(new CheckHealth());
 
         $this->printInfoMessage($output, 'Memory Used', $health['process']['memory_used']);
         $this->printInfoMessage($output, 'Plugins', implode(', ', array_keys($health['info']['plugins'])));

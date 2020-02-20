@@ -17,12 +17,11 @@ namespace Apisearch\Server\Domain\Middleware;
 
 use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\CommandEnqueuer\CommandEnqueuer;
-use League\Tactician\Middleware;
 
 /**
  * Class AsyncCommandsMiddleware.
  */
-final class AsyncCommandsMiddleware implements Middleware
+final class AsyncCommandsMiddleware
 {
     /**
      * @var CommandEnqueuer

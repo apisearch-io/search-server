@@ -20,7 +20,7 @@ use Apisearch\Config\Synonym;
 use Apisearch\Config\SynonymReader;
 use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Server\Domain\Command\CreateIndex;
-use League\Tactician\CommandBus;
+use Drift\CommandBus\Bus\InlineCommandBus;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,8 +30,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class CreateIndexCommand.
  */
-class CreateIndexCommand extends CommandWithBusAndGodToken
+class CreateIndexCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:create-index';
+
     /**
      * @var SynonymReader
      *
@@ -42,13 +47,13 @@ class CreateIndexCommand extends CommandWithBusAndGodToken
     /**
      * CreateIndexCommand constructor.
      *
-     * @param CommandBus    $commandBus
-     * @param LoopInterface $loop
-     * @param string        $godToken
-     * @param SynonymReader $synonymReader
+     * @param InlineCommandBus $commandBus
+     * @param LoopInterface    $loop
+     * @param string           $godToken
+     * @param SynonymReader    $synonymReader
      */
     public function __construct(
-        CommandBus $commandBus,
+        InlineCommandBus $commandBus,
         LoopInterface $loop,
         string $godToken,
         SynonymReader $synonymReader
@@ -144,7 +149,7 @@ class CreateIndexCommand extends CommandWithBusAndGodToken
             ->readSynonymsFromCommaSeparatedArray($input->getOption('synonym'));
 
         try {
-            $this->handleSynchronously(new CreateIndex(
+            $this->executeCommand(new CreateIndex(
                 $objects['repository_reference'],
                 $objects['token'],
                 $objects['index_uuid'],

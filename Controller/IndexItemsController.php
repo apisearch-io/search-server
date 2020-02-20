@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class IndexItemsController.
  */
-class IndexItemsController extends ControllerWithBus
+class IndexItemsController extends ControllerWithCommandBus
 {
     /**
      * Index items.
@@ -48,7 +48,7 @@ class IndexItemsController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new IndexItems(
+            ->execute(new IndexItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)

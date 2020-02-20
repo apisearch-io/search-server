@@ -1,0 +1,127 @@
+#
+# Token API
+#
+apisearch_v1_put_token:
+    path: /v1/{app_id}/tokens
+    methods: ["PUT"]
+    controller: Apisearch\Server\Controller\AddTokenController
+
+apisearch_v1_delete_token:
+    path: /v1/{app_id}/tokens/{token_id}
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Controller\DeleteTokenController
+
+apisearch_v1_get_tokens:
+    path: /v1/{app_id}/tokens
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetTokensController
+
+apisearch_v1_delete_tokens:
+    path: /v1/{app_id}/tokens
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Controller\DeleteTokensController
+
+#
+# Index API
+#
+apisearch_v1_get_indices:
+    path: /v1/{app_id}/indices
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetIndicesController
+
+apisearch_v1_put_index:
+    path: /v1/{app_id}/indices/{index_id}
+    methods: ["PUT"]
+    controller: Apisearch\Server\Controller\CreateIndexController
+
+apisearch_v1_delete_index:
+    path: /v1/{app_id}/indices/{index_id}
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Controller\DeleteIndexController
+
+apisearch_v1_reset_index:
+    path: /v1/{app_id}/indices/{index_id}/reset
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\ResetIndexController
+
+apisearch_v1_configure_index:
+    path: /v1/{app_id}/indices/{index_id}/configure
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\ConfigureIndexController
+
+apisearch_v1_check_index:
+    path: /v1/{app_id}/indices/{index_id}
+    methods: ["HEAD"]
+    controller: Apisearch\Server\Controller\CheckIndexController
+
+#
+# Items API
+#
+apisearch_v1_put_items:
+    path: /v1/{app_id}/indices/{index_id}/items
+    methods: ["PUT"]
+    controller: Apisearch\Server\Controller\IndexItemsController
+
+apisearch_v1_update_items_by_query:
+    path: /v1/{app_id}/indices/{index_id}/items/update-by-query
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\UpdateItemsByQueryController
+
+apisearch_v1_delete_items:
+    path: /v1/{app_id}/indices/{index_id}/items
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Controller\DeleteItemsController
+
+#
+# Query API
+#
+apisearch_v1_query:
+    path: /v1/{app_id}/indices/{index_id}
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\QueryController
+
+apisearch_v1_query_all_indices:
+    path: /v1/{app_id}
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\QueryController
+    defaults:
+        index_id: "*"
+
+apisearch_v1_query_short:
+    path: /v1
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\QueryController
+
+#
+# Interaction API
+#
+apisearch_v1_post_interaction:
+    path: /v1/{app_id}/interactions
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\AddInteractionController
+
+#
+# Server API
+#
+apisearch_check_health:
+    path: /health
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\CheckHealthController
+
+apisearch_ping:
+    path: /
+    methods: ["HEAD"]
+    controller: Apisearch\Server\Controller\PingController
+
+#
+# Consumers management
+#
+apisearch_pause_consumers:
+    path: /consumers/pause
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\PauseConsumersController
+
+apisearch_resume_consumers:
+    path: /consumers/resume
+    methods: ["POST"]
+    controller: Apisearch\Server\Controller\ResumeConsumersController

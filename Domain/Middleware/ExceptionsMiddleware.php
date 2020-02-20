@@ -15,35 +15,32 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
-use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
-use Apisearch\Server\Domain\EventPublisher\EventPublisher;
 use Apisearch\Server\Exception\StorableException;
-use Exception;
-use League\Tactician\Middleware;
+use Drift\EventBus\Bus\EventBus;
+use Throwable;
 
 /**
  * Class ExceptionsMiddleware.
  */
-final class ExceptionsMiddleware implements Middleware
+final class ExceptionsMiddleware
 {
     /**
-     * @var EventPublisher
+     * @var EventBus
      *
-     * Event publisher
+     * Event bus
      */
-    protected $eventPublisher;
+    protected $eventBus;
 
     /**
-     * QueryHandler constructor.
+     * ExceptionsMiddleware constructor.
      *
-     * @param EventPublisher $eventPublisher
+     * @param EventBus $eventBus
      */
-    public function __construct(EventPublisher $eventPublisher)
+    public function __construct(EventBus $eventBus)
     {
-        $this->eventPublisher = $eventPublisher;
+        $this->eventBus = $eventBus;
     }
 
     /**
@@ -52,28 +49,29 @@ final class ExceptionsMiddleware implements Middleware
      *
      * @return mixed
      *
-     * @throws Exception Any exception
+     * @throws Throwable
      */
     public function execute($command, callable $next)
     {
         return $next($command)
-            ->then(null, function ($exception) use ($command) {
+            ->otherwise(function (Throwable $throwable) use ($command) {
+                $event = (new ExceptionWasCached(new StorableException(
+                    $throwable->getMessage(),
+                    (int) $throwable->getCode(),
+                    $throwable->getTraceAsString(),
+                    $throwable->getFile(),
+                    (int) $throwable->getLine()
+                )));
+
+                if ($command instanceof WithRepositoryReference) {
+                    $event->withRepositoryReference($command->getRepositoryReference());
+                }
+
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $command instanceof WithRepositoryReference
-                            ? $command->getRepositoryReference()
-                            : RepositoryReference::create(),
-                        new ExceptionWasCached(new StorableException(
-                            $exception->getMessage(),
-                            (int) $exception->getCode(),
-                            $exception->getTraceAsString(),
-                            $exception->getFile(),
-                            (int) $exception->getLine()
-                        ))
-                    ))
-                    ->then(function () use ($exception) {
-                        throw $exception;
+                    ->eventBus
+                    ->dispatch($event)
+                    ->then(function () use ($throwable) {
+                        throw $throwable;
                     });
             });
     }

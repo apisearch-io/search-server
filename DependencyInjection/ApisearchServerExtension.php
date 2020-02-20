@@ -69,10 +69,7 @@ class ApisearchServerExtension extends BaseExtension
     protected function getConfigFiles(array $config): array
     {
         return [
-            'domain',
-            'controllers',
-            'console',
-            'reactphp',
+            'services',
         ];
     }
 
@@ -91,21 +88,8 @@ class ApisearchServerExtension extends BaseExtension
      */
     protected function getParametrizationValues(array $config): array
     {
-        $domainEventsAdapter = Env::get('APISEARCH_DOMAIN_EVENTS_ADAPTER', $config['domain_events_adapter']);
-        $commandsAdapter = Env::get('APISEARCH_COMMANDS_ADAPTER', $config['commands_adapter']);
-
         return [
             'apisearch_server.environment' => Env::get('APISEARCH_ENV', $config['environment']),
-            'apisearch_server.event_publisher_service' => [
-                'inline' => 'apisearch_server.inline_event_publisher',
-                'enqueue' => 'apisearch_server.enqueue_event_publisher',
-                'ignore' => 'apisearch_server.ignore_event_publisher',
-            ][$domainEventsAdapter],
-
-            'apisearch_server.command_bus_service' => [
-                'inline' => 'apisearch_server.command_bus',
-                'enqueue' => 'apisearch_server.async_command_bus',
-            ][$commandsAdapter],
 
             'apisearch_server.god_token' => Env::get('APISEARCH_GOD_TOKEN', $config['god_token']),
             'apisearch_server.readonly_token' => Env::get('APISEARCH_READONLY_TOKEN', $config['readonly_token']),
@@ -115,7 +99,6 @@ class ApisearchServerExtension extends BaseExtension
              * Limitations
              */
             'apisearch_server.limitations_number_of_results' => $config['limitations']['number_of_results'],
-            'apisearch_server.commands_are_asynchronous' => 'enqueue' === $commandsAdapter,
         ];
     }
 

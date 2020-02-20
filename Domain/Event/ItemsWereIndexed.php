@@ -20,7 +20,7 @@ use Apisearch\Model\ItemUUID;
 /**
  * Class ItemsWereIndexed.
  */
-class ItemsWereIndexed extends DomainEvent
+final class ItemsWereIndexed extends DomainEvent
 {
     /**
      * @var ItemUUID[]
@@ -36,8 +36,8 @@ class ItemsWereIndexed extends DomainEvent
      */
     public function __construct(array $itemsUUID)
     {
+        parent::__construct();
         $this->itemsUUID = $itemsUUID;
-        $this->setNow();
     }
 
     /**
@@ -54,22 +54,6 @@ class ItemsWereIndexed extends DomainEvent
                     return $itemUUID->composeUUID();
                 }, $this->itemsUUID)
             ),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            array_map(function (string $composedItemUUID) {
-                return ItemUUID::createByComposedUUID($composedItemUUID);
-            }, $arrayPayload['item_uuid']),
         ];
     }
 }

@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class UpdateItemsByQueryController.
  */
-class UpdateItemsByQueryController extends ControllerWithBus
+class UpdateItemsByQueryController extends ControllerWithCommandBus
 {
     /**
      * Update items.
@@ -55,7 +55,7 @@ class UpdateItemsByQueryController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new UpdateItems(
+            ->execute(new UpdateItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)

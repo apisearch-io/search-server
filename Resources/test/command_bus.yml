@@ -1,0 +1,13 @@
+services:
+
+    drift.command_bus.test:
+        alias: drift.command_bus
+        public: true
+
+    drift.inline_command_bus.test:
+        alias: drift.inline_command_bus
+        public: true
+
+    drift.query_bus.test:
+        alias: drift.query_bus
+        public: true

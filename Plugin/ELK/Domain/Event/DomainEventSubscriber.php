@@ -15,70 +15,72 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\ELK\Domain\Event;
 
-use Apisearch\Plugin\Redis\Domain\RedisWrapper;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
-use Apisearch\Server\Domain\Event\EventSubscriber;
+use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
+use Apisearch\Server\Domain\Event\IndexWasConfigured;
+use Apisearch\Server\Domain\Event\IndexWasCreated;
+use Apisearch\Server\Domain\Event\IndexWasDeleted;
+use Apisearch\Server\Domain\Event\ItemsWereDeleted;
+use Apisearch\Server\Domain\Event\ItemsWereIndexed;
+use Apisearch\Server\Domain\Event\ItemsWereUpdated;
+use Apisearch\Server\Domain\Event\QueryWasMade;
+use Apisearch\Server\Domain\Event\TokensWereDeleted;
+use Apisearch\Server\Domain\Event\TokenWasAdded;
+use Apisearch\Server\Domain\Event\TokenWasDeleted;
 use Apisearch\Server\Domain\Formatter\TimeFormatBuilder;
+use Clue\React\Redis\Client;
+use Drift\HttpKernel\Event\DomainEventEnvelope;
+use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class DomainEventSubscriber.
  */
-class DomainEventSubscriber implements EventSubscriber
+class DomainEventSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var RedisWrapper
-     *
-     * RedisWrapper
+     * @var Client
      */
-    private $redisWrapper;
+    private $redisClient;
 
     /**
      * @var TimeFormatBuilder
-     *
-     * Time format builder
      */
     private $timeFormatBuilder;
 
     /**
      * @var string
-     *
-     * Key
      */
     private $key;
 
     /**
      * @var string
-     *
-     * Service
      */
     private $service;
 
     /**
      * @var string
-     *
-     * Environment
      */
     private $environment;
 
     /**
      * RedisMetadataRepository constructor.
      *
-     * @param RedisWrapper      $redisWrapper
+     * @param Client            $redisClient
      * @param TimeFormatBuilder $timeFormatBuilder
      * @param string            $key
      * @param string            $service
      * @param string            $environment
      */
     public function __construct(
-        RedisWrapper $redisWrapper,
+        Client $redisClient,
         TimeFormatBuilder $timeFormatBuilder,
         string $key,
         string $service,
         string $environment
     ) {
-        $this->redisWrapper = $redisWrapper;
+        $this->redisClient = $redisClient;
         $this->timeFormatBuilder = $timeFormatBuilder;
         $this->key = $key;
         $this->service = $service;
@@ -86,27 +88,23 @@ class DomainEventSubscriber implements EventSubscriber
     }
 
     /**
-     * Subscriber should handle event.
-     *
-     * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
-     *
-     * @return bool
-     */
-    public function shouldHandleEvent(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): bool
-    {
-        return true;
-    }
-
-    /**
      * Handle event.
      *
-     * @param DomainEventWithRepositoryReference $domainEventWithRepositoryReference
+     * @param DomainEventEnvelope $envelopedEvent
      *
      * @return PromiseInterface
      */
-    public function handle(DomainEventWithRepositoryReference $domainEventWithRepositoryReference): PromiseInterface
+    public function handle(DomainEventEnvelope $envelopedEvent): PromiseInterface
     {
-        $event = $domainEventWithRepositoryReference->getDomainEvent();
+        $event = $envelopedEvent->getDomainEvent();
+
+        if (
+            !$event instanceof DomainEvent ||
+            \is_null($event->getRepositoryReference())
+        ) {
+            return new FulfilledPromise();
+        }
+
         $level = $event instanceof ExceptionWasCached
             ? 400
             : 200;
@@ -120,15 +118,13 @@ class DomainEventSubscriber implements EventSubscriber
         $data = json_encode([
             'environment' => $this->environment,
             'service' => $this->service,
-            'repository_reference' => $domainEventWithRepositoryReference
+            'repository_reference' => $event
                 ->getRepositoryReference()
                 ->compose(),
-            'time_cost' => $domainEventWithRepositoryReference->getTimeCost(),
         ] + $reducedArray);
 
         return $this
-            ->redisWrapper
-            ->getClient()
+            ->redisClient
             ->rpush($this->key, json_encode([
                 '@fields' => [
                     'channel' => 'apisearch_to_logstash',
@@ -142,5 +138,29 @@ class DomainEventSubscriber implements EventSubscriber
                     'apisearch_to_logstash',
                 ],
             ]));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            ItemsWereIndexed::class => ['handle', 0],
+            ItemsWereUpdated::class => ['handle', 0],
+            ItemsWereDeleted::class => ['handle', 0],
+
+            QueryWasMade::class => ['handle', 0],
+
+            IndexWasConfigured::class => ['handle', 0],
+            IndexWasCreated::class => ['handle', 0],
+            IndexWasDeleted::class => ['handle', 0],
+
+            TokenWasAdded::class => ['handle', 0],
+            TokenWasDeleted::class => ['handle', 0],
+            TokensWereDeleted::class => ['handle', 0],
+
+            ExceptionWasCached::class => ['handle', 0],
+        ];
     }
 }

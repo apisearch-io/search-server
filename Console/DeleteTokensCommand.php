@@ -23,8 +23,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class DeleteTokensCommand.
  */
-class DeleteTokensCommand extends CommandWithBusAndGodToken
+class DeleteTokensCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:delete-tokens';
+
     /**
      * Configures the current command.
      */
@@ -51,7 +56,7 @@ class DeleteTokensCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        $this->handleSynchronously(new DeleteTokens(
+        $this->executeCommand(new DeleteTokens(
             $objects['repository_reference'],
             $objects['token']
         ));

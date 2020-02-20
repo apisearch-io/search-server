@@ -36,4 +36,34 @@ abstract class ELKFunctionalTest extends ServiceFunctionalTest
 
         return $bundles;
     }
+
+    /**
+     * Decorate configuration.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function decorateConfiguration(array $configuration): array
+    {
+        $configuration = parent::decorateConfiguration($configuration);
+        $configuration['redis'] = [
+            'clients' => [
+                'main' => [
+                    'host' => $_ENV['REDIS_HOST'],
+                ],
+            ],
+        ];
+
+        $configuration['apisearch_plugin_elk'] = [
+            'redis_client' => 'main',
+        ];
+
+        $configuration['services']['redis.main_client_test'] = [
+            'alias' => 'redis.main_client',
+            'public' => true,
+        ];
+
+        return $configuration;
+    }
 }

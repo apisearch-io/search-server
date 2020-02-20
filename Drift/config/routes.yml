@@ -1,2 +1,2 @@
 apisearch:
-    resource: "@ApisearchServerBundle/Resources/config/routing.yml"
+    resource: "@ApisearchServerBundle/Resources/config/routes.yml"

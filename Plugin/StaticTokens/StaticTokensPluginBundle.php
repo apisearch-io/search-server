@@ -19,13 +19,14 @@ use Apisearch\Plugin\StaticTokens\DependencyInjection\StaticTokensPluginExtensio
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Mmoreram\BaseBundle\SimpleBaseBundle;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class StaticTokensPluginBundle.
  */
-class StaticTokensPluginBundle extends SimpleBaseBundle implements Plugin
+class StaticTokensPluginBundle extends SimpleBaseBundle implements Plugin, DependentBundleInterface
 {
     /**
      * Return all bundle dependencies.

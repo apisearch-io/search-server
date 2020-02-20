@@ -20,39 +20,40 @@ use Apisearch\Exception\TransportableException;
 use Exception;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class PHPExceptionToJsonResponse.
  */
-class PHPExceptionToJsonResponse
+class PHPExceptionToJsonResponse implements EventSubscriberInterface
 {
     /**
      * When controller gets exception.
      *
-     * @param GetResponseForExceptionEvent $event
+     * @param ExceptionEvent $event
      *
      * @return PromiseInterface
      */
-    public function onKernelException(GetResponseForExceptionEvent $event): PromiseInterface
+    public function onKernelException(ExceptionEvent $event): PromiseInterface
     {
         return (new FulfilledPromise($event))
-            ->then(function (GetResponseForExceptionEvent $event) {
-                $exception = $event->getException();
+            ->then(function (ExceptionEvent $event) {
+                $throwable = $event->getThrowable();
 
-                if ($exception instanceof Exception) {
-                    $exception = $this->toOwnException($exception);
+                if ($throwable instanceof Exception) {
+                    $throwable = $this->toOwnException($throwable);
                 }
 
-                $exceptionErrorCode = $exception instanceof TransportableException
-                    ? $exception::getTransportableHTTPError()
+                $exceptionErrorCode = $throwable instanceof TransportableException
+                    ? $throwable::getTransportableHTTPError()
                     : 500;
 
                 $event->stopPropagation();
                 $event->setResponse(new JsonResponse([
-                    'message' => $exception->getMessage(),
+                    'message' => $throwable->getMessage(),
                     'code' => $exceptionErrorCode,
                 ], $exceptionErrorCode));
             });
@@ -74,5 +75,17 @@ class PHPExceptionToJsonResponse
         }
 
         return $exception;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            ExceptionEvent::class => [
+                ['onKernelException', 0],
+            ],
+        ];
     }
 }

@@ -22,8 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class CleanEnvironmentCommand.
  */
-class CleanEnvironmentCommand extends CommandWithBusAndGodToken
+class CleanEnvironmentCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:clean-environment';
+
     /**
      * Configures the current command.
      */
@@ -42,7 +47,7 @@ class CleanEnvironmentCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this->handleSynchronously(new CleanEnvironment());
+        $this->executeCommand(new CleanEnvironment());
     }
 
     /**

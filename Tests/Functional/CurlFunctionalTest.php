@@ -474,42 +474,6 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Pause consumers.
-     *
-     * @param string[] $types
-     */
-    public function pauseConsumers(array $types)
-    {
-        self::$lastResponse = self::makeCurl(
-            'v1_pause_consumers',
-            null,
-            null,
-            null,
-            [
-                'types' => $types,
-            ]
-        );
-    }
-
-    /**
-     * Resume consumers.
-     *
-     * @param string[] $types
-     */
-    public function resumeConsumers(array $types)
-    {
-        self::$lastResponse = self::makeCurl(
-            'v1_resume_consumers',
-            null,
-            null,
-            null,
-            [
-                'types' => $types,
-            ]
-        );
-    }
-
-    /**
      * Make a curl execution.
      *
      * @param string       $routeName
@@ -551,7 +515,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             ? $route->getMethods()[0]
             : 'GET';
 
-        $command = sprintf('curl -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://localhost:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
+        $command = sprintf('curl -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
             $tmpFile,
             (
                 'head' === $method

@@ -24,8 +24,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class DeleteIndexCommand.
  */
-class DeleteIndexCommand extends CommandWithBusAndGodToken
+class DeleteIndexCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:delete-index';
+
     /**
      * Configures the current command.
      */
@@ -57,7 +62,7 @@ class DeleteIndexCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
         try {
-            $this->handleSynchronously(new DeleteIndex(
+            $this->executeCommand(new DeleteIndex(
                 $objects['repository_reference'],
                 $objects['token'],
                 $objects['index_uuid']

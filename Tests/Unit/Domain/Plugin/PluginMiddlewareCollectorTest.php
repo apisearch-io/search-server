@@ -32,7 +32,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([]);
+        $middleware->onlyHandle()->willReturn([]);
         $middleware->execute(Argument::cetera())->shouldBeCalledTimes(2);
         $middlewareInstance = $middleware->reveal();
         $this->assertTrue(0 === strpos(get_class($middlewareInstance), 'Double'));
@@ -48,7 +48,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([FakeCommand::class, AnotherFakeCommand::class]);
+        $middleware->onlyHandle()->willReturn([FakeCommand::class, AnotherFakeCommand::class]);
         $middleware->execute(Argument::cetera())->shouldBeCalledTimes(1);
         $pluginMiddlewareCollector->addPluginMiddleware($middleware->reveal());
         $pluginMiddlewareCollector->execute(new FakeCommand(), function () {});
@@ -62,7 +62,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([FakeCommand::class]);
+        $middleware->onlyHandle()->willReturn([FakeCommand::class]);
         $middleware->execute(Argument::cetera())->shouldNotBeCalled();
         $pluginMiddlewareCollector->addPluginMiddleware($middleware->reveal());
         $pluginMiddlewareCollector->execute(new AbstractFakeCommand(), function () {});
@@ -75,7 +75,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([AbstractFakeCommand::class]);
+        $middleware->onlyHandle()->willReturn([AbstractFakeCommand::class]);
         $middleware->execute(Argument::cetera())->shouldBeCalled();
         $pluginMiddlewareCollector->addPluginMiddleware($middleware->reveal());
         $pluginMiddlewareCollector->execute(new FakeCommand(), function () {});
@@ -88,7 +88,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([AnotherFakeCommand::class, FakeCommand::class]);
+        $middleware->onlyHandle()->willReturn([AnotherFakeCommand::class, FakeCommand::class]);
         $middleware->execute(Argument::cetera())->shouldBeCalledTimes(2);
         $pluginMiddlewareCollector->addPluginMiddleware($middleware->reveal());
         $pluginMiddlewareCollector->execute(new FakeCommand(), function () {});
@@ -102,7 +102,7 @@ class PluginMiddlewareCollectorTest extends TestCase
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
-        $middleware->getSubscribedCommands()->willReturn([FakeInterface::class]);
+        $middleware->onlyHandle()->willReturn([FakeInterface::class]);
         $middleware->execute(Argument::cetera())->shouldBeCalledTimes(1);
         $pluginMiddlewareCollector->addPluginMiddleware($middleware->reveal());
         $pluginMiddlewareCollector->execute(new FakeCommand(), function () {});

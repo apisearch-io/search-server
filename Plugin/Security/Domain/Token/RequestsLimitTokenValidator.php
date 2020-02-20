@@ -19,10 +19,10 @@ use Apisearch\Exception\InvalidTokenException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
-use Apisearch\Plugin\Redis\Domain\RedisWrapper;
 use Apisearch\Server\Domain\Token\TokenValidator;
+use Clue\React\Redis\Client;
 use DateTime;
-use React\Promise\FulfilledPromise;
+use function React\Promise\all;
 use React\Promise\PromiseInterface;
 
 /**
@@ -39,20 +39,20 @@ use React\Promise\PromiseInterface;
 class RequestsLimitTokenValidator implements TokenValidator
 {
     /**
-     * @var RedisWrapper
+     * @var Client
      *
-     * Redis wrapper
+     * Redis client
      */
-    private $redisWrapper;
+    private $redisClient;
 
     /**
      * HttpReferrersTokenValidator constructor.
      *
-     * @param RedisWrapper $redisWrapper
+     * @param Client $redisClient
      */
-    public function __construct(RedisWrapper $redisWrapper)
+    public function __construct(Client $redisClient)
     {
-        $this->redisWrapper = $redisWrapper;
+        $this->redisClient = $redisClient;
     }
 
     /**
@@ -77,10 +77,7 @@ class RequestsLimitTokenValidator implements TokenValidator
     ): PromiseInterface {
         $requestsLimit = $token->getMetadataValue('requests_limit', []);
         $now = new DateTime();
-        $promise = new FulfilledPromise(true);
-        $client = $this
-            ->redisWrapper
-            ->getClient();
+        $promises = [];
 
         foreach ($requestsLimit as $element) {
             $parts = $this->getHitsAndTimePositionByData($element, $now);
@@ -96,35 +93,39 @@ class RequestsLimitTokenValidator implements TokenValidator
                 $parts[1]
             );
 
-            $promise = $promise
-                ->then(function () use ($client, $key) {
-                    return $client->get($key);
-                })
-                ->then(function ($accesses) use ($token, $parts) {
-                    $accesses = (int) $accesses;
-                    if ($accesses >= $parts[0]) {
+            $maxAccesses = (int) $parts[0];
+            $newExpire = (int) $parts[2];
+
+            $promises[] = $this
+                ->redisClient
+                ->eval('
+                    local key = ARGV[1];
+                    local maxAccesses = tonumber(ARGV[2]);
+                    local newExpire = tonumber(ARGV[3]);
+                    local currentAccesses = tonumber(redis.call("get", key));
+                     
+                    if (currentAccesses ~= nil and currentAccesses >= maxAccesses) then
+                        return false;
+                    end
+                    
+                    redis.call("incr", key);
+                    
+                    if (newExpire > 0) then
+                        redis.call("expire", key, newExpire);
+                    end
+                    
+                    return true;
+                ', 3, 'key', 'maxAccesses', 'newExpire', $key, $maxAccesses, $newExpire)
+                ->then(function ($result) use ($token) {
+                    if (!$result) {
                         throw InvalidTokenException::createInvalidTokenPermissions($token->getTokenUUID()->composeUUID());
                     }
-                })
-                ->then(function () use ($client) {
-                    $client->multi();
-                })
-                ->then(function () use ($client, $key) {
-                    $client->incr($key);
-                })
-                ->then(function () use ($client, $key, $parts) {
-                    if ($parts[2] > 0) {
-                        $client->expire($key, $parts[2]);
-                    }
-                })
-                ->then(function () use ($client) {
-                    $client->exec();
-
-                    return true;
                 });
         }
 
-        return $promise;
+        return all($promises)->then(function () {
+            return true;
+        });
     }
 
     /**

@@ -15,35 +15,23 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Repository\AppRepository;
 
-use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Token\TokenLocator;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 
 /**
  * Class InMemoryTokenRepository.
  */
-class InMemoryTokenRepository implements TokenRepository, TokenLocator
+class InMemoryTokenRepository extends TokenRepository
 {
     /**
-     * @var array[]
+     * @var array
      *
-     * Tokens
+     * Stored tokens
      */
-    private $tokens = [];
-
-    /**
-     * Locator is enabled.
-     *
-     * @return bool
-     */
-    public function isValid(): bool
-    {
-        return true;
-    }
+    private $storedTokens = [];
 
     /**
      * Add token.
@@ -61,11 +49,11 @@ class InMemoryTokenRepository implements TokenRepository, TokenLocator
             ->getAppUUID()
             ->composeUUID();
 
-        if (!isset($this->tokens[$appUUIDComposed])) {
-            $this->tokens[$appUUIDComposed] = [];
+        if (!isset($this->storedTokens[$appUUIDComposed])) {
+            $this->storedTokens[$appUUIDComposed] = [];
         }
 
-        $this->tokens[$appUUIDComposed][$token->getTokenUUID()->composeUUID()] = $token;
+        $this->storedTokens[$appUUIDComposed][$token->getTokenUUID()->composeUUID()] = $token;
 
         return new FulfilledPromise();
     }
@@ -86,29 +74,13 @@ class InMemoryTokenRepository implements TokenRepository, TokenLocator
             ->getAppUUID()
             ->composeUUID();
 
-        if (!isset($this->tokens[$appUUIDComposed])) {
+        if (!isset($this->storedTokens[$appUUIDComposed])) {
             return new FulfilledPromise();
         }
 
-        unset($this->tokens[$appUUIDComposed][$tokenUUID->composeUUID()]);
+        unset($this->storedTokens[$appUUIDComposed][$tokenUUID->composeUUID()]);
 
         return new FulfilledPromise();
-    }
-
-    /**
-     * Get tokens.
-     *
-     * @param RepositoryReference $repositoryReference
-     *
-     * @return PromiseInterface<Token[]>
-     */
-    public function getTokens(RepositoryReference $repositoryReference): PromiseInterface
-    {
-        $appUUIDComposed = $repositoryReference
-            ->getAppUUID()
-            ->composeUUID();
-
-        return new FulfilledPromise($this->tokens[$appUUIDComposed] ?? []);
     }
 
     /**
@@ -124,29 +96,34 @@ class InMemoryTokenRepository implements TokenRepository, TokenLocator
             ->getAppUUID()
             ->composeUUID();
 
-        unset($this->tokens[$appUUIDComposed]);
+        unset($this->storedTokens[$appUUIDComposed]);
 
         return new FulfilledPromise();
     }
 
     /**
-     * Get token by uuid.
-     *
-     * @param AppUUID   $appUUID
-     * @param TokenUUID $tokenUUID
-     *
-     * @return PromiseInterface<Token|null>
+     * {@inheritdoc}
      */
-    public function getTokenByUUID(
-        AppUUID $appUUID,
-        TokenUUID $tokenUUID
-    ): PromiseInterface {
-        $appUUIDComposed = $appUUID->composeUUID();
+    public function findAllTokens(): PromiseInterface
+    {
+        $allTokens = [];
+        foreach ($this->storedTokens as $_ => $tokens) {
+            $allTokens = array_merge(
+                $allTokens,
+                $tokens
+            );
+        }
 
-        return new FulfilledPromise(
-            isset($this->tokens[$appUUIDComposed])
-                 ? $this->tokens[$appUUIDComposed][$tokenUUID->composeUUID()] ?? null
-                 : null
-        );
+        return new FulfilledPromise($allTokens);
+    }
+
+    /**
+     * Locator is enabled.
+     *
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        return true;
     }
 }

@@ -21,36 +21,6 @@ namespace Apisearch\Server\Tests\Functional;
 abstract class AsynchronousFunctionalTest extends ServiceFunctionalTest
 {
     /**
-     * Use asynchronous commands.
-     *
-     * @return bool
-     */
-    protected static function asynchronousCommands(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Save events.
-     *
-     * @return bool
-     */
-    protected static function saveEvents(): bool
-    {
-        return true;
-    }
-
-    /**
-     * Save asynchronous events.
-     *
-     * @return bool
-     */
-    protected static function asynchronousEvents(): bool
-    {
-        return true;
-    }
-
-    /**
      * Time to wait after write command.
      */
     protected static function waitAfterWriteCommand()
