@@ -1,0 +1,22 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            bool $enabled: "%apisearch_plugin.dbal.locator_enabled%"
+            string $table: "%apisearch_plugin.dbal.tokens_table%"
+
+    Apisearch\Plugin\DBAL\Domain\:
+        resource: '../../Domain/'
+
+    Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository:
+        tags:
+            - "apisearch_server.token_locator"
+            - "apisearch_server.token_provider"
+
+    Apisearch\Plugin\DBAL\Domain\Middleware\CheckHealthMiddleware:
+        tags: ["apisearch_plugin.middleware"]
+
+    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository

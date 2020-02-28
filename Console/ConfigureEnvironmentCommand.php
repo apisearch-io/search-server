@@ -22,8 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class ConfigureEnvironmentCommand.
  */
-class ConfigureEnvironmentCommand extends CommandWithBusAndGodToken
+class ConfigureEnvironmentCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:configure-environment';
+
     /**
      * Configures the current command.
      */
@@ -42,7 +47,7 @@ class ConfigureEnvironmentCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this->handleSynchronously(new ConfigureEnvironment());
+        $this->executeCommand(new ConfigureEnvironment());
     }
 
     /**

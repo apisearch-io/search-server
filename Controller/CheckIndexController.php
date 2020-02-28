@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class CheckIndexController.
  */
-class CheckIndexController extends ControllerWithBus
+class CheckIndexController extends ControllerWithQueryBus
 {
     /**
      * Create an index.
@@ -38,8 +38,8 @@ class CheckIndexController extends ControllerWithBus
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
         return $this
-            ->commandBus
-            ->handle(new CheckIndex(
+            ->queryBus
+            ->ask(new CheckIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

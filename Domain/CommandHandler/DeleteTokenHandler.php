@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\DeleteToken;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\TokenWasDeleted;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -46,11 +45,11 @@ class DeleteTokenHandler extends WithAppRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $tokenUUID) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new TokenWasDeleted($tokenUUID)
-                    ));
+                    ->eventBus
+                    ->dispatch(
+                        (new TokenWasDeleted($tokenUUID))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

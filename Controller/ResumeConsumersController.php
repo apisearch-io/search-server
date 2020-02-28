@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class ResumeConsumersController.
  */
-class ResumeConsumersController extends ControllerWithBus
+class ResumeConsumersController extends ControllerWithCommandBus
 {
     /**
      * Resume consumers.
@@ -38,7 +38,7 @@ class ResumeConsumersController extends ControllerWithBus
     {
         return $this
             ->commandBus
-            ->handle(new ResumeConsumers(
+            ->execute(new ResumeConsumers(
                 RequestAccessor::extractRequestContentObject(
                     $request,
                     'type',

@@ -20,7 +20,7 @@ use Apisearch\Model\Token;
 /**
  * Class TokenWasAdded.
  */
-class TokenWasAdded extends DomainEvent
+final class TokenWasAdded extends DomainEvent
 {
     /**
      * @var Token
@@ -34,7 +34,7 @@ class TokenWasAdded extends DomainEvent
      */
     public function __construct(Token $token)
     {
-        $this->setNow();
+        parent::__construct();
         $this->token = $token;
     }
 
@@ -49,20 +49,6 @@ class TokenWasAdded extends DomainEvent
             'token' => $this
                 ->token
                 ->toArray(),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            Token::createFromArray($arrayPayload['token']),
         ];
     }
 }

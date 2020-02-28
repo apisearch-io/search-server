@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class DeleteIndexController.
  */
-class DeleteIndexController extends ControllerWithBus
+class DeleteIndexController extends ControllerWithCommandBus
 {
     /**
      * Delete the index.
@@ -39,7 +39,7 @@ class DeleteIndexController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new DeleteIndex(
+            ->execute(new DeleteIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     $indexUUID

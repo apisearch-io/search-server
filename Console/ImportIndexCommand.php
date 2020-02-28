@@ -24,8 +24,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * ImportIndexCommand.
  */
-class ImportIndexCommand extends CommandWithBusAndGodToken
+class ImportIndexCommand extends CommandWithCommandBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:import-index';
+
     /**
      * Configures the current command.
      */
@@ -67,7 +72,7 @@ class ImportIndexCommand extends CommandWithBusAndGodToken
             $file,
             $output,
             function (array $items, bool $lastIteration) use ($objects) {
-                $this->handleSynchronously(new IndexItems(
+                $this->executeCommand(new IndexItems(
                     $objects['repository_reference'],
                     $objects['token'],
                     $items

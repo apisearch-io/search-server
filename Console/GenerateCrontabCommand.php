@@ -23,8 +23,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class GenerateCrontabCommand.
  */
-class GenerateCrontabCommand extends CommandWithBusAndGodToken
+class GenerateCrontabCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:generate-crontab';
+
     /**
      * Configures the current command.
      */
@@ -43,7 +48,7 @@ class GenerateCrontabCommand extends CommandWithBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $lines = $this->handleSynchronously(new GetCrontab());
+        $lines = $this->askQuery(new GetCrontab());
 
         $lines = array_map(function (CrontabLine $line) {
             return $line->toString(realpath(__DIR__.'/../'));
@@ -78,6 +83,6 @@ class GenerateCrontabCommand extends CommandWithBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return sprintf('Crontab generated properly', $result);
+        return 'Crontab generated properly';
     }
 }

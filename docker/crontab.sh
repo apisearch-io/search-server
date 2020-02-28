@@ -1,6 +1,8 @@
 #!/bin/bash
 
-rm -Rf /var/www/apisearch/var/cache
-php /var/www/apisearch/bin/console cache:warmup --env=prod --no-debug --no-interaction
-php /var/www/apisearch/bin/console apisearch-server:generate-crontab --env=prod --no-debug --no-interaction
+cd /var/www
+rm -Rf var/*
+
+php bin/console cache:warmup --env=prod --no-debug --no-interaction
+php bin/console apisearch-server:generate-crontab --env=prod --no-debug --no-interaction
 cron -f

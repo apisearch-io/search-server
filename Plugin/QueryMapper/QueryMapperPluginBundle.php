@@ -18,15 +18,15 @@ namespace Apisearch\Plugin\QueryMapper;
 use Apisearch\Plugin\QueryMapper\DependencyInjection\QueryMapperPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
-use Apisearch\Server\Domain\Plugin\QueuePlugin;
 use Mmoreram\BaseBundle\BaseBundle;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class QueryMapperPluginBundle.
  */
-class QueryMapperPluginBundle extends BaseBundle implements Plugin, QueuePlugin
+class QueryMapperPluginBundle extends BaseBundle implements Plugin, DependentBundleInterface
 {
     /**
      * Returns the bundle's container extension.

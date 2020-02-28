@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class GetIndicesController.
  */
-class GetIndicesController extends ControllerWithBus
+class GetIndicesController extends ControllerWithQueryBus
 {
     /**
      * Get tokens.
@@ -37,8 +37,8 @@ class GetIndicesController extends ControllerWithBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->commandBus
-            ->handle(new GetIndices(
+            ->queryBus
+            ->ask(new GetIndices(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

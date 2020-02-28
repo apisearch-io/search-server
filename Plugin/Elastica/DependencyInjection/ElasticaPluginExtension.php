@@ -71,7 +71,6 @@ class ElasticaPluginExtension extends BaseExtension
     {
         return [
             'domain',
-            'middlewares',
         ];
     }
 

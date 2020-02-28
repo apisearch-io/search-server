@@ -1,8 +1,0 @@
-services:
-
-    apisearch_server.consumer_manager:
-        class: Apisearch\Plugin\RedisQueue\Domain\RedisQueueConsumerManager
-        public: true
-        arguments:
-            - "%apisearch_plugin.redis_queue.queues%"
-            - "@apisearch_plugin.redis_queue.redis_wrapper"

@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ResetIndex;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\IndexWasReset;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -46,11 +45,11 @@ class ResetIndexHandler extends WithAppRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $indexUUID) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new IndexWasReset($indexUUID)
-                    ));
+                    ->eventBus
+                    ->dispatch(
+                        (new IndexWasReset($indexUUID))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

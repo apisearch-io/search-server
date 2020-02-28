@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class PingController.
  */
-class PingController extends ControllerWithBus
+class PingController extends ControllerWithQueryBus
 {
     /**
      * Ping.
@@ -36,8 +36,8 @@ class PingController extends ControllerWithBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->commandBus
-            ->handle(new Ping())
+            ->queryBus
+            ->ask(new Ping())
             ->then(function (bool $alive) {
                 return true === $alive
                     ? new JsonResponse('', Response::HTTP_OK)

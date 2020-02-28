@@ -25,8 +25,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class PrintTokensCommand.
  */
-class PrintTokensCommand extends CommandWithBusAndGodToken
+class PrintTokensCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:print-tokens';
+
     /**
      * Configures the current command.
      */
@@ -58,7 +63,7 @@ class PrintTokensCommand extends CommandWithBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $tokens = $this->handleSynchronously(new GetTokens(
+        $tokens = $this->askQuery(new GetTokens(
             $objects['repository_reference'],
             $objects['token']
         ));

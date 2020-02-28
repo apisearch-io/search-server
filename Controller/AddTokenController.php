@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class AddTokenController.
  */
-class AddTokenController extends ControllerWithBus
+class AddTokenController extends ControllerWithCommandBus
 {
     /**
      * Add a token.
@@ -45,7 +45,7 @@ class AddTokenController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new AddToken(
+            ->execute(new AddToken(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

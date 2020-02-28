@@ -24,30 +24,38 @@ use Apisearch\Query\Query;
 class BasicUsageTest extends ELKFunctionalTest
 {
     /**
+     * @var string
+     */
+    const KEY = 'logstash.apisearch';
+
+    /**
      * Basic usage.
      */
     public function testBasicUsage()
     {
-        $redis = new \Redis();
-        $redis->connect('apisearch.redis');
-        $redis->del('apisearch_test.elk');
+        $redis = static::getStatic('redis.main_client_test');
+        self::await($redis->del(static::KEY));
 
         $this->query(Query::createMatchAll());
         $this->assertEquals(
             1,
-            $redis->lLen('apisearch_test.elk')
+            static::await($redis->lLen(static::KEY))
         );
 
-        $redis->del('apisearch_test.elk');
+        static::await($redis->del(static::KEY));
         $this->deleteIndex();
         $this->createIndex();
         $this->indexTestingItems();
         $this->query(Query::createMatchAll());
         $this->assertEquals(
-            2,
-            $redis->lLen('apisearch_test.elk')
+            4,
+            static::await($redis->lLen(static::KEY))
         );
-        $body = json_decode($redis->lPop('apisearch_test.elk'), true);
+
+        static::await($redis->lPop(static::KEY));
+        static::await($redis->lPop(static::KEY));
+
+        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
         $message = json_decode($body['@message'], true);
 
         $this->assertEquals(200, $body['@fields']['level']);
@@ -55,7 +63,7 @@ class BasicUsageTest extends ELKFunctionalTest
         $this->assertEquals('apisearch', $message['service']);
         $this->assertEquals('26178621test_default', $message['repository_reference']);
         $this->assertEquals('ItemsWereIndexed', $message['type']);
-        $body = json_decode($redis->lPop('apisearch_test.elk'), true);
+        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
         $message = json_decode($body['@message'], true);
         $this->assertEquals(200, $body['@fields']['level']);
         $this->assertEquals('QueryWasMade', $message['type']);
@@ -66,26 +74,7 @@ class BasicUsageTest extends ELKFunctionalTest
             // Ignoring exception
         }
 
-        $body = json_decode($redis->lPop('apisearch_test.elk'), true);
+        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
         $this->assertEquals(400, $body['@fields']['level']);
-    }
-
-    /**
-     * Decorate configuration.
-     *
-     * @param array $configuration
-     *
-     * @return array
-     */
-    protected static function decorateConfiguration(array $configuration): array
-    {
-        $configuration = parent::decorateConfiguration($configuration);
-        $configuration['apisearch_plugin_elk'] = [
-            'host' => 'apisearch.redis',
-            'port' => 6380,
-            'key' => 'apisearch_test.elk',
-        ];
-
-        return $configuration;
     }
 }

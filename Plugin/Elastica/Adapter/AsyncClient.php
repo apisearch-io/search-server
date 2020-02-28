@@ -25,10 +25,11 @@ use Elastica\Index;
 use Elastica\Request;
 use Elastica\Response;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use GuzzleHttp\Psr7;
-use Psr\Http\Message\ResponseInterface;
+use function RingCentral\Psr7\stream_for;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use RingCentral\Psr7\Request as PSR7Request;
+use RingCentral\Psr7\Response as PSR7Response;
 
 /**
  * Class AsyncClient.
@@ -46,13 +47,13 @@ class AsyncClient extends Client implements AsyncRequestAccessor
      * AsyncClient constructor.
      *
      * @param LoopInterface $eventLoop
-     * @param array         $config
+     * @param array         $elasticaConfig
      */
     public function __construct(
         LoopInterface $eventLoop,
-        array $config = []
+        array $elasticaConfig = []
     ) {
-        parent::__construct($config);
+        parent::__construct($elasticaConfig);
         $this->httpClient = new Browser($eventLoop);
     }
 
@@ -90,15 +91,15 @@ class AsyncClient extends Client implements AsyncRequestAccessor
             $this->arrayValuesToQuery($query)
         );
 
-        $request = new Psr7\Request($method, $fullPath);
-        $request = $request->withBody(Psr7\stream_for($data));
+        $request = new PSR7Request($method, $fullPath);
+        $request = $request->withBody(stream_for($data));
         $request = $request->withHeader('Content-Type', $contentType);
         $request = $request->withHeader('Content-Length', strlen($data));
 
         return $this
             ->httpClient
             ->send($request)
-            ->then(function (ResponseInterface $response) {
+            ->then(function (PSR7Response $response) {
                 return new Response(
                     (string) ($response->getBody()),
                     $response->getStatusCode()

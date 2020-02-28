@@ -1,49 +1,32 @@
 services:
 
-    #
-    # Redis
-    #
-    apisearch_plugin.security.redis_config:
-        class: Apisearch\Plugin\Redis\Domain\RedisConfig
-        arguments:
-            - "%apisearch_plugin.security.host%"
-            - "%apisearch_plugin.security.port%"
-            - "%apisearch_plugin.security.is_cluster%"
-            - "%apisearch_plugin.security.database%"
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $redisClient: "@apisearch_plugin.security.redis_client"
 
-    apisearch_plugin.security.redis_wrapper:
-        class: Apisearch\Plugin\Redis\Domain\RedisWrapper
-        public: true
-        factory:
-            - "@apisearch_plugin.redis.redis_wrapper_factory"
-            - "create"
-        arguments:
-            - "@apisearch_plugin.security.redis_config"
+    Apisearch\Plugin\Security\Domain\:
+        resource: '../../Domain/'
 
     #
     # Token Validators
     #
     apisearch_plugin.security.http_referrers_token_validator:
         class: Apisearch\Plugin\Security\Domain\Token\HttpReferrersTokenValidator
-        tags:
-            - { name: "apisearch_server.token_validator" }
+        tags: ["apisearch_server.token_validator"]
 
     apisearch_plugin.security.seconds_valid_token_validator:
         class: Apisearch\Plugin\Security\Domain\Token\SecondsValidTokenValidator
-        tags:
-            - { name: "apisearch_server.token_validator" }
+        tags: ["apisearch_server.token_validator"]
 
     apisearch_plugin.security.requests_limit_token_validator:
         class: Apisearch\Plugin\Security\Domain\Token\RequestsLimitTokenValidator
-        arguments:
-            - "@apisearch_plugin.security.redis_wrapper"
-        tags:
-            - { name: "apisearch_server.token_validator" }
+        tags: ["apisearch_server.token_validator"]
 
     #
     # Middleware
     #
     apìsearch_plugin.security.restricted_fields_middleware:
         class: Apisearch\Plugin\Security\Domain\Middleware\RestrictedFieldsMiddleware
-        tags:
-            - { name: apisearch_plugin.middleware }
+        tags: ["apisearch_plugin.middleware"]

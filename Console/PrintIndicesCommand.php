@@ -25,8 +25,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class PrintTokensCommand.
  */
-class PrintIndicesCommand extends CommandWithBusAndGodToken
+class PrintIndicesCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:print-indices';
+
     /**
      * Configures the current command.
      */
@@ -64,7 +69,7 @@ class PrintIndicesCommand extends CommandWithBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $indices = $this->handleSynchronously(new GetIndices(
+        $indices = $this->askQuery(new GetIndices(
             $objects['repository_reference'],
             $objects['token']
         ));

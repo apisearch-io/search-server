@@ -1,62 +1,28 @@
 services:
 
-    #
-    # Elastica related services
-    #
-    apisearch_plugin.elastica.elastica_client:
-        class: Apisearch\Plugin\Elastica\Adapter\AsyncClient
-        arguments:
-            - "@reactphp.event_loop"
-            - "%apisearch_plugin.elastica.cluster%"
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            array $elasticaConfig: '%apisearch_plugin.elastica.cluster%'
+            string $elasticaVersion: '%apisearch_plugin.elastica.version%'
+            bool $refreshOnWrite: '%apisearch_plugin.elastica.refresh_on_write%'
 
-    apisearch_plugin.elastica.query_builder:
-        class: Apisearch\Plugin\Elastica\Domain\Builder\QueryBuilder
+    Apisearch\Plugin\Elastica\:
+        resource: "../../../../Plugin/Elastica/"
+        exclude: "../../../../Plugin/Elastica/{DependencyInjection,Tests,Resources,ElasticaPluginBundle.php,Domain/Search.php}"
 
-    apisearch_plugin.elastica.result_builder:
-        class: Apisearch\Plugin\Elastica\Domain\Builder\ResultBuilder
+    Apisearch\Plugin\Elastica\Domain\AppRepository\IndexRepository:
+        tags: ["apisearch_server.app_repository"]
 
-    apisearch_plugin.elastica.elastica_wrapper:
-        class: Apisearch\Plugin\Elastica\Domain\ElasticaWrapper
-        arguments:
-            - "@apisearch_plugin.elastica.elastica_client"
-            - "%apisearch_plugin.elastica.version%"
+    Apisearch\Plugin\Elastica\Domain\Middleware\CheckHealthMiddleware:
+        tags: ["apisearch_plugin.middleware"]
 
-    #
-    # Elastica repositories
-    #
+    Apisearch\Server\Domain\Repository\AppRepository\IndexRepository:
+        alias: Apisearch\Plugin\Elastica\Domain\AppRepository\IndexRepository
 
+    Apisearch\Server\Domain\Repository\Repository\ItemsRepository:
+        alias: Apisearch\Plugin\Elastica\Domain\Repository\ItemRepository
 
-    apisearch_plugin.elastica.with_elastica_wrapper:
-        class: Apisearch\Plugin\Elastica\Domain\WithElasticaWrapper
-        abstract: true
-        public: false
-        arguments:
-            - "@apisearch_plugin.elastica.elastica_wrapper"
-            - "%apisearch_plugin.elastica.refresh_on_write%"
-
-
-    #
-    # Elastica Items repositories
-    #
-    apisearch_server.item_repository:
-        class: Apisearch\Plugin\Elastica\Domain\Repository\ItemRepository
-        parent: apisearch_plugin.elastica.with_elastica_wrapper
-        arguments:
-            - "@apisearch_plugin.elastica.query_builder"
-
-    apisearch_server.query_repository:
-        class: Apisearch\Plugin\Elastica\Domain\Repository\QueryRepository
-        parent: apisearch_plugin.elastica.with_elastica_wrapper
-        arguments:
-            - "@apisearch_plugin.elastica.query_builder"
-            - "@apisearch_plugin.elastica.result_builder"
-
-
-    #
-    # Elastica App repositories
-    #
-    apisearch_server.index_repository:
-        class: Apisearch\Plugin\Elastica\Domain\AppRepository\IndexRepository
-        parent: apisearch_plugin.elastica.with_elastica_wrapper
-        tags:
-            - {name: "apisearch_server.app_repository"}
+    Apisearch\Server\Domain\Repository\Repository\QueryRepository:
+        alias: Apisearch\Plugin\Elastica\Domain\Repository\QueryRepository

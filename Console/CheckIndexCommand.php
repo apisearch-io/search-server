@@ -24,8 +24,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class CheckIndexCommand.
  */
-class CheckIndexCommand extends CommandWithBusAndGodToken
+class CheckIndexCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:check-index';
+
     /**
      * Configures the current command.
      */
@@ -63,7 +68,7 @@ class CheckIndexCommand extends CommandWithBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        return $this->handleSynchronously(new CheckIndex(
+        return $this->askQuery(new CheckIndex(
             $objects['repository_reference'],
             $objects['token'],
             $objects['index_uuid']

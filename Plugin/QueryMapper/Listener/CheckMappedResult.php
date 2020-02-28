@@ -22,7 +22,7 @@ use Apisearch\Result\Result;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * Class CheckMappedResult.
@@ -49,11 +49,11 @@ class CheckMappedResult
     /**
      * On kernel async response.
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      *
      * @return PromiseInterface
      */
-    public function onKernelAsyncResponse(FilterResponseEvent $event): PromiseInterface
+    public function onKernelAsyncResponse(ResponseEvent $event): PromiseInterface
     {
         return
             (new FulfilledPromise())

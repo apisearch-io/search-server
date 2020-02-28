@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\Tests\Functional;
 
-use Apisearch\Plugin\RedisStorage\RedisStoragePluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
@@ -34,8 +33,32 @@ abstract class SecurityFunctionalTest extends HttpFunctionalTest
     protected static function decorateBundles(array $bundles): array
     {
         $bundles[] = SecurityPluginBundle::class;
-        $bundles[] = RedisStoragePluginBundle::class;
 
         return $bundles;
+    }
+
+    /**
+     * Decorate configuration.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function decorateConfiguration(array $configuration): array
+    {
+        $configuration = parent::decorateConfiguration($configuration);
+        $configuration['redis'] = [
+            'clients' => [
+                'main' => [
+                    'host' => $_ENV['REDIS_HOST'],
+                ],
+            ],
+        ];
+
+        $configuration['apisearch_plugin_security'] = [
+            'redis_client' => 'main',
+        ];
+
+        return $configuration;
     }
 }

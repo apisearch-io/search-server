@@ -15,12 +15,13 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Plugin;
 
+use Drift\CommandBus\Middleware\DiscriminableMiddleware;
 use React\Promise\PromiseInterface;
 
 /**
  * Interface PluginMiddleware.
  */
-interface PluginMiddleware
+interface PluginMiddleware extends DiscriminableMiddleware
 {
     /**
      * Execute middleware.
@@ -34,14 +35,4 @@ interface PluginMiddleware
         $command,
         $next
     ): PromiseInterface;
-
-    /**
-     * Commands subscribed namespace. Can refer to specific class namespace, any
-     * parent class or any interface.
-     *
-     * By returning an empty array, means coupled to all.
-     *
-     * @return string[]
-     */
-    public function getSubscribedCommands(): array;
 }

@@ -20,7 +20,7 @@ use Apisearch\Server\Exception\StorableException;
 /**
  * Class ExceptionWasCached.
  */
-class ExceptionWasCached extends DomainEvent
+final class ExceptionWasCached extends DomainEvent
 {
     /**
      * @var StorableException
@@ -36,7 +36,7 @@ class ExceptionWasCached extends DomainEvent
      */
     public function __construct(StorableException $exception)
     {
-        $this->setNow();
+        parent::__construct();
         $this->exception = $exception;
     }
 
@@ -55,26 +55,6 @@ class ExceptionWasCached extends DomainEvent
                 'file' => $this->exception->getFile(),
                 'line' => $this->exception->getLine(),
             ],
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            new StorableException(
-                $arrayPayload['exception']['message'],
-                $arrayPayload['exception']['code'],
-                $arrayPayload['exception']['trace_as_string'],
-                $arrayPayload['exception']['file'],
-                $arrayPayload['exception']['line']
-            ),
         ];
     }
 }

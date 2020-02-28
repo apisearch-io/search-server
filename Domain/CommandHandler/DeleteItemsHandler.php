@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\DeleteItems;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\ItemsWereDeleted;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
@@ -46,11 +45,11 @@ class DeleteItemsHandler extends WithRepositoryAndEventPublisher
             )
             ->then(function () use ($repositoryReference, $itemsUUID) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new ItemsWereDeleted($itemsUUID)
-                    ));
+                    ->eventBus
+                    ->dispatch(
+                        (new ItemsWereDeleted($itemsUUID))
+                            ->withRepositoryReference($repositoryReference)
+                    );
             });
     }
 }

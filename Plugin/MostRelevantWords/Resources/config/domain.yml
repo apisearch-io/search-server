@@ -1,9 +1,0 @@
-services:
-
-    #
-    # Domain
-    #
-    apisearch_plugin.most_relevant_words.item_relevant_words:
-        class: Apisearch\Plugin\MostRelevantWords\Domain\ItemRelevantWords
-        arguments:
-            - "%apisearch_plugin.most_relevant_words.fields%"

@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class GetTokensController.
  */
-class GetTokensController extends ControllerWithBus
+class GetTokensController extends ControllerWithQueryBus
 {
     /**
      * Get tokens.
@@ -37,8 +37,8 @@ class GetTokensController extends ControllerWithBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->commandBus
-            ->handle(new GetTokens(
+            ->queryBus
+            ->ask(new GetTokens(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

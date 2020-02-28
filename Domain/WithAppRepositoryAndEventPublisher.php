@@ -15,13 +15,13 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain;
 
-use Apisearch\Server\Domain\EventPublisher\EventPublisher;
 use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
+use Drift\EventBus\Bus\EventBus;
 
 /**
  * Class WithAppRepositoryAndEventPublisher.
  */
-abstract class WithAppRepositoryAndEventPublisher extends WithEventPublisher
+abstract class WithAppRepositoryAndEventPublisher extends WithEventBus
 {
     /**
      * @var AppRepository
@@ -33,14 +33,14 @@ abstract class WithAppRepositoryAndEventPublisher extends WithEventPublisher
     /**
      * QueryHandler constructor.
      *
-     * @param AppRepository  $appRepository
-     * @param EventPublisher $eventPublisher
+     * @param AppRepository $appRepository
+     * @param EventBus      $eventBus
      */
     public function __construct(
         AppRepository $appRepository,
-        EventPublisher $eventPublisher
+        EventBus $eventBus
     ) {
         $this->appRepository = $appRepository;
-        parent::__construct($eventPublisher);
+        parent::__construct($eventBus);
     }
 }

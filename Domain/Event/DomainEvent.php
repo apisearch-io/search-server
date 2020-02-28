@@ -15,10 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Event;
 
+use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Now;
 use Carbon\Carbon;
-use Exception;
-use ReflectionClass;
 
 /**
  * Abstract class DomainEvent.
@@ -38,6 +37,19 @@ abstract class DomainEvent
      * Now
      */
     private $now;
+
+    /**
+     * @var RepositoryReference
+     */
+    private $repositoryReference;
+
+    /**
+     * DomainEvent.
+     */
+    public function __construct()
+    {
+        $this->setNow();
+    }
 
     /**
      * Mark occurred on as now.
@@ -74,39 +86,25 @@ abstract class DomainEvent
     }
 
     /**
-     * From array.
+     * Set repository reference.
      *
-     * @param array $data
-     *
-     * @return mixed
+     * @param RepositoryReference
      */
-    public static function fromArray(array $data)
+    public function withRepositoryReference(RepositoryReference $repositoryReference)
     {
-        $namespace = 'Apisearch\Server\Domain\Event\\'.$data['type'];
+        $this->repositoryReference = $repositoryReference;
 
-        return $namespace::createByPlainValues(
-            $data['occurred_on'],
-            $data['payload']
-        );
+        return $this;
     }
 
     /**
-     * Create by plain values.
+     * Get repository reference.
      *
-     * @param int   $occurredOn
-     * @param array $payload
-     *
-     * @return static
+     * @return RepositoryReference
      */
-    public static function createByPlainValues(
-        int $occurredOn,
-        array $payload
-    ) {
-        $reflector = new ReflectionClass(static::class);
-        $instance = $reflector->newInstanceArgs(static::fromArrayPayload($payload));
-        $instance->occurredOn = $occurredOn;
-
-        return $instance;
+    public function getRepositoryReference(): RepositoryReference
+    {
+        return $this->repositoryReference;
     }
 
     /**
@@ -114,34 +112,9 @@ abstract class DomainEvent
      *
      * @return array
      */
-    abstract public function toArrayPayload(): array;
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     *
-     * @throws Exception
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
+    public function toArrayPayload(): array
     {
-        throw new Exception('Your domain event MUST implement the method fromArrayPayload');
-    }
-
-    /**
-     * To plan values.
-     *
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return [
-            'type' => str_replace('Apisearch\Server\Domain\Event\\', '', get_class($this)),
-            'occurred_on' => $this->occurredOn(),
-            'payload' => $this->toArrayPayload(),
-        ];
+        return [];
     }
 
     /**

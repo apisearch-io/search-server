@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class DeleteTokenController.
  */
-class DeleteTokenController extends ControllerWithBus
+class DeleteTokenController extends ControllerWithCommandBus
 {
     /**
      * Delete a token.
@@ -40,7 +40,7 @@ class DeleteTokenController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new DeleteToken(
+            ->execute(new DeleteToken(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

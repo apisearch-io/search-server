@@ -181,37 +181,37 @@ trait FiltersTest
     {
         $this->assertCount(
             4,
-            $this->buildCreatedAtFilteredResult('2010-01-01..2021-01-01')->getItems()
+            $this->buildCreatedAtFilteredResult('2010-01-01T00:00:00+00:00..2021-01-01T00:00:00+00:00')->getItems()
         );
 
         $this->assertResults(
-            $this->buildCreatedAtFilteredResult('2010-01-01..2021-01-01'),
+            $this->buildCreatedAtFilteredResult('2010-01-01T00:00:00+00:00..2021-01-01T00:00:00+00:00'),
             ['?1', '?2', '?3', '?4', '!5']
         );
 
         $this->assertResults(
-            $this->buildCreatedAtFilteredResult('..2021-01-01'),
+            $this->buildCreatedAtFilteredResult('..2021-01-01T00:00:00+00:00'),
             ['?1', '?2', '?3', '?4', '!5']
         );
 
         $this->assertCount(
             2,
-            $this->buildCreatedAtFilteredResult('..2020-03-03')->getItems()
+            $this->buildCreatedAtFilteredResult('..2020-03-03T00:00:00+00:00')->getItems()
         );
 
         $this->assertCount(
             3,
-            $this->buildCreatedAtFilteredResult('..2020-03-03T23:59:59Z')->getItems()
+            $this->buildCreatedAtFilteredResult('..2020-03-03T00:00:01+00:00')->getItems()
         );
 
         $this->assertCount(
             2,
-            $this->buildCreatedAtFilteredResult('2020-02-02..2020-04-04')->getItems()
+            $this->buildCreatedAtFilteredResult('2020-02-02T00:00:00+00:00..2020-04-04T00:00:00+00:00')->getItems()
         );
 
         $this->assertCount(
             3,
-            $this->buildCreatedAtFilteredResult('2020-02-02..')->getItems()
+            $this->buildCreatedAtFilteredResult('2020-02-02T00:00:00+00:00..')->getItems()
         );
 
         $this->assertCount(

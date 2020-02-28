@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class QueryController.
  */
-class QueryController extends ControllerWithBus
+class QueryController extends ControllerWithQueryBus
 {
     /**
      * Make a query.
@@ -44,8 +44,8 @@ class QueryController extends ControllerWithBus
         $queryModel = RequestAccessor::extractQuery($request);
 
         return $this
-            ->commandBus
-            ->handle(new Query(
+            ->queryBus
+            ->ask(new Query(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)

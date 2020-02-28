@@ -26,8 +26,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class QueryCommand.
  */
-class QueryCommand extends CommandWithBusAndGodToken
+class QueryCommand extends CommandWithQueryBusAndGodToken
 {
+    /**
+     * @var string
+     */
+    protected static $defaultName = 'apisearch-server:query';
+
     /**
      * Configures the current command.
      */
@@ -91,7 +96,7 @@ class QueryCommand extends CommandWithBusAndGodToken
             $input,
             $output,
             function (ModelQuery $query) use ($objects, $parameters) {
-                return $this->handleSynchronously(new Query(
+                return $this->askQuery(new Query(
                     $objects['repository_reference'],
                     $objects['token'],
                     $query,

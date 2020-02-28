@@ -1,8 +1,0 @@
-services:
-
-    apisearch_server.consumer_manager:
-        class: Apisearch\Plugin\RabbitMQ\Domain\RabbitMQConsumerManager
-        public: true
-        arguments:
-            - "%apisearch_plugin.rabbitmq.queues%"
-            - "@apiserach_plugin.rabbitmq.client"

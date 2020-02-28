@@ -18,35 +18,6 @@ namespace Apisearch\Server\Domain\Event;
 /**
  * Class TokensWereDeleted.
  */
-class TokensWereDeleted extends DomainEvent
+final class TokensWereDeleted extends DomainEvent
 {
-    /**
-     * TokensWereDeleted constructor.
-     */
-    public function __construct()
-    {
-        $this->setNow();
-    }
-
-    /**
-     * to array payload.
-     *
-     * @return array
-     */
-    public function toArrayPayload(): array
-    {
-        return [];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [];
-    }
 }

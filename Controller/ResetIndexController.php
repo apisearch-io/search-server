@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ResetIndexController.
  */
-class ResetIndexController extends ControllerWithBus
+class ResetIndexController extends ControllerWithCommandBus
 {
     /**
      * Reset the index.
@@ -39,7 +39,7 @@ class ResetIndexController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new ResetIndex(
+            ->execute(new ResetIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     $indexUUID

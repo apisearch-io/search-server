@@ -18,27 +18,28 @@ namespace Apisearch\Server\Controller\Listener;
 use Apisearch\Model\Token;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * Class RouterRedirectionToJsonResponse.
  */
-class RouterRedirectionToJsonResponse
+class RouterRedirectionToJsonResponse implements EventSubscriberInterface
 {
     /**
      * Intercepting redirects.
      *
-     * @param FilterResponseEvent $event
+     * @param ResponseEvent $event
      *
      * @return PromiseInterface
      */
-    public function onKernelResponse(FilterResponseEvent $event): PromiseInterface
+    public function onKernelResponse(ResponseEvent $event): PromiseInterface
     {
         return (new FulfilledPromise($event))
-            ->then(function (FilterResponseEvent $event) {
+            ->then(function (ResponseEvent $event) {
                 $response = $event->getResponse();
                 if ($response instanceof RedirectResponse) {
                     if (Response::HTTP_MOVED_PERMANENTLY === $response->getStatusCode()) {
@@ -69,5 +70,17 @@ class RouterRedirectionToJsonResponse
                     }
                 }
             });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            ResponseEvent::class => [
+                ['onKernelResponse', 0],
+            ],
+        ];
     }
 }

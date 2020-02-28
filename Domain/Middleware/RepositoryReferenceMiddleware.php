@@ -19,12 +19,11 @@ use Apisearch\Exception\ForbiddenException;
 use Apisearch\Server\Domain\AppRequiredCommand;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use League\Tactician\Middleware;
 
 /**
  * Class RepositoryReferenceMiddleware.
  */
-final class RepositoryReferenceMiddleware implements Middleware
+final class RepositoryReferenceMiddleware
 {
     /**
      * @param object   $command

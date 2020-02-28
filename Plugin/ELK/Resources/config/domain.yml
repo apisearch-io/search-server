@@ -1,18 +1,20 @@
 services:
 
-    apisearch_plugin.elk.redis_config:
-        class: Apisearch\Plugin\Redis\Domain\RedisConfig
-        arguments:
-            - "%apisearch_plugin.elk.host%"
-            - "%apisearch_plugin.elk.port%"
-            - "%apisearch_plugin.elk.is_cluster%"
-            - "%apisearch_plugin.elk.database%"
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $redisClient: "@apisearch_plugin.elk.redis_client"
+            string $key: "%apisearch_plugin.elk.key%"
+            string $service: "%apisearch_plugin.elk.service%"
+            string $environment: "%apisearch_server.environment%"
 
-    apisearch_plugin.elk.redis_wrapper:
-        class: Apisearch\Plugin\Redis\Domain\RedisWrapper
-        public: true
-        factory:
-            - "@apisearch_plugin.redis.redis_wrapper_factory"
-            - "create"
-        arguments:
-            - "@apisearch_plugin.elk.redis_config"
+
+    Apisearch\Plugin\ELK\Domain\:
+        resource: '../../Domain/'
+
+    #
+    # Event Domain Subscribers
+    #
+    Apisearch\Plugin\ELK\Domain\Event\DomainEventSubscriber:
+        tags: ["apisearch_server.domain_event_subscriber"]

@@ -77,14 +77,4 @@ abstract class StaticTokensFunctionalTest extends HttpFunctionalTest
 
         return $configuration;
     }
-
-    /**
-     * Save events.
-     *
-     * @return bool
-     */
-    protected static function saveEvents(): bool
-    {
-        return false;
-    }
 }

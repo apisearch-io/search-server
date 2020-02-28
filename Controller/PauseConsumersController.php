@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class PauseConsumersController.
  */
-class PauseConsumersController extends ControllerWithBus
+class PauseConsumersController extends ControllerWithCommandBus
 {
     /**
      * Pause Consumers.
@@ -38,7 +38,7 @@ class PauseConsumersController extends ControllerWithBus
     {
         return $this
             ->commandBus
-            ->handle(new PauseConsumers(
+            ->execute(new PauseConsumers(
                 RequestAccessor::extractRequestContentObject(
                     $request,
                     'type',

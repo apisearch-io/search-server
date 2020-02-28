@@ -20,6 +20,8 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository;
  */
 trait AllTests
 {
-    use AllAsynchronousTests;
-    use RepositoryPermissionsTest;
+
+use AllAsynchronousTests;
+use RepositoryPermissionsTest;
+
 }

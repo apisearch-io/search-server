@@ -28,6 +28,8 @@ trait IndexConfigurationTest
 {
     /**
      * Test index check.
+     *
+     * @group lele
      */
     public function testSimpleReindex()
     {

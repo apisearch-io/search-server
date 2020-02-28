@@ -48,6 +48,9 @@ class InMemoryTokenRepositoryTest extends TestCase
         $token = new Token($tokenUUID, $appUUID);
         $promise1 = $repository
             ->addToken($repositoryReference, $token)
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
+            })
             ->then(function () use ($repository, $appUUID, $tokenUUID) {
                 return $repository->getTokenByUUID(
                     $appUUID,
@@ -66,6 +69,9 @@ class InMemoryTokenRepositoryTest extends TestCase
                         $repositoryReference,
                         $tokenUUID
                     );
+            })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
             })
             ->then(function () use ($repository, $appUUID, $tokenUUID) {
                 return $repository
@@ -95,6 +101,8 @@ class InMemoryTokenRepositoryTest extends TestCase
 
     /**
      * Test delete tokens.
+     *
+     * @group a
      */
     public function testDeleteTokens()
     {
@@ -118,17 +126,26 @@ class InMemoryTokenRepositoryTest extends TestCase
 
         $promise = $repository
             ->addToken($mainRepositoryReference, $token)
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
+            })
             ->then(function () use ($appUUID, $mainRepositoryReference, $repository) {
                 $tokenUUID2 = TokenUUID::createById('xxx2');
                 $token2 = new Token($tokenUUID2, $appUUID);
 
                 return $repository->addToken($mainRepositoryReference, $token2);
             })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
+            })
             ->then(function () use ($indexUUID, $repository, $zzzRepositoryReference) {
                 $tokenUUID3 = TokenUUID::createById('xxx3');
                 $token3 = new Token($tokenUUID3, AppUUID::createById('zzz'));
 
                 return $repository->addToken($zzzRepositoryReference, $token3);
+            })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
             })
             ->then(function () use ($repository, $mainRepositoryReference) {
                 return $repository->getTokens($mainRepositoryReference);
@@ -138,6 +155,9 @@ class InMemoryTokenRepositoryTest extends TestCase
             })
             ->then(function () use ($repository, $mainRepositoryReference) {
                 $repository->deleteTokens($mainRepositoryReference);
+            })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
             })
             ->then(function () use ($repository, $mainRepositoryReference) {
                 return $repository->getTokens($mainRepositoryReference);
@@ -155,6 +175,9 @@ class InMemoryTokenRepositoryTest extends TestCase
                 $tokenUUID3 = TokenUUID::createById('xxx3');
                 $repository->deleteToken($mainRepositoryReference, $tokenUUID3);
             })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
+            })
             ->then(function () use ($repository, $zzzRepositoryReference) {
                 return $repository->getTokens($zzzRepositoryReference);
             })
@@ -164,6 +187,9 @@ class InMemoryTokenRepositoryTest extends TestCase
             ->then(function () use ($repository, $zzzRepositoryReference) {
                 $tokenUUID3 = TokenUUID::createById('xxx3');
                 $repository->deleteToken($zzzRepositoryReference, $tokenUUID3);
+            })
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
             })
             ->then(function () use ($repository, $zzzRepositoryReference) {
                 return $repository->getTokens($zzzRepositoryReference);

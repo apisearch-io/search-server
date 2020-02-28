@@ -15,10 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\DependencyInjection;
 
-use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * Class SecurityPluginExtension.
@@ -107,27 +105,8 @@ class SecurityPluginExtension extends BaseExtension
      */
     protected function getParametrizationValues(array $config): array
     {
-        $storageHost = Env::get('REDIS_SECURITY_HOST', $config['host']);
-        if (null === $storageHost) {
-            $exception = new InvalidConfigurationException('Please provide a host for security plugin.');
-            $exception->setPath(sprintf('%s.%s', $this->getAlias(), 'host'));
-
-            throw $exception;
-        }
-
-        $storagePort = Env::get('REDIS_SECURITY_PORT', $config['port']);
-        if (null === $storageHost) {
-            $exception = new InvalidConfigurationException('Please provide a port for security plugin.');
-            $exception->setPath(sprintf('%s.%s', $this->getAlias(), 'port'));
-
-            throw $exception;
-        }
-
         return [
-            'apisearch_plugin.security.host' => (string) $storageHost,
-            'apisearch_plugin.security.port' => (int) $storagePort,
-            'apisearch_plugin.security.is_cluster' => (bool) Env::get('REDIS_SECURITY_IS_CLUSTER', $config['is_cluster']),
-            'apisearch_plugin.security.database' => (string) Env::get('REDIS_SECURITY_DATABASE', $config['database']),
+            'apisearch_plugin.security.redis_client' => (string) $config['redis_client'],
         ];
     }
 }

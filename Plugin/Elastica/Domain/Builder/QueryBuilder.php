@@ -450,9 +450,7 @@ class QueryBuilder
             $rangeData['lt'] = $to;
         }
 
-        $rangeClass = Filter::TYPE_DATE_RANGE === $filter->getFilterType()
-            ? ElasticaQuery\Range::class
-            : ElasticaQuery\Range::class;
+        $rangeClass = ElasticaQuery\Range::class;
 
         return empty($rangeData)
             ? null

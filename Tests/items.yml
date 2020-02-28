@@ -20,7 +20,7 @@ items:
             simple_int: 7
             simple_string: hola
             price: 950
-            created_at: "2020-01-01"
+            created_at: "2020-01-01T00:00:00+00:00"
             color:
                 - pink
             editorial:
@@ -79,7 +79,7 @@ items:
             simple_int: 6
             simple_string: canasta
             price: 1500
-            created_at: "2020-02-02"
+            created_at: "2020-02-02T00:00:00+00:00"
             author:
                 - 111
             author_data:
@@ -140,7 +140,7 @@ items:
             simple_int: 5
             simple_string: efervescencio
             price: 2000
-            created_at: "2020-03-03"
+            created_at: "2020-03-03T00:00:00+00:00"
             author:
                 - 222
                 - 333
@@ -205,7 +205,7 @@ items:
             simple_int: 9
             simple_string: eleuterio
             price: 700
-            created_at: "2020-04-04"
+            created_at: "2020-04-04T00:00:00+00:00"
             category:
                 - 1
                 - 5

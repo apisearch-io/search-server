@@ -3,17 +3,15 @@
 exec 6>&-
 exec 6<&-
 
-until $(curl --output /dev/null --silent --fail "http://apisearch.elasticsearch.7.4:9200/_cluster/health?wait_for_status=yellow&timeout=10s"); do
-    echo "$(date) - can't connect to apisearch.elasticsearch.7.4:9200"
+until $(curl --output /dev/null --silent --fail "http://apisearch.elasticsearch.latest:9200/_cluster/health?wait_for_status=yellow&timeout=10s"); do
+    echo "$(date) - can't connect to apisearch.elasticsearch.latest:9200"
     sleep 1
 done
 
 exec 6>&-
 exec 6<&-
 
-cd /var/www/apisearch \
-    && composer require --no-update phpunit/phpunit:^7 \
-    && composer update -n --prefer-dist --no-suggest --dev \
-    && php vendor/bin/phpunit \
-    && composer remove --no-update phpunit/phpunit \
-    && composer update -n --prefer-dist --no-suggest --no-dev
+cd /var/www
+composer update -n --prefer-dist --no-suggest
+php vendor/bin/phpunit Tests/
+php vendor/bin/phpunit Plugin/

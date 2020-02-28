@@ -15,18 +15,21 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security;
 
-use Apisearch\Plugin\Redis\RedisBundle;
+use Apisearch\Plugin\Security\DependencyInjection\CompilerPass\ClientCompilerPass;
 use Apisearch\Plugin\Security\DependencyInjection\SecurityPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
+use Drift\Redis\RedisBundle;
 use Mmoreram\BaseBundle\BaseBundle;
+use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class SecurityPluginBundle.
  */
-class SecurityPluginBundle extends BaseBundle implements Plugin
+class SecurityPluginBundle extends BaseBundle implements Plugin, DependentBundleInterface
 {
     /**
      * Return all bundle dependencies.
@@ -55,6 +58,18 @@ class SecurityPluginBundle extends BaseBundle implements Plugin
     public function getContainerExtension()
     {
         return new SecurityPluginExtension();
+    }
+
+    /**
+     * Return a CompilerPass instance array.
+     *
+     * @return CompilerPassInterface[]
+     */
+    public function getCompilerPasses(): array
+    {
+        return [
+            new ClientCompilerPass(),
+        ];
     }
 
     /**

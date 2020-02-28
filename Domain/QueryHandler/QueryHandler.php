@@ -18,7 +18,6 @@ namespace Apisearch\Server\Domain\QueryHandler;
 use Apisearch\Model\Item;
 use Apisearch\Query\Query as ModelQuery;
 use Apisearch\Result\Result;
-use Apisearch\Server\Domain\Event\DomainEventWithRepositoryReference;
 use Apisearch\Server\Domain\Event\QueryWasMade;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
@@ -53,20 +52,20 @@ class QueryHandler extends WithRepositoryAndEventPublisher
             )
             ->then(function (Result $result) use ($from, $repositoryReference, $searchQuery, $query) {
                 return $this
-                    ->eventPublisher
-                    ->publish(new DomainEventWithRepositoryReference(
-                        $repositoryReference,
-                        new QueryWasMade(
+                    ->eventBus
+                    ->dispatch(
+                        (new QueryWasMade(
                             $searchQuery->getQueryText(),
                             $searchQuery->getSize(),
                             array_map(function (Item $item) {
                                 return $item->getUUID();
                             }, $result->getItems()),
                             $searchQuery->getUser(),
-                            json_encode($query->getQuery()->toArray())
-                        ),
-                        (int) ((microtime(true) - $from) * 1000)
-                    ))
+                            json_encode($query->getQuery()->toArray()),
+                            (int) ((microtime(true) - $from) * 1000)
+                        ))
+                            ->withRepositoryReference($repositoryReference)
+                    )
                     ->then(null, function (ExternalResourceException $exception) {
                         // We should ignore external resources exceptions, as they are
                         // commonly related to connections. These exceptions should be

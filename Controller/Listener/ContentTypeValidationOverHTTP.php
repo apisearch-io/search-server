@@ -18,25 +18,26 @@ namespace Apisearch\Server\Controller\Listener;
 use Apisearch\Exception\UnsupportedContentTypeException;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
  * Class ContentTypeValidationOverHTTP.
  */
-class ContentTypeValidationOverHTTP
+class ContentTypeValidationOverHTTP implements EventSubscriberInterface
 {
     /**
      * Check content type.
      *
-     * @param GetResponseEvent $event
+     * @param RequestEvent $event
      *
      * @return PromiseInterface
      */
-    public function validateContentTypeOnKernelRequest(GetResponseEvent $event)
+    public function validateContentTypeOnKernelRequest(RequestEvent $event)
     {
         return (new FulfilledPromise($event))
-            ->then(function (GetResponseEvent $event) {
+            ->then(function (RequestEvent $event) {
                 $request = $event->getRequest();
 
                 if (!in_array($request->getMethod(), [
@@ -48,5 +49,17 @@ class ContentTypeValidationOverHTTP
                     throw UnsupportedContentTypeException::createUnsupportedContentTypeException();
                 }
             });
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            RequestEvent::class => [
+                ['validateContentTypeOnKernelRequest', 16],
+            ],
+        ];
     }
 }

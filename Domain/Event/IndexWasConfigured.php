@@ -21,7 +21,7 @@ use Apisearch\Model\IndexUUID;
 /**
  * Class IndexWasConfigured.
  */
-class IndexWasConfigured extends DomainEvent
+final class IndexWasConfigured extends DomainEvent
 {
     /**
      * @var IndexUUID
@@ -47,9 +47,9 @@ class IndexWasConfigured extends DomainEvent
         IndexUUID $indexUUID,
         Config $config
     ) {
+        parent::__construct();
         $this->config = $config;
         $this->indexUUID = $indexUUID;
-        $this->setNow();
     }
 
     /**
@@ -66,21 +66,6 @@ class IndexWasConfigured extends DomainEvent
             'config' => \json_encode($this
                 ->config
                 ->toArray()),
-        ];
-    }
-
-    /**
-     * To payload.
-     *
-     * @param array $arrayPayload
-     *
-     * @return array
-     */
-    public static function fromArrayPayload(array $arrayPayload): array
-    {
-        return [
-            IndexUUID::createById($arrayPayload['index_uuid']),
-            Config::createFromArray(\json_decode($arrayPayload['config'], true)),
         ];
     }
 }

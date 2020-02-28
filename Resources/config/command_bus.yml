@@ -1,0 +1,13 @@
+command_bus:
+    command_bus:
+        middlewares:
+            - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
+            - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
+            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
+
+    query_bus:
+        middlewares:
+            - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
+            - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
+            - Apisearch\Server\Domain\Middleware\TokenQueryMiddleware
+            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector

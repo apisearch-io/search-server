@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class AddInteractionController.
  */
-class AddInteractionController extends ControllerWithBus
+class AddInteractionController extends ControllerWithCommandBus
 {
     /**
      * Add an interaction.
@@ -45,7 +45,7 @@ class AddInteractionController extends ControllerWithBus
 
         return $this
             ->commandBus
-            ->handle(new AddInteraction(
+            ->execute(new AddInteraction(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

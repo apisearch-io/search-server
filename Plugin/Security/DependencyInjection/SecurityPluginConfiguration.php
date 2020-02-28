@@ -32,17 +32,8 @@ class SecurityPluginConfiguration extends BaseConfiguration
     {
         $rootNode
             ->children()
-                ->scalarNode('host')
-                    ->defaultNull()
-                ->end()
-                ->integerNode('port')
-                    ->defaultNull()
-                ->end()
-                ->booleanNode('is_cluster')
-                    ->defaultFalse()
-                ->end()
-                ->scalarNode('database')
-                    ->defaultNull()
+                ->scalarNode('redis_client')
+                    ->isRequired()
                 ->end();
     }
 }

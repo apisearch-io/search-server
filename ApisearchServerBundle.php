@@ -18,7 +18,6 @@ namespace Apisearch\Server;
 use Apisearch\ApisearchBundle;
 use Apisearch\Server\DependencyInjection\ApisearchServerExtension;
 use Apisearch\Server\DependencyInjection\CompilerPass;
-use League\Tactician\Bundle\TacticianBundle;
 use Mmoreram\BaseBundle\BaseBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -71,7 +70,6 @@ class ApisearchServerBundle extends BaseBundle
         return [
             FrameworkBundle::class,
             ApisearchBundle::class,
-            new TacticianBundle(),
         ];
     }
 
@@ -83,15 +81,11 @@ class ApisearchServerBundle extends BaseBundle
     public function getCompilerPasses(): array
     {
         return [
-            new CompilerPass\EventPublisherCompilerPass(),
-            new CompilerPass\CommandBusCompilerPass(),
             new CompilerPass\PluginsMiddlewareCompilerPass(),
             new CompilerPass\EnabledPluginsMiddlewareCompilerPass($this->kernel),
-            new CompilerPass\DomainEventsSubscribersCompilerPass(),
             new CompilerPass\TokenLocatorsCompilerPass(),
             new CompilerPass\TokenProvidersCompilerPass(),
             new CompilerPass\TokenValidatorsCompilerPass(),
-            new CompilerPass\QueuesPluginCheckerCompilerPass($this->kernel),
             new CompilerPass\CleanCommandsCompilerPass($this->kernel),
         ];
     }

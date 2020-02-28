@@ -31,7 +31,6 @@ class Elasticsearch68Test extends ServiceRepositoryTest
     {
         return [
             'host' => 'apisearch.elasticsearch.6.8',
-            'port' => '9200',
         ];
     }
 

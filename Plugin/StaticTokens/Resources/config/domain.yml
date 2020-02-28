@@ -1,9 +1,8 @@
 services:
 
-    apisearch_plugin.static_tokens.static_tokens_token_repository:
-        class: Apisearch\Plugin\StaticTokens\Domain\Token\StaticTokenLocator
+    Apisearch\Plugin\StaticTokens\Domain\Token\StaticTokenLocator:
         arguments:
             - "%apisearch_plugin.static_tokens.tokens%"
         tags:
-            - { name: "apisearch_server.token_locator" }
-            - { name: "apisearch_server.token_provider" }
+            - "apisearch_server.token_locator"
+            - "apisearch_server.token_provider"
