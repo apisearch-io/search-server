@@ -13,27 +13,27 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK\DependencyInjection\CompilerPass;
+namespace Apisearch\Plugin\Logstash\DependencyInjection\CompilerPass;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Drift\Redis\DependencyInjection\CompilerPass\RedisCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Class ClientCompilerPass.
  */
-class ClientCompilerPass implements CompilerPassInterface
+class ClientCompilerPass extends RedisCompilerPass
 {
     /**
      * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        $clientName = $container->getParameter('apisearch_plugin.elk.redis_client');
-        $clientName = "redis.{$clientName}_client";
+        $redisSecurityConfiguration = $container->getParameter('apisearch_plugin.logstash.redis_configuration');
 
-        $container->setAlias(
-            'apisearch_plugin.elk.redis_client',
-            $clientName
+        $this->createClient(
+            $container,
+            'logstash',
+            $redisSecurityConfiguration
         );
     }
 }

@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK\Domain\Event;
+namespace Apisearch\Plugin\Logstash\Domain\Event;
 
 use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;

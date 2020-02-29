@@ -13,10 +13,10 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK;
+namespace Apisearch\Plugin\Logstash;
 
-use Apisearch\Plugin\ELK\DependencyInjection\CompilerPass\ClientCompilerPass;
-use Apisearch\Plugin\ELK\DependencyInjection\ELKPluginExtension;
+use Apisearch\Plugin\Logstash\DependencyInjection\CompilerPass\ClientCompilerPass;
+use Apisearch\Plugin\Logstash\DependencyInjection\LogstashPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Drift\Redis\RedisBundle;
@@ -27,9 +27,9 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * Class ELKPluginBundle.
+ * Class LogstashPluginBundle.
  */
-class ELKPluginBundle extends BaseBundle implements Plugin, DependentBundleInterface
+class LogstashPluginBundle extends BaseBundle implements Plugin, DependentBundleInterface
 {
     /**
      * Returns the bundle's container extension.
@@ -38,7 +38,7 @@ class ELKPluginBundle extends BaseBundle implements Plugin, DependentBundleInter
      */
     public function getContainerExtension()
     {
-        return new ELKPluginExtension();
+        return new LogstashPluginExtension();
     }
 
     /**
