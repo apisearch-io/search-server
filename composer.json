@@ -27,7 +27,7 @@
     "drift/preload-bundle": "0.1.*",
     "drift/amqp-bundle": "0.1.*",
     "drift/redis-bundle": "0.1.*",
-    "drift/dbal-bundle": "0.1.*",
+    "drift/dbal-bundle": "0.1.*, >=0.1.1",
 
     "react/promise": "^2",
     "react/mysql": "^0.5.0",

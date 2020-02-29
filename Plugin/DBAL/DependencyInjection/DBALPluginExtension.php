@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\DependencyInjection;
 
+use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -106,8 +107,17 @@ class DBALPluginExtension extends BaseExtension
     protected function getParametrizationValues(array $config): array
     {
         return [
+            'apisearch_plugin.dbal.configuration' => [
+                'driver' => Env::get('DBAL_DRIVER', $config['driver'] ?? null, true),
+                'host' => Env::get('DBAL_HOST', $config['host'] ?? null, true),
+                'port' => Env::get('DBAL_PORT', $config['port'] ?? null, true),
+                'user' => Env::get('DBAL_USER', $config['user'] ?? null, true),
+                'password' => Env::get('DBAL_PASSWORD', $config['password'] ?? null, true),
+                'dbname' => Env::get('DBAL_DBNAME', $config['dbname'] ?? null, true),
+            ],
+
+            'apisearch_plugin.dbal.tokens_table' => Env::get('DBAL_TOKENS_TABLE', $config['tokens_table'] ?? null, true),
             'apisearch_plugin.dbal.locator_enabled' => $config['locator_enabled'],
-            'apisearch_plugin.dbal.tokens_table' => $config['tokens_table'],
         ];
     }
 }

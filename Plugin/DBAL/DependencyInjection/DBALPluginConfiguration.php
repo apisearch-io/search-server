@@ -31,12 +31,22 @@ class DBALPluginConfiguration extends BaseConfiguration
     protected function setupTree(ArrayNodeDefinition $rootNode)
     {
         $rootNode
+            ->addDefaultsIfNotSet()
             ->children()
+
+                ->enumNode('driver')
+                    ->values(['mysql', 'sqlite', 'postgres'])
+                ->end()
+
+                ->scalarNode('host')->end()
+                ->integerNode('port')->end()
+                ->scalarNode('user')->end()
+                ->scalarNode('password')->end()
+                ->scalarNode('dbname')->end()
+                ->scalarNode('tokens_table')->end()
+
                 ->booleanNode('locator_enabled')
                     ->defaultTrue()
-                ->end()
-                ->scalarNode('tokens_table')
-                    ->isRequired()
                 ->end();
     }
 }
