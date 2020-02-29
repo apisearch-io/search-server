@@ -15,13 +15,14 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL;
 
+use Apisearch\Plugin\DBAL\DependencyInjection\CompilerPass\ConnectionCompilerPass;
 use Apisearch\Plugin\DBAL\DependencyInjection\DBALPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Apisearch\Server\Domain\Plugin\StoragePlugin;
-use Drift\DBAL\DBALBundle;
 use Mmoreram\BaseBundle\BaseBundle;
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -43,7 +44,6 @@ class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, Depe
     {
         return [
             ApisearchServerBundle::class,
-            DBALBundle::class,
         ];
     }
 
@@ -57,6 +57,18 @@ class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, Depe
     public function getContainerExtension()
     {
         return new DBALPluginExtension();
+    }
+
+    /**
+     * Return a CompilerPass instance array.
+     *
+     * @return CompilerPassInterface[]
+     */
+    public function getCompilerPasses(): array
+    {
+        return [
+            new ConnectionCompilerPass(),
+        ];
     }
 
     /**

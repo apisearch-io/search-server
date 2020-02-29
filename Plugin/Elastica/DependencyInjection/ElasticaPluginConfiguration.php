@@ -46,7 +46,7 @@ class ElasticaPluginConfiguration extends BaseConfiguration
                                 ->isRequired()
                             ->end()
                             ->scalarNode('port')
-                                ->defaultValue("9200")
+                                ->defaultValue('9200')
                             ->end()
                         ->end()
                     ->end()

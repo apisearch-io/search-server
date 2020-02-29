@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+
 /**
  * Class Env.
  */
@@ -25,13 +27,23 @@ class Env
      *
      * @param string $variableName
      * @param $defaultValue
+     * @param bool $throwExceptionOnMissing
      *
      * @return mixed
      */
     public static function get(
         string $variableName,
-        $defaultValue
+        $defaultValue,
+        bool $throwExceptionOnMissing = false
     ) {
-        return $_ENV[$variableName] ?? $_SERVER[$variableName] ?? $defaultValue;
+        $value = $_ENV[$variableName] ?? $_SERVER[$variableName] ?? $defaultValue;
+
+        if ($throwExceptionOnMissing && empty($value)) {
+            throw new InvalidConfigurationException(
+                "Missing configuration value $variableName. Check that the environment variable exists or that the required value on configuration is properly set."
+            );
+        }
+
+        return $value;
     }
 }

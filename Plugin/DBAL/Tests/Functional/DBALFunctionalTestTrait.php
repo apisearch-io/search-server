@@ -60,32 +60,4 @@ trait DBALFunctionalTestTrait
 
         return $bundles;
     }
-
-    /**
-     * Decorate configuration.
-     *
-     * @param array $configuration
-     *
-     * @return array
-     */
-    protected static function decorateConfiguration(array $configuration): array
-    {
-        $configuration = parent::decorateConfiguration($configuration);
-        $configuration['dbal'] = [
-            'connections' => [
-                'main' => [
-                    'driver' => 'sqlite',
-                    'user' => 'root',
-                    'password' => 'root',
-                    'dbname' => ':memory:',
-                ],
-            ],
-        ];
-
-        $configuration['apisearch_plugin_dbal'] = [
-            'tokens_table' => 'tokens',
-        ];
-
-        return $configuration;
-    }
 }
