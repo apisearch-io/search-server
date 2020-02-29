@@ -4,7 +4,7 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            $redisClient: "@apisearch_plugin.security.redis_client"
+            $redisClient: "@redis.security_client"
 
     Apisearch\Plugin\Security\Domain\:
         resource: '../../Domain/'

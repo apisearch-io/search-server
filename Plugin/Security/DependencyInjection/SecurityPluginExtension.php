@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\DependencyInjection;
 
+use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -106,7 +107,13 @@ class SecurityPluginExtension extends BaseExtension
     protected function getParametrizationValues(array $config): array
     {
         return [
-            'apisearch_plugin.security.redis_client' => (string) $config['redis_client'],
+            'apisearch_plugin.security.redis_configuration' => [
+                'host' => Env::get('REDIS_HOST', $config['redis_host'] ?? null, true),
+                'port' => Env::get('REDIS_PORT', $config['redis_port'], false),
+                'database' => Env::get('REDIS_DATABASE', $config['redis_database'] ?? null, false),
+                'password' => Env::get('REDIS_PASSWORD', $config['redis_password'] ?? null, false),
+                'preload' => true,
+            ],
         ];
     }
 }
