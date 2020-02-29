@@ -31,9 +31,17 @@ class SecurityPluginConfiguration extends BaseConfiguration
     protected function setupTree(ArrayNodeDefinition $rootNode)
     {
         $rootNode
+            ->addDefaultsIfNotSet()
             ->children()
-                ->scalarNode('redis_client')
-                    ->isRequired()
+                ->scalarNode('redis_host')->end()
+                ->scalarNode('redis_port')
+                    ->defaultValue(6379)
+                ->end()
+                ->scalarNode('redis_database')
+                    ->defaultValue('/')
+                ->end()
+                ->scalarNode('redis_password')
+                    ->defaultNull()
                 ->end();
     }
 }
