@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK\Tests\Functional;
+namespace Apisearch\Plugin\Logstash\Tests\Functional;
 
 use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Query\Query;
@@ -21,7 +21,7 @@ use Apisearch\Query\Query;
 /**
  * Class BasicUsageTest.
  */
-class BasicUsageTest extends ELKFunctionalTest
+class BasicUsageTest extends LogstashFunctionalTest
 {
     /**
      * @var string
@@ -33,7 +33,7 @@ class BasicUsageTest extends ELKFunctionalTest
      */
     public function testBasicUsage()
     {
-        $redis = static::getStatic('redis.main_client_test');
+        $redis = static::getStatic('redis.logstash_client_test');
         self::await($redis->del(static::KEY));
 
         $this->query(Query::createMatchAll());

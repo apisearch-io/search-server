@@ -16,16 +16,13 @@ declare(strict_types=1);
 namespace Apisearch\Server;
 
 use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
-use Apisearch\Plugin\ELK\ELKPluginBundle;
-use Apisearch\Plugin\MostRelevantWords\MostRelevantWordsPluginBundle;
-use Apisearch\Plugin\NewRelic\NewRelicPluginBundle;
-use Apisearch\Plugin\PosgreSQLStorage\PostgreSQLStoragePluginBundle;
+use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
-use Apisearch\Plugin\RedisMetadataFields\RedisMetadataFieldsPluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
 use Apisearch\Server\DependencyInjection\Env;
 use Apisearch\Server\Domain\Plugin\Plugin;
+use Drift\DBAL\DBALBundle;
 use Mmoreram\BaseBundle\BaseBundle;
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -76,11 +73,8 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
     {
         $aliases = [
             'elastica' => ElasticaPluginBundle::class,
-            'elk' => ELKPluginBundle::class,
-            'most_relevant_words' => MostRelevantWordsPluginBundle::class,
-            'newrelic' => NewRelicPluginBundle::class,
-            'redis_metadata_fields' => RedisMetadataFieldsPluginBundle::class,
-            'postgresql_storage' => PostgreSQLStoragePluginBundle::class,
+            'logstash' => LogstashPluginBundle::class,
+            'dbal' => DBALBundle::class,
             'static_tokens' => StaticTokensPluginBundle::class,
             'security' => SecurityPluginBundle::class,
             'query_mapper' => QueryMapperPluginBundle::class,

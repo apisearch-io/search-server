@@ -29,6 +29,9 @@
         <env name="DBAL_TOKENS_TABLE" value="tokens" force="true" />
 
         <env name="AMQP_HOST" value="apisearch.rabbitmq" force="true" />
+
         <env name="REDIS_HOST" value="apisearch.redis" force="true" />
+
+        <env name="LOGSTASH_REDIS_HOST" value="apisearch.redis" force="true" />
     </php>
 </phpunit>

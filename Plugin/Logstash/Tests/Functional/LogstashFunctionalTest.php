@@ -13,15 +13,15 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK\Tests\Functional;
+namespace Apisearch\Plugin\Logstash\Tests\Functional;
 
-use Apisearch\Plugin\ELK\ELKPluginBundle;
+use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
- * Class ELKFunctionalTest.
+ * Class LogstashFunctionalTest.
  */
-abstract class ELKFunctionalTest extends ServiceFunctionalTest
+abstract class LogstashFunctionalTest extends ServiceFunctionalTest
 {
     /**
      * Decorate bundles.
@@ -32,7 +32,7 @@ abstract class ELKFunctionalTest extends ServiceFunctionalTest
      */
     protected static function decorateBundles(array $bundles): array
     {
-        $bundles[] = ELKPluginBundle::class;
+        $bundles[] = LogstashPluginBundle::class;
 
         return $bundles;
     }
@@ -47,20 +47,9 @@ abstract class ELKFunctionalTest extends ServiceFunctionalTest
     protected static function decorateConfiguration(array $configuration): array
     {
         $configuration = parent::decorateConfiguration($configuration);
-        $configuration['redis'] = [
-            'clients' => [
-                'main' => [
-                    'host' => $_ENV['REDIS_HOST'],
-                ],
-            ],
-        ];
 
-        $configuration['apisearch_plugin_elk'] = [
-            'redis_client' => 'main',
-        ];
-
-        $configuration['services']['redis.main_client_test'] = [
-            'alias' => 'redis.main_client',
+        $configuration['services']['redis.logstash_client_test'] = [
+            'alias' => 'redis.logstash_client',
             'public' => true,
         ];
 

@@ -13,16 +13,16 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\ELK\DependencyInjection;
+namespace Apisearch\Plugin\Logstash\DependencyInjection;
 
 use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * Class ELKPluginExtension.
+ * Class LogstashPluginExtension.
  */
-class ELKPluginExtension extends BaseExtension
+class LogstashPluginExtension extends BaseExtension
 {
     /**
      * Returns the recommended alias to use in XML.
@@ -90,9 +90,15 @@ class ELKPluginExtension extends BaseExtension
     protected function getParametrizationValues(array $config): array
     {
         return [
-            'apisearch_plugin.elk.redis_client' => (string) $config['redis_client'],
-            'apisearch_plugin.elk.key' => (string) Env::get('REDIS_ELK_KEY', $config['key']),
-            'apisearch_plugin.elk.service' => (string) Env::get('REDIS_ELK_SERVICE', $config['service']),
+            'apisearch_plugin.logstash.redis_configuration' => [
+                'host' => Env::get('LOGSTASH_REDIS_HOST', $config['redis_host'] ?? null, true),
+                'port' => Env::get('LOGSTASH_REDIS_PORT', $config['redis_port'], false),
+                'database' => Env::get('LOGSTASH_REDIS_DATABASE', $config['redis_database'] ?? null, false),
+                'password' => Env::get('LOGSTASH_REDIS_PASSWORD', $config['redis_password'] ?? null, false),
+                'preload' => true,
+            ],
+            'apisearch_plugin.logstash.key' => (string) Env::get('LOGSTASH_REDIS_KEY', $config['key'], false),
+            'apisearch_plugin.logstash.service' => (string) Env::get('LOGSTASH_REDIS_SERVICE', $config['service'], false),
         ];
     }
 
@@ -110,6 +116,6 @@ class ELKPluginExtension extends BaseExtension
      */
     protected function getConfigurationInstance(): ? ConfigurationInterface
     {
-        return new ELKPluginConfiguration($this->getAlias());
+        return new LogstashPluginConfiguration($this->getAlias());
     }
 }

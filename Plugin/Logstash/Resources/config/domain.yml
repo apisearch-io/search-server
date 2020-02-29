@@ -4,17 +4,17 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            $redisClient: "@apisearch_plugin.elk.redis_client"
-            string $key: "%apisearch_plugin.elk.key%"
-            string $service: "%apisearch_plugin.elk.service%"
+            $redisClient: "@redis.logstash_client"
+            string $key: "%apisearch_plugin.logstash.key%"
+            string $service: "%apisearch_plugin.logstash.service%"
             string $environment: "%apisearch_server.environment%"
 
 
-    Apisearch\Plugin\ELK\Domain\:
+    Apisearch\Plugin\Logstash\Domain\:
         resource: '../../Domain/'
 
     #
     # Event Domain Subscribers
     #
-    Apisearch\Plugin\ELK\Domain\Event\DomainEventSubscriber:
+    Apisearch\Plugin\Logstash\Domain\Event\DomainEventSubscriber:
         tags: ["apisearch_server.domain_event_subscriber"]
