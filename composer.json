@@ -19,7 +19,7 @@
     "symfony/event-dispatcher" : "^5.0",
     "symfony/dotenv" : "^5.0",
 
-    "drift/http-kernel": "0.1.*",
+    "drift/http-kernel": "0.1.*, >=0.1.8",
     "drift/server": "0.1.*, >=0.1.6",
     "drift/react-functions": "0.1.*",
     "drift/command-bus-bundle": "0.1.*, >=0.1.7",
@@ -36,8 +36,8 @@
     "mmoreram/base-bundle": "^2.0.0",
     "mmoreram/symfony-bundle-dependencies": "^2.0.0",
 
-    "apisearch-io/php-client": "0.1.*",
-    "apisearch-io/apisearch-bundle": "0.1.*",
+    "apisearch-io/php-client": "0.1.*, >=0.1.24",
+    "apisearch-io/apisearch-bundle": "0.1.*, >=0.1.15",
 
     "ruflin/elastica": "7.0.0-beta3",
     "elasticsearch/elasticsearch": "7.3.0",

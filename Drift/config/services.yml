@@ -15,14 +15,6 @@ framework:
 apisearch:
     load_commands: false
 
-amqp:
-    clients:
-        main:
-            host: "%env(AMQP_HOST)%"
-            user: "%env(AMQP_USER)%"
-            password: "%env(AMQP_PASSWORD)%"
-            vhost: "%env(AMQP_VHOST)%"
-
 event_bus:
     router:
         TokensWereDeleted: events, tokens_update
@@ -33,7 +25,10 @@ event_bus:
         tokens_update: "%env(APISEARCH_TOKENS_UPDATE_EXCHANGE)%"
     async_adapter:
         amqp:
-            client: main
+            host: "%env(AMQP_HOST)%"
+            user: "%env(AMQP_USER)%"
+            password: "%env(AMQP_PASSWORD)%"
+            vhost: "%env(AMQP_VHOST)%"
 
 #
 # Elastica plugin for Apisearch

@@ -15,24 +15,24 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\CommandHandler;
 
-use Apisearch\Server\Domain\Command\AddToken;
-use Apisearch\Server\Domain\Event\TokenWasAdded;
+use Apisearch\Server\Domain\Command\PutToken;
+use Apisearch\Server\Domain\Event\TokenWasPut;
 use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
 
 /**
- * Class AddTokenHandler.
+ * Class PutTokenHandler.
  */
-class AddTokenHandler extends WithAppRepositoryAndEventPublisher
+class PutTokenHandler extends WithAppRepositoryAndEventPublisher
 {
     /**
      * Add token.
      *
-     * @param AddToken $addToken
+     * @param PutToken $addToken
      *
      * @return PromiseInterface
      */
-    public function handle(AddToken $addToken): PromiseInterface
+    public function handle(PutToken $addToken): PromiseInterface
     {
         $repositoryReference = $addToken->getRepositoryReference();
         $token = $addToken->getNewToken();
@@ -47,7 +47,7 @@ class AddTokenHandler extends WithAppRepositoryAndEventPublisher
                 return $this
                     ->eventBus
                     ->dispatch(
-                        (new TokenWasAdded($token))
+                        (new TokenWasPut($token))
                             ->withRepositoryReference($repositoryReference)
                     );
             });

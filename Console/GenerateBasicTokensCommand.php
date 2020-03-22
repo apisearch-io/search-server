@@ -20,7 +20,7 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\AddToken;
+use Apisearch\Server\Domain\Command\PutToken;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -95,7 +95,7 @@ class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
     ) {
         $tokenId = Uuid::uuid4()->toString();
 
-        $this->executeCommand(new AddToken(
+        $this->executeCommand(new PutToken(
             RepositoryReference::create($appUUID),
             $godToken,
             new Token(

@@ -46,7 +46,7 @@ trait TokenQueriesTest
             ]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertCount(1, $this->query(
             Query::createMatchAll(),
             static::$appId,
@@ -69,7 +69,7 @@ trait TokenQueriesTest
             ]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertCount(2, $this->query(
             Query::createMatchAll(),
             static::$appId,
@@ -92,7 +92,7 @@ trait TokenQueriesTest
             ]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertCount(2, $this->query(
             Query::createMatchAll()->filterBy('color', 'color', ['green'], Filter::AT_LEAST_ONE),
             static::$appId,
@@ -116,7 +116,7 @@ trait TokenQueriesTest
             ]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertCount(1, $this->query(
             Query::createMatchAll(),
             static::$appId,

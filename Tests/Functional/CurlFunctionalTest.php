@@ -329,18 +329,22 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $appId
      * @param Token  $token
      */
-    public static function addToken(
+    public static function putToken(
         Token $newToken,
         string $appId = null,
         Token $token = null
     ) {
+        $newTokenAsArray = $newToken->toArray();
+        unset($newTokenAsArray['uuid']);
+
         self::$lastResponse = self::makeCurl(
             'v1_put_token',
             [
                 'app_id' => $appId ?? static::$appId,
+                'token_id' => $newToken->getTokenUUID()->composeUUID(),
             ],
             $token,
-            $newToken->toArray()
+            $newTokenAsArray
         );
     }
 

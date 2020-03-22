@@ -241,13 +241,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $appId
      * @param Token  $token
      */
-    public static function addToken(
+    public static function putToken(
         Token $newToken,
         string $appId = null,
         Token $token = null
     ) {
         self::configureAppRepository($appId, $token)
-            ->addToken($newToken);
+            ->putToken($newToken);
     }
 
     /**

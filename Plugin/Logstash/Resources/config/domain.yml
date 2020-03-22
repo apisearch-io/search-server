@@ -5,6 +5,7 @@ services:
         autoconfigure: true
         bind:
             $redisClient: "@redis.logstash_client"
+            $kernel: "@kernel"
             string $key: "%apisearch_plugin.logstash.key%"
             string $service: "%apisearch_plugin.logstash.service%"
             string $environment: "%apisearch_server.environment%"

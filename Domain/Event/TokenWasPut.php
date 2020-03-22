@@ -18,9 +18,9 @@ namespace Apisearch\Server\Domain\Event;
 use Apisearch\Model\Token;
 
 /**
- * Class TokenWasAdded.
+ * Class TokenWasPut.
  */
-final class TokenWasAdded extends DomainEvent
+final class TokenWasPut extends DomainEvent
 {
     /**
      * @var Token

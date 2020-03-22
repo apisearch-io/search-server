@@ -37,7 +37,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('seconds_valid', 1);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         sleep(2);
 
         try {
@@ -64,7 +64,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('seconds_valid', 2);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         sleep(1);
         $this->query(
             Query::createMatchAll(),
@@ -89,7 +89,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('http_referrers', $referrers);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         try {
             $this->query(
                 Query::createMatchAll(),
@@ -128,7 +128,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('http_referrers', $referrers);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         $this->query(
             Query::createMatchAll(),
             self::$appId,
@@ -164,7 +164,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
         $token->setMetadataValue('requests_limit', [
             '2/s',
         ]);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $token);
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $token);
         try {
@@ -182,7 +182,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
         $newToken->setMetadataValue('requests_limit', [
             '5',
         ]);
-        $this->addToken($newToken, self::$appId);
+        $this->putToken($newToken, self::$appId);
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $newToken);
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $newToken);
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $newToken);
@@ -209,7 +209,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
         $token->setMetadataValue('restricted_fields', [
             'metadata.stored_field_boolean_false',
         ]);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index)->getFirstItem();
         $this->assertTrue(isset($item->getMetadata()['stored_field_boolean_false']));
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index, $token)->getFirstItem();
@@ -229,7 +229,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             'metadata.stored_field_boolean_false',
             '!metadata.stored_field_boolean_false',
         ]);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index, $token)->getFirstItem();
         $this->assertCount(0, $item->getAllMetadata());
     }
@@ -246,7 +246,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
         $token->setMetadataValue('restricted_fields', [
             'metadata.stored_field_boolean_false',
         ]);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
 
         $item = $this->query(Query::createMultiquery([
             'q1' => Query::createMatchAll(),

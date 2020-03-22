@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Console;
 
 use Apisearch\Model\Token;
-use Apisearch\Server\Domain\Command\AddToken;
+use Apisearch\Server\Domain\Command\PutToken;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -95,7 +95,7 @@ class AddTokenCommand extends CommandWithCommandBusAndGodToken
         $objects = $this->getAppTokenAndIndices($input, $output);
         $endpoints = $this->getEndpoints($input);
 
-        $this->executeCommand(new AddToken(
+        $this->executeCommand(new PutToken(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
             new Token(
