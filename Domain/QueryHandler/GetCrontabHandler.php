@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\GetCrontab;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -33,6 +33,6 @@ class GetCrontabHandler
      */
     public function handle(GetCrontab $getCrontab): PromiseInterface
     {
-        return new FulfilledPromise($getCrontab->getLines());
+        return resolve($getCrontab->getLines());
     }
 }

@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Model\Token;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,7 +38,7 @@ class RouterRedirectionToJsonResponse implements EventSubscriberInterface
      */
     public function onKernelResponse(ResponseEvent $event): PromiseInterface
     {
-        return (new FulfilledPromise($event))
+        return resolve($event)
             ->then(function (ResponseEvent $event) {
                 $response = $event->getResponse();
                 if ($response instanceof RedirectResponse) {

@@ -25,7 +25,7 @@ use Apisearch\Server\Domain\Event\TokenWasPut;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -144,7 +144,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
         $appUUIDComposed = $appUUID->composeUUID();
         $tokenUUIDComposed = $tokenUUID->composeUUID();
 
-        return new FulfilledPromise(
+        return resolve(
             !isset($this->tokens[$appUUIDComposed])
                 ? null
                 : $this->tokens[$appUUIDComposed][$tokenUUIDComposed] ?? null
@@ -162,7 +162,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
     {
         $appUUIDComposed = $appUUID->composeUUID();
 
-        return new FulfilledPromise($this->tokens[$appUUIDComposed] ?? []);
+        return resolve($this->tokens[$appUUIDComposed] ?? []);
     }
 
     /**

@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ConfigureEnvironment;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -33,6 +33,6 @@ class ConfigureEnvironmentHandler
      */
     public function handle(ConfigureEnvironment $configureEnvironment): PromiseInterface
     {
-        return new FulfilledPromise();
+        return resolve();
     }
 }

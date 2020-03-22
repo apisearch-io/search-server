@@ -18,7 +18,7 @@ namespace Apisearch\Server\Domain\Token;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -49,7 +49,7 @@ class CredentialsTokenValidator implements TokenValidator
         $indexUUIDAsStringArray = $this->indexUUIDArrayToStringArray([$indexUUID]);
         $tokenIndexUUIDAsStringArray = $this->indexUUIDArrayToStringArray($token->getIndices());
 
-        return new FulfilledPromise(
+        return resolve(
             ($token instanceof Token) &&
             (
                 empty($appUUID->composeUUID()) ||

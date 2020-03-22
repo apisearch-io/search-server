@@ -19,8 +19,8 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Server\Domain\Token\TokenLocator;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class MappedTokenLocator.
@@ -75,10 +75,10 @@ class MappedTokenLocator implements TokenLocator
             (!$queryMapper instanceof QueryMapper) ||
             $queryMapper->getRepositoryReference()->getAppUUID()->composeUUID() !== $appUUID->composeUUID()
         ) {
-            return new FulfilledPromise(null);
+            return resolve(null);
         }
 
-        return new FulfilledPromise(
+        return resolve(
             new Token(
                 $tokenUUID,
                 $appUUID

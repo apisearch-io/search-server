@@ -24,8 +24,8 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Server\Controller\RequestAccessor;
 use Apisearch\Server\Domain\Token\TokenManager;
+use function React\Promise\resolve;
 use React\EventLoop\LoopInterface;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,7 +75,7 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        return (new FulfilledPromise())
+        return resolve()
             ->then(function () use ($request) {
                 $query = $request->query;
                 $headers = $request->headers;

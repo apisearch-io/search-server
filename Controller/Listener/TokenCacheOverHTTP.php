@@ -17,7 +17,7 @@ namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Http\Http;
 use Apisearch\Model\Token;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ class TokenCacheOverHTTP implements EventSubscriberInterface
      */
     public function addCacheControlOnKernelResponse(ResponseEvent $event): PromiseInterface
     {
-        return (new FulfilledPromise($event))
+        return resolve($event)
             ->then(function (ResponseEvent $event) {
                 $response = $event->getResponse();
                 $request = $event->getRequest();

@@ -60,6 +60,7 @@ class BasicUsageTest extends LogstashFunctionalTest
 
         $this->assertEquals(200, $body['@fields']['level']);
         $this->assertEquals('dev', $message['environment']);
+        $this->assertEquals(self::$kernel->getUID(), $message['kernel_uid']);
         $this->assertEquals('apisearch', $message['service']);
         $this->assertEquals('26178621test_default', $message['repository_reference']);
         $this->assertEquals('ItemsWereIndexed', $message['type']);

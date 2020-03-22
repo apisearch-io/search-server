@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\CommandEnqueuer;
 
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -32,6 +32,6 @@ class EmptyCommandEnqueuer implements CommandEnqueuer
      */
     public function enqueueCommand($command): PromiseInterface
     {
-        return new FulfilledPromise();
+        return resolve();
     }
 }

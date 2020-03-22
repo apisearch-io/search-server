@@ -19,7 +19,7 @@ use Apisearch\Http\Http;
 use Apisearch\Model\Token;
 use Apisearch\Plugin\QueryMapper\Domain\ResultMapperLoader;
 use Apisearch\Result\Result;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -56,7 +56,7 @@ class CheckMappedResult
     public function onKernelAsyncResponse(ResponseEvent $event): PromiseInterface
     {
         return
-            (new FulfilledPromise())
+            resolve()
             ->then(function () use ($event) {
                 $request = $event->getRequest();
                 $route = $request->get('_route');

@@ -29,7 +29,6 @@ use Elastica\Document as ElasticaDocument;
 use Elastica\Query as ElasticaQuery;
 use Elastica\Script\Script;
 use Elasticsearch\Endpoints\UpdateByQuery;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 
 /**
@@ -82,7 +81,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
         }
 
         if (empty($documents)) {
-            return new FulfilledPromise(null);
+            return resolve(null);
         }
 
         return $this

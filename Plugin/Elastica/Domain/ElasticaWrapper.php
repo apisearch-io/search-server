@@ -52,7 +52,6 @@ use Elasticsearch\Endpoints\Reindex;
 use Elasticsearch\Serializers\ArrayToJSONSerializer;
 use React\Promise;
 use React\Promise\PromiseInterface;
-use React\Promise\RejectedPromise;
 
 /**
  * Class ElasticaWrapper.
@@ -536,7 +535,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         Config $config
     ): PromiseInterface {
         if (!is_null($this->getOriginalIndexName($repositoryReference))) {
-            return new RejectedPromise(ResourceExistsException::indexExists());
+            return Promise\reject(ResourceExistsException::indexExists());
         }
 
         $indexAliasName = $this->getIndexAliasName($repositoryReference);
@@ -578,7 +577,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
     {
         $originalIndexName = $this->getOriginalIndexName($repositoryReference);
         if (is_null($originalIndexName)) {
-            return new RejectedPromise(
+            return Promise\reject(
                 ResourceNotAvailableException::indexNotAvailable(
                     $repositoryReference->compose()
                 )
