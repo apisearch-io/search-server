@@ -590,7 +590,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
      * @param string $appId
      * @param Token  $token
      */
-    abstract public static function addToken(
+    abstract public static function putToken(
         Token $newToken,
         string $appId = null,
         Token $token = null

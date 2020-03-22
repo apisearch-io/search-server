@@ -28,7 +28,6 @@ use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Command\AddInteraction;
-use Apisearch\Server\Domain\Command\AddToken;
 use Apisearch\Server\Domain\Command\CleanEnvironment;
 use Apisearch\Server\Domain\Command\ConfigureEnvironment;
 use Apisearch\Server\Domain\Command\ConfigureIndex;
@@ -38,6 +37,7 @@ use Apisearch\Server\Domain\Command\DeleteItems;
 use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Command\IndexItems;
+use Apisearch\Server\Domain\Command\PutToken;
 use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
 use Apisearch\Server\Domain\Query\CheckHealth;
@@ -381,14 +381,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $appId
      * @param Token  $token
      */
-    public static function addToken(
+    public static function putToken(
         Token $newToken,
         string $appId = null,
         Token $token = null
     ) {
         $appUUID = AppUUID::createById($appId ?? self::$appId);
 
-        self::executeCommand(new AddToken(
+        self::executeCommand(new PutToken(
             RepositoryReference::create($appUUID),
             $token ??
                 new Token(

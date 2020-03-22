@@ -20,8 +20,8 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Event\TokensWereDeleted;
-use Apisearch\Server\Domain\Event\TokenWasAdded;
 use Apisearch\Server\Domain\Event\TokenWasDeleted;
+use Apisearch\Server\Domain\Event\TokenWasPut;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
@@ -174,7 +174,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
             TokensWereDeleted::class => [
                 ['loadAllTokens', 0],
             ],
-            TokenWasAdded::class => [
+            TokenWasPut::class => [
                 ['loadAllTokens', 0],
             ],
             TokenWasDeleted::class => [

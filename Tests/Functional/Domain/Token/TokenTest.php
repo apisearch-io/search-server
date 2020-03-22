@@ -33,7 +33,7 @@ abstract class TokenTest extends HttpFunctionalTest
     public function testTokenCreation()
     {
         $token = new Token(TokenUUID::createById('12345'), AppUUID::createById(self::$appId));
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertTrue($this->checkIndex(
             null,
             null,
@@ -60,7 +60,7 @@ abstract class TokenTest extends HttpFunctionalTest
             AppUUID::createById(self::$appId),
             [IndexUUID::createById(self::$anotherIndex)]
         );
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
 
         $this->query(
             Query::createMatchAll(),
@@ -84,7 +84,7 @@ abstract class TokenTest extends HttpFunctionalTest
         );
 
         $token->setEndpoints($routes);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
 
         $this->query(
             Query::createMatchAll(),
@@ -121,7 +121,7 @@ abstract class TokenTest extends HttpFunctionalTest
         );
 
         $token->setEndpoints($routes);
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
 
         $this->query(
             Query::createMatchAll(),
@@ -158,7 +158,7 @@ abstract class TokenTest extends HttpFunctionalTest
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
         );
-        $this->addToken($token, self::$appId);
+        $this->putToken($token, self::$appId);
         $this->query(
             Query::createMatchAll(),
             self::$anotherAppId,
@@ -179,18 +179,18 @@ abstract class TokenTest extends HttpFunctionalTest
         );
         $this->deleteToken(TokenUUID::createById('12345'));
         $this->assertCount(3, $this->getTokens());
-        $this->addToken($token);
+        $this->putToken($token);
         $this->assertCount(4, $this->getTokens());
         $this->deleteToken($tokenUUID);
         $this->assertCount(3, $this->getTokens());
-        $this->addToken($token);
-        $this->addToken($token);
-        $this->addToken($token);
-        $this->addToken(new Token(
+        $this->putToken($token);
+        $this->putToken($token);
+        $this->putToken($token);
+        $this->putToken(new Token(
             TokenUUID::createById('56789'),
             AppUUID::createById(self::$appId)
         ));
-        $this->addToken(new Token(
+        $this->putToken(new Token(
             TokenUUID::createById('56789'),
             AppUUID::createById(self::$appId)
         ));
@@ -202,19 +202,19 @@ abstract class TokenTest extends HttpFunctionalTest
      */
     public function testDeleteTokens()
     {
-        $this->addToken(new Token(
+        $this->putToken(new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
         ));
-        $this->addToken(new Token(
+        $this->putToken(new Token(
             TokenUUID::createById('67890'),
             AppUUID::createById(self::$appId)
         ));
-        $this->addToken(new Token(
+        $this->putToken(new Token(
             TokenUUID::createById('aaaaa'),
             AppUUID::createById(self::$appId)
         ));
-        $this->addToken(new Token(
+        $this->putToken(new Token(
             TokenUUID::createById('bbbbb'),
             AppUUID::createById(self::$appId)
         ));
@@ -234,7 +234,7 @@ abstract class TokenTest extends HttpFunctionalTest
             [IndexUUID::createById(self::$index), IndexUUID::createById(self::$anotherIndex)]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->query(Query::createMultiquery([
             'q1' => Query::createMatchAll(),
             'q2' => Query::createMatchAll()->forceIndexUUID(IndexUUID::createById(self::$anotherIndex)),
@@ -268,7 +268,7 @@ abstract class TokenTest extends HttpFunctionalTest
             [IndexUUID::createById(self::$index)]
         );
 
-        $this->addToken($token);
+        $this->putToken($token);
         $this->query($query, static::$appId, '*', $token);
     }
 

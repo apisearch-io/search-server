@@ -25,10 +25,11 @@ use Apisearch\Server\Domain\Event\ItemsWereIndexed;
 use Apisearch\Server\Domain\Event\ItemsWereUpdated;
 use Apisearch\Server\Domain\Event\QueryWasMade;
 use Apisearch\Server\Domain\Event\TokensWereDeleted;
-use Apisearch\Server\Domain\Event\TokenWasAdded;
 use Apisearch\Server\Domain\Event\TokenWasDeleted;
+use Apisearch\Server\Domain\Event\TokenWasPut;
 use Apisearch\Server\Domain\Formatter\TimeFormatBuilder;
 use Clue\React\Redis\Client;
+use Drift\HttpKernel\AsyncKernel;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
 use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
@@ -65,10 +66,16 @@ class DomainEventSubscriber implements EventSubscriberInterface
     private $environment;
 
     /**
+     * @var string
+     */
+    private $kernelUID;
+
+    /**
      * RedisMetadataRepository constructor.
      *
      * @param Client            $redisClient
      * @param TimeFormatBuilder $timeFormatBuilder
+     * @param AsyncKernel       $kernel
      * @param string            $key
      * @param string            $service
      * @param string            $environment
@@ -76,6 +83,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
     public function __construct(
         Client $redisClient,
         TimeFormatBuilder $timeFormatBuilder,
+        AsyncKernel $kernel,
         string $key,
         string $service,
         string $environment
@@ -85,6 +93,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
         $this->key = $key;
         $this->service = $service;
         $this->environment = $environment;
+        $this->kernelUID = $kernel->getUID();
     }
 
     /**
@@ -117,6 +126,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
 
         $data = json_encode([
             'environment' => $this->environment,
+            'kernel_uid' => $this->kernelUID,
             'service' => $this->service,
             'repository_reference' => $event
                 ->getRepositoryReference()
@@ -156,7 +166,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
             IndexWasCreated::class => ['handle', 0],
             IndexWasDeleted::class => ['handle', 0],
 
-            TokenWasAdded::class => ['handle', 0],
+            TokenWasPut::class => ['handle', 0],
             TokenWasDeleted::class => ['handle', 0],
             TokensWereDeleted::class => ['handle', 0],
 

@@ -18,15 +18,15 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\AddToken;
+use Apisearch\Server\Domain\Command\PutToken;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class AddTokenController.
+ * Class PutTokenController.
  */
-class AddTokenController extends ControllerWithCommandBus
+class PutTokenController extends ControllerWithCommandBus
 {
     /**
      * Add a token.
@@ -43,9 +43,11 @@ class AddTokenController extends ControllerWithCommandBus
             InvalidFormatException::tokenFormatNotValid($request->getContent())
         );
 
+        $newTokenAsArray['uuid'] = ['id' => $request->get('token_id')];
+
         return $this
             ->commandBus
-            ->execute(new AddToken(
+            ->execute(new PutToken(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
                 ),

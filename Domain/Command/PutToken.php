@@ -23,9 +23,9 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\LoggableCommand;
 
 /**
- * Class AddToken.
+ * Class PutToken.
  */
-class AddToken extends CommandWithRepositoryReferenceAndToken implements LoggableCommand, AsynchronousableCommand, AppRequiredCommand
+class PutToken extends CommandWithRepositoryReferenceAndToken implements LoggableCommand, AsynchronousableCommand, AppRequiredCommand
 {
     /**
      * @var Token
@@ -35,8 +35,6 @@ class AddToken extends CommandWithRepositoryReferenceAndToken implements Loggabl
     private $newToken;
 
     /**
-     * AddToken constructor.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param Token               $newToken

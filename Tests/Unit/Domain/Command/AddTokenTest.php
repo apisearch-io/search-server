@@ -20,7 +20,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\AddToken;
+use Apisearch\Server\Domain\Command\PutToken;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -41,13 +41,13 @@ class AddTokenTest extends TestCase
         $token = new Token(TokenUUID::createById('9999'), $appUUID);
         $newToken = new Token(TokenUUID::createById('aaaa'), $appUUID);
 
-        $addToken = new AddToken(
+        $addToken = new PutToken(
             $repositoryReference,
             $token,
             $newToken
         );
 
-        $builtAddToken = AddToken::fromArray($addToken->toArray());
+        $builtAddToken = PutToken::fromArray($addToken->toArray());
         $this->assertEquals(
             $addToken,
             $builtAddToken
