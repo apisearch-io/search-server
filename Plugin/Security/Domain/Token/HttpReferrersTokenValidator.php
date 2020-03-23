@@ -19,7 +19,7 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Server\Domain\Token\TokenValidator;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -49,7 +49,7 @@ class HttpReferrersTokenValidator implements TokenValidator
     ): PromiseInterface {
         $httpReferrers = $token->getMetadataValue('http_referrers', []);
 
-        return new FulfilledPromise(
+        return resolve(
             empty($httpReferrers) ||
             in_array($referrer, $httpReferrers)
         );

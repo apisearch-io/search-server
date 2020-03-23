@@ -20,7 +20,7 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -113,7 +113,7 @@ class TokenManager
             ->tokenLocators
             ->getValidTokenLocators()
             ->then(function (array $tokenLocators) use ($appUUID, $tokenUUID) {
-                $promise = new FulfilledPromise();
+                $promise = resolve();
 
                 foreach ($tokenLocators as $tokenLocator) {
                     $promise = $promise
@@ -155,14 +155,14 @@ class TokenManager
         string $routeName
     ): PromiseInterface {
         if (is_null($token)) {
-            return new FulfilledPromise(false);
+            return resolve(false);
         }
 
         $tokenValidators = $this
             ->tokenValidators
             ->getTokenValidators();
 
-        $promise = new FulfilledPromise(true);
+        $promise = resolve(true);
 
         foreach ($tokenValidators as $tokenValidator) {
             $promise = $promise->then(function (bool $isValid) use ($token, $appUUID, $indexUUID, $referrer, $routeName, $tokenValidator) {

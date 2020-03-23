@@ -45,8 +45,6 @@ jobs:
                             -e "action.auto_create_index=-apisearch*,+*" \
                             docker.elastic.co/elasticsearch/elasticsearch:6.8.0
 
-
-
             -   run:
                     name: Run elasticsearch ^7.0
                     command: |

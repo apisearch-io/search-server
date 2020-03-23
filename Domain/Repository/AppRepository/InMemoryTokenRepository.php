@@ -18,7 +18,7 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -55,7 +55,7 @@ class InMemoryTokenRepository extends TokenRepository
 
         $this->storedTokens[$appUUIDComposed][$token->getTokenUUID()->composeUUID()] = $token;
 
-        return new FulfilledPromise();
+        return resolve();
     }
 
     /**
@@ -75,12 +75,12 @@ class InMemoryTokenRepository extends TokenRepository
             ->composeUUID();
 
         if (!isset($this->storedTokens[$appUUIDComposed])) {
-            return new FulfilledPromise();
+            return resolve();
         }
 
         unset($this->storedTokens[$appUUIDComposed][$tokenUUID->composeUUID()]);
 
-        return new FulfilledPromise();
+        return resolve();
     }
 
     /**
@@ -98,7 +98,7 @@ class InMemoryTokenRepository extends TokenRepository
 
         unset($this->storedTokens[$appUUIDComposed]);
 
-        return new FulfilledPromise();
+        return resolve();
     }
 
     /**
@@ -114,7 +114,7 @@ class InMemoryTokenRepository extends TokenRepository
             );
         }
 
-        return new FulfilledPromise($allTokens);
+        return resolve($allTokens);
     }
 
     /**

@@ -19,7 +19,7 @@ use Apisearch\Http\Endpoints;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -88,24 +88,24 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
         TokenUUID $tokenUUID
     ): PromiseInterface {
         if ($tokenUUID->composeUUID() === $this->godToken) {
-            return new FulfilledPromise($this->createGodToken($appUUID));
+            return resolve($this->createGodToken($appUUID));
         }
 
         if (
             !empty($this->readonlyToken) &&
             $tokenUUID->composeUUID() === $this->readonlyToken
         ) {
-            return new FulfilledPromise($this->createReadOnlyToken($appUUID));
+            return resolve($this->createReadOnlyToken($appUUID));
         }
 
         if (
             !empty($this->pingToken) &&
             $tokenUUID->composeUUID() === $this->pingToken
         ) {
-            return new FulfilledPromise($this->createPingToken());
+            return resolve($this->createPingToken());
         }
 
-        return new FulfilledPromise();
+        return resolve();
     }
 
     /**
@@ -194,6 +194,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             $tokens[] = $this->createPingToken();
         }
 
-        return new FulfilledPromise($tokens);
+        return resolve($tokens);
     }
 }

@@ -21,7 +21,7 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -97,7 +97,7 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             )
         );
 
-        return new FulfilledPromise(empty($tokens)
+        return resolve(empty($tokens)
             ? null
             : $tokens[0]
         );
@@ -112,7 +112,7 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      */
     public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        return new FulfilledPromise(array_values(
+        return resolve(array_values(
             array_filter(
                 $this->tokens,
                 function (Token $token) use ($appUUID) {

@@ -18,7 +18,7 @@ namespace Apisearch\Server\Controller\Listener;
 use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Exception\TransportableException;
 use Exception;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +39,7 @@ class PHPExceptionToJsonResponse implements EventSubscriberInterface
      */
     public function onKernelException(ExceptionEvent $event): PromiseInterface
     {
-        return (new FulfilledPromise($event))
+        return resolve($event)
             ->then(function (ExceptionEvent $event) {
                 $throwable = $event->getThrowable();
 

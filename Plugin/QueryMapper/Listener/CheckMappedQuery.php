@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\QueryMapper\Listener;
 
 use Apisearch\Plugin\QueryMapper\Domain\QueryMapperLoader;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
@@ -58,11 +58,11 @@ class CheckMappedQuery
             'apisearch_v1_query',
             'apisearch_v1_query_all_indices',
         ])) {
-            return new FulfilledPromise();
+            return resolve();
         }
 
         return
-            (new FulfilledPromise())
+            resolve()
             ->then(function () use ($event) {
                 $this
                     ->queryMapperLoader

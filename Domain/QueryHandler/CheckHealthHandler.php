@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\CheckHealth;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -33,7 +33,7 @@ class CheckHealthHandler
      */
     public function handle(CheckHealth $checkHealth): PromiseInterface
     {
-        return new FulfilledPromise([
+        return resolve([
             'healthy' => true,
             'status' => [],
             'info' => [],

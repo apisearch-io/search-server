@@ -17,8 +17,8 @@ namespace Apisearch\Server\Domain\CommandConsumer;
 
 use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\Consumer;
+use function React\Promise\resolve;
 use League\Tactician\CommandBus;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -62,7 +62,7 @@ class CommandConsumer extends Consumer
             !class_exists($class) ||
             !in_array(AsynchronousableCommand::class, class_implements($class))
         ) {
-            return new FulfilledPromise();
+            return resolve();
         }
 
         $command = $data['class'];

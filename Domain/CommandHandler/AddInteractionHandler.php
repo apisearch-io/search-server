@@ -18,7 +18,7 @@ namespace Apisearch\Server\Domain\CommandHandler;
 use Apisearch\Server\Domain\Command\AddInteraction;
 use Apisearch\Server\Domain\Event\InteractionWasAdded;
 use Apisearch\Server\Domain\WithEventBus;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
@@ -45,6 +45,6 @@ class AddInteractionHandler extends WithEventBus
                     ->withRepositoryReference($repositoryReference)
             );
 
-        return new FulfilledPromise();
+        return resolve();
     }
 }

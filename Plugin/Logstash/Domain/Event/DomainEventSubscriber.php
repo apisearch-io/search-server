@@ -31,7 +31,7 @@ use Apisearch\Server\Domain\Formatter\TimeFormatBuilder;
 use Clue\React\Redis\Client;
 use Drift\HttpKernel\AsyncKernel;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
-use React\Promise\FulfilledPromise;
+use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -100,10 +100,8 @@ class DomainEventSubscriber implements EventSubscriberInterface
      * Handle event.
      *
      * @param DomainEventEnvelope $envelopedEvent
-     *
-     * @return PromiseInterface
      */
-    public function handle(DomainEventEnvelope $envelopedEvent): PromiseInterface
+    public function handle(DomainEventEnvelope $envelopedEvent)
     {
         $event = $envelopedEvent->getDomainEvent();
 
@@ -111,7 +109,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
             !$event instanceof DomainEvent ||
             \is_null($event->getRepositoryReference())
         ) {
-            return new FulfilledPromise();
+            return;
         }
 
         $level = $event instanceof ExceptionWasCached
@@ -133,7 +131,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
                 ->compose(),
         ] + $reducedArray);
 
-        return $this
+        $this
             ->redisClient
             ->rpush($this->key, json_encode([
                 '@fields' => [
