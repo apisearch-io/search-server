@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server;
 
+use Apisearch\Plugin\DBAL\DBALPluginBundle;
 use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
@@ -22,7 +23,6 @@ use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
 use Apisearch\Server\DependencyInjection\Env;
 use Apisearch\Server\Domain\Plugin\Plugin;
-use Drift\DBAL\DBALBundle;
 use Mmoreram\BaseBundle\BaseBundle;
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -74,7 +74,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
         $aliases = [
             'elastica' => ElasticaPluginBundle::class,
             'logstash' => LogstashPluginBundle::class,
-            'dbal' => DBALBundle::class,
+            'dbal' => DBALPluginBundle::class,
             'static_tokens' => StaticTokensPluginBundle::class,
             'security' => SecurityPluginBundle::class,
             'query_mapper' => QueryMapperPluginBundle::class,
