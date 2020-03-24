@@ -12,6 +12,7 @@ exec 6>&-
 exec 6<&-
 
 cd /var/www
+apk add git
 composer update -n --prefer-dist --no-suggest
 php vendor/bin/phpunit Tests/
 php vendor/bin/phpunit Plugin/
