@@ -42,7 +42,8 @@
     "ruflin/elastica": "7.0.0-beta3",
     "elasticsearch/elasticsearch": "7.3.0",
     "nesbot/carbon": "^2.0",
-    "ramsey/uuid": "^3.7.1"
+    "ramsey/uuid": "^3.7.1",
+    "voryx/pgasync": "^2.0"
   },
 
   "require-dev": {
