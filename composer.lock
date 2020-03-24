@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b948eb786a378dba1fdc0692d7dd9e7b",
+    "content-hash": "c0028c0200736696001a083d5b86646a",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -1226,16 +1226,16 @@
         },
         {
             "name": "drift/http-kernel",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/http-kernel.git",
-                "reference": "94f89ac74e4040b831a23db0584222f3e33d85c9"
+                "reference": "981992331d137d70d7051d417213414aa100b81d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/http-kernel/zipball/94f89ac74e4040b831a23db0584222f3e33d85c9",
-                "reference": "94f89ac74e4040b831a23db0584222f3e33d85c9",
+                "url": "https://api.github.com/repos/driftphp/http-kernel/zipball/981992331d137d70d7051d417213414aa100b81d",
+                "reference": "981992331d137d70d7051d417213414aa100b81d",
                 "shasum": ""
             },
             "require": {
@@ -1273,7 +1273,7 @@
                 }
             ],
             "description": "Http Kernel component for Drift, based on Symfony Http Kernel component",
-            "time": "2020-03-22T16:46:06+00:00"
+            "time": "2020-03-24T09:14:34+00:00"
         },
         {
             "name": "drift/preload-bundle",
