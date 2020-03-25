@@ -742,32 +742,55 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     }
 
     /**
-     * Await.
+     * USleep n microseconds.
      *
-     * @param PromiseInterface $promise
+     * @param int $microseconds
      *
      * @return mixed
      */
-    protected static function await(PromiseInterface $promise)
+    protected static function usleep(int $microseconds)
     {
+        $loop = static::getStatic('reactphp.event_loop');
+
+        return await(
+            \Drift\React\usleep($microseconds, $loop),
+            $loop
+        );
+    }
+
+    /**
+     * Await.
+     *
+     * @param PromiseInterface $promise
+     * @param LoopInterface    $loop
+     *
+     * @return mixed
+     */
+    protected static function await(
+        PromiseInterface $promise,
+        LoopInterface $loop = null
+    ) {
         return await(
             $promise,
-            static::getStatic('reactphp.event_loop')
+            $loop ?? static::getStatic('reactphp.event_loop')
         );
     }
 
     /**
      * Await all.
      *
-     * @param array $promises
+     * @param array         $promises
+     * @param LoopInterface $loop
      *
      * @return array
      */
-    protected static function awaitAll(array $promises): array
-    {
+    protected static function awaitAll(
+        array $promises,
+        LoopInterface $loop = null
+    ): array {
         return awaitAll(
             $promises,
-            static::getStatic('reactphp.event_loop')
+            $loop ?? static::getStatic('reactphp.event_loop')
         );
     }
 }

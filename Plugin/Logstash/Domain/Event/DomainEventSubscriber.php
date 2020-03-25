@@ -31,8 +31,6 @@ use Apisearch\Server\Domain\Formatter\TimeFormatBuilder;
 use Clue\React\Redis\Client;
 use Drift\HttpKernel\AsyncKernel;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
-use function React\Promise\resolve;
-use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

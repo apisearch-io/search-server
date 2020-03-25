@@ -41,7 +41,7 @@ class InMemoryTokenRepository extends TokenRepository
      *
      * @return PromiseInterface
      */
-    public function addToken(
+    public function putToken(
         RepositoryReference $repositoryReference,
         Token $token
     ): PromiseInterface {
@@ -115,6 +115,14 @@ class InMemoryTokenRepository extends TokenRepository
         }
 
         return resolve($allTokens);
+    }
+
+    /**
+     * Flush all tokens.
+     */
+    public function truncate()
+    {
+        $this->storedTokens = [];
     }
 
     /**

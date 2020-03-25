@@ -85,6 +85,16 @@ jobs:
                             rabbitmq:3-alpine
 
             -   run:
+                    name: Run Mysql
+                    command: |
+                        docker run -d \
+                            --name="apisearch.mysql" \
+                            --network apisearch \
+                            -e "MYSQL_ROOT_PASSWORD=root" \
+                            -e "MYSQL_DATABASE=apisearch" \
+                            mysql:5
+
+            -   run:
                     name: Build Apisearch
                     command: |
                         docker build -t apisearch/server .
@@ -108,7 +118,8 @@ jobs:
                             -e "AMQP_PASSWORD=guest" \
                             -e "AMQP_VHOST=/" \
                             -e "REDIS_HOST=apisearch.redis" \
-                            apisearch/server
+                            apisearch/server \
+                            sh /create-infrastructure.sh /server-entrypoint.sh
 
             -   run:
                     name: Run tests

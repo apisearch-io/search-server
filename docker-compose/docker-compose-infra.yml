@@ -4,7 +4,6 @@ services:
 
     elasticsearch:
         image: "docker.elastic.co/elasticsearch/elasticsearch:7.6.0"
-        container_name: apisearch.elasticsearch.latest
         networks: [apisearch]
         ports:
             - "9200:9200"
@@ -15,7 +14,6 @@ services:
 
     amqp:
         image: "rabbitmq:3-management"
-        container_name: apisearch.rabbitmq
         networks: [apisearch]
         ports:
             - "5672:5672"
@@ -23,9 +21,18 @@ services:
 
     redis:
         image: "redis:alpine"
-        container_name: apisearch.redis
         networks: [apisearch]
         ports:
             - "6379:6379"
+
+    postgresql:
+        image: postgres:alpine
+        networks: [apisearch]
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: root
+            POSTGRES_DB: apisearch
 networks:
     apisearch:

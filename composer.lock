@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a22dc344c5da1e5b10cca39169e17ef0",
+    "content-hash": "c0028c0200736696001a083d5b86646a",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -3185,71 +3185,6 @@
             "time": "2019-01-01T16:15:09+00:00"
         },
         {
-            "name": "reactivex/rxphp",
-            "version": "2.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ReactiveX/RxPHP.git",
-                "reference": "fd74a0cd2b5edd4a48e4ff12aaa44cc6cdc4a9b4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ReactiveX/RxPHP/zipball/fd74a0cd2b5edd4a48e4ff12aaa44cc6cdc4a9b4",
-                "reference": "fd74a0cd2b5edd4a48e4ff12aaa44cc6cdc4a9b4",
-                "shasum": ""
-            },
-            "require": {
-                "php": "~7.0",
-                "react/promise": "~2.2"
-            },
-            "require-dev": {
-                "phpunit/phpcov": "^3.1",
-                "phpunit/phpunit": "^5.7",
-                "react/event-loop": "^1.0 || ^0.5 || ^0.4.2",
-                "satooshi/php-coveralls": "~1.0"
-            },
-            "suggest": {
-                "react/event-loop": "Used for scheduling async operations"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Rx\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alexander",
-                    "email": "iam.asm89@gmail.com"
-                },
-                {
-                    "name": "David Dan",
-                    "email": "davidwdan@gmail.com"
-                },
-                {
-                    "name": "Matt Bonneau",
-                    "email": "matt@bonneau.net"
-                }
-            ],
-            "description": "Reactive extensions for php.",
-            "homepage": "https://github.com/ReactiveX/RxPHP",
-            "keywords": [
-                "extensions",
-                "reactive",
-                "rx"
-            ],
-            "time": "2018-04-18T01:34:36+00:00"
-        },
-        {
             "name": "ringcentral/psr7",
             "version": "1.2.2",
             "source": {
@@ -5374,121 +5309,6 @@
                 "os detection"
             ],
             "time": "2017-10-21T03:33:59+00:00"
-        },
-        {
-            "name": "voryx/event-loop",
-            "version": "3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/voryx/event-loop.git",
-                "reference": "ed7ee6236945b64591f8ef2be855e6244f1439e6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/voryx/event-loop/zipball/ed7ee6236945b64591f8ef2be855e6244f1439e6",
-                "reference": "ed7ee6236945b64591f8ef2be855e6244f1439e6",
-                "shasum": ""
-            },
-            "require": {
-                "react/event-loop": "^1.0 || ^0.5 || ^0.4.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^6"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "EventLoop\\": "src"
-                },
-                "files": [
-                    "src/functions.php",
-                    "src/bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matt Bonneau",
-                    "email": "matt@bonneau.net",
-                    "role": "Developer"
-                },
-                {
-                    "name": "David Dan",
-                    "email": "davidwdan@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Global static wrapper for react event-loop",
-            "keywords": [
-                "event-loop",
-                "eventloop",
-                "global",
-                "static",
-                "timer"
-            ],
-            "time": "2018-04-18T00:07:06+00:00"
-        },
-        {
-            "name": "voryx/pgasync",
-            "version": "2.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/voryx/PgAsync.git",
-                "reference": "61658fed8c897c3c9ba218847851c3b6afa224a5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/voryx/PgAsync/zipball/61658fed8c897c3c9ba218847851c3b6afa224a5",
-                "reference": "61658fed8c897c3c9ba218847851c3b6afa224a5",
-                "shasum": ""
-            },
-            "require": {
-                "evenement/evenement": "^2.0 | ^3.0",
-                "react/socket": "^1.0 || ^0.8 || ^0.7",
-                "reactivex/rxphp": "^2.0",
-                "voryx/event-loop": "^3.0 || ^2.0.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "react/dns": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "PgAsync\\": "src/PgAsync/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Matt Bonneau",
-                    "email": "matt@bonneau.net",
-                    "role": "Developer"
-                },
-                {
-                    "name": "David Dan",
-                    "email": "davidwdan@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Async Reactive Postgres Driver for PHP (Non-blocking)",
-            "keywords": [
-                "async",
-                "driver",
-                "pgsql",
-                "postgres",
-                "postgresql",
-                "react",
-                "reactive",
-                "rx.php"
-            ],
-            "time": "2019-08-19T20:34:34+00:00"
         },
         {
             "name": "webimpress/safe-writer",
