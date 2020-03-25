@@ -20,13 +20,21 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
+use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class TokenTest.
  */
 abstract class TokenTest extends HttpFunctionalTest
 {
+    /**
+     * Is distributed token respository.
+     */
+    abstract public function isDistributedTokenRepository(): bool;
+
     /**
      * Test token creation.
      */
@@ -218,7 +226,8 @@ abstract class TokenTest extends HttpFunctionalTest
             TokenUUID::createById('bbbbb'),
             AppUUID::createById(self::$appId)
         ));
-        $this->assertCount(8, $this->getTokens());
+
+        $this->assertCount(7, $this->getTokens());
         $this->deleteTokens();
         $this->assertCount(3, $this->getTokens());
     }
@@ -291,5 +300,67 @@ abstract class TokenTest extends HttpFunctionalTest
                 ]),
             ],
         ];
+    }
+
+    /**
+     * Test token persistence on new service creation.
+     */
+    public function testNewServiceTokens()
+    {
+        if (!$this->isDistributedTokenRepository()) {
+            $this->markTestSkipped('Skipped. Testing a non-distributed adapter');
+
+            return;
+        }
+
+        $appUUID = AppUUID::createById(static::$appId);
+        $tokenUUID = TokenUUID::createById('multiservice-token');
+        $token = new Token(
+            $tokenUUID,
+            $appUUID
+        );
+
+        $this->putToken($token);
+
+        $clusterKernel = static::getKernel();
+        $clusterKernel->boot();
+        $clusterContainer = $clusterKernel->getContainer();
+        static::await(
+            $clusterKernel->preload(),
+            $clusterContainer->get('reactphp.event_loop')
+        );
+
+        $this->assertCount(4, $this->getTokensFromKernel($clusterKernel));
+        $clusterKernel->shutdown();
+        unset($clusterKernel);
+    }
+
+    /**
+     * Get tokens from a given token.
+     *
+     * @param KernelInterface $kernel
+     * @param string          $appId
+     * @param Token           $token
+     *
+     * @return Token[]
+     */
+    protected static function getTokensFromKernel(
+        KernelInterface $kernel,
+        string $appId = null,
+        Token $token = null
+    ) {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+
+        return static::await($kernel
+            ->getContainer()
+            ->get('drift.query_bus.test')
+            ->ask(new GetTokens(
+                RepositoryReference::create($appUUID),
+                $token ??
+                new Token(
+                    TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                    $appUUID
+                )
+            )));
     }
 }

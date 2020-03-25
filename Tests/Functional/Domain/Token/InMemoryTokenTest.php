@@ -15,11 +15,31 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Token;
 
+use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
+
 /**
  * Class InMemoryTokenTest.
  */
 class InMemoryTokenTest extends TokenTest
 {
+    /**
+     * Is distributed token respository.
+     */
+    public function isDistributedTokenRepository(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Truncate the table.
+     */
+    protected function setUp()
+    {
+        $this->get(TokenRepository::class)->truncate();
+
+        parent::setUp();
+    }
+
     /**
      * Decorate configuration.
      *

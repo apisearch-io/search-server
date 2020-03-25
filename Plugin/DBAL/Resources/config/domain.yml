@@ -10,13 +10,14 @@ services:
     Apisearch\Plugin\DBAL\Domain\:
         resource: '../../Domain/'
 
-    Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository:
-        tags:
-            - "apisearch_server.token_locator"
-            - "apisearch_server.token_provider"
-
     Apisearch\Plugin\DBAL\Domain\Middleware\CheckHealthMiddleware:
         tags: ["apisearch_plugin.middleware"]
 
     Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
-        alias: Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository
+        class: Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository
+        tags:
+            - "apisearch_server.token_locator"
+            - "apisearch_server.token_provider"
+
+    Apisearch\Plugin\DBAL\Domain\Token\DBALTokenRepository:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository

@@ -74,7 +74,7 @@ class CheckHealthMiddleware implements PluginMiddleware
         return $this
             ->connection
             ->queryBySQL('SELECT ?', ['.'])
-            ->then(function ($result) {
+            ->then(function () {
                 return true;
             })
             ->otherwise(function (\Exception $e) {

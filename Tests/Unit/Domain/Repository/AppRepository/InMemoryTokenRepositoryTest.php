@@ -47,7 +47,7 @@ class InMemoryTokenRepositoryTest extends TestCase
         $tokenUUID = TokenUUID::createById('xxx');
         $token = new Token($tokenUUID, $appUUID);
         $promise1 = $repository
-            ->addToken($repositoryReference, $token)
+            ->putToken($repositoryReference, $token)
             ->then(function () use ($repository) {
                 return $repository->forceLoadAllTokens();
             })
@@ -125,7 +125,7 @@ class InMemoryTokenRepositoryTest extends TestCase
         $token = new Token($tokenUUID, $appUUID);
 
         $promise = $repository
-            ->addToken($mainRepositoryReference, $token)
+            ->putToken($mainRepositoryReference, $token)
             ->then(function () use ($repository) {
                 return $repository->forceLoadAllTokens();
             })
@@ -133,7 +133,7 @@ class InMemoryTokenRepositoryTest extends TestCase
                 $tokenUUID2 = TokenUUID::createById('xxx2');
                 $token2 = new Token($tokenUUID2, $appUUID);
 
-                return $repository->addToken($mainRepositoryReference, $token2);
+                return $repository->putToken($mainRepositoryReference, $token2);
             })
             ->then(function () use ($repository) {
                 return $repository->forceLoadAllTokens();
@@ -142,7 +142,7 @@ class InMemoryTokenRepositoryTest extends TestCase
                 $tokenUUID3 = TokenUUID::createById('xxx3');
                 $token3 = new Token($tokenUUID3, AppUUID::createById('zzz'));
 
-                return $repository->addToken($zzzRepositoryReference, $token3);
+                return $repository->putToken($zzzRepositoryReference, $token3);
             })
             ->then(function () use ($repository) {
                 return $repository->forceLoadAllTokens();

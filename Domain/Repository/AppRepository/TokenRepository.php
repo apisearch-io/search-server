@@ -24,7 +24,7 @@ use Apisearch\Server\Domain\Event\TokenWasDeleted;
 use Apisearch\Server\Domain\Event\TokenWasPut;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
-use Drift\HttpKernel\Event\DomainEventEnvelope;
+use Drift\HttpKernel\AsyncKernelEvents;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -47,7 +47,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
      *
      * @return PromiseInterface
      */
-    abstract public function addToken(
+    abstract public function putToken(
         RepositoryReference $repositoryReference,
         Token $token
     ): PromiseInterface;
@@ -73,18 +73,6 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
      * @return PromiseInterface
      */
     abstract public function deleteTokens(RepositoryReference $repositoryReference): PromiseInterface;
-
-    /**
-     * Load all tokens.
-     *
-     * @param DomainEventEnvelope $event
-     *
-     * @return PromiseInterface
-     */
-    public function loadAllTokens(DomainEventEnvelope $event): PromiseInterface
-    {
-        return $this->forceLoadAllTokens();
-    }
 
     /**
      * Force load all tokens.
@@ -162,7 +150,9 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
     {
         $appUUIDComposed = $appUUID->composeUUID();
 
-        return resolve($this->tokens[$appUUIDComposed] ?? []);
+        return resolve(isset($this->tokens[$appUUIDComposed])
+            ? array_values($this->tokens[$appUUIDComposed])
+            : []);
     }
 
     /**
@@ -172,13 +162,16 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
     {
         return [
             TokensWereDeleted::class => [
-                ['loadAllTokens', 0],
+                ['forceLoadAllTokens', 0],
             ],
             TokenWasPut::class => [
-                ['loadAllTokens', 0],
+                ['forceLoadAllTokens', 0],
             ],
             TokenWasDeleted::class => [
-                ['loadAllTokens', 0],
+                ['forceLoadAllTokens', 0],
+            ],
+            AsyncKernelEvents::PRELOAD => [
+                ['forceLoadAllTokens', 0],
             ],
         ];
     }

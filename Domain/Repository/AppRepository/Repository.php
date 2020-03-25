@@ -83,7 +83,7 @@ final class Repository
     ): PromiseInterface {
         return $this
             ->tokenRepository
-            ->addToken(
+            ->putToken(
                 $repositoryReference,
                 $token
             );

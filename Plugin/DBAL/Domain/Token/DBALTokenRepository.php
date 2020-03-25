@@ -71,7 +71,7 @@ class DBALTokenRepository extends TokenRepository
      *
      * @return PromiseInterface
      */
-    public function addToken(
+    public function putToken(
         RepositoryReference $repositoryReference,
         Token $token
     ): PromiseInterface {
