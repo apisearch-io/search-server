@@ -28,8 +28,6 @@ trait TokenQueriesTest
 {
     /**
      * Test token queries.
-     *
-     * @group lele
      */
     public function testTokenQueries()
     {

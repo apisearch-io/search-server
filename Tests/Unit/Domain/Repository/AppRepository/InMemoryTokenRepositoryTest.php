@@ -101,8 +101,6 @@ class InMemoryTokenRepositoryTest extends TestCase
 
     /**
      * Test delete tokens.
-     *
-     * @group a
      */
     public function testDeleteTokens()
     {
