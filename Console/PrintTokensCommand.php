@@ -16,7 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Server\Console;
 
 use Apisearch\Command\PrintTokensCommand as BasePrintTokensCommand;
+use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
 use Apisearch\Server\Domain\Query\GetTokens;
+use Clue\React\Block;
+use Drift\CommandBus\Bus\QueryBus;
+use Drift\HttpKernel\AsyncEventDispatcherInterface;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,6 +36,30 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
      * @var string
      */
     protected static $defaultName = 'apisearch-server:print-tokens';
+
+    /**
+     * @var AsyncEventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * Controller constructor.
+     *
+     * @param QueryBus                      $queryBus
+     * @param LoopInterface                 $loop
+     * @param string                        $godToken
+     * @param AsyncEventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(
+        QueryBus $queryBus,
+        LoopInterface $loop,
+        string $godToken,
+        AsyncEventDispatcherInterface $eventDispatcher
+    ) {
+        parent::__construct($queryBus, $loop, $godToken);
+
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * Configures the current command.
@@ -63,6 +92,13 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
+
+        Block\await($this
+            ->eventDispatcher
+            ->asyncDispatch(new LoadTokens(
+                $objects['app_uuid']
+            )), $this->loop);
+
         $tokens = $this->askQuery(new GetTokens(
             $objects['repository_reference'],
             $objects['token']

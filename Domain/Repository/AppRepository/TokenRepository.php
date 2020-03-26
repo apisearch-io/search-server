@@ -22,6 +22,7 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Event\TokensWereDeleted;
 use Apisearch\Server\Domain\Event\TokenWasDeleted;
 use Apisearch\Server\Domain\Event\TokenWasPut;
+use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
 use Drift\HttpKernel\AsyncKernelEvents;
@@ -171,6 +172,9 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
                 ['forceLoadAllTokens', 0],
             ],
             AsyncKernelEvents::PRELOAD => [
+                ['forceLoadAllTokens', 0],
+            ],
+            LoadTokens::class => [
                 ['forceLoadAllTokens', 0],
             ],
         ];

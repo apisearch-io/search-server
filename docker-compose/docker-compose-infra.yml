@@ -25,14 +25,14 @@ services:
         ports:
             - "6379:6379"
 
-    postgresql:
-        image: postgres:alpine
+    mysql:
+        image: mysql:5
         networks: [apisearch]
         ports:
-            - "5432:5432"
+            - "3306:3306"
         environment:
-            POSTGRES_USER: root
-            POSTGRES_PASSWORD: root
-            POSTGRES_DB: apisearch
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: apisearch
+
 networks:
     apisearch:
