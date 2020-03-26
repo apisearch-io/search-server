@@ -66,4 +66,14 @@ trait IndexTest
 
         $this->resetScenario();
     }
+
+    /**
+     * Test some index scenarios.
+     */
+    public function testIndexEmptyArray()
+    {
+        $this->indexItems([]);
+
+        $this->assertEquals(5, $this->query(Query::createMatchAll())->getTotalItems());
+    }
 }

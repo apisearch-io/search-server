@@ -30,6 +30,7 @@ use Elastica\Query as ElasticaQuery;
 use Elastica\Script\Script;
 use Elasticsearch\Endpoints\UpdateByQuery;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class ItemRepository.
