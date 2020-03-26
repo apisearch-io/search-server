@@ -26,7 +26,7 @@ use React\Promise\PromiseInterface;
 /**
  * Class Repository.
  */
-class Repository
+final class Repository
 {
     /**
      * @var ItemsRepository

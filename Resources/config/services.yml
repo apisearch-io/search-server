@@ -39,9 +39,8 @@ services:
     #
     # Repositories
     #
-    Apisearch\Server\Domain\Repository\:
-        resource: '../../Domain/Repository/'
-
+    Apisearch\Server\Domain\Repository\Repository\Repository:
+    Apisearch\Server\Domain\Repository\AppRepository\Repository:
     Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository
         public: true

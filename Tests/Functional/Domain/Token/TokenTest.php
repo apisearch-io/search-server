@@ -331,8 +331,25 @@ abstract class TokenTest extends HttpFunctionalTest
         );
 
         $this->assertCount(4, $this->getTokensFromKernel($clusterKernel));
-        $clusterKernel->shutdown();
-        unset($clusterKernel);
+
+        /**
+         * Existing service.
+         */
+        $output = static::runCommand([
+            'apisearch-server:print-token',
+            'app-id' => $appUUID->composeUUID(),
+        ]);
+        $this->assertContains('multiservice-token', $output);
+
+        /**
+         * New service.
+         */
+        $process = static::runAsyncCommand([
+            'apisearch-server:print-token',
+            $appUUID->composeUUID(),
+        ]);
+        sleep(1);
+        $this->assertContains('multiservice-token', $process->getOutput());
     }
 
     /**
@@ -344,7 +361,7 @@ abstract class TokenTest extends HttpFunctionalTest
      *
      * @return Token[]
      */
-    protected static function getTokensFromKernel(
+    private static function getTokensFromKernel(
         KernelInterface $kernel,
         string $appId = null,
         Token $token = null
