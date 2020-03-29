@@ -117,8 +117,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $itemsUUID
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -149,8 +147,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $items
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -184,8 +180,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $query,
             $changes
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -215,8 +209,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $indexUUID
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -274,8 +266,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $indexUUID,
             $config ?? Config::createFromArray([])
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -308,8 +298,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $indexUUID,
             $config
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -370,8 +358,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $indexUUID
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -397,8 +383,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $newToken
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -424,8 +408,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $tokenUUID
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -472,8 +454,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     $appUUID
                 )
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -499,8 +479,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ),
             $interaction
         ));
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -533,8 +511,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     public static function configureEnvironment()
     {
         self::executeCommand(new ConfigureEnvironment());
-
-        static::waitAfterWriteCommand();
     }
 
     /**
@@ -543,8 +519,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     public static function cleanEnvironment()
     {
         self::executeCommand(new CleanEnvironment());
-
-        static::waitAfterWriteCommand();
     }
 
     /**

@@ -1,0 +1,25 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $elasticsearchEndpoint: '%apisearch_plugin.elasticsearch.endpoint%'
+            string $elasticsearchVersion: '%apisearch_plugin.elasticsearch.version%'
+            bool $refreshOnWrite: '%apisearch_plugin.elasticsearch.refresh_on_write%'
+
+    Apisearch\Plugin\Elasticsearch\:
+        resource: "../../../../Plugin/Elasticsearch/"
+        exclude: "../../../../Plugin/Elasticsearch/{DependencyInjection,Tests,Resources,ElasticaPluginBundle.php,Domain/Search.php}"
+
+    Apisearch\Plugin\Elasticsearch\Domain\Middleware\CheckHealthMiddleware:
+        tags: ["apisearch_plugin.middleware"]
+
+    Apisearch\Server\Domain\Repository\AppRepository\IndexRepository:
+        alias: Apisearch\Plugin\Elasticsearch\Domain\AppRepository\IndexRepository
+
+    Apisearch\Server\Domain\Repository\Repository\ItemsRepository:
+        alias: Apisearch\Plugin\Elasticsearch\Domain\Repository\ItemRepository
+
+    Apisearch\Server\Domain\Repository\Repository\QueryRepository:
+        alias: Apisearch\Plugin\Elasticsearch\Domain\Repository\QueryRepository

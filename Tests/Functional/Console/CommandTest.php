@@ -39,9 +39,8 @@ abstract class CommandTest extends HttpFunctionalTest
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        parent::setUpBeforeClass();
         try {
             static::deleteIndex(self::$appId, self::$index);
         } catch (ResourceNotAvailableException $e) {

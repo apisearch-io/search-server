@@ -22,9 +22,9 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
 
 /**
- * Class GenerateBasicTokensCommandTest.
+ * Trait GenerateBasicTokensCommandTest.
  */
-abstract class GenerateBasicTokensCommandTest extends CommandTest
+trait GenerateBasicTokensCommandTest
 {
     /**
      * Test token creation.

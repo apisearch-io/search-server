@@ -19,7 +19,6 @@ use Apisearch\Exception\TransportableException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
-use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
@@ -65,18 +64,6 @@ class HealthTest extends CurlFunctionalTest
         if (200 === $responseCode) {
             $content = $result['body'];
             $this->assertTrue($content['healthy']);
-            $this->assertTrue(
-                in_array(
-                    $content['status']['elasticsearch'],
-                    ['green', 'yellow']
-                )
-            );
-            $this->assertEquals(
-                [
-                    'elastica' => ElasticaPluginBundle::class,
-                ],
-                $content['info']['plugins']
-            );
         }
     }
 

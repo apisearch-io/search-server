@@ -29,7 +29,7 @@ trait GetIndicesTest
     public function testGetIndicesWithAppid(): void
     {
         $indices = $this->getIndices(self::$appId);
-        $this->assertTrue(1 === count($indices));
+        $this->assertCount(2, $indices);
         $index = array_shift($indices);
         $this->assertInstanceOf(Index::class, $index);
     }

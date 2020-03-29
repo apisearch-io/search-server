@@ -491,8 +491,8 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     protected static function makeCurl(
         string $routeName,
-        array $routeParameters,
-        ?Token $token,
+        array $routeParameters = [],
+        ?Token $token = null,
         $body = [],
         array $queryParameters = [],
         array $headers = []

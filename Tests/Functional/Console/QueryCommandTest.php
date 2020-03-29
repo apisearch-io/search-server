@@ -16,14 +16,14 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Console;
 
 /**
- * Class QueryCommandTest.
+ * Trait QueryCommandTest.
  */
-class QueryCommandTest extends CommandTest
+trait QueryCommandTest
 {
     /**
-     * Test create index command.
+     * Test query.
      */
-    public function testCreateIndexCommand()
+    public function testQuery()
     {
         $this->assertNotExistsIndex();
 

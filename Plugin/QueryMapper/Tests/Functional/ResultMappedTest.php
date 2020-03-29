@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\QueryMapper\Tests\Functional;
 
 use Apisearch\Http\Http;
-use Clue\React\Block;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,9 +50,6 @@ class ResultMappedTest extends QueryMapperFunctionalTest
                 ], json_decode($response->getContent(), true));
             });
 
-        Block\await(
-            $promise,
-            $this->get('reactphp.event_loop')
-        );
+        $this->await($promise);
     }
 }

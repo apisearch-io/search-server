@@ -21,22 +21,18 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository;
-use Clue\React\Block;
-use PHPUnit\Framework\TestCase;
-use React\EventLoop\StreamSelectLoop;
-use React\Promise;
+use Apisearch\Server\Tests\Unit\BaseUnitTest;
 
 /**
  * Class InMemoryTokenRepositoryTest.
  */
-class InMemoryTokenRepositoryTest extends TestCase
+class InMemoryTokenRepositoryTest extends BaseUnitTest
 {
     /**
      * Test add and remove token.
      */
     public function testAddRemoveToken()
     {
-        $loop = new StreamSelectLoop();
         $repository = new InMemoryTokenRepository();
         $appUUID = AppUUID::createById('yyy');
         $indexUUID = IndexUUID::createById('index');
@@ -90,13 +86,10 @@ class InMemoryTokenRepositoryTest extends TestCase
                 $this->assertNull($null);
             });
 
-        $loop->run();
-        Block\await(
-            Promise\all([
-                $promise1,
-                $promise2,
-            ]), $loop
-        );
+        $this->awaitAll([
+            $promise1,
+            $promise2,
+        ]);
     }
 
     /**
@@ -104,7 +97,6 @@ class InMemoryTokenRepositoryTest extends TestCase
      */
     public function testDeleteTokens()
     {
-        $loop = new StreamSelectLoop();
         $repository = new InMemoryTokenRepository();
         $appUUID = AppUUID::createById('yyy');
         $indexUUID = IndexUUID::createById('index');
@@ -196,10 +188,6 @@ class InMemoryTokenRepositoryTest extends TestCase
                 $this->assertCount(0, $tokens);
             });
 
-        $loop->run();
-        Block\await(
-            $promise,
-            $loop
-        );
+        $this->await($promise);
     }
 }

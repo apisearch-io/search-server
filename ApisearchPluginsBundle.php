@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server;
 
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
-use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
+use Apisearch\Plugin\Elasticsearch\ElasticsearchPluginBundle;
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
@@ -72,7 +72,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
     private static function resolveAliases(array $bundles): array
     {
         $aliases = [
-            'elastica' => ElasticaPluginBundle::class,
+            'elasticsearch' => ElasticsearchPluginBundle::class,
             'logstash' => LogstashPluginBundle::class,
             'dbal' => DBALPluginBundle::class,
             'static_tokens' => StaticTokensPluginBundle::class,

@@ -29,6 +29,8 @@ trait MultiqueryTest
 {
     /**
      * Test simple multiquery.
+     *
+     * @group mq
      */
     public function testSimpleMultiQuery()
     {
@@ -51,6 +53,8 @@ trait MultiqueryTest
 
     /**
      * Test query on multiple indices.
+     *
+     * @group mq
      */
     public function testMultiQueryOnMultipleIndices()
     {

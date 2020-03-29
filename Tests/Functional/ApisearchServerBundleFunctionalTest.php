@@ -25,7 +25,6 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
-use Apisearch\Plugin\Elastica\ElasticaPluginBundle;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\ApisearchPluginsBundle;
@@ -120,7 +119,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             FrameworkBundle::class,
             ApisearchServerBundle::class,
             ApisearchBundle::class,
-            ElasticaPluginBundle::class,
             ApisearchPluginsBundle::class,
             CommandBusBundle::class,
             EventBusBundle::class,
@@ -131,7 +129,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             'imports' => $imports,
             'parameters' => [
                 'kernel.secret' => 'sdhjshjkds',
-                'apisearch_plugin.elastica.version' => static::getElasticsearchVersion(),
             ],
             'framework' => [
                 'test' => true,
@@ -154,13 +151,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
                 'ping_token' => self::$pingToken,
                 'readonly_token' => self::$readonlyToken,
             ],
-            'elastica_plugin' => [
-                'cluster' => [
-                    'localhost' => static::getElasticsearchEndpoint(),
-                ],
-                'version' => static::getElasticsearchVersion(),
-                'refresh_on_write' => true,
-            ],
             'apisearch' => [
                 'repositories' => [
                     'search_http' => [
@@ -168,20 +158,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
                         'endpoint' => '~',
                         'app_id' => self::$appId,
                         'token' => '~',
-                        'test' => true,
-                        'indices' => [
-                            self::$index => self::$index,
-                            self::$anotherIndex => self::$anotherIndex,
-                            $composedIndex => $composedIndex,
-                            '*' => '*',
-                            self::$yetAnotherIndex => self::$yetAnotherIndex,
-                        ],
-                    ],
-                    'search_socket' => [
-                        'adapter' => 'http',
-                        'endpoint' => 'http://127.0.0.1:'.self::HTTP_TEST_SERVICE_PORT,
-                        'app_id' => self::$appId,
-                        'token' => self::$godToken,
                         'test' => true,
                         'indices' => [
                             self::$index => self::$index,
@@ -253,35 +229,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     protected static function decorateRoutes(array $routes): array
     {
         return $routes;
-    }
-
-    /**
-     * Time to wait after write command.
-     */
-    protected static function waitAfterWriteCommand()
-    {
-    }
-
-    /**
-     * Get elasticsearch endpoint.
-     *
-     * @return array
-     */
-    protected static function getElasticsearchEndpoint(): array
-    {
-        return [
-            'host' => $_ENV['ELASTICSEARCH_HOST'],
-        ];
-    }
-
-    /**
-     * Get elasticsearch version.
-     *
-     * @return string
-     */
-    protected static function getElasticsearchVersion(): string
-    {
-        return '7';
     }
 
     /**
@@ -374,6 +321,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
         static::deleteEverything();
 
         static::createIndex(self::$appId);
+        static::createIndex(self::$appId, self::$anotherIndex);
         static::deleteTokens(self::$appId);
         static::createIndex(self::$anotherAppId);
         static::deleteTokens(self::$anotherAppId);
@@ -419,6 +367,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     public static function deleteEverything()
     {
         static::deleteAppIdIndices(self::$appId);
+        static::deleteAppIdIndices(self::$appId, self::$anotherIndex);
         static::deleteAppIdIndices(self::$anotherAppId);
     }
 
@@ -426,11 +375,15 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
      * Delete index and catch.
      *
      * @param string $appId
+     * @param string $indexId
      */
-    private static function deleteAppIdIndices(string $appId)
-    {
+    private static function deleteAppIdIndices(
+        string $appId,
+        string $indexId = null
+    ) {
         try {
-            static::deleteIndex($appId);
+            $indexId = $indexId ?? self::$index;
+            static::deleteIndex($appId, $indexId);
         } catch (ResourceNotAvailableException $e) {
         }
     }

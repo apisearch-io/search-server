@@ -17,7 +17,6 @@ namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
 use Apisearch\Http\Http;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
-use Clue\React\Block;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -43,9 +42,6 @@ class HealthTest extends HttpFunctionalTest
                 $this->assertTrue($content['status']['dbal']);
             });
 
-        Block\await(
-            $promise,
-            $this->get('reactphp.event_loop')
-        );
+        $this->await($promise);
     }
 }

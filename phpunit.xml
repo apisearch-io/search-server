@@ -19,6 +19,8 @@
         <env name="APISEARCH_TOKENS_UPDATE_EXCHANGE" value="tokens_update" force="true" />
 
         <env name="ELASTICSEARCH_HOST" value="apisearch.elasticsearch.latest" force="true" />
+        <env name="ELASTICSEARCH_REFRESH_ON_WRITE" value="true" force="true" />
+
         <env name="AMQP_HOST" value="apisearch.rabbitmq" force="true" />
         <env name="REDIS_HOST" value="apisearch.redis" force="true" />
         <env name="LOGSTASH_REDIS_HOST" value="apisearch.redis" force="true" />
