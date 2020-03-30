@@ -40,7 +40,7 @@
     "apisearch-io/apisearch-bundle": "0.1.*, >=0.1.15",
 
     "ruflin/elastica": "7.0.0-beta3",
-    "elasticsearch/elasticsearch": "7.3.0",
+    "elasticsearch/elasticsearch": "^7.6.0",
     "nesbot/carbon": "^2.0",
     "ramsey/uuid": "^3.7.1"
   },
