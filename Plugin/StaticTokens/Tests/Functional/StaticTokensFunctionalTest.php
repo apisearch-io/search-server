@@ -16,7 +16,9 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\StaticTokens\Tests\Functional;
 
 use Apisearch\Http\Endpoints;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
+use Apisearch\Query\Query;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
@@ -66,7 +68,9 @@ abstract class StaticTokensFunctionalTest extends HttpFunctionalTest
                 'uuid' => 'base_filtered_token',
                 'app_uuid' => self::$appId,
                 'metadata' => [
-                    'base_query' => ['q' => 'Matutano'],
+                    'base_query' => Query::createByUUIDs([
+                        ItemUUID::createByComposedUUID('2~product'),
+                    ])->toArray(),
                 ],
             ],
             'bla-bla-blah-another' => [

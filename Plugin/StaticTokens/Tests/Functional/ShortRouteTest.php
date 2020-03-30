@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\StaticTokens\Tests\Functional;
 
 use Apisearch\Http\Http;
-use Clue\React\Block;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -35,10 +34,7 @@ class ShortRouteTest extends StaticTokensFunctionalTest
         $request->headers->set(Http::TOKEN_ID_HEADER, 'onlyindex');
 
         $promise = static::$kernel->handleAsync($request);
-        $response = Block\await(
-            $promise,
-            $this->get('reactphp.event_loop')
-        );
+        $response = $this->await($promise);
 
         $this->assertEquals(200, $response->getStatusCode());
     }

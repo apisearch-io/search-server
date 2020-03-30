@@ -16,14 +16,14 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Console;
 
 /**
- * Class ImportExportIndexCommandTest.
+ * Trait ImportExportIndexCommandTest.
  */
-class ImportExportIndexCommandTest extends CommandTest
+trait ImportExportIndexCommandTest
 {
     /**
      * Test token creation.
      */
-    public function testTokenCreation()
+    public function testIndexImportAndExport()
     {
         $fileName = tempnam('/tmp', 'test-apisearch');
 

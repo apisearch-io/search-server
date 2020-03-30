@@ -18,9 +18,9 @@ namespace Apisearch\Server\Tests\Functional\Console;
 use Apisearch\Query\Query;
 
 /**
- * Class CreateDeleteIndexCommandTest.
+ * Trait CreateDeleteIndexCommandTest.
  */
-class CreateDeleteIndexCommandTest extends CommandTest
+trait CreateDeleteIndexCommandTest
 {
     /**
      * Test create index command.

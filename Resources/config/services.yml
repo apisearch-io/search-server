@@ -39,6 +39,16 @@ services:
     #
     # Repositories
     #
+    Apisearch\Server\Domain\Repository\InMemoryRepository:
+    Apisearch\Server\Domain\Repository\AppRepository\IndexRepository:
+        alias: Apisearch\Server\Domain\Repository\InMemoryRepository
+
+    Apisearch\Server\Domain\Repository\Repository\ItemsRepository:
+        alias: Apisearch\Server\Domain\Repository\InMemoryRepository
+
+    Apisearch\Server\Domain\Repository\Repository\QueryRepository:
+        alias: Apisearch\Server\Domain\Repository\InMemoryRepository
+
     Apisearch\Server\Domain\Repository\Repository\Repository:
     Apisearch\Server\Domain\Repository\AppRepository\Repository:
     Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:

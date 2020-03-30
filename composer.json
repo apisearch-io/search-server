@@ -23,7 +23,7 @@
     "drift/server": "0.1.*, >=0.1.6",
     "drift/react-functions": "0.1.*",
     "drift/command-bus-bundle": "0.1.*, >=0.1.7",
-    "drift/event-bus-bundle": "0.1.*, >=0.1.3",
+    "drift/event-bus-bundle": "0.1.*, >=0.1.6",
     "drift/preload-bundle": "0.1.*",
     "drift/amqp-bundle": "0.1.*",
     "drift/redis-bundle": "0.1.*, >=0.1.3",

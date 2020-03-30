@@ -18,9 +18,9 @@ namespace Apisearch\Server\Tests\Functional\Console;
 use Apisearch\Query\Query;
 
 /**
- * Class ConfigureIndexCommandTest.
+ * Trait ConfigureIndexCommandTest.
  */
-class ConfigureIndexCommandTest extends CommandTest
+trait ConfigureIndexCommandTest
 {
     /**
      * Test create index command.

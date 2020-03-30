@@ -24,20 +24,9 @@ event_bus:
         events: "%env(APISEARCH_EVENTS_EXCHANGE)%"
         tokens_update: "%env(APISEARCH_TOKENS_UPDATE_EXCHANGE)%"
     async_adapter:
+        adapter: "%env(APISEARCH_ASYNC_EVENTS_ADAPTER)%"
         amqp:
             host: "%env(AMQP_HOST)%"
             user: "%env(AMQP_USER)%"
             password: "%env(AMQP_PASSWORD)%"
             vhost: "%env(AMQP_VHOST)%"
-
-#
-# Elastica plugin for Apisearch
-#
-# Configure your elasticsearch cluster and the way your indices are
-# created
-#
-elastica_plugin:
-    cluster:
-        docker_elasticsearch_service:
-            host: "%env(ELASTICSEARCH_HOST)%"
-            port: "%env(ELASTICSEARCH_PORT)%"

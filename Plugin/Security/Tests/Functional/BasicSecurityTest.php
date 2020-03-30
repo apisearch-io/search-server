@@ -207,13 +207,14 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('restricted_fields', [
-            'metadata.stored_field_boolean_false',
+            'metadata.field',
         ]);
         $this->putToken($token, self::$appId);
+
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index)->getFirstItem();
-        $this->assertTrue(isset($item->getMetadata()['stored_field_boolean_false']));
+        $this->assertTrue(isset($item->getMetadata()['field']));
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index, $token)->getFirstItem();
-        $this->assertFalse(isset($item->getMetadata()['stored_field_boolean_false']));
+        $this->assertFalse(isset($item->getMetadata()['field']));
     }
 
     /**
@@ -226,12 +227,12 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('allowed_fields', [
-            'metadata.stored_field_boolean_false',
-            '!metadata.stored_field_boolean_false',
+            'metadata.field',
+            '!metadata.field',
         ]);
         $this->putToken($token, self::$appId);
         $item = $this->query(Query::createMatchAll(), self::$appId, self::$index, $token)->getFirstItem();
-        $this->assertCount(0, $item->getAllMetadata());
+        $this->assertCount(0, $item->getMetadata());
     }
 
     /**
@@ -244,7 +245,7 @@ class BasicSecurityTest extends SecurityFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $token->setMetadataValue('restricted_fields', [
-            'metadata.stored_field_boolean_false',
+            'metadata.field',
         ]);
         $this->putToken($token, self::$appId);
 
@@ -252,6 +253,6 @@ class BasicSecurityTest extends SecurityFunctionalTest
             'q1' => Query::createMatchAll(),
             'q2' => Query::createMatchAll(),
         ]), self::$appId, self::$index, $token)->getSubresults()['q1']->getFirstItem();
-        $this->assertFalse(isset($item->getMetadata()['stored_field_boolean_false']));
+        $this->assertFalse(isset($item->getMetadata()['field']));
     }
 }

@@ -25,12 +25,6 @@ abstract class AddDeleteTokensCommandTest extends CommandTest
      */
     public function testTokenCreation()
     {
-        static::runCommand([
-            'command' => 'apisearch-server:create-index',
-            'app-id' => self::$appId,
-            'index' => self::$index,
-        ]);
-
         $this->assertTokenNotExists();
 
         static::runCommand([
@@ -49,12 +43,6 @@ abstract class AddDeleteTokensCommandTest extends CommandTest
         ]);
 
         $this->assertTokenNotExists();
-
-        static::runCommand([
-            'command' => 'apisearch-server:delete-index',
-            'app-id' => self::$appId,
-            'index' => self::$index,
-        ]);
     }
 
     /**

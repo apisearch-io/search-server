@@ -31,8 +31,7 @@ class HttpParametersTest extends CurlFunctionalTest
             'v1_query_all_indices',
             [
                 'app_id' => '1234',
-            ],
-            null
+            ]
         );
 
         $this->assertTrue(true);
