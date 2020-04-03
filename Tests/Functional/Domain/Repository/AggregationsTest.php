@@ -264,6 +264,31 @@ trait AggregationsTest
     }
 
     /**
+     * Aggregate by price.
+     */
+    public function testRangeAggregations()
+    {
+        static::resetScenario();
+        $counters = $this->query(Query::createMatchAll()
+            ->aggregateByRange('price', 'price', [
+                '-100..100',
+                '..100',
+                '100..500',
+                '500..1000',
+                '1000..1700',
+                '1700..',
+            ], Filter::AT_LEAST_ONE)
+        )->getAggregation('price')->getCounters();
+
+        $this->assertEquals(1, $counters['-100..100']->getN());
+        $this->assertEquals(1, $counters['..100']->getN());
+        $this->assertFalse(isset($counters['100.500']));
+        $this->assertEquals(2, $counters['500..1000']->getN());
+        $this->assertEquals(1, $counters['1000..1700']->getN());
+        $this->assertEquals(1, $counters['1700..']->getN());
+    }
+
+    /**
      * Test aggregation sort.
      *
      * @param int   $firstId

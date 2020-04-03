@@ -23,6 +23,7 @@ use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use React\EventLoop\Factory;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -325,9 +326,11 @@ abstract class TokenTest extends HttpFunctionalTest
         $clusterKernel = static::getKernel();
         $clusterKernel->boot();
         $clusterContainer = $clusterKernel->getContainer();
+        $eventLoop = Factory::create();
+        $clusterContainer->set('reactphp.event_loop', $eventLoop);
         static::await(
             $clusterKernel->preload(),
-            $clusterContainer->get('reactphp.event_loop')
+            $eventLoop
         );
 
         $this->assertCount(4, $this->getTokensFromKernel($clusterKernel));

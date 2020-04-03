@@ -152,23 +152,23 @@ trait FiltersTest
         );
 
         $this->assertResults(
-            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['0..-1'])),
+            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['0..'])),
             ['?1', '?2', '?3', '?4', '?5']
         );
 
         $this->assertResults(
-            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['1..-1'])),
+            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['1..'])),
             ['?1', '?2', '?3', '?4', '?5']
         );
 
         $this->assertResults(
-            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['0..0'])->filterByRange('price', 'price', [], ['0..-1'])),
+            $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['0..0'])->filterByRange('price', 'price', [], ['0..'])),
             ['?1', '?2', '?3', '?4', '?5']
         );
 
         $this->assertEmpty(
             $this->query(
-                Query::createMatchAll()->filterByRange('price', 'price', [], ['0..-1']),
+                Query::createMatchAll()->filterByRange('price', 'price', [], ['0..']),
                 self::$anotherAppId
             )->getItems()
         );

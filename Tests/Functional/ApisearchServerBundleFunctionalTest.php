@@ -33,16 +33,14 @@ use Apisearch\Server\Exception\ErrorException;
 use Apisearch\User\Interaction;
 use Drift\CommandBus\CommandBusBundle;
 use Drift\EventBus\EventBusBundle;
-use function Clue\React\Block\await;
-use function Clue\React\Block\awaitAll;
+use Drift\PHPUnit\BaseDriftFunctionalTest;
 use Mmoreram\BaseBundle\Kernel\DriftBaseKernel;
-use Mmoreram\BaseBundle\Tests\BaseFunctionalTest;
-use React\EventLoop\Factory as EventLoopFactory;
-use React\EventLoop\LoopInterface;
-use React\Promise\PromiseInterface;
+use Exception;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Yaml\Yaml;
+use Drift\React;
 
 set_error_handler(function ($code, $message, $file, $line, $context = null) {
     if (0 == error_reporting()) {
@@ -55,7 +53,7 @@ set_error_handler(function ($code, $message, $file, $line, $context = null) {
 /**
  * Class ApisearchServerBundleFunctionalTest.
  */
-abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
+abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTest
 {
     /**
      * @var string
@@ -132,19 +130,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
             ],
             'framework' => [
                 'test' => true,
-            ],
-            'services' => [
-                '_defaults' => [
-                    'public' => true,
-                ],
-                'reactphp.event_loop' => [
-                    'class' => LoopInterface::class,
-                    'public' => true,
-                    'factory' => [
-                        EventLoopFactory::class,
-                        'create',
-                    ],
-                ],
             ],
             'apisearch_server' => [
                 'god_token' => self::$godToken,
@@ -343,7 +328,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
         $itemsInstances = [];
         foreach ($items['items'] as $item) {
             if (isset($item['indexed_metadata']['created_at'])) {
-                $date = new \DateTime($item['indexed_metadata']['created_at']);
+                $date = new DateTime($item['indexed_metadata']['created_at']);
                 $item['indexed_metadata']['created_at'] = $date->format(DATE_ATOM);
             }
             $itemsInstances[] = Item::createFromArray($item);
@@ -649,20 +634,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
     abstract public static function cleanEnvironment();
 
     /**
-     * Get token id.
-     *
-     * @param Token $token
-     *
-     * @return string
-     */
-    protected static function getTokenId(Token $token = null): string
-    {
-        return ($token instanceof Token)
-                ? $token->getTokenUUID()->composeUUID()
-                : self::getParameterStatic('apisearch_server.god_token');
-    }
-
-    /**
      * Create token by id and app_id.
      *
      * @param string $tokenId
@@ -700,50 +671,16 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseFunctionalTest
      * @param int $microseconds
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     protected static function usleep(int $microseconds)
     {
         $loop = static::getStatic('reactphp.event_loop');
 
-        return await(
-            \Drift\React\usleep($microseconds, $loop),
+        return static::await(
+            React\usleep($microseconds, $loop),
             $loop
-        );
-    }
-
-    /**
-     * Await.
-     *
-     * @param PromiseInterface $promise
-     * @param LoopInterface    $loop
-     *
-     * @return mixed
-     */
-    protected static function await(
-        PromiseInterface $promise,
-        LoopInterface $loop = null
-    ) {
-        return await(
-            $promise,
-            $loop ?? static::getStatic('reactphp.event_loop')
-        );
-    }
-
-    /**
-     * Await all.
-     *
-     * @param array         $promises
-     * @param LoopInterface $loop
-     *
-     * @return array
-     */
-    protected static function awaitAll(
-        array $promises,
-        LoopInterface $loop = null
-    ): array {
-        return awaitAll(
-            $promises,
-            $loop ?? static::getStatic('reactphp.event_loop')
         );
     }
 }
