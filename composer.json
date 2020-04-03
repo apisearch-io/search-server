@@ -16,6 +16,7 @@
     "symfony/http-kernel": "^5.0",
     "symfony/console": "^5.0",
     "symfony/dependency-injection" : "^5.0",
+    "symfony/http-foundation" : "^5.0, >=5.0.7",
     "symfony/event-dispatcher" : "^5.0",
     "symfony/dotenv" : "^5.0",
 
@@ -36,7 +37,7 @@
     "mmoreram/base-bundle": "^2.0.0",
     "mmoreram/symfony-bundle-dependencies": "^2.0.0",
 
-    "apisearch-io/php-client": "0.1.*, >=0.1.24",
+    "apisearch-io/php-client": "0.1.*, >=0.1.25",
     "apisearch-io/apisearch-bundle": "0.1.*, >=0.1.15",
 
     "ruflin/elastica": "7.0.0-beta3",
@@ -47,9 +48,8 @@
 
   "require-dev": {
     "symfony/browser-kit": "^4.3",
-    "clue/block-react": "*",
     "clue/reactphp-sqlite": "*",
-    "phpunit/phpunit": "7.5.18",
+    "drift/phpunit-bridge": "0.1.*",
     "symfony/process": "^5.0.0"
   },
 

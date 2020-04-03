@@ -440,7 +440,7 @@ class QueryBuilder
     ): ? ElasticaQuery\AbstractQuery {
         list($from, $to) = Range::stringToArray($value);
         $rangeData = [];
-        if ($from > Range::ZERO) {
+        if (Range::MINUS_INFINITE !== $from) {
             $rangeData = [
                 'gte' => $from,
             ];
