@@ -2,7 +2,6 @@
 .env.dist
 .formatter.yml
 .ppm
-.circleci
 .git
 .gitignore
 .idea

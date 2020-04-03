@@ -15,13 +15,13 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elasticsearch\Tests;
 
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Apisearch\Server\Tests\Functional\Domain\Repository\AllTests;
-use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
- * Class ServiceRepositoryTest.
+ * Class CurlRepositoryTest.
  */
-class ServiceRepositoryTest extends ServiceFunctionalTest
+class CurlRepositoryTest extends CurlFunctionalTest
 {
     use ElasticFunctionalTestTrait;
     use AllTests;

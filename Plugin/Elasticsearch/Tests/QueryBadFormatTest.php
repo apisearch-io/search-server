@@ -26,6 +26,14 @@ class QueryBadFormatTest extends HttpFunctionalTest
     use HttpResponsesToException;
 
     /**
+     * @return bool
+     */
+    protected static function needsServer() : bool
+    {
+        return true;
+    }
+
+    /**
      * Test query with bad format.
      *
      * @expectedException \Apisearch\Exception\InvalidFormatException
