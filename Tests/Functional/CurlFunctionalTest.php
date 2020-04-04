@@ -45,6 +45,14 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     public static $lastResponse = [];
 
     /**
+     * @return bool
+     */
+    protected static function needsServer() : bool
+    {
+        return true;
+    }
+
+    /**
      * Query using the bus.
      *
      * @param QueryModel $query

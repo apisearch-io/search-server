@@ -39,6 +39,7 @@ use Exception;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 use Drift\React;
 
@@ -60,7 +61,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * External server port
      */
-    const HTTP_TEST_SERVICE_PORT = '8000';
+    const HTTP_TEST_SERVICE_PORT = '8888';
 
     /**
      * Get container service.
@@ -280,12 +281,18 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     public static $yetAnotherIndex = 'yetanotherindex';
 
     /**
+     * @var Process
+     */
+    private static $lastServer;
+
+    /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
+        static::runApisearchServer();
         static::resetScenario();
     }
 
@@ -312,6 +319,36 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         static::deleteTokens(self::$anotherAppId);
 
         static::indexTestingItems();
+    }
+
+    /**
+     * Run server
+     */
+    protected static function runApisearchServer()
+    {
+        if (!static::needsServer()) {
+            return;
+        }
+
+        /**
+         * Let's wait for oldest process
+         */
+        sleep(2);
+        if (static::$lastServer instanceof Process) {
+            static::$lastServer->stop();
+            static::$lastServer = null;
+        }
+
+        static::$lastServer = static::runServer(__DIR__ . '/../../vendor/bin', static::HTTP_TEST_SERVICE_PORT);
+        sleep(2);
+    }
+
+    /**
+     * @return bool
+     */
+    protected static function needsServer() : bool
+    {
+        return false;
     }
 
     /**

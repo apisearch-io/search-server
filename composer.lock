@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c7b7550e0c027be2dd39ca5c7027cdd",
+    "content-hash": "a253cd49bccff1be7758fe91794e6a51",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -1418,16 +1418,16 @@
         },
         {
             "name": "drift/server",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/server.git",
-                "reference": "62249e645017311c9639dfee58f9d1298614c6d2"
+                "reference": "881457f0c898a122189dd9dfe136d296c8ac915e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/server/zipball/62249e645017311c9639dfee58f9d1298614c6d2",
-                "reference": "62249e645017311c9639dfee58f9d1298614c6d2",
+                "url": "https://api.github.com/repos/driftphp/server/zipball/881457f0c898a122189dd9dfe136d296c8ac915e",
+                "reference": "881457f0c898a122189dd9dfe136d296c8ac915e",
                 "shasum": ""
             },
             "require": {
@@ -1474,7 +1474,7 @@
                 }
             ],
             "description": "ReactPHP based server for DriftPHP",
-            "time": "2020-04-01T18:53:50+00:00"
+            "time": "2020-04-01T23:08:18+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",

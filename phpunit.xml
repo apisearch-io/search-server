@@ -18,15 +18,15 @@
         <env name="APISEARCH_EVENTS_EXCHANGE" value="events" force="true" />
         <env name="APISEARCH_TOKENS_UPDATE_EXCHANGE" value="tokens_update" force="true" />
 
-        <env name="ELASTICSEARCH_HOST" value="apisearch.elasticsearch.latest" force="true" />
+        <env name="ELASTICSEARCH_HOST" value="127.0.0.1" force="true" />
         <env name="ELASTICSEARCH_REFRESH_ON_WRITE" value="true" force="true" />
 
-        <env name="AMQP_HOST" value="apisearch.rabbitmq" force="true" />
-        <env name="REDIS_HOST" value="apisearch.redis" force="true" />
-        <env name="LOGSTASH_REDIS_HOST" value="apisearch.redis" force="true" />
+        <env name="AMQP_HOST" value="127.0.0.1" force="true" />
+        <env name="REDIS_HOST" value="127.0.0.1" force="true" />
+        <env name="LOGSTASH_REDIS_HOST" value="127.0.0.1" force="true" />
 
         <env name="DBAL_DRIVER" value="mysql" force="true" />
-        <env name="DBAL_HOST" value="apisearch.mysql" force="true" />
+        <env name="DBAL_HOST" value="127.0.0.1" force="true" />
         <env name="DBAL_PORT" value="3306" force="true" />
         <env name="DBAL_USER" value="root" force="true" />
         <env name="DBAL_PASSWORD" value="root" force="true" />

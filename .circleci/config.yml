@@ -8,10 +8,63 @@ general:
         ignore:
             - docker-image/*
 jobs:
+    with-infrastructure:
+        docker:
+            -   image: circleci/php:7.4.4-cli
+            -   image: rabbitmq:3-alpine
+            -   image: redis:4-alpine
+            -   image: mysql:5
+                environment:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: apisearch
+            -   image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
+                name: apisearch.elasticsearch.6.1
+                environment:
+                    ES_JAVA_OPTS: -Xms256m -Xmx256m
+                    discovery.type: single-node
+                    action.auto_create_index: -apisearch*,+*
+            -   image: docker.elastic.co/elasticsearch/elasticsearch:6.8.0
+                name: apisearch.elasticsearch.6.8
+                environment:
+                    ES_JAVA_OPTS: -Xms256m -Xmx256m
+                    discovery.type: single-node
+                    action.auto_create_index: -apisearch*,+*
+            -   image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
+                name: apisearch.elasticsearch.7.0
+                environment:
+                    ES_JAVA_OPTS: -Xms256m -Xmx256m
+                    discovery.type: single-node
+                    action.auto_create_index: -apisearch*,+*
+            -   image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+                environment:
+                    ES_JAVA_OPTS: -Xms256m -Xmx256m
+                    discovery.type: single-node
+                    action.auto_create_index: -apisearch*,+*
 
-    build:
+        working_directory: ~/project
+        steps:
+            -   checkout
+            -   run:
+                    name: Install dependencies
+                    command: |
+                        sudo docker-php-ext-install pcntl
+                        sudo apt install -y git
+
+            -   run:
+                    name: Load dev dependencies
+                    command: |
+                        composer update -n --prefer-dist --no-suggest
+
+            -   run:
+                    name: Run tests
+                    command: |
+                        php vendor/bin/phpunit Plugin/
+
+
+    without-infrastructure:
         docker:
             -   image: docker:stable
+
         working_directory: ~/
         steps:
             -   checkout
@@ -19,103 +72,18 @@ jobs:
                     docker_layer_caching: false
 
             -   run:
-                    name: Create network
-                    command: |
-                        docker network create apisearch
-
-            -   run:
-                    name: Run elasticsearch ^6.1
-                    command: |
-                        docker run -d \
-                            --name=apisearch.elasticsearch.6.1 \
-                            --network apisearch \
-                            -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
-                            -e "discovery.type=single-node" \
-                            -e "action.auto_create_index=-apisearch*,+*" \
-                            docker.elastic.co/elasticsearch/elasticsearch:6.1.4
-
-            -   run:
-                    name: Run elasticsearch ^6.8
-                    command: |
-                        docker run -d \
-                            --name=apisearch.elasticsearch.6.8 \
-                            --network apisearch \
-                            -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
-                            -e "discovery.type=single-node" \
-                            -e "action.auto_create_index=-apisearch*,+*" \
-                            docker.elastic.co/elasticsearch/elasticsearch:6.8.0
-
-            -   run:
-                    name: Run elasticsearch ^7.0
-                    command: |
-                        docker run -d \
-                            --name=apisearch.elasticsearch.7.0 \
-                            --network apisearch \
-                            -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
-                            -e "discovery.type=single-node" \
-                            -e "action.auto_create_index=-apisearch*,+*" \
-                            docker.elastic.co/elasticsearch/elasticsearch:7.0.0
-
-            -   run:
-                    name: Run elasticsearch ^7.6 / latest
-                    command: |
-                        docker run -d \
-                            --name=apisearch.elasticsearch.latest \
-                            --network apisearch \
-                            -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
-                            -e "discovery.type=single-node" \
-                            -e "action.auto_create_index=-apisearch*,+*" \
-                            docker.elastic.co/elasticsearch/elasticsearch:7.6.0
-
-            -   run:
-                    name: Run Redis
-                    command: |
-                        docker run -d \
-                            --name="apisearch.redis" \
-                            --network apisearch \
-                            redis:4-alpine \
-                            redis-server
-
-            -   run:
-                    name: Run RabbitMQ
-                    command: |
-                        docker run -d \
-                            --name="apisearch.rabbitmq" \
-                            --network apisearch \
-                            rabbitmq:3-alpine
-
-            -   run:
-                    name: Run Mysql
-                    command: |
-                        docker run -d \
-                            --name="apisearch.mysql" \
-                            --network apisearch \
-                            -e "MYSQL_ROOT_PASSWORD=root" \
-                            -e "MYSQL_DATABASE=apisearch" \
-                            mysql:5
-
-            -   run:
                     name: Build Apisearch
                     command: |
                         docker build -t apisearch/server .
 
             -   run:
-                    name: Run Apisearch in server mode
-                    command: |
-                        docker run -d \
-                            --name "apisearch.server" \
-                            --network apisearch \
-                            -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
-                            -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
-                            -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
-                            -e "APISEARCH_ASYNC_EVENTS_ADAPTER=in_memory" \
-                            -e "APISEARCH_EVENTS_EXCHANGE=events" \
-                            -e "APISEARCH_TOKENS_UPDATE_EXCHANGE=tokens_update" \
-                            apisearch/server \
-                            sh /create-infrastructure.sh /server-entrypoint.sh
-
-            -   run:
                     name: Run tests
                     command: |
-                        docker exec -it apisearch.server sh /var/www/scripts/run-tests
-                        docker logs apisearch.server
+                        docker run apisearch/server sh .circleci/scripts/run-domain-tests
+
+workflows:
+    version: 2
+    test:
+        jobs:
+            - with-infrastructure
+            - without-infrastructure
