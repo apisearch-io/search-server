@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a253cd49bccff1be7758fe91794e6a51",
+    "content-hash": "68ab05d03eeda8ed0176f99705cbdf1a",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -108,16 +108,16 @@
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.25",
+            "version": "0.1.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "a126f12882894bb7efcc2ed9382aedb58d8fc0cf"
+                "reference": "d0895bf193f3aa20e5bdebf00d36e17130e5baeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/a126f12882894bb7efcc2ed9382aedb58d8fc0cf",
-                "reference": "a126f12882894bb7efcc2ed9382aedb58d8fc0cf",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/d0895bf193f3aa20e5bdebf00d36e17130e5baeb",
+                "reference": "d0895bf193f3aa20e5bdebf00d36e17130e5baeb",
                 "shasum": ""
             },
             "require": {
@@ -144,7 +144,7 @@
                 }
             ],
             "description": "PHP Library for Apisearch",
-            "time": "2020-04-03T21:56:49+00:00"
+            "time": "2020-04-04T17:48:41+00:00"
         },
         {
             "name": "bunny/bunny",
