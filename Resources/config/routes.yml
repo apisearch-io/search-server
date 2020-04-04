@@ -29,7 +29,7 @@ apisearch_v1_get_indices:
     methods: ["GET"]
     controller: Apisearch\Server\Controller\GetIndicesController
 
-apisearch_v1_put_index:
+apisearch_v1_create_index:
     path: /v1/{app_id}/indices/{index_id}
     methods: ["PUT"]
     controller: Apisearch\Server\Controller\CreateIndexController
@@ -41,12 +41,12 @@ apisearch_v1_delete_index:
 
 apisearch_v1_reset_index:
     path: /v1/{app_id}/indices/{index_id}/reset
-    methods: ["POST"]
+    methods: ["PUT", "POST"]
     controller: Apisearch\Server\Controller\ResetIndexController
 
 apisearch_v1_configure_index:
     path: /v1/{app_id}/indices/{index_id}/configure
-    methods: ["POST"]
+    methods: ["PUT", "POST"]
     controller: Apisearch\Server\Controller\ConfigureIndexController
 
 apisearch_v1_check_index:
@@ -64,7 +64,7 @@ apisearch_v1_put_items:
 
 apisearch_v1_update_items_by_query:
     path: /v1/{app_id}/indices/{index_id}/items/update-by-query
-    methods: ["POST"]
+    methods: ["PUT", "POST"]
     controller: Apisearch\Server\Controller\UpdateItemsByQueryController
 
 apisearch_v1_delete_items:
@@ -112,16 +112,3 @@ apisearch_ping:
     path: /
     methods: ["HEAD"]
     controller: Apisearch\Server\Controller\PingController
-
-#
-# Consumers management
-#
-apisearch_pause_consumers:
-    path: /consumers/pause
-    methods: ["POST"]
-    controller: Apisearch\Server\Controller\PauseConsumersController
-
-apisearch_resume_consumers:
-    path: /consumers/resume
-    methods: ["POST"]
-    controller: Apisearch\Server\Controller\ResumeConsumersController
