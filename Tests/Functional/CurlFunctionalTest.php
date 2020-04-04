@@ -239,7 +239,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         Config $config = null
     ) {
         self::$lastResponse = self::makeCurl(
-            'v1_put_index',
+            'v1_create_index',
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $index ?? static::$index,
