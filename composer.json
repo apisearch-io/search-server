@@ -37,7 +37,7 @@
     "mmoreram/base-bundle": "^2.0.0",
     "mmoreram/symfony-bundle-dependencies": "^2.0.0",
 
-    "apisearch-io/php-client": "0.1.*, >=0.1.25",
+    "apisearch-io/php-client": "0.1.*, >=0.1.26",
     "apisearch-io/apisearch-bundle": "0.1.*, >=0.1.15",
 
     "ruflin/elastica": "7.0.0-beta3",

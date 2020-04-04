@@ -277,6 +277,8 @@ trait AggregationsTest
                 '500..1000',
                 '1000..1700',
                 '1700..',
+                '0..',
+                '..0'
             ], Filter::AT_LEAST_ONE)
         )->getAggregation('price')->getCounters();
 
@@ -286,6 +288,8 @@ trait AggregationsTest
         $this->assertEquals(2, $counters['500..1000']->getN());
         $this->assertEquals(1, $counters['1000..1700']->getN());
         $this->assertEquals(1, $counters['1700..']->getN());
+        $this->assertEquals(5, $counters['0..']->getN());
+        $this->assertFalse(isset($counters['..0']));
     }
 
     /**
