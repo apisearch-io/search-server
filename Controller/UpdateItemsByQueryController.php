@@ -65,7 +65,7 @@ class UpdateItemsByQueryController extends ControllerWithCommandBus
                 Changes::createFromArray($changesAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Items updated', $this->ok());
+                return new JsonResponse('Items updated', 200);
             });
     }
 }

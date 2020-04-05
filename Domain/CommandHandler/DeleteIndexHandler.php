@@ -17,13 +17,14 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\DeleteIndex;
 use Apisearch\Server\Domain\Event\IndexWasDeleted;
-use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use Apisearch\Server\Domain\WithConfigRepositoryAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
+use function React\Promise\all;
 
 /**
  * Class DeleteIndexHandler.
  */
-class DeleteIndexHandler extends WithAppRepositoryAndEventPublisher
+class DeleteIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublisher
 {
     /**
      * Delete the index.
@@ -37,12 +38,17 @@ class DeleteIndexHandler extends WithAppRepositoryAndEventPublisher
         $repositoryReference = $deleteIndex->getRepositoryReference();
         $indexUUID = $deleteIndex->getIndexUUID();
 
-        return $this
-            ->appRepository
-            ->deleteIndex(
-                $repositoryReference,
-                $indexUUID
-            )
+        return all([
+            $this
+                ->appRepository
+                ->deleteIndex(
+                    $repositoryReference,
+                    $indexUUID
+                ),
+            $this
+                ->configRepository
+                ->deleteConfig($repositoryReference)
+        ])
             ->then(function () use ($repositoryReference, $indexUUID) {
                 return $this
                     ->eventBus

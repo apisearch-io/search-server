@@ -44,6 +44,7 @@ class DBALPluginConfiguration extends BaseConfiguration
                 ->scalarNode('password')->end()
                 ->scalarNode('dbname')->end()
                 ->scalarNode('tokens_table')->end()
+                ->scalarNode('index_configs_table')->end()
 
                 ->booleanNode('locator_enabled')
                     ->defaultTrue()

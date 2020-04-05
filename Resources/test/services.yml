@@ -1,0 +1,9 @@
+services:
+
+    apisearch_server.token_repository_test:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository
+        public: true
+
+    apisearch_server.config_repository_test:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository
+        public: true

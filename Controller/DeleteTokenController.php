@@ -48,7 +48,7 @@ class DeleteTokenController extends ControllerWithCommandBus
                 $tokenUUID
             ))
             ->then(function () {
-                return new JsonResponse('Token deleted', $this->ok());
+                return new JsonResponse('Token deleted', 200);
             });
     }
 }

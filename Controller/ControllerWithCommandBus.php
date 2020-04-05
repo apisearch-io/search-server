@@ -30,47 +30,12 @@ abstract class ControllerWithCommandBus extends BaseController
     protected $commandBus;
 
     /**
-     * @var bool
-     *
-     * Commands asynchronous
-     */
-    private $commandsAsynchronous;
-
-    /**
      * Controller constructor.
      *
      * @param CommandBus $commandBus
-     * @param bool       $commandsAsynchronous
      */
-    public function __construct(
-        CommandBus $commandBus,
-        bool $commandsAsynchronous
-    ) {
+    public function __construct(CommandBus $commandBus)
+    {
         $this->commandBus = $commandBus;
-        $this->commandsAsynchronous = $commandsAsynchronous;
-    }
-
-    /**
-     * Get proper OK return code.
-     *
-     * @return int
-     */
-    protected function ok(): int
-    {
-        return $this->commandsAsynchronous
-            ? 202
-            : 200;
-    }
-
-    /**
-     * Get proper OK return code.
-     *
-     * @return int
-     */
-    protected function created(): int
-    {
-        return $this->commandsAsynchronous
-            ? 202
-            : 201;
     }
 }

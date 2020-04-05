@@ -17,13 +17,14 @@ namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\Event\IndexWasCreated;
-use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
+use Apisearch\Server\Domain\WithConfigRepositoryAppRepositoryAndEventPublisher;
 use React\Promise\PromiseInterface;
+use function React\Promise\all;
 
 /**
  * Class CreateIndexHandler.
  */
-class CreateIndexHandler extends WithAppRepositoryAndEventPublisher
+class CreateIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublisher
 {
     /**
      * Create the index.
@@ -38,13 +39,18 @@ class CreateIndexHandler extends WithAppRepositoryAndEventPublisher
         $indexUUID = $createIndex->getIndexUUID();
         $config = $createIndex->getConfig();
 
-        return $this
-            ->appRepository
-            ->createIndex(
-                $repositoryReference,
-                $indexUUID,
-                $config
-            )
+        return all([
+                $this
+                    ->appRepository
+                    ->createIndex(
+                        $repositoryReference,
+                        $indexUUID,
+                        $config
+                    ),
+                $this
+                    ->configRepository
+                    ->putConfig($repositoryReference, $config)
+            ])
             ->then(function () use ($repositoryReference, $indexUUID, $config) {
                 return $this
                     ->eventBus

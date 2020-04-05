@@ -53,7 +53,7 @@ class AddInteractionController extends ControllerWithCommandBus
                 Interaction::createFromArray($interactionAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Interaction added', $this->created());
+                return new JsonResponse('Interaction added', 200);
             });
     }
 }

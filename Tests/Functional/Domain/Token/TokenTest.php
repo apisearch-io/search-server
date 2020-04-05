@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Token;
 
+use Apisearch\Exception\InvalidTokenException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
@@ -231,6 +232,34 @@ abstract class TokenTest extends HttpFunctionalTest
         $this->assertCount(7, $this->getTokens());
         $this->deleteTokens();
         $this->assertCount(3, $this->getTokens());
+    }
+
+    /**
+     * Test update token permissions
+     */
+    public function testUpdateTokenPermissions()
+    {
+        $token = new Token(
+            TokenUUID::createById('token-multiquery'),
+            AppUUID::createById(static::$appId),
+            [IndexUUID::createById(self::$anotherIndex)]
+        );
+        $this->putToken($token);
+
+        try {
+            $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
+            $this->fail('Token without permissions. Exception of InvalidTokenException should have been cached here');
+        } catch (InvalidTokenException $exception) {
+            // Silent pass
+        }
+
+        $token = new Token(
+            TokenUUID::createById('token-multiquery'),
+            AppUUID::createById(static::$appId),
+            [IndexUUID::createById(self::$index)]
+        );
+        $this->putToken($token);
+        $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
     }
 
     /**

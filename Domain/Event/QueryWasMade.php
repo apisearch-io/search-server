@@ -91,6 +91,54 @@ final class QueryWasMade extends DomainEvent
     }
 
     /**
+     * @return string
+     */
+    public function getQueryText(): string
+    {
+        return $this->queryText;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSize(): int
+    {
+        return $this->size;
+    }
+
+    /**
+     * @return ItemUUID[]
+     */
+    public function getItemsUUID(): array
+    {
+        return $this->itemsUUID;
+    }
+
+    /**
+     * @return User|null
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuerySerialized(): string
+    {
+        return $this->querySerialized;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCost(): int
+    {
+        return $this->cost;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

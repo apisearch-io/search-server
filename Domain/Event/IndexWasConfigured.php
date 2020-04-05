@@ -38,18 +38,50 @@ final class IndexWasConfigured extends DomainEvent
     private $config;
 
     /**
+     * @var bool
+     */
+    private $indexWasReindexed;
+
+    /**
      * IndexWasConfigured constructor.
      *
      * @param IndexUUID $indexUUID
      * @param Config    $config
+     * @param bool $indexWasReindexed
      */
     public function __construct(
         IndexUUID $indexUUID,
-        Config $config
+        Config $config,
+        bool $indexWasReindexed
     ) {
         parent::__construct();
         $this->config = $config;
         $this->indexUUID = $indexUUID;
+        $this->indexWasReindexed = $indexWasReindexed;
+    }
+
+    /**
+     * @return IndexUUID
+     */
+    public function getIndexUUID(): IndexUUID
+    {
+        return $this->indexUUID;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    /**
+     * @return bool
+     */
+    public function indexWasReindexed() : bool
+    {
+        return $this->indexWasReindexed;
     }
 
     /**
@@ -63,6 +95,7 @@ final class IndexWasConfigured extends DomainEvent
             'index_uuid' => $this
                 ->indexUUID
                 ->composeUUID(),
+            'index_was_reindexed' => $this->indexWasReindexed,
             'config' => \json_encode($this
                 ->config
                 ->toArray()),

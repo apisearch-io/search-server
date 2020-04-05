@@ -21,6 +21,7 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Changes;
 use Apisearch\Model\Index;
+use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
@@ -112,6 +113,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         $imports = [
             ['resource' => '@ApisearchServerBundle/Resources/config/command_bus.yml'],
             ['resource' => '@ApisearchServerBundle/Resources/test/command_bus.yml'],
+            ['resource' => '@ApisearchServerBundle/Resources/test/services.yml'],
         ];
 
         $bundles = [
@@ -388,26 +390,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      */
     public static function deleteEverything()
     {
-        static::deleteAppIdIndices(self::$appId);
-        static::deleteAppIdIndices(self::$appId, self::$anotherIndex);
-        static::deleteAppIdIndices(self::$anotherAppId);
-    }
-
-    /**
-     * Delete index and catch.
-     *
-     * @param string $appId
-     * @param string $indexId
-     */
-    private static function deleteAppIdIndices(
-        string $appId,
-        string $indexId = null
-    ) {
-        try {
-            $indexId = $indexId ?? self::$index;
-            static::deleteIndex($appId, $indexId);
-        } catch (ResourceNotAvailableException $e) {
-        }
+        static::safeDeleteIndex(self::$appId);
+        static::safeDeleteIndex(self::$appId, self::$anotherIndex);
+        static::safeDeleteIndex(self::$anotherAppId);
     }
 
     /**
@@ -557,6 +542,29 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         string $index = null,
         Token $token = null
     );
+
+    /**
+     * Delete index using the bus.
+     *
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     */
+    public static function safeDeleteIndex(
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        try {
+            static::deleteIndex(
+                $appId,
+                $index,
+                $token
+            );
+        } catch (ResourceNotAvailableException $_) {
+            // Silent pass
+        }
+    }
 
     /**
      * Add token.
@@ -718,6 +726,21 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         return static::await(
             React\usleep($microseconds, $loop),
             $loop
+        );
+    }
+
+    /**
+     * Get GOD token
+     *
+     * @param string $appId
+     *
+     * @return Token
+     */
+    protected function getGodToken(string $appId = null) : Token
+    {
+        return new Token(
+            TokenUUID::createById(static::$godToken),
+            AppUUID::createById($appId ?? static::$appId)
         );
     }
 }

@@ -44,7 +44,7 @@ class DeleteTokensController extends ControllerWithCommandBus
                 RequestAccessor::getTokenFromRequest($request)
             ))
             ->then(function () {
-                return new JsonResponse('Tokens deleted', $this->ok());
+                return new JsonResponse('Tokens deleted', 200);
             });
     }
 }

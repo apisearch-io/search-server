@@ -59,7 +59,7 @@ class DeleteItemsController extends ControllerWithCommandBus
                 }, $itemsUUIDAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Items deleted', $this->ok());
+                return new JsonResponse('Items deleted', 200);
             });
     }
 }

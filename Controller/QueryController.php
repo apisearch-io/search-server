@@ -68,10 +68,7 @@ class QueryController extends ControllerWithQueryBus
 
                 return new JsonResponse(
                     $result->toArray(),
-                    200,
-                    [
-                        'Access-Control-Allow-Origin' => '*',
-                    ]
+                    200
                 );
             });
     }

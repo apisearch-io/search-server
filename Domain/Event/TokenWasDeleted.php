@@ -39,6 +39,14 @@ final class TokenWasDeleted extends DomainEvent
     }
 
     /**
+     * @return TokenUUID
+     */
+    public function getTokenUUID(): TokenUUID
+    {
+        return $this->tokenUUID;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

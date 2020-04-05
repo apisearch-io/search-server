@@ -53,6 +53,22 @@ final class IndexWasCreated extends DomainEvent
     }
 
     /**
+     * @return IndexUUID
+     */
+    public function getIndexUUID(): IndexUUID
+    {
+        return $this->indexUUID;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

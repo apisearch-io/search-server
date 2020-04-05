@@ -74,6 +74,9 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
     public function checkTokenOnKernelRequest(RequestEvent $event): PromiseInterface
     {
         $request = $event->getRequest();
+        if ($request->isMethod(Request::METHOD_OPTIONS)) {
+            return resolve();
+        }
 
         return resolve()
             ->then(function () use ($request) {

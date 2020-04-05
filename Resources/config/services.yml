@@ -3,7 +3,6 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            bool $commandsAsynchronous: false
             string $godToken: "%apisearch_server.god_token%"
             string $readonlyToken: "%apisearch_server.readonly_token%"
             string $pingToken: "%apisearch_server.ping_token%"
@@ -53,10 +52,12 @@ services:
     Apisearch\Server\Domain\Repository\AppRepository\Repository:
     Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository
-        public: true
         tags:
             - { name: apisearch_server.token_locator }
             - { name: apisearch_server.token_provider }
+
+    Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
+        class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryConfigRepository
 
     #
     # Token

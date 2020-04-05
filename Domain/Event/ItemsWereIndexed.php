@@ -41,6 +41,14 @@ final class ItemsWereIndexed extends DomainEvent
     }
 
     /**
+     * @return ItemUUID[]
+     */
+    public function getItemsUUID(): array
+    {
+        return $this->itemsUUID;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

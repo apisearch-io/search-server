@@ -55,7 +55,7 @@ class PutTokenController extends ControllerWithCommandBus
                 Token::createFromArray($newTokenAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Token added', $this->created());
+                return new JsonResponse('Token added', 200);
             });
     }
 }

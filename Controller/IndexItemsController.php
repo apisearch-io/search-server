@@ -59,7 +59,7 @@ class IndexItemsController extends ControllerWithCommandBus
                 }, $itemsAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Items indexed', $this->created());
+                return new JsonResponse('Items indexed', 200);
             });
     }
 }
