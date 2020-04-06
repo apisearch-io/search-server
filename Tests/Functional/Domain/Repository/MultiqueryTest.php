@@ -54,17 +54,9 @@ trait MultiqueryTest
      */
     public function testMultiQueryOnMultipleIndices()
     {
-        try {
-            $this->deleteIndex(self::$appId, self::$anotherIndex);
-        } catch (ResourceNotAvailableException $exception) {
-            // Silent pass
-        }
 
-        try {
-            $this->deleteIndex(self::$appId, self::$yetAnotherIndex);
-        } catch (ResourceNotAvailableException $exception) {
-            // Silent pass
-        }
+        static::safeDeleteIndex(self::$appId, self::$anotherIndex);
+        static::safeDeleteIndex(self::$appId, self::$yetAnotherIndex);
 
         $this->createIndex(self::$appId, self::$anotherIndex);
         $this->createIndex(self::$appId, self::$yetAnotherIndex);

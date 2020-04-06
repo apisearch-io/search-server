@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68ab05d03eeda8ed0176f99705cbdf1a",
+    "content-hash": "537d1dcad131b918f81965ccf07e3d15",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -112,12 +112,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "d0895bf193f3aa20e5bdebf00d36e17130e5baeb"
+                "reference": "e39f99a05daa6643445f069bb93d56713cd3bc8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/d0895bf193f3aa20e5bdebf00d36e17130e5baeb",
-                "reference": "d0895bf193f3aa20e5bdebf00d36e17130e5baeb",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/e39f99a05daa6643445f069bb93d56713cd3bc8a",
+                "reference": "e39f99a05daa6643445f069bb93d56713cd3bc8a",
                 "shasum": ""
             },
             "require": {
@@ -144,7 +144,7 @@
                 }
             ],
             "description": "PHP Library for Apisearch",
-            "time": "2020-04-04T17:48:41+00:00"
+            "time": "2020-04-06T15:28:24+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -204,7 +204,7 @@
         },
         {
             "name": "cakephp/core",
-            "version": "3.8.10",
+            "version": "3.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
@@ -254,7 +254,7 @@
         },
         {
             "name": "cakephp/utility",
-            "version": "3.8.10",
+            "version": "3.8.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
@@ -7487,7 +7487,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

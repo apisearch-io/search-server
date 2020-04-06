@@ -41,6 +41,14 @@ final class IndexWasReset extends DomainEvent
     }
 
     /**
+     * @return IndexUUID
+     */
+    public function getIndexUUID(): IndexUUID
+    {
+        return $this->indexUUID;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

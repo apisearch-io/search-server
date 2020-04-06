@@ -39,6 +39,14 @@ final class TokenWasPut extends DomainEvent
     }
 
     /**
+     * @return Token
+     */
+    public function getToken(): Token
+    {
+        return $this->token;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

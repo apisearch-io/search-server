@@ -41,6 +41,14 @@ final class ExceptionWasCached extends DomainEvent
     }
 
     /**
+     * @return StorableException
+     */
+    public function getException(): StorableException
+    {
+        return $this->exception;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

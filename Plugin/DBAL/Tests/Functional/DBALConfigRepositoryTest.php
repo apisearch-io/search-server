@@ -13,30 +13,22 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Tests\Functional\Domain\Token;
+namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
-use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
+use Apisearch\Server\Tests\Functional\Domain\Repository\ConfigRepositoryTest;
 
 /**
- * Class InMemoryTokenTest.
+ * Class DBALConfigRepositoryTest.
  */
-class InMemoryTokenTest extends TokenTest
+class DBALConfigRepositoryTest extends ConfigRepositoryTest
 {
+    use DBALFunctionalTestTrait;
+
     /**
      * Is distributed token respository.
      */
     public function isDistributedTokenRepository(): bool
     {
-        return false;
-    }
-
-    /**
-     * Truncate the table.
-     */
-    protected function setUp()
-    {
-        $this->get('apisearch_server.token_repository_test')->truncate();
-
-        parent::setUp();
+        return true;
     }
 }

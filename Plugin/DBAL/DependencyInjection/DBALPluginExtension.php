@@ -116,6 +116,7 @@ class DBALPluginExtension extends BaseExtension
                 'dbname' => Env::get('DBAL_DBNAME', $config['dbname'] ?? null, true),
             ],
 
+            'apisearch_plugin.dbal.index_configs_table' => Env::get('DBAL_INDEX_CONFIGS_TABLE', $config['index_configs_table'] ?? null, true),
             'apisearch_plugin.dbal.tokens_table' => Env::get('DBAL_TOKENS_TABLE', $config['tokens_table'] ?? null, true),
             'apisearch_plugin.dbal.locator_enabled' => $config['locator_enabled'],
         ];

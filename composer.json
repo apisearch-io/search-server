@@ -11,6 +11,7 @@
   ],
   "require": {
     "php": ">=7.1",
+    "ext-json": "*",
 
     "symfony/framework-bundle": "^5.0",
     "symfony/http-kernel": "^5.0",

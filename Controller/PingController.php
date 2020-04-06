@@ -40,8 +40,8 @@ class PingController extends ControllerWithQueryBus
             ->ask(new Ping())
             ->then(function (bool $alive) {
                 return true === $alive
-                    ? new JsonResponse('', Response::HTTP_OK)
-                    : new JsonResponse('', Response::HTTP_INTERNAL_SERVER_ERROR);
+                    ? new JsonResponse(null, Response::HTTP_NO_CONTENT)
+                    : new JsonResponse(null, Response::HTTP_INTERNAL_SERVER_ERROR);
             });
     }
 }

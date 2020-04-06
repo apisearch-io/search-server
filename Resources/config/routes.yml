@@ -93,6 +93,26 @@ apisearch_v1_query_short:
     controller: Apisearch\Server\Controller\QueryController
 
 #
+# Query CORS API
+#
+apisearch_v1_query_preflight:
+    path: /v1/{app_id}/indices/{index_id}
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+
+apisearch_v1_query_all_indices_preflight:
+    path: /v1/{app_id}
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+    defaults:
+        index_id: "*"
+
+apisearch_v1_query_shortpreflight:
+    path: /v1
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+
+#
 # Interaction API
 #
 apisearch_v1_post_interaction:

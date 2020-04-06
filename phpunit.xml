@@ -32,5 +32,6 @@
         <env name="DBAL_PASSWORD" value="root" force="true" />
         <env name="DBAL_DBNAME" value="apisearch" force="true" />
         <env name="DBAL_TOKENS_TABLE" value="tokens" force="true" />
+        <env name="DBAL_INDEX_CONFIGS_TABLE" value="index_config" force="true" />
     </php>
 </phpunit>

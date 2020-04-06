@@ -58,7 +58,7 @@ class ConfigureIndexController extends ControllerWithCommandBus
             ->then(function () {
                 return new JsonResponse(
                     'Index configured with given configuration',
-                    $this->ok()
+                    200
                 );
             });
     }

@@ -53,6 +53,22 @@ final class ItemsWereUpdated extends DomainEvent
     }
 
     /**
+     * @return Filter[]
+     */
+    public function getAppliedFilters(): array
+    {
+        return $this->appliedFilters;
+    }
+
+    /**
+     * @return Changes
+     */
+    public function getChanges(): Changes
+    {
+        return $this->changes;
+    }
+
+    /**
      * to array payload.
      *
      * @return array

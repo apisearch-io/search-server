@@ -57,7 +57,7 @@ class CreateIndexController extends ControllerWithCommandBus
             ->then(function () {
                 return new JsonResponse(
                     'Index created with given configuration',
-                    $this->created()
+                    200
                 );
             });
     }

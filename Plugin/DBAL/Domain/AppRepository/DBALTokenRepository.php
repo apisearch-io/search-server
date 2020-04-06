@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\DBAL\Domain\Token;
+namespace Apisearch\Plugin\DBAL\Domain\AppRepository;
 
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
@@ -25,7 +25,7 @@ use Drift\DBAL\Connection;
 use React\Promise\PromiseInterface;
 
 /**
- * Class TokenPostgresRepository.
+ * Class DBALTokenRepository.
  */
 class DBALTokenRepository extends TokenRepository
 {
@@ -41,26 +41,24 @@ class DBALTokenRepository extends TokenRepository
 
     /**
      * @var bool
-     *
-     * Enabled
      */
-    private $enabled;
+    private $locatorEnabled;
 
     /**
      * TokenRedisRepository constructor.
      *
      * @param Connection $connection
-     * @param string     $table
-     * @param bool       $enabled
+     * @param string     $tokensTable
+     * @param bool       $locatorEnabled
      */
     public function __construct(
         Connection $connection,
-        string $table,
-        bool $enabled
+        string $tokensTable,
+        bool $locatorEnabled
     ) {
         $this->connection = $connection;
-        $this->table = $table;
-        $this->enabled = $enabled;
+        $this->table = $tokensTable;
+        $this->locatorEnabled = $locatorEnabled;
     }
 
     /**
@@ -202,6 +200,6 @@ class DBALTokenRepository extends TokenRepository
      */
     public function isValid(): bool
     {
-        return $this->enabled;
+        return $this->locatorEnabled;
     }
 }

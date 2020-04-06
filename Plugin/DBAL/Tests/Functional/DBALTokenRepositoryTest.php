@@ -16,43 +16,20 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
 use Apisearch\Server\Tests\Functional\Domain\Token\TokenTest;
-use Doctrine\DBAL\Exception\TableNotFoundException;
 
 /**
  * Class PostgresTokenRepositoryTest.
  */
 class DBALTokenRepositoryTest extends TokenTest
 {
+    use DBALFunctionalTestTrait;
+
     /**
      * Is distributed token respository.
      */
     public function isDistributedTokenRepository(): bool
     {
         return true;
-    }
-
-    /**
-     * Reset database.
-     */
-    public static function resetScenario()
-    {
-        $mainConnection = static::getStatic('dbal.main_connection');
-        $promise = $mainConnection
-            ->dropTable('tokens')
-            ->otherwise(function (TableNotFoundException $_) {
-                // Silent pass
-            })
-            ->then(function () use ($mainConnection) {
-                return $mainConnection->createTable('tokens', [
-                    'token_uuid' => 'string',
-                    'app_uuid' => 'string',
-                    'content' => 'string',
-                ]);
-            });
-
-        static::await($promise);
-
-        parent::resetScenario();
     }
 
     /**
@@ -67,6 +44,4 @@ class DBALTokenRepositoryTest extends TokenTest
 
         parent::setUp();
     }
-
-    use DBALFunctionalTestTrait;
 }

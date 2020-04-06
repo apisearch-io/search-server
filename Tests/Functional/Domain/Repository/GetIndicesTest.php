@@ -50,6 +50,7 @@ trait GetIndicesTest
     {
         $appId = '26178621test-shards-and-replicas-allocated';
         $indexId = 'index-shards-and-replicas-allocated';
+        static::safeDeleteIndex($appId, $indexId);
 
         $this->createIndex(
             $appId,
@@ -66,11 +67,7 @@ trait GetIndicesTest
         $this->assertEquals(1, $firstIndex->getShards());
         $this->assertEquals(0, $firstIndex->getReplicas());
         $this->assertTrue($firstIndex->getMetadata()['allocated']);
-
-        $this->deleteIndex(
-            $appId,
-            $indexId
-        );
+        static::deleteIndex($appId, $indexId);
     }
 
     /**
@@ -80,6 +77,7 @@ trait GetIndicesTest
     {
         $appId = '26178621test-shards-and-replicas-not-allocated';
         $indexId = 'index-shards-and-replicas-not-allocated';
+        static::safeDeleteIndex($appId, $indexId);
 
         $this->createIndex(
             $appId,
@@ -96,10 +94,6 @@ trait GetIndicesTest
         $this->assertEquals(5, $firstIndex->getShards());
         $this->assertEquals(4, $firstIndex->getReplicas());
         $this->assertFalse($firstIndex->getMetadata()['allocated']);
-
-        $this->deleteIndex(
-            $appId,
-            $indexId
-        );
+        static::deleteIndex($appId, $indexId);
     }
 }

@@ -15,7 +15,12 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\QueryHandler;
 
+use Apisearch\Config\Config;
+use Apisearch\Model\Index;
+use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetIndices;
+use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
+use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
 use Apisearch\Server\Domain\WithAppRepository;
 use React\Promise\PromiseInterface;
 
@@ -24,6 +29,25 @@ use React\Promise\PromiseInterface;
  */
 class GetIndicesHandler extends WithAppRepository
 {
+    /**
+     * @var ConfigRepository
+     */
+    private $configRepository;
+
+    /**
+     * @param AppRepository $appRepository
+     * @param ConfigRepository $configRepository
+     */
+    public function __construct(
+        AppRepository $appRepository,
+        ConfigRepository $configRepository
+    )
+    {
+        parent::__construct($appRepository);
+
+        $this->configRepository = $configRepository;
+    }
+
     /**
      * Get indices handler method.
      *
@@ -35,6 +59,29 @@ class GetIndicesHandler extends WithAppRepository
     {
         return $this
             ->appRepository
-            ->getIndices($getIndices->getRepositoryReference());
+            ->getIndices($getIndices->getRepositoryReference())
+            ->then(function(array $indices) use ($getIndices) {
+                return array_map(function(Index $index) {
+
+                    $config = $this->configRepository->getConfig(
+                        RepositoryReference::create(
+                            $index->getAppUUID(),
+                            $index->getUUID()
+                        )
+                    );
+                    $indexAsArray = $index->toArray();
+                    $currentMetadata = $indexAsArray['metadata'];
+                    $newMetadata = $config instanceof Config
+                        ? $config->getMetadata()
+                        : [];
+
+                    $indexAsArray['metadata'] = array_merge(
+                        $currentMetadata,
+                        $newMetadata
+                    );
+
+                    return Index::createFromArray($indexAsArray);
+                }, $indices);
+            });
     }
 }
