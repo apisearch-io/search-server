@@ -35,7 +35,7 @@ class GetCORSPermissions implements IndexRequiredCommand
      * ResetCommand constructor.
      *
      * @param RepositoryReference $repositoryReference
-     * @param string $origin
+     * @param string              $origin
      */
     public function __construct(
         RepositoryReference $repositoryReference,
@@ -43,5 +43,13 @@ class GetCORSPermissions implements IndexRequiredCommand
     ) {
         $this->repositoryReference = $repositoryReference;
         $this->origin = $origin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrigin(): string
+    {
+        return $this->origin;
     }
 }

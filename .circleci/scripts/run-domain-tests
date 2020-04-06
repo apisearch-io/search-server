@@ -3,4 +3,4 @@
 cd /var/www
 apk add git
 composer update -n --prefer-dist --no-suggest
-php vendor/bin/phpunit Tests/
+php vendor/bin/phpunit --testsuite domain

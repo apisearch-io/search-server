@@ -48,8 +48,8 @@ class CheckIndexController extends ControllerWithQueryBus
             ))
             ->then(function (bool $alive) {
                 return true === $alive
-                    ? new Response('', Response::HTTP_OK)
-                    : new Response('', Response::HTTP_INTERNAL_SERVER_ERROR);
+                    ? new Response(null, Response::HTTP_OK)
+                    : new Response(null, Response::HTTP_BAD_REQUEST);
             });
     }
 }

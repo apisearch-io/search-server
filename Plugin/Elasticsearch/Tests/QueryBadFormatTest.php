@@ -28,7 +28,7 @@ class QueryBadFormatTest extends HttpFunctionalTest
     /**
      * @return bool
      */
-    protected static function needsServer() : bool
+    protected static function needsServer(): bool
     {
         return true;
     }

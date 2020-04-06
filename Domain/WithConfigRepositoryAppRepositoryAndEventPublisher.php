@@ -1,17 +1,27 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Server\Domain;
-
 
 use Apisearch\Config\Config;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
 use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
-use Apisearch\Server\Domain\WithAppRepositoryAndEventPublisher;
 use Drift\EventBus\Bus\EventBus;
 
 /**
- * Class WithIndexConfigHandler
+ * Class WithIndexConfigHandler.
  */
 abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAppRepositoryAndEventPublisher
 {
@@ -37,7 +47,7 @@ abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAp
     }
 
     /**
-     * Config hashes are equal
+     * Config hashes are equal.
      *
      * @param Config $config1
      * @param Config $config2
@@ -47,8 +57,7 @@ abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAp
     protected function configHashesAreEqual(
         ?Config $config1,
         ?Config $config2
-    ) : bool
-    {
+    ): bool {
         return
             !is_null($config1) &&
             !is_null($config2) &&
@@ -56,13 +65,13 @@ abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAp
     }
 
     /**
-     * Get Config re-indexation hash
+     * Get Config re-indexation hash.
      *
      * @param Config $config
      *
      * @return string
      */
-    protected function getConfigReindexationHash(Config $config) : string
+    protected function getConfigReindexationHash(Config $config): string
     {
         $synonyms = $config->getSynonyms();
         $plainSynonyms = [];

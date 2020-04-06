@@ -24,7 +24,6 @@ use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
-use React\EventLoop\Factory;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -235,7 +234,7 @@ abstract class TokenTest extends HttpFunctionalTest
     }
 
     /**
-     * Test update token permissions
+     * Test update token permissions.
      */
     public function testUpdateTokenPermissions()
     {
@@ -260,6 +259,7 @@ abstract class TokenTest extends HttpFunctionalTest
         );
         $this->putToken($token);
         $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
+        $this->assertTrue(true);
     }
 
     /**
@@ -352,23 +352,14 @@ abstract class TokenTest extends HttpFunctionalTest
 
         $this->putToken($token);
 
-        $clusterKernel = static::getKernel();
-        $clusterKernel->boot();
-        $clusterContainer = $clusterKernel->getContainer();
-        $eventLoop = Factory::create();
-        $clusterContainer->set('reactphp.event_loop', $eventLoop);
-        static::await(
-            $clusterKernel->preload(),
-            $eventLoop
-        );
-
+        $clusterKernel = static::createNewKernel();
         $this->assertCount(4, $this->getTokensFromKernel($clusterKernel));
 
         /**
          * Existing service.
          */
         $output = static::runCommand([
-            'apisearch-server:print-token',
+            'apisearch-server:print-tokens',
             'app-id' => $appUUID->composeUUID(),
         ]);
         $this->assertContains('multiservice-token', $output);
@@ -377,7 +368,7 @@ abstract class TokenTest extends HttpFunctionalTest
          * New service.
          */
         $process = static::runAsyncCommand([
-            'apisearch-server:print-token',
+            'apisearch-server:print-tokens',
             $appUUID->composeUUID(),
         ]);
         sleep(2);
@@ -393,7 +384,7 @@ abstract class TokenTest extends HttpFunctionalTest
      *
      * @return Token[]
      */
-    private static function getTokensFromKernel(
+    private function getTokensFromKernel(
         KernelInterface $kernel,
         string $appId = null,
         Token $token = null
@@ -405,11 +396,7 @@ abstract class TokenTest extends HttpFunctionalTest
             ->get('drift.query_bus.test')
             ->ask(new GetTokens(
                 RepositoryReference::create($appUUID),
-                $token ??
-                new Token(
-                    TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
-                    $appUUID
-                )
+                $token ?? $this->getGodToken($appId)
             )));
     }
 }

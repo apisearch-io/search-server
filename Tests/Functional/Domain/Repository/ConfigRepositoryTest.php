@@ -17,7 +17,12 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Config\Config;
 use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Model\AppUUID;
+use Apisearch\Model\Index;
+use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class IndexMetadataTest.
@@ -25,7 +30,7 @@ use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 {
     /**
-     * Test initial configuration repository state
+     * Test initial configuration repository state.
      */
     public function testInitialConfigRepositoryState()
     {
@@ -34,7 +39,7 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
     }
 
     /**
-     * Test index metadata
+     * Test index metadata.
      */
     public function testIndexMetadata()
     {
@@ -52,7 +57,7 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
     }
 
     /**
-     * Test new index
+     * Test new index.
      */
     public function testNewIndex()
     {
@@ -60,7 +65,6 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
         try {
             $this->deleteIndex(static::$appId, $configurableIndexId);
         } catch (ResourceNotAvailableException $_) {
-            //
         }
 
         $configs = $this->findAllConfigs();
@@ -89,11 +93,104 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
     }
 
     /**
-     * Find all configs
+     * Test token persistence on new service creation.
+     */
+    public function testNewServiceConfig()
+    {
+        if (!$this->isDistributedTokenRepository()) {
+            $this->markTestSkipped('Skipped. Testing a non-distributed adapter');
+
+            return;
+        }
+
+        $configurableIndexId = 'configurable-index';
+        try {
+            $this->deleteIndex(static::$appId, $configurableIndexId);
+        } catch (ResourceNotAvailableException $_) {
+        }
+
+        $this->createIndex(
+            static::$appId,
+            $configurableIndexId,
+            static::getGodToken(),
+            Config::createEmpty()
+                ->addMetadataValue('key3', 'value3')
+                ->addMetadataValue('key4', 'value4')
+        );
+
+        $clusterKernel = static::createNewKernel();
+        $index = $this->getIndexFromKernel($clusterKernel, static::$appId, $configurableIndexId);
+        $this->assertEquals('value3', $index->getMetadataValue('key3'));
+        $this->assertEquals('value4', $index->getMetadataValue('key4'));
+
+        /**
+         * Existing service.
+         */
+        $output = static::runCommand([
+            'apisearch-server:print-indices',
+            'app-id' => static::$appId,
+            '--with-metadata' => true,
+        ]);
+
+        $this->assertContains('configurable-index', $output);
+        $this->assertContains('value3', $output);
+        $this->assertContains('value4', $output);
+
+        /**
+         * New service.
+         */
+        $process = static::runAsyncCommand([
+            'apisearch-server:print-indices',
+            static::$appId,
+            '--with-metadata',
+        ]);
+        sleep(2);
+        $output = $process->getOutput();
+        $this->assertContains('configurable-index', $output);
+        $this->assertContains('value3', $output);
+        $this->assertContains('value4', $output);
+    }
+
+    /**
+     * Find all configs.
      *
      * @return array
      */
-    private function findAllConfigs() : array {
+    private function findAllConfigs(): array
+    {
         return static::await($this->get('apisearch_server.config_repository_test')->findAllConfigs());
+    }
+
+    /**
+     * Get Index loaded.
+     *
+     * @param KernelInterface $kernel
+     * @param string          $appId
+     * @param string          $indexId
+     *
+     * @return Index|null
+     */
+    private function getIndexFromKernel(
+        KernelInterface $kernel,
+        string $appId,
+        string $indexId
+    ): ? Index {
+        $appUUID = AppUUID::createById($appId);
+        $container = $kernel->getContainer();
+
+        $indices = static::await($container
+            ->get('drift.query_bus.test')
+            ->ask(new GetIndices(
+                RepositoryReference::create($appUUID),
+                $this->getGodToken($appId)
+            )), $container->get('reactphp.event_loop'));
+
+        foreach ($indices as $index) {
+            if ($index->getUUID()->composeUUID() === $indexId) {
+                return $index;
+            }
+        }
+
+        return null;
     }
 }

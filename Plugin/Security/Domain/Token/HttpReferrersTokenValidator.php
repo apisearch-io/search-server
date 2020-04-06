@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\Security\Domain\Token;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
+use Apisearch\Plugin\Security\Domain\OriginMatcherTrait;
 use Apisearch\Server\Domain\Token\TokenValidator;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
@@ -27,6 +28,8 @@ use React\Promise\PromiseInterface;
  */
 class HttpReferrersTokenValidator implements TokenValidator
 {
+    use OriginMatcherTrait;
+
     /**
      * Validate token given basic fields.
      *
@@ -50,8 +53,10 @@ class HttpReferrersTokenValidator implements TokenValidator
         $httpReferrers = $token->getMetadataValue('http_referrers', []);
 
         return resolve(
-            empty($httpReferrers) ||
-            in_array($referrer, $httpReferrers)
+            $this->originIsAllowed(
+                $referrer,
+                $httpReferrers
+            )
         );
     }
 }

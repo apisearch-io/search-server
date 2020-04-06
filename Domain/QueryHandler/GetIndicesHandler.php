@@ -35,14 +35,13 @@ class GetIndicesHandler extends WithAppRepository
     private $configRepository;
 
     /**
-     * @param AppRepository $appRepository
+     * @param AppRepository    $appRepository
      * @param ConfigRepository $configRepository
      */
     public function __construct(
         AppRepository $appRepository,
         ConfigRepository $configRepository
-    )
-    {
+    ) {
         parent::__construct($appRepository);
 
         $this->configRepository = $configRepository;
@@ -60,9 +59,8 @@ class GetIndicesHandler extends WithAppRepository
         return $this
             ->appRepository
             ->getIndices($getIndices->getRepositoryReference())
-            ->then(function(array $indices) use ($getIndices) {
-                return array_map(function(Index $index) {
-
+            ->then(function (array $indices) use ($getIndices) {
+                return array_map(function (Index $index) {
                     $config = $this->configRepository->getConfig(
                         RepositoryReference::create(
                             $index->getAppUUID(),

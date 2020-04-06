@@ -26,21 +26,18 @@ use Apisearch\Model\Item;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
-use Apisearch\Server\Domain\Repository\AppRepository\IndexRepository;
-use Apisearch\Server\Domain\Repository\Repository\ItemsRepository;
-use Apisearch\Server\Domain\Repository\Repository\QueryRepository;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
  * Class InMemoryRepository.
  */
-class InMemoryRepository implements ItemsRepository, QueryRepository, IndexRepository
+class InMemoryRepository implements FullRepository
 {
     /**
      * @var Index[]
      */
-    private $indices = [];
+    protected $indices = [];
 
     /**
      * {@inheritdoc}

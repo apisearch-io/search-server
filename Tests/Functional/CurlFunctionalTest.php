@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional;
 
 use Apisearch\Config\Config;
-use Apisearch\Exception\ConnectionException;
+use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Http\Http;
 use Apisearch\Http\HttpResponsesToException;
 use Apisearch\Model\Changes;
@@ -42,12 +42,12 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      *
      * Last response
      */
-    public static $lastResponse = [];
+    protected static $lastResponse = [];
 
     /**
      * @return bool
      */
-    protected static function needsServer() : bool
+    protected static function needsServer(): bool
     {
         return true;
     }
@@ -87,6 +87,46 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         self::$lastResponse = $response;
 
         return Result::createFromArray($response['body']);
+    }
+
+    /**
+     * Preflight CORS query.
+     *
+     * @param string $origin
+     * @param string $appId
+     * @param string $index
+     *
+     * @return string
+     */
+    public function getCORSPermissions(
+        string $origin,
+        string $appId = null,
+        string $index = null
+    ): string {
+        if ('*' === $index) {
+            $response = self::makeCurl(
+                'v1_query_all_indices_preflight',
+                [
+                    'app_id' => $appId ?? static::$appId,
+                ],
+                null, [], [],
+                ['Origin:'.$origin]
+            );
+        } else {
+            $response = self::makeCurl(
+                'v1_query_preflight',
+                [
+                    'app_id' => $appId ?? static::$appId,
+                    'index_id' => $index ?? static::$index,
+                ],
+                null, [], [],
+                ['Origin:'.$origin]
+            );
+        }
+
+        self::$lastResponse = $response;
+
+        return $response['headers']['access-control-allow-origin'] ?? '';
     }
 
     /**
@@ -301,11 +341,13 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 []
             );
             self::$lastResponse = $response;
-        } catch (ConnectionException $exception) {
+        } catch (InvalidFormatException $exception) {
             return false;
         }
 
-        return '200' === $response['code'];
+        return
+            200 <= $response['code'] &&
+            $response['code'] < 300;
     }
 
     /**
@@ -522,37 +564,37 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             ? $token->getTokenUUID()->composeUUID()
             : self::getParameterStatic('apisearch_server.god_token'));
 
-        $tmpFile = tempnam('/tmp', 'curl_tmp');
         $method = $route instanceof Route
             ? $route->getMethods()[0]
             : 'GET';
 
-        $command = sprintf('curl -s -o %s -w "%%{http_code}-%%{size_download}" %s %s %s "http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s" -d\'%s\'',
-            $tmpFile,
-            (
-                'head' === $method
-                    ? '--head'
-                    : '-X'.$method
-            ),
-            (
-                empty($body)
-                    ? ''
-                    : '-H "Content-Type: application/json"'
-            ),
-            implode(' ', array_map(function (string $header) {
-                return "-H \"$header\"";
-            }, $headers)),
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, sprintf('http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s',
             $routePath,
-            http_build_query($queryParameters),
-            is_string($body)
-                ? $body
-                : json_encode($body)
-        );
+            http_build_query($queryParameters)
+        ));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        $body = is_string($body)
+            ? $body
+            : json_encode($body);
 
-        $command = str_replace("-d'[]'", '', $command);
-        $responseCode = exec($command);
-        list($httpCode, $contentLength) = explode('-', $responseCode, 2);
-        $content = file_get_contents($tmpFile);
+        if (!empty($body)) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+            $headers[] = 'Content-Type: application/json';
+            $headers[] = 'Content-Length: '.strlen($body);
+        }
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $response = curl_exec($ch);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $responseHeadersAsString = substr($response, 0, $headerSize);
+        $content = substr($response, $headerSize);
+
+        $responseCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
         if (false !== array_search('Accept-Encoding: gzip', $headers)) {
             $content = gzdecode($content);
         }
@@ -560,17 +602,27 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             $content = gzinflate($content);
         }
 
+        $responseHeaders = [];
+        $responseHeadersLines = explode("\r\n", $responseHeadersAsString);
+        foreach ($responseHeadersLines as $line) {
+            $parts = explode(':', $line, 2);
+            if (1 === count($parts)) {
+                continue;
+            }
+
+            $responseHeaders[$parts[0]] = trim($parts[1]);
+        }
+
         $result = [
-            'code' => $httpCode,
+            'code' => $responseCode,
             'body' => json_decode($content, true) ?? $content,
             'length' => $contentLength,
+            'headers' => $responseHeaders,
         ];
-
         if (is_string($result['body'])) {
             $result['body'] = ['message' => $result['body']];
         }
 
-        unlink($tmpFile);
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;

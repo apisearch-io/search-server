@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Token;
 
-use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
-
 /**
  * Class InMemoryTokenTest.
  */

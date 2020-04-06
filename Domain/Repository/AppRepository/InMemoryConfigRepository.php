@@ -31,10 +31,10 @@ class InMemoryConfigRepository extends ConfigRepository
     private $storedConfigs = [];
 
     /**
-     * Put config
+     * Put config.
      *
      * @param RepositoryReference $repositoryReference
-     * @param Config $config
+     * @param Config              $config
      *
      * @return PromiseInterface
      */
@@ -49,7 +49,7 @@ class InMemoryConfigRepository extends ConfigRepository
     }
 
     /**
-     * Delete config
+     * Delete config.
      *
      * @param RepositoryReference $repositoryReference
      *

@@ -18,8 +18,8 @@ namespace Apisearch\Server\Domain\CommandHandler;
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\Event\IndexWasCreated;
 use Apisearch\Server\Domain\WithConfigRepositoryAppRepositoryAndEventPublisher;
-use React\Promise\PromiseInterface;
 use function React\Promise\all;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CreateIndexHandler.
@@ -49,7 +49,7 @@ class CreateIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                     ),
                 $this
                     ->configRepository
-                    ->putConfig($repositoryReference, $config)
+                    ->putConfig($repositoryReference, $config),
             ])
             ->then(function () use ($repositoryReference, $indexUUID, $config) {
                 return $this

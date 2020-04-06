@@ -21,7 +21,6 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Changes;
 use Apisearch\Model\Index;
-use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
@@ -32,17 +31,18 @@ use Apisearch\Server\ApisearchPluginsBundle;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Exception\ErrorException;
 use Apisearch\User\Interaction;
+use DateTime;
 use Drift\CommandBus\CommandBusBundle;
 use Drift\EventBus\EventBusBundle;
 use Drift\PHPUnit\BaseDriftFunctionalTest;
-use Mmoreram\BaseBundle\Kernel\DriftBaseKernel;
+use Drift\React;
 use Exception;
-use DateTime;
+use Mmoreram\BaseBundle\Kernel\DriftBaseKernel;
+use React\EventLoop\Factory;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
-use Drift\React;
 
 set_error_handler(function ($code, $message, $file, $line, $context = null) {
     if (0 == error_reporting()) {
@@ -285,7 +285,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * @var Process
      */
-    private static $lastServer;
+    protected static $lastServer;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -324,7 +324,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     }
 
     /**
-     * Run server
+     * Run server.
      */
     protected static function runApisearchServer()
     {
@@ -332,7 +332,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             return;
         }
 
-        /**
+        /*
          * Let's wait for oldest process
          */
         sleep(2);
@@ -341,14 +341,47 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             static::$lastServer = null;
         }
 
-        static::$lastServer = static::runServer(__DIR__ . '/../../vendor/bin', static::HTTP_TEST_SERVICE_PORT);
+        static::$lastServer = static::runServer(__DIR__.'/../../vendor/bin', static::HTTP_TEST_SERVICE_PORT);
         sleep(2);
+    }
+
+    /**
+     * Debug apisearch server.
+     */
+    protected static function debugLastApisearchServer()
+    {
+        if (!static::$lastServer instanceof Process) {
+            return;
+        }
+
+        var_dump(static::$lastServer->getOutput());
+        var_dump(static::$lastServer->getErrorOutput());
+    }
+
+    /**
+     * Create a new kernel.
+     *
+     * @return KernelInterface
+     */
+    protected static function createNewKernel(): KernelInterface
+    {
+        $clusterKernel = static::getKernel();
+        $clusterKernel->boot();
+        $clusterContainer = $clusterKernel->getContainer();
+        $eventLoop = Factory::create();
+        $clusterContainer->set('reactphp.event_loop', $eventLoop);
+        static::await(
+            $clusterKernel->preload(),
+            $eventLoop
+        );
+
+        return $clusterKernel;
     }
 
     /**
      * @return bool
      */
-    protected static function needsServer() : bool
+    protected static function needsServer(): bool
     {
         return false;
     }
@@ -413,6 +446,21 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         Token $token = null,
         array $parameters = []
     ): Result;
+
+    /**
+     * Preflight CORS query.
+     *
+     * @param string $origin
+     * @param string $appId
+     * @param string $index
+     *
+     * @return string
+     */
+    abstract public function getCORSPermissions(
+        string $origin,
+        string $appId = null,
+        string $index = null
+    ): string;
 
     /**
      * Delete using the bus.
@@ -730,13 +778,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     }
 
     /**
-     * Get GOD token
+     * Get GOD token.
      *
      * @param string $appId
      *
      * @return Token
      */
-    protected function getGodToken(string $appId = null) : Token
+    protected function getGodToken(string $appId = null): Token
     {
         return new Token(
             TokenUUID::createById(static::$godToken),

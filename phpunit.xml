@@ -34,4 +34,22 @@
         <env name="DBAL_TOKENS_TABLE" value="tokens" force="true" />
         <env name="DBAL_INDEX_CONFIGS_TABLE" value="index_config" force="true" />
     </php>
+
+    <testsuites>
+        <testsuite name="domain">
+            <directory>Tests/</directory>
+        </testsuite>
+
+        <testsuite name="plugins">
+            <directory>Plugin/</directory>
+        </testsuite>
+
+        <testsuite name="local">
+            <directory>Tests/</directory>
+            <directory>Plugin/</directory>
+            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch61Test.php</exclude>
+            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch68Test.php</exclude>
+            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch70Test.php</exclude>
+        </testsuite>
+    </testsuites>
 </phpunit>

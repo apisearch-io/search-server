@@ -98,9 +98,7 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
                     ? $token->getTokenUUID()->composeUUID()
                     : $token;
 
-                $origin = $request->headers->get('Referer', '');
-                $urlParts = parse_url($origin);
-                $origin = $urlParts['host'] ?? '';
+                $referer = $request->headers->get('Referer', '');
                 $indices = $this->getIndices($request);
                 $route = str_replace('apisearch_', '', $request->get('_route'));
 
@@ -110,7 +108,7 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
                         AppUUID::createById($request->get('app_id', '')),
                         $indices,
                         TokenUUID::createById($tokenString),
-                        $origin,
+                        $referer,
                         $route
                     );
             })

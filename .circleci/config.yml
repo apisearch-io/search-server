@@ -58,7 +58,7 @@ jobs:
             -   run:
                     name: Run tests
                     command: |
-                        php vendor/bin/phpunit Plugin/
+                        php vendor/bin/phpunit --testsuite plugins
 
 
     without-infrastructure:

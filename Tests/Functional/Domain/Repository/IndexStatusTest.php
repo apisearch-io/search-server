@@ -25,12 +25,13 @@ trait IndexStatusTest
      */
     public function testIndexCheck()
     {
+        static::resetScenario();
         $this->assertTrue($this->checkIndex(
             self::$appId,
             self::$index
         ));
 
-        $this->assertFalse($this->checkIndex(
+        $this->assertTrue($this->checkIndex(
             self::$appId,
             self::$anotherIndex
         ));
@@ -43,6 +44,11 @@ trait IndexStatusTest
         $this->assertFalse($this->checkIndex(
             self::$anotherAppId,
             self::$anotherIndex
+        ));
+
+        $this->assertFalse($this->checkIndex(
+            self::$anotherAppId,
+            'not-even-exists'
         ));
     }
 }

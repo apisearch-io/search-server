@@ -12,21 +12,20 @@ services:
     #
     # Token Validators
     #
-    apisearch_plugin.security.http_referrers_token_validator:
-        class: Apisearch\Plugin\Security\Domain\Token\HttpReferrersTokenValidator
+    Apisearch\Plugin\Security\Domain\Token\HttpReferrersTokenValidator:
         tags: ["apisearch_server.token_validator"]
 
-    apisearch_plugin.security.seconds_valid_token_validator:
-        class: Apisearch\Plugin\Security\Domain\Token\SecondsValidTokenValidator
+    Apisearch\Plugin\Security\Domain\Token\SecondsValidTokenValidator:
         tags: ["apisearch_server.token_validator"]
 
-    apisearch_plugin.security.requests_limit_token_validator:
-        class: Apisearch\Plugin\Security\Domain\Token\RequestsLimitTokenValidator
+    Apisearch\Plugin\Security\Domain\Token\RequestsLimitTokenValidator:
         tags: ["apisearch_server.token_validator"]
 
     #
     # Middleware
     #
-    apìsearch_plugin.security.restricted_fields_middleware:
-        class: Apisearch\Plugin\Security\Domain\Middleware\RestrictedFieldsMiddleware
+    Apisearch\Plugin\Security\Domain\Middleware\RestrictedFieldsMiddleware:
+        tags: ["apisearch_plugin.middleware"]
+
+    Apisearch\Plugin\Security\Domain\Middleware\RestrictedOriginsMiddleware:
         tags: ["apisearch_plugin.middleware"]
