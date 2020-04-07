@@ -47,7 +47,7 @@ final class IndexWasConfigured extends DomainEvent
      *
      * @param IndexUUID $indexUUID
      * @param Config    $config
-     * @param bool $indexWasReindexed
+     * @param bool      $indexWasReindexed
      */
     public function __construct(
         IndexUUID $indexUUID,
@@ -79,7 +79,7 @@ final class IndexWasConfigured extends DomainEvent
     /**
      * @return bool
      */
-    public function indexWasReindexed() : bool
+    public function indexWasReindexed(): bool
     {
         return $this->indexWasReindexed;
     }

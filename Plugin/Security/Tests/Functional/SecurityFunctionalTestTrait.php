@@ -16,12 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Security\Tests\Functional;
 
 use Apisearch\Plugin\Security\SecurityPluginBundle;
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * File header placeholder.
+ * Class SecurityFunctionalTestTrait.
  */
-abstract class SecurityFunctionalTest extends HttpFunctionalTest
+trait SecurityFunctionalTestTrait
 {
     /**
      * Decorate bundles.

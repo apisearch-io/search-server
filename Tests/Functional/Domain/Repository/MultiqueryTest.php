@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
-use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
@@ -54,7 +53,6 @@ trait MultiqueryTest
      */
     public function testMultiQueryOnMultipleIndices()
     {
-
         static::safeDeleteIndex(self::$appId, self::$anotherIndex);
         static::safeDeleteIndex(self::$appId, self::$yetAnotherIndex);
 

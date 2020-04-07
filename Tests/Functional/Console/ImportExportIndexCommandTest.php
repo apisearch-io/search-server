@@ -72,6 +72,6 @@ trait ImportExportIndexCommandTest
             'index' => 'anotherindexforexport',
         ]);
 
-        unlink($fileName);
+        @unlink($fileName);
     }
 }

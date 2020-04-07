@@ -20,13 +20,21 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Class BasicSecurityTest.
  */
-class BasicSecurityTest extends SecurityFunctionalTest
+class BasicSecurityTest extends CurlFunctionalTest
 {
+    use SecurityFunctionalTestTrait;
+
+    /**
+     * @var string
+     */
+    const CURL_REFERER = 'http://local.host';
+
     /**
      * Test seconds available.
      */
@@ -95,7 +103,9 @@ class BasicSecurityTest extends SecurityFunctionalTest
                 Query::createMatchAll(),
                 self::$appId,
                 self::$index,
-                $token
+                $token, [], [
+                    'Referer: '.static::CURL_REFERER,
+                ]
             );
             $this->fail(sprintf('%s exception expected', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
@@ -111,6 +121,8 @@ class BasicSecurityTest extends SecurityFunctionalTest
     {
         return [
             [['google.es']],
+            [['another.host']],
+            [['https://local.host']],
         ];
     }
 
@@ -133,8 +145,11 @@ class BasicSecurityTest extends SecurityFunctionalTest
             Query::createMatchAll(),
             self::$appId,
             self::$index,
-            $token
+            $token, [], [
+                'Referer: '.static::CURL_REFERER,
+            ]
         );
+
         $this->assertTrue(true);
     }
 
@@ -143,12 +158,12 @@ class BasicSecurityTest extends SecurityFunctionalTest
      */
     public function dataGoodReferrers()
     {
-        $currentReferrer = 'localhost';
-
         return [
-            [[$currentReferrer]],
-            [['google.es', $currentReferrer]],
-            [[$currentReferrer, $currentReferrer]],
+            [[static::CURL_REFERER]],
+            [['google.es', static::CURL_REFERER]],
+            [[static::CURL_REFERER, static::CURL_REFERER]],
+            [['local.host']],
+            [['*.host']],
         ];
     }
 

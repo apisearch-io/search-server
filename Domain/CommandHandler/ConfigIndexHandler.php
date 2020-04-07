@@ -18,9 +18,9 @@ namespace Apisearch\Server\Domain\CommandHandler;
 use Apisearch\Server\Domain\Command\ConfigureIndex;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\WithConfigRepositoryAppRepositoryAndEventPublisher;
-use React\Promise\PromiseInterface;
 use function React\Promise\all;
 use function React\Promise\resolve;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ConfigIndexHandler.
@@ -44,7 +44,7 @@ class ConfigIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
             ->configRepository
             ->getConfig($repositoryReference);
 
-        /**
+        /*
          * We should reload the index only if the hash changed
          */
         return all([
@@ -61,12 +61,13 @@ class ConfigIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                             $indexUUID,
                             $config
                         )
-                        ->then(function() {
+                        ->then(function () {
                             return true;
-                        })
+                        }),
             ])
             ->then(function (array $results) use ($repositoryReference, $indexUUID, $config) {
                 $indexWasReindexed = $results[1];
+
                 return $this
                     ->eventBus
                     ->dispatch(

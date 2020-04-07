@@ -61,6 +61,23 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * Preflight CORS query.
+     *
+     * @param string $origin
+     * @param string $appId
+     * @param string $index
+     *
+     * @return string
+     */
+    public function getCORSPermissions(
+        string $origin,
+        string $appId = null,
+        string $index = null
+    ): string {
+        throw new \Exception('Method not usable');
+    }
+
+    /**
      * Delete using the bus.
      *
      * @param ItemUUID[] $itemsUUID

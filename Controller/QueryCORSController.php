@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 class QueryCORSController extends ControllerWithQueryBus
 {
     /**
-     * Request CORS permissions for query
+     * Request CORS permissions for query.
      *
      * @param Request $request
      *
@@ -48,33 +48,33 @@ class QueryCORSController extends ControllerWithQueryBus
                 ),
                 $origin
             ))
-            ->then(function($origin) {
-                return is_null($origin)
+            ->then(function ($origin) {
+                return false === $origin
                     ? $this->createForbiddenResponse()
                     : $this->createPermittedResponse($origin);
             });
     }
 
     /**
-     * Create permitted response
+     * Create permitted response.
      *
      * @param string $origin
      *
      * @return Response
      */
-    private function createPermittedResponse(string $origin) : Response
+    private function createPermittedResponse(string $origin): Response
     {
         return new Response(null, 204, [
             'Access-Control-Allow-Origin' => $origin,
             'Access-Control-Allow-Headers' => implode([
-                Http::TOKEN_ID_HEADER
+                Http::TOKEN_ID_HEADER,
             ]),
-            'Access-Control-Allow-Methods' => 'GET'
+            'Access-Control-Allow-Methods' => 'GET',
         ]);
     }
 
     /**
-     * Create forbidden response
+     * Create forbidden response.
      */
     private function createForbiddenResponse()
     {

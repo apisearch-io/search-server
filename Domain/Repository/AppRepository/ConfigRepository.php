@@ -1,31 +1,46 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Repository\AppRepository;
 
 use Apisearch\Config\Config;
+use Apisearch\Model\AppUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\Event\IndexWasCreated;
 use Apisearch\Server\Domain\Event\IndexWasDeleted;
+use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
+use Drift\HttpKernel\AsyncKernelEvents;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class ConfigRepository
+ * Class ConfigRepository.
  */
 abstract class ConfigRepository implements EventSubscriberInterface
 {
     /**
-     * @var Config[]
+     * @var array
      */
     private $configs;
 
     /**
-     * Put config
+     * Put config.
      *
      * @param RepositoryReference $repositoryReference
-     * @param Config $config
+     * @param Config              $config
      *
      * @return PromiseInterface
      */
@@ -35,7 +50,7 @@ abstract class ConfigRepository implements EventSubscriberInterface
     ): PromiseInterface;
 
     /**
-     * Delete config
+     * Delete config.
      *
      * @param RepositoryReference $repositoryReference
      *
@@ -60,24 +75,53 @@ abstract class ConfigRepository implements EventSubscriberInterface
         return $this
             ->findAllConfigs()
             ->then(function (array $configs) {
-                $this->configs = array_map(function(Config $config) {
-                    return Config::createFromArray($config->toArray());
-                }, $configs);
+                $this->configs = [];
+                foreach ($configs as $repositoryReferenceComposed => $config) {
+                    $repositoryReference = RepositoryReference::createFromComposed($repositoryReferenceComposed);
+                    $appUUIDComposed = $repositoryReference->getAppUUID()->composeUUID();
+                    $indexUUIDComposed = $repositoryReference->getIndexUUID()->composeUUID();
+
+                    if (!isset($this->configs[$appUUIDComposed])) {
+                        $this->configs[$appUUIDComposed] = [];
+                    }
+
+                    $this->configs[$appUUIDComposed][$indexUUIDComposed] = $config;
+                }
             });
     }
 
     /**
-     * Get config
+     * Get config.
      *
      * @param RepositoryReference $repositoryReference
      *
      * @return Config|null
      */
-    public function getConfig(RepositoryReference $repositoryReference) : ? Config
+    public function getConfig(RepositoryReference $repositoryReference): ? Config
     {
-        $appUUIDComposed = $repositoryReference->compose();
+        $appUUIDComposed = $repositoryReference->getAppUUID()->composeUUID();
+        $indexUUIDComposed = $repositoryReference->getIndexUUID()->composeUUID();
 
-        return $this->configs[$appUUIDComposed] ?? null;
+        if (
+            !array_key_exists($appUUIDComposed, $this->configs) ||
+            !array_key_exists($indexUUIDComposed, $this->configs[$appUUIDComposed])
+        ) {
+            return null;
+        }
+
+        return $this->configs[$appUUIDComposed][$indexUUIDComposed];
+    }
+
+    /**
+     * Get apps configs.
+     *
+     * @param AppUUID $appUUID
+     *
+     * @return Config[]
+     */
+    public function getAppConfigs(AppUUID $appUUID): array
+    {
+        return $this->configs[$appUUID->composeUUID()] ?? [];
     }
 
     /**
@@ -93,6 +137,12 @@ abstract class ConfigRepository implements EventSubscriberInterface
                 ['forceLoadAllConfigs', 0],
             ],
             IndexWasDeleted::class => [
+                ['forceLoadAllConfigs', 0],
+            ],
+            AsyncKernelEvents::PRELOAD => [
+                ['forceLoadAllConfigs', 0],
+            ],
+            LoadConfigs::class => [
                 ['forceLoadAllConfigs', 0],
             ],
         ];

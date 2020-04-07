@@ -278,7 +278,7 @@ trait AggregationsTest
                 '1000..1700',
                 '1700..',
                 '0..',
-                '..0'
+                '..0',
             ], Filter::AT_LEAST_ONE)
         )->getAggregation('price')->getCounters();
 

@@ -42,6 +42,7 @@ use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Apisearch\Server\Domain\Query\CheckIndex;
+use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Domain\Query\Ping;
@@ -87,6 +88,29 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                 $query,
                 $parameters
             ));
+    }
+
+    /**
+     * Preflight CORS query.
+     *
+     * @param string $origin
+     * @param string $appId
+     * @param string $index
+     *
+     * @return string
+     */
+    public function getCORSPermissions(
+        string $origin,
+        string $appId = null,
+        string $index = null
+    ): string {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+        $indexUUID = IndexUUID::createById($index ?? self::$index);
+
+        return self::askQuery(new GetCORSPermissions(
+            RepositoryReference::create($appUUID, $indexUUID),
+            $origin
+        ));
     }
 
     /**

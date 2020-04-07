@@ -52,13 +52,12 @@ class DBALConfigRepository extends ConfigRepository
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function putConfig(
         RepositoryReference $repositoryReference,
         Config $config
-    ): PromiseInterface
-    {
+    ): PromiseInterface {
         return $this
             ->connection
             ->upsert(
@@ -71,19 +70,19 @@ class DBALConfigRepository extends ConfigRepository
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function deleteConfig(RepositoryReference $repositoryReference): PromiseInterface
     {
         return $this
             ->connection
             ->delete($this->table, [
-                'repository_reference_uuid' => $repositoryReference->compose()
+                'repository_reference_uuid' => $repositoryReference->compose(),
             ]);
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function findAllConfigs(): PromiseInterface
     {
@@ -93,7 +92,6 @@ class DBALConfigRepository extends ConfigRepository
             ->then(function ($results) {
                 $resultsWithKey = [];
                 foreach ($results as $result) {
-
                     try {
                         $content = json_decode(
                             $result['content'],

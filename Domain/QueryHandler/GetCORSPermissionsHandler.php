@@ -17,8 +17,8 @@ namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
-use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
+use React\Promise\PromiseInterface;
 
 /**
  * Class GetQueryCORSPermissionsHandler.
@@ -26,7 +26,7 @@ use function React\Promise\resolve;
 class GetCORSPermissionsHandler extends WithRepositoryAndEventPublisher
 {
     /**
-     * Get CORS permission
+     * Get CORS permission.
      *
      * @param GetCORSPermissions $getCORSPermissions
      *

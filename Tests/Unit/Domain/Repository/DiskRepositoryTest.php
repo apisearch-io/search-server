@@ -15,19 +15,22 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Unit\Domain\Repository;
 
+use Apisearch\Server\Domain\Repository\DiskRepository;
 use Apisearch\Server\Domain\Repository\FullRepository;
-use Apisearch\Server\Domain\Repository\InMemoryRepository;
 
 /**
- * Class InMemoryRepositoryTest.
+ * Class DiskRepositoryTest.
  */
-class InMemoryRepositoryTest extends FullRepositoryTest
+class DiskRepositoryTest extends FullRepositoryTest
 {
     /**
      * {@inheritdoc}
      */
     protected function getFullRepository(): FullRepository
     {
-        return new InMemoryRepository();
+        $path = '/tmp/apisearch.repository';
+        @unlink($path);
+
+        return new DiskRepository($path);
     }
 }
