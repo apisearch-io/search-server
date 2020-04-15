@@ -58,7 +58,7 @@ class QueryController extends ControllerWithQueryBus
                     ]);
                 }, ARRAY_FILTER_USE_KEY)
             ))
-            ->then(function (Result $result) use ($requestQuery) {
+            ->then(function (Result $result) use ($requestQuery, $request) {
                 /*
                  * To allow result manipulation during the response returning, and in
                  * order to increase performance, we will save the Result instance as a
@@ -68,7 +68,12 @@ class QueryController extends ControllerWithQueryBus
 
                 return new JsonResponse(
                     $result->toArray(),
-                    200
+                    200, [
+                        'Access-Control-Allow-Origin' => $request
+                            ->headers
+                            ->get('origin', '*'),
+                        'Vary' => 'Origin'
+                    ]
                 );
             });
     }
