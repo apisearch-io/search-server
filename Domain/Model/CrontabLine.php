@@ -85,7 +85,7 @@ class CrontabLine
      */
     public function toString(string $rootPath): string
     {
-        return sprintf('%s %s %s %s %s %s',
+        return \sprintf('%s %s %s %s %s %s',
             $this->minute,
             $this->hour,
             $this->monthDay,

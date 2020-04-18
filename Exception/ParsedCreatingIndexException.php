@@ -33,7 +33,7 @@ class ParsedCreatingIndexException
      */
     public static function parse(string $message): ResourceExistsException
     {
-        if (1 === preg_match(
+        if (1 === \preg_match(
                 '#\[apisearch_item_(?P<app_id>.*?)_(?P<index_name>.*?)\/.*\] already exists#i',
                 $message,
                 $match)) {
@@ -41,7 +41,7 @@ class ParsedCreatingIndexException
              * Sample Response
              * index [apisearch_item_123456_test_products/dHJefTMIR4y1e2hSTee6MQ] already exists [index: apisearch_item_123456_test_products]
              */
-            $parsedMessage = sprintf('Error while creating index. "%s" index is already exists for "%s" app.',
+            $parsedMessage = \sprintf('Error while creating index. "%s" index is already exists for "%s" app.',
                 $match['index_name'],
                 $match['app_id']
             );

@@ -47,12 +47,12 @@ class CheckHealthCommand extends CommandWithQueryBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $health = $this->askQuery(new CheckHealth());
+        $health = $this->askAndWait(new CheckHealth());
 
         $this->printInfoMessage($output, 'Memory Used', $health['process']['memory_used']);
-        $this->printInfoMessage($output, 'Plugins', implode(', ', array_keys($health['info']['plugins'])));
+        $this->printInfoMessage($output, 'Plugins', \implode(', ', \array_keys($health['info']['plugins'])));
         foreach ($health['status'] as $key => $value) {
-            $this->printInfoMessage($output, ucfirst($key), $this->getStringRepresentationOfValue($value));
+            $this->printInfoMessage($output, \ucfirst($key), $this->getStringRepresentationOfValue($value));
         }
 
         return true === $health['healthy']
@@ -70,9 +70,9 @@ class CheckHealthCommand extends CommandWithQueryBusAndGodToken
     private function getStringRepresentationOfValue($value): string
     {
         switch ($value) {
-            case is_bool($value):
+            case \is_bool($value):
                 return $value ? 'Ok' : 'Error';
-            case is_string($value):
+            case \is_string($value):
                 switch ($value) {
                     case '1':
                         return 'Ok';

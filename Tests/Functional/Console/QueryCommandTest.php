@@ -47,15 +47,15 @@ trait QueryCommandTest
         ]);
 
         $this->assertTrue(
-            false !== strpos($content, '* / 1 / 10')
+            false !== \strpos($content, '* / 1 / 10')
         );
 
         $this->assertTrue(
-            false !== strpos($content, ' 28')
+            false !== \strpos($content, ' 28')
         );
 
         $this->assertTrue(
-            false !== strpos($content, 'siege_vol_1_1~book')
+            false !== \strpos($content, 'siege_vol_1_1~book')
         );
 
         $content2 = static::runCommand([
@@ -66,19 +66,19 @@ trait QueryCommandTest
         ]);
 
         $this->assertTrue(
-            false !== strpos($content2, 'Robert Grayson / 1 / 10')
+            false !== \strpos($content2, 'Robert Grayson / 1 / 10')
         );
 
         $this->assertTrue(
-            false !== strpos($content2, ' 4')
+            false !== \strpos($content2, ' 4')
         );
 
         $this->assertfalse(
-            strpos($content2, 'siege_vol_1_1~book')
+            \strpos($content2, 'siege_vol_1_1~book')
         );
 
         $this->assertTrue(
-            false !== strpos($content2, 'marvel_boy:_the_uranian_vol_1_3~book')
+            false !== \strpos($content2, 'marvel_boy:_the_uranian_vol_1_3~book')
         );
 
         $content3 = static::runCommand([
@@ -91,19 +91,19 @@ trait QueryCommandTest
         ]);
 
         $this->assertTrue(
-            false !== strpos($content3, 'Robert Grayson / 1 / 2')
+            false !== \strpos($content3, 'Robert Grayson / 1 / 2')
         );
 
         $this->assertTrue(
-            false !== strpos($content3, ' 4')
+            false !== \strpos($content3, ' 4')
         );
 
         $this->assertfalse(
-            strpos($content3, 'siege_vol_1_1~book')
+            \strpos($content3, 'siege_vol_1_1~book')
         );
 
         $this->assertTrue(
-            false !== strpos($content3, 'marvel_boy:_the_uranian_vol_1_1~book')
+            false !== \strpos($content3, 'marvel_boy:_the_uranian_vol_1_1~book')
         );
     }
 }

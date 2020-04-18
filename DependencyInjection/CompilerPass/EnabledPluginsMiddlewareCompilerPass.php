@@ -48,7 +48,7 @@ class EnabledPluginsMiddlewareCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $plugins = array_filter(
+        $plugins = \array_filter(
             $this
                 ->kernel
                 ->getBundles(),
@@ -62,12 +62,12 @@ class EnabledPluginsMiddlewareCompilerPass implements CompilerPassInterface
          */
         $relationalPlugins = [];
         foreach ($plugins as $plugin) {
-            $class = get_class($plugin);
-            $parts = explode('\\', $class);
-            array_pop($parts);
+            $class = \get_class($plugin);
+            $parts = \explode('\\', $class);
+            \array_pop($parts);
             $relationalPlugins[$plugin->getPluginName()] = [
-                'namespace' => get_class($plugin),
-                'path' => implode('\\', $parts),
+                'namespace' => \get_class($plugin),
+                'path' => \implode('\\', $parts),
             ];
         }
 

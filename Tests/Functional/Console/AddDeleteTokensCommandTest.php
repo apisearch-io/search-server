@@ -55,7 +55,7 @@ abstract class AddDeleteTokensCommandTest extends CommandTest
             'app-id' => self::$appId,
         ]);
 
-        preg_match('~Token UUID: (.*?)~', $output, $match);
+        \preg_match('~Token UUID: (.*?)~', $output, $match);
         $this->assertTokenNotExists($match[1]);
     }
 }

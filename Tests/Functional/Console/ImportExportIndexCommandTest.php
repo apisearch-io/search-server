@@ -25,7 +25,7 @@ trait ImportExportIndexCommandTest
      */
     public function testIndexImportAndExport()
     {
-        $fileName = tempnam('/tmp', 'test-apisearch');
+        $fileName = \tempnam('/tmp', 'test-apisearch');
 
         static::runCommand([
             'command' => 'apisearch-server:create-index',
@@ -41,7 +41,7 @@ trait ImportExportIndexCommandTest
         ]);
 
         $this->assertTrue(
-            strpos($importOutput, 'Partial import of 28 items') >= 0
+            \strpos($importOutput, 'Partial import of 28 items') >= 0
         );
 
         $exportOutput = static::runCommand([
@@ -52,12 +52,12 @@ trait ImportExportIndexCommandTest
         ]);
 
         $this->assertEquals(
-            file_get_contents(__DIR__.'/data.as'),
-            file_get_contents($fileName)
+            \file_get_contents(__DIR__.'/data.as'),
+            \file_get_contents($fileName)
         );
 
         $this->assertTrue(
-            strpos($exportOutput, 'Partial export of 28 items') >= 0
+            \strpos($exportOutput, 'Partial export of 28 items') >= 0
         );
 
         static::runCommand([
@@ -72,6 +72,6 @@ trait ImportExportIndexCommandTest
             'index' => 'anotherindexforexport',
         ]);
 
-        @unlink($fileName);
+        @\unlink($fileName);
     }
 }

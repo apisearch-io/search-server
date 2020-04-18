@@ -30,7 +30,7 @@ trait GetIndicesTest
     {
         $indices = $this->getIndices(self::$appId);
         $this->assertCount(2, $indices);
-        $index = array_shift($indices);
+        $index = \array_shift($indices);
         $this->assertInstanceOf(Index::class, $index);
     }
 
@@ -39,8 +39,8 @@ trait GetIndicesTest
      */
     public function testGetIndices(): void
     {
-        $indices = array_values($this->getIndices('*'));
-        $this->assertTrue(count($indices) >= 2);
+        $indices = \array_values($this->getIndices('*'));
+        $this->assertTrue(\count($indices) >= 2);
     }
 
     /**
@@ -63,7 +63,7 @@ trait GetIndicesTest
         );
 
         $indices = $this->getIndices($appId);
-        $firstIndex = reset($indices);
+        $firstIndex = \reset($indices);
         $this->assertEquals(1, $firstIndex->getShards());
         $this->assertEquals(0, $firstIndex->getReplicas());
         $this->assertTrue($firstIndex->getMetadata()['allocated']);
@@ -90,7 +90,7 @@ trait GetIndicesTest
         );
 
         $indices = $this->getIndices($appId);
-        $firstIndex = reset($indices);
+        $firstIndex = \reset($indices);
         $this->assertEquals(5, $firstIndex->getShards());
         $this->assertEquals(4, $firstIndex->getReplicas());
         $this->assertFalse($firstIndex->getMetadata()['allocated']);

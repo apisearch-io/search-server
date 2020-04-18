@@ -109,16 +109,16 @@ class QueryBuilder
             return;
         }
 
-        $fields = array_values($query->getFields());
-        $fields = array_unique($fields);
-        $includes = array_filter($fields, function (string $field) {
-            return 0 !== strpos($field, '!');
+        $fields = \array_values($query->getFields());
+        $fields = \array_unique($fields);
+        $includes = \array_filter($fields, function (string $field) {
+            return 0 !== \strpos($field, '!');
         });
 
-        $excludes = array_map(function (string $string) {
-            return ltrim($string, '!');
-        }, array_filter($fields, function (string $field) {
-            return 0 === strpos($field, '!');
+        $excludes = \array_map(function (string $string) {
+            return \ltrim($string, '!');
+        }, \array_filter($fields, function (string $field) {
+            return 0 === \strpos($field, '!');
         }));
 
         if (!empty($includes)) {
@@ -128,8 +128,8 @@ class QueryBuilder
         }
 
         $mainQuery->setSource([
-            'includes' => array_values($includes),
-            'excludes' => array_values($excludes),
+            'includes' => \array_values($includes),
+            'excludes' => \array_values($excludes),
         ]);
     }
 
@@ -377,7 +377,7 @@ class QueryBuilder
         $value,
         bool $checkNested
     ): ElasticaQuery\AbstractQuery {
-        if (!is_array($value)) {
+        if (!\is_array($value)) {
             return $this->createTermFilterOrNestedFilterDependingOnTheField(
                 $field,
                 $value,
@@ -414,8 +414,8 @@ class QueryBuilder
         bool $checkNested
     ): ElasticaQuery\AbstractQuery {
         $termFilter = new ElasticaQuery\Term([$field => $value]);
-        $fieldParts = explode('.', $field, 3);
-        if ($checkNested && 3 === count($fieldParts)) {
+        $fieldParts = \explode('.', $field, 3);
+        if ($checkNested && 3 === \count($fieldParts)) {
             $nested = new ElasticaQuery\Nested();
             $nested->setPath($fieldParts[0].'.'.$fieldParts[1]);
             $nested->setQuery($termFilter);
@@ -468,7 +468,7 @@ class QueryBuilder
     {
         $locationRange = LocationRange::createFromArray($filter->getValues());
         $locationRangeData = $locationRange->toFilterArray();
-        switch (get_class($locationRange)) {
+        switch (\get_class($locationRange)) {
             case CoordinateAndDistance::class:
 
                 return new ElasticaQuery\GeoDistance(
@@ -488,7 +488,7 @@ class QueryBuilder
 
                 return new ElasticaQuery\GeoBoundingBox(
                     $filter->getField(),
-                    array_values($locationRangeData)
+                    \array_values($locationRangeData)
                 );
         }
     }
@@ -568,7 +568,7 @@ class QueryBuilder
     private function createAggregation(QueryAggregation $aggregation): ElasticaAggregation\AbstractAggregation
     {
         $termsAggregation = new ElasticaAggregation\Terms($aggregation->getName());
-        $aggregationFields = explode('|', $aggregation->getField());
+        $aggregationFields = \explode('|', $aggregation->getField());
         $termsAggregation->setField($aggregationFields[0]);
         $termsAggregation->setSize(
             $aggregation->getLimit() > 0
@@ -629,7 +629,7 @@ class QueryBuilder
                 ]
                 : $searchableFields;
 
-            $match = is_array($fuzziness)
+            $match = \is_array($fuzziness)
                 ? $this->createMainQueryObjectAsFuzzy(
                     $queryString,
                     $searchableFields,
@@ -669,7 +669,7 @@ class QueryBuilder
             ->setFields($searchableFields)
             ->setQuery($queryString);
 
-        if (!is_null($fuzziness)) {
+        if (!\is_null($fuzziness)) {
             $match->setFuzziness($fuzziness);
         }
 
@@ -692,7 +692,7 @@ class QueryBuilder
     ): ElasticaQuery\AbstractQuery {
         $boolQuery = new ElasticaQuery\BoolQuery();
         foreach ($searchableFields as $filterField) {
-            $filterFieldParts = explode('^', $filterField, 2);
+            $filterFieldParts = \explode('^', $filterField, 2);
             $filterFieldWithoutWeight = $filterFieldParts[0];
             $specificFuzziness = $fuzziness[$filterFieldWithoutWeight] ?? false;
 
@@ -765,14 +765,14 @@ class QueryBuilder
             $field = Item::getPathByField(
                 (string) $scoreStrategy->getConfigurationValue('field')
             );
-            $fieldParts = explode('.', $field);
+            $fieldParts = \explode('.', $field);
             $nestedFunctionQuery = null;
 
-            if (count($fieldParts) >= 3) {
-                array_pop($fieldParts);
+            if (\count($fieldParts) >= 3) {
+                \array_pop($fieldParts);
                 $nestedQuery = new ElasticaQuery\Nested();
                 $boolQuery->addShould($nestedQuery);
-                $nestedQuery->setPath(implode('.', $fieldParts));
+                $nestedQuery->setPath(\implode('.', $fieldParts));
                 $nestedQuery->setScoreMode($scoreStrategy->getScoreMode());
                 $nestedFunctionQuery = new ElasticaQuery\FunctionScore();
                 $nestedQuery->setQuery($nestedFunctionQuery);
@@ -917,13 +917,13 @@ class QueryBuilder
          * added) we will skip this step
          */
         if (
-            1 === count($sortByElements) &&
+            1 === \count($sortByElements) &&
             SortBy::SCORE === $sortByElements[0]
         ) {
             return $mainQuery;
         }
 
-        $sortByElements = array_map(function (array $sortBy) {
+        $sortByElements = \array_map(function (array $sortBy) {
             $type = $sortBy['type'] ?? SortBy::TYPE_FIELD;
             $mode = $sortBy['mode'] ?? SortBy::MODE_AVG;
             $order = $sortBy['order'] ?? SortBy::ASC;
@@ -963,15 +963,15 @@ class QueryBuilder
                 case SortBy::TYPE_NESTED:
 
                     $key = $sortBy['field'];
-                    $path = explode('.', $key);
-                    array_pop($path);
+                    $path = \explode('.', $key);
+                    \array_pop($path);
 
                     return [
                         $key => [
                             'mode' => $mode,
                             'order' => $order,
-                            'nested' => array_filter([
-                                'path' => implode('.', $path),
+                            'nested' => \array_filter([
+                                'path' => \implode('.', $path),
                                 'filter' => (
                                 isset($sortBy['filter'])
                                     ? $this->createQueryFilterByApplicationType(

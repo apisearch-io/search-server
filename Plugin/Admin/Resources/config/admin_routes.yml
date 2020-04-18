@@ -1,0 +1,9 @@
+apisearch_admin_dispatch_imperative_event:
+    path: /dispatch-imperative-event/{eventName}
+    methods: ["POST"]
+    controller: Apisearch\Plugin\Admin\Controller\DispatchImperativeEventController
+
+apisearch_admin_get_apps:
+    path: /apps
+    methods: ["GET"]
+    controller: Apisearch\Plugin\Admin\Controller\GetAppsController

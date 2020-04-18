@@ -48,12 +48,12 @@ class AsyncMultiSearch extends AsyncAdapter
         foreach ($queriesArray as list($indexName, $search)) {
             $query = $search->getQuery();
             $name = $search->getName();
-            $bodyAsArray[] = json_encode(['index' => $indexName]);
-            $bodyAsArray[] = json_encode($query->toArray());
+            $bodyAsArray[] = \json_encode(['index' => $indexName]);
+            $bodyAsArray[] = \json_encode($query->toArray());
             $queries[$name] = $query;
         }
 
-        $data = implode("\n", $bodyAsArray)."\n";
+        $data = \implode("\n", $bodyAsArray)."\n";
         $multiSearch->setBody($data);
         $multiSearch->setParams($params);
 

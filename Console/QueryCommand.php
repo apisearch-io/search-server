@@ -96,7 +96,7 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
             $input,
             $output,
             function (ModelQuery $query) use ($objects, $parameters) {
-                return $this->askQuery(new Query(
+                return $this->askAndWait(new Query(
                     $objects['repository_reference'],
                     $objects['token'],
                     $query,

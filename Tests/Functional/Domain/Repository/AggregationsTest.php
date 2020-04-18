@@ -215,8 +215,8 @@ trait AggregationsTest
             )
             ->getAggregation('category');
         $this->assertCount(2, $aggregation->getCounters());
-        $this->assertTrue(array_key_exists('1', $aggregation->getCounters()));
-        $this->assertTrue(array_key_exists('7', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('1', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('7', $aggregation->getCounters()));
 
         $aggregation = $this
             ->query(
@@ -226,8 +226,8 @@ trait AggregationsTest
             )
             ->getAggregation('category');
         $this->assertCount(2, $aggregation->getCounters());
-        $this->assertTrue(array_key_exists('2', $aggregation->getCounters()));
-        $this->assertTrue(array_key_exists('5', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('2', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('5', $aggregation->getCounters()));
 
         $aggregation = $this
             ->query(
@@ -237,8 +237,8 @@ trait AggregationsTest
             )
             ->getAggregation('category');
         $this->assertCount(2, $aggregation->getCounters());
-        $this->assertTrue(array_key_exists('3', $aggregation->getCounters()));
-        $this->assertTrue(array_key_exists('4', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('3', $aggregation->getCounters()));
+        $this->assertTrue(\array_key_exists('4', $aggregation->getCounters()));
     }
 
     /**
@@ -305,7 +305,7 @@ trait AggregationsTest
         ? array $order
     ) {
         $query = Query::createMatchAll();
-        is_null($order)
+        \is_null($order)
             ? $query->aggregateBy('sortable', 'sortable_data', Filter::AT_LEAST_ONE)
             : $query->aggregateBy('sortable', 'sortable_data', Filter::AT_LEAST_ONE, $order);
 
@@ -314,7 +314,7 @@ trait AggregationsTest
             ->getAggregation('sortable')
             ->getCounters();
 
-        $firstCounter = reset($counters);
+        $firstCounter = \reset($counters);
         $this->assertEquals($firstId, $firstCounter->getId());
     }
 

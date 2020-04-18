@@ -104,7 +104,7 @@ class PrintIndicesCommand extends CommandWithQueryBusAndGodToken
                 $objects['app_uuid']
             )), $this->loop);
 
-        $indices = $this->askQuery(new GetIndices(
+        $indices = $this->askAndWait(new GetIndices(
             $objects['repository_reference'],
             $objects['token']
         ));

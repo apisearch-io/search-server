@@ -44,8 +44,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
-set_error_handler(function ($code, $message, $file, $line, $context = null) {
-    if (0 == error_reporting()) {
+\set_error_handler(function ($code, $message, $file, $line, $context = null) {
+    if (0 == \error_reporting()) {
         return;
     }
 
@@ -335,14 +335,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         /*
          * Let's wait for oldest process
          */
-        sleep(2);
+        \sleep(2);
         if (static::$lastServer instanceof Process) {
             static::$lastServer->stop();
             static::$lastServer = null;
         }
 
         static::$lastServer = static::runServer(__DIR__.'/../../vendor/bin', static::HTTP_TEST_SERVICE_PORT);
-        sleep(2);
+        \sleep(2);
     }
 
     /**
@@ -354,8 +354,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             return;
         }
 
-        var_dump(static::$lastServer->getOutput());
-        var_dump(static::$lastServer->getErrorOutput());
+        \var_dump(static::$lastServer->getOutput());
+        \var_dump(static::$lastServer->getErrorOutput());
     }
 
     /**
@@ -396,7 +396,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         string $appId = null,
         string $index = null
     ) {
-        $items = Yaml::parse(file_get_contents(static::getItemsFilePath()));
+        $items = Yaml::parse(\file_get_contents(static::getItemsFilePath()));
         $itemsInstances = [];
         foreach ($items['items'] as $item) {
             if (isset($item['indexed_metadata']['created_at'])) {
@@ -753,7 +753,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     {
         echo PHP_EOL;
         foreach ($result->getItems() as $item) {
-            echo sprintf('[ %s ] - %f', $item->composeUUID(), $item->getScore()).PHP_EOL;
+            echo \sprintf('[ %s ] - %f', $item->composeUUID(), $item->getScore()).PHP_EOL;
         }
         echo PHP_EOL;
     }

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller;
 
 use Drift\CommandBus\Bus\QueryBus;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ControllerWithQueryBus.
@@ -37,5 +38,19 @@ abstract class ControllerWithQueryBus extends BaseController
     public function __construct(QueryBus $queryBus)
     {
         $this->queryBus = $queryBus;
+    }
+
+    /**
+     * Ask query.
+     *
+     * @param object $query
+     *
+     * @return PromiseInterface
+     */
+    public function ask($query)
+    {
+        return $this
+            ->queryBus
+            ->ask($query);
     }
 }

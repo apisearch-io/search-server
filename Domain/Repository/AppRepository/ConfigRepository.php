@@ -103,8 +103,8 @@ abstract class ConfigRepository implements EventSubscriberInterface
         $indexUUIDComposed = $repositoryReference->getIndexUUID()->composeUUID();
 
         if (
-            !array_key_exists($appUUIDComposed, $this->configs) ||
-            !array_key_exists($indexUUIDComposed, $this->configs[$appUUIDComposed])
+            !\array_key_exists($appUUIDComposed, $this->configs) ||
+            !\array_key_exists($indexUUIDComposed, $this->configs[$appUUIDComposed])
         ) {
             return null;
         }

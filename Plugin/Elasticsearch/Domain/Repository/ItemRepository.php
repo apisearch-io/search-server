@@ -110,7 +110,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
             ->elasticaWrapper
             ->deleteDocumentsByIds(
                 $repositoryReference,
-                array_map(function (ItemUUID $itemUUID) {
+                \array_map(function (ItemUUID $itemUUID) {
                     return $itemUUID->composeUUID();
                 }, $itemUUIDs),
                 $this->refreshOnWrite
@@ -143,7 +143,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
 
         $query = ElasticaQuery::create($mainQuery)->getQuery();
         $endpoint = new UpdateByQuery();
-        $body = ['query' => is_array($query)
+        $body = ['query' => \is_array($query)
             ? $query
             : $query->toArray(),
         ];
@@ -195,13 +195,13 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
                 $item->getSearchableMetadata(),
                 false
             ),
-            'exact_matching_metadata' => array_values(
+            'exact_matching_metadata' => \array_values(
                 $this->filterSearchableElementRecursively(
                     $item->getExactMatchingMetadata(),
                     false
                 )
             ),
-            'suggest' => array_values(
+            'suggest' => \array_values(
                 $this->filterSearchableElementRecursively(
                     $item->getSuggest(),
                     false
@@ -222,12 +222,12 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
     private function filterElementRecursively(array $elements)
     {
         foreach ($elements as $key => $element) {
-            if (is_array($element)) {
+            if (\is_array($element)) {
                 $elements[$key] = $this->filterElementRecursively($element);
             }
         }
 
-        $elements = array_filter(
+        $elements = \array_filter(
             $elements,
             [$this, 'filterElement']
         );
@@ -245,8 +245,8 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
     private function filterElement($element)
     {
         return !(
-            is_null($element) ||
-            (is_array($element) && empty($element))
+            \is_null($element) ||
+            (\is_array($element) && empty($element))
         );
     }
 
@@ -263,18 +263,18 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
         bool $asList
     ) {
         foreach ($elements as $key => $element) {
-            if (is_array($element)) {
+            if (\is_array($element)) {
                 $elements[$key] = $this->filterSearchableElementRecursively($element, true);
             }
         }
 
-        $elements = array_filter(
+        $elements = \array_filter(
             $elements,
             [$this, 'filterSearchableElement']
         );
 
         if ($asList) {
-            $elements = array_values($elements);
+            $elements = \array_values($elements);
         }
 
         return $elements;
@@ -290,10 +290,10 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
     private function filterSearchableElement($element)
     {
         return !(
-            is_null($element) ||
-            is_bool($element) ||
-            (is_string($element) && empty($element)) ||
-            (is_array($element) && empty($element))
+            \is_null($element) ||
+            \is_bool($element) ||
+            (\is_string($element) && empty($element)) ||
+            (\is_array($element) && empty($element))
         );
     }
 
@@ -321,7 +321,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
             $type = $change['type'];
 
             if ($type & Changes::TYPE_VALUE) {
-                $fieldName = 'param_'.str_replace('.', '_', $field).'_'.rand(0, 99999999999);
+                $fieldName = 'param_'.\str_replace('.', '_', $field).'_'.\rand(0, 99999999999);
                 $currentValue = "params.$fieldName";
                 $currentScript = "$internalField = $currentValue;";
                 $params[$fieldName] = $change['value'];
@@ -355,11 +355,11 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
                     $assignmentLine = "{$internalField}.set(i, $currentValue);";
                 }
 
-                if (is_null($assignmentLine)) {
+                if (\is_null($assignmentLine)) {
                     continue;
                 }
 
-                if (!is_null($condition)) {
+                if (!\is_null($condition)) {
                     $assignmentLine = "    if ($condition) {
         $assignmentLine
     }";
@@ -380,9 +380,9 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
         $finalScript = 'def item = ctx._source;
 def element;'.PHP_EOL;
 
-        $finalScript .= implode(PHP_EOL, $singleScripts).PHP_EOL;
+        $finalScript .= \implode(PHP_EOL, $singleScripts).PHP_EOL;
         foreach ($bucleScripts as $bucleInternalField => $bucleScriptElements) {
-            $rand = rand(0, 100000000000000);
+            $rand = \rand(0, 100000000000000);
             $finalScript .= "def field_{$rand} = $bucleInternalField;
 if (field_$rand != null && field_$rand instanceof Collection) {
     for (int i = 0; i < field_$rand.length; i++) {
@@ -395,7 +395,7 @@ if (field_$rand != null && field_$rand instanceof Collection) {
             $finalScript .= '}}'.PHP_EOL;
         }
 
-        $finalScript = trim($finalScript);
+        $finalScript = \trim($finalScript);
 
         return empty($finalScript)
             ? null
@@ -414,7 +414,7 @@ if (field_$rand != null && field_$rand instanceof Collection) {
      */
     private function parseExpressionToInternal(string $expression): string
     {
-        return preg_replace(
+        return \preg_replace(
             '~((?:(?:indexed|searchable|exact_matching)_)?metadata.(?:[\w\d\.\-]+))~',
             'ctx._source.$1',
             $expression

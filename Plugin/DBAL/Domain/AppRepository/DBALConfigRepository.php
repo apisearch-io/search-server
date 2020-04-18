@@ -64,7 +64,7 @@ class DBALConfigRepository extends ConfigRepository
                 $this->table,
                 ['repository_reference_uuid' => $repositoryReference->compose()],
                 [
-                    'content' => json_encode($config->toArray()),
+                    'content' => \json_encode($config->toArray()),
                 ]
             );
     }
@@ -93,7 +93,7 @@ class DBALConfigRepository extends ConfigRepository
                 $resultsWithKey = [];
                 foreach ($results as $result) {
                     try {
-                        $content = json_decode(
+                        $content = \json_decode(
                             $result['content'],
                             true
                         );
@@ -101,7 +101,7 @@ class DBALConfigRepository extends ConfigRepository
                         $content = [];
                     }
 
-                    $content = is_array($content) ? $content : [];
+                    $content = \is_array($content) ? $content : [];
                     $resultsWithKey[$result['repository_reference_uuid']] = Config::createFromArray($content);
                 }
 

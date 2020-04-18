@@ -81,7 +81,7 @@ class IndexItems extends CommandWithRepositoryReferenceAndToken implements WithR
             'token' => $this
                 ->getToken()
                 ->toArray(),
-            'items' => array_map(function (Item $item) {
+            'items' => \array_map(function (Item $item) {
                 return $item->toArray();
             }, $this->items),
         ];
@@ -99,7 +99,7 @@ class IndexItems extends CommandWithRepositoryReferenceAndToken implements WithR
         return new self(
             RepositoryReference::createFromComposed($data['repository_reference']),
             Token::createFromArray($data['token']),
-            array_map(function (array $item) {
+            \array_map(function (array $item) {
                 return Item::createFromArray($item);
             }, $data['items'])
         );

@@ -31,6 +31,6 @@ class ExternalResourceException extends Exception
      */
     public static function createExternalConnectionException(string $service): ExternalResourceException
     {
-        return new self(sprintf('A problem with the external connection %s has occurred', $service));
+        return new self(\sprintf('A problem with the external connection %s has occurred', $service));
     }
 }

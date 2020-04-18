@@ -101,7 +101,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      */
     public function generateRandomIndexPrefix(): string
     {
-        $randomID = rand(100000000000, 1000000000000);
+        $randomID = \rand(100000000000, 1000000000000);
 
         return "apisearch_{$randomID}_item";
     }
@@ -210,7 +210,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         ];
 
         $stopWordsLanguage = ElasticaLanguages::getStopwordsLanguageByIso($language);
-        if (!is_null($stopWordsLanguage)) {
+        if (!\is_null($stopWordsLanguage)) {
             $defaultAnalyzerFilter[30] = 'stop_words';
             $searchAnalyzerFilter[30] = 'stop_words';
             $indexConfiguration['analysis']['filter']['stop_words'] = [
@@ -220,7 +220,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         }
 
         $stemmer = ElasticaLanguages::getStemmerLanguageByIso($language);
-        if (!is_null($stemmer)) {
+        if (!\is_null($stemmer)) {
             $searchAnalyzerFilter[35] = 'stemmer';
             $indexConfiguration['analysis']['filter']['stemmer'] = [
                 'type' => 'stemmer',
@@ -233,16 +233,16 @@ class ElasticaWrapper implements AsyncRequestAccessor
             $defaultAnalyzerFilter[40] = 'synonym';
             $indexConfiguration['analysis']['filter']['synonym'] = [
                 'type' => 'synonym',
-                'synonyms' => array_map(function (Synonym $synonym) {
-                    return strtolower($synonym->expand());
+                'synonyms' => \array_map(function (Synonym $synonym) {
+                    return \strtolower($synonym->expand());
                 }, $synonyms),
             ];
         }
 
-        ksort($defaultAnalyzerFilter, SORT_NUMERIC);
-        ksort($searchAnalyzerFilter, SORT_NUMERIC);
-        $indexConfiguration['analysis']['analyzer']['default']['filter'] = array_values($defaultAnalyzerFilter);
-        $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = array_values($searchAnalyzerFilter);
+        \ksort($defaultAnalyzerFilter, SORT_NUMERIC);
+        \ksort($searchAnalyzerFilter, SORT_NUMERIC);
+        $indexConfiguration['analysis']['analyzer']['default']['filter'] = \array_values($defaultAnalyzerFilter);
+        $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = \array_values($searchAnalyzerFilter);
 
         return ['settings' => $indexConfiguration];
     }
@@ -413,7 +413,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                     '$/im';
 
                 $indices = [];
-                preg_match_all($regexToParse, $elasticaResponse->getData()['message'], $matches, PREG_SET_ORDER, 0);
+                \preg_match_all($regexToParse, $elasticaResponse->getData()['message'], $matches, PREG_SET_ORDER, 0);
                 if ($matches) {
                     foreach ($matches as $metaData) {
                         $indices[] = new ApisearchIndex(
@@ -421,7 +421,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                             AppUUID::createById($metaData['app_id']),
                             (
                                 'open' === $metaData['status'] &&
-                                in_array($metaData['color'], ['green', 'yellow'])
+                                \in_array($metaData['color'], ['green', 'yellow'])
                             ),
                             (int) $metaData['doc_count'],
                             (string) $metaData['index_size'],
@@ -495,7 +495,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         foreach ($data['properties'] ?? [] as $property => $value) {
             $this->getMappingProperties(
                 $metadataBucket,
-                trim("$field.$property", '.'),
+                \trim("$field.$property", '.'),
                 $value
             );
         }
@@ -518,7 +518,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         return $this
             ->getOriginalIndexName($repositoryReference)
             ->then(function ($originalIndexName) use ($repositoryReference) {
-                if (!is_null($originalIndexName)) {
+                if (!\is_null($originalIndexName)) {
                     throw ResourceExistsException::indexExists();
                 }
             })
@@ -585,7 +585,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         return $this
             ->getOriginalIndexName($repositoryReference)
             ->then(function ($originalIndexName) use ($repositoryReference) {
-                if (is_null($originalIndexName)) {
+                if (\is_null($originalIndexName)) {
                     throw ResourceNotAvailableException::indexNotAvailable(
                         $repositoryReference->compose()
                     );
@@ -686,7 +686,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $query = new Query\MatchAll();
         $query = Query::create($query)->getQuery();
         $endpoint = new DeleteByQuery();
-        $endpoint->setBody(['query' => is_array($query) ? $query : $query->toArray()]);
+        $endpoint->setBody(['query' => \is_array($query) ? $query : $query->toArray()]);
         $endpoint->setParams([
             'refresh' => true,
         ]);
@@ -925,7 +925,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         bool $refresh
     ): PromiseInterface {
         $indexName = $this->getIndexAliasName($repositoryReference);
-        $query = Query::create(new Query\Ids(array_values($documentsId)));
+        $query = Query::create(new Query\Ids(\array_values($documentsId)));
 
         $endpoint = new DeleteByQuery();
         $endpoint->setBody($query->toArray());
@@ -970,12 +970,12 @@ class ElasticaWrapper implements AsyncRequestAccessor
         RepositoryReference $repositoryReference,
         string $prefix
     ) {
-        if (is_null($repositoryReference->getAppUUID())) {
+        if (\is_null($repositoryReference->getAppUUID())) {
             return '';
         }
 
         $appId = $repositoryReference->getAppUUID()->composeUUID();
-        if (is_null($repositoryReference->getIndexUUID())) {
+        if (\is_null($repositoryReference->getIndexUUID())) {
             return "{$prefix}_{$appId}";
         }
 
@@ -984,10 +984,10 @@ class ElasticaWrapper implements AsyncRequestAccessor
             return "{$prefix}_{$appId}_*";
         }
 
-        $splittedIndexId = explode(',', $indexId);
+        $splittedIndexId = \explode(',', $indexId);
 
-        return implode(',', array_map(function (string $indexId) use ($prefix, $appId) {
-            return trim("{$prefix}_{$appId}_$indexId", '_ ');
+        return \implode(',', \array_map(function (string $indexId) use ($prefix, $appId) {
+            return \trim("{$prefix}_{$appId}_$indexId", '_ ');
         }, $splittedIndexId));
     }
 
@@ -1018,7 +1018,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                     return null;
                 }
 
-                preg_match($regexToParse, $elasticaResponse->getData()['message'], $match);
+                \preg_match($regexToParse, $elasticaResponse->getData()['message'], $match);
 
                 return $match['index_name'] ?? null;
             });

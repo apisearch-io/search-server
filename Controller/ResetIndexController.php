@@ -38,7 +38,6 @@ class ResetIndexController extends ControllerWithCommandBus
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
         return $this
-            ->commandBus
             ->execute(new ResetIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),

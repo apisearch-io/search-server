@@ -95,7 +95,7 @@ class AddTokenCommand extends CommandWithCommandBusAndGodToken
         $objects = $this->getAppTokenAndIndices($input, $output);
         $endpoints = $this->getEndpoints($input);
 
-        $this->executeCommand(new PutToken(
+        $this->executeAndWait(new PutToken(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
             new Token(

@@ -43,11 +43,11 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      */
     public function __construct(array $tokensAsArray)
     {
-        $this->tokens = array_values(
-            array_map(function (array $tokenAsArray) {
+        $this->tokens = \array_values(
+            \array_map(function (array $tokenAsArray) {
                 $tokenAsArray['uuid'] = TokenUUID::createById($tokenAsArray['uuid'])->toArray();
                 $tokenAsArray['app_uuid'] = AppUUID::createById($tokenAsArray['app_uuid'])->toArray();
-                $tokenAsArray['indices'] = array_map(function (string $indexId) {
+                $tokenAsArray['indices'] = \array_map(function (string $indexId) {
                     return IndexUUID::createById($indexId)->toArray();
                 }, $tokenAsArray['indices']);
                 unset($tokenAsArray['app_id']);
@@ -83,8 +83,8 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
         AppUUID $appUUID,
         TokenUUID $tokenUUID
     ): PromiseInterface {
-        $tokens = array_values(
-            array_filter(
+        $tokens = \array_values(
+            \array_filter(
                 $this->tokens,
                 function (Token $token) use ($appUUID, $tokenUUID) {
                     return
@@ -112,8 +112,8 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
      */
     public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        return resolve(array_values(
-            array_filter(
+        return resolve(\array_values(
+            \array_filter(
                 $this->tokens,
                 function (Token $token) use ($appUUID) {
                     return $token->getAppUUID()->composeUUID() === $appUUID->composeUUID();

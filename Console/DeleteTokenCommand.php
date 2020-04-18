@@ -61,7 +61,7 @@ class DeleteTokenCommand extends CommandWithCommandBusAndGodToken
     {
         $objects = $this->getAppTokenAndIndices($input, $output);
 
-        $this->executeCommand(new DeleteToken(
+        $this->executeAndWait(new DeleteToken(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
             $objects['token_uuid']
@@ -90,7 +90,7 @@ class DeleteTokenCommand extends CommandWithCommandBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return sprintf(
+        return \sprintf(
             'Token with UUID <%s> deleted properly',
             $input->getArgument('uuid')
         );

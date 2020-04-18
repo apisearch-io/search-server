@@ -72,7 +72,7 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
             $file,
             $output,
             function (array $items, bool $lastIteration) use ($objects) {
-                $this->executeCommand(new IndexItems(
+                $this->executeAndWait(new IndexItems(
                     $objects['repository_reference'],
                     $objects['token'],
                     $items
@@ -103,6 +103,6 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return sprintf('Imported %d items into index', $result);
+        return \sprintf('Imported %d items into index', $result);
     }
 }

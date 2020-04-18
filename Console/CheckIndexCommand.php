@@ -68,7 +68,7 @@ class CheckIndexCommand extends CommandWithQueryBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        return $this->askQuery(new CheckIndex(
+        return $this->askAndWait(new CheckIndex(
             $objects['repository_reference'],
             $objects['token'],
             $objects['index_uuid']

@@ -41,7 +41,7 @@ class Adapter implements KernelAdapter
         bool $debug
     ): Kernel {
         $kernel = AppFactory::createApp(
-            $appPath = dirname(__FILE__).'/..',
+            $appPath = \dirname(__FILE__).'/..',
             $environment,
             $debug,
             true

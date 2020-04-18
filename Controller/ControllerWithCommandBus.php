@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller;
 
 use Drift\CommandBus\Bus\CommandBus;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ControllerWithCommandBus.
@@ -37,5 +38,19 @@ abstract class ControllerWithCommandBus extends BaseController
     public function __construct(CommandBus $commandBus)
     {
         $this->commandBus = $commandBus;
+    }
+
+    /**
+     * Execute command.
+     *
+     * @param object $command
+     *
+     * @return PromiseInterface
+     */
+    public function execute($command)
+    {
+        return $this
+            ->commandBus
+            ->execute($command);
     }
 }

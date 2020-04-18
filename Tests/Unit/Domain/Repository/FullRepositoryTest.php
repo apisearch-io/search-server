@@ -130,6 +130,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $this->await($repository->addItems($repositoryReference, $this->createItems()));
         $result = $this->await($repository->query($repositoryReference, $this->createQuery()));
         $this->assertCount(2, $result->getItems());
+
+        $indices = $this->await($repository->getIndices($repositoryReference));
+        $firstIndex = \reset($indices);
+        $this->assertEquals(2, $firstIndex->getDocCount());
     }
 
     /**
@@ -212,23 +216,23 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $this->await($repository->addItems($repositoryReference, $this->createItems()));
         $result = $this->await($repository->query($repositoryReference, $this->createQuery()));
         $firstResult = $result->getFirstItem();
-        $this->assertTrue(array_key_exists('field', $firstResult->getMetadata()));
-        $this->assertTrue(array_key_exists('another_field', $firstResult->getMetadata()));
+        $this->assertTrue(\array_key_exists('field', $firstResult->getMetadata()));
+        $this->assertTrue(\array_key_exists('another_field', $firstResult->getMetadata()));
 
         $result = $this->await($repository->query($repositoryReference, $this->createQuery()->setFields(['metadata.field'])));
         $firstResult = $result->getFirstItem();
-        $this->assertTrue(array_key_exists('field', $firstResult->getMetadata()));
-        $this->assertFalse(array_key_exists('another_field', $firstResult->getMetadata()));
+        $this->assertTrue(\array_key_exists('field', $firstResult->getMetadata()));
+        $this->assertFalse(\array_key_exists('another_field', $firstResult->getMetadata()));
 
         $result = $this->await($repository->query($repositoryReference, $this->createQuery()->setFields(['!metadata.field'])));
         $firstResult = $result->getFirstItem();
-        $this->assertFalse(array_key_exists('field', $firstResult->getMetadata()));
-        $this->assertTrue(array_key_exists('another_field', $firstResult->getMetadata()));
+        $this->assertFalse(\array_key_exists('field', $firstResult->getMetadata()));
+        $this->assertTrue(\array_key_exists('another_field', $firstResult->getMetadata()));
 
         $result = $this->await($repository->query($repositoryReference, $this->createQuery()->setFields(['metadata.field', '!metadata.field'])));
         $firstResult = $result->getFirstItem();
-        $this->assertFalse(array_key_exists('field', $firstResult->getMetadata()));
-        $this->assertFalse(array_key_exists('another_field', $firstResult->getMetadata()));
+        $this->assertFalse(\array_key_exists('field', $firstResult->getMetadata()));
+        $this->assertFalse(\array_key_exists('another_field', $firstResult->getMetadata()));
     }
 
     /**
@@ -266,19 +270,19 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $usableRepositoryReference = $this->createRepositoryReference($appId, $indexId);
 
         $indices = $this->await($repository->getIndices($usableRepositoryReference));
-        $this->assertCount(count($resultIndexIds), $indices);
+        $this->assertCount(\count($resultIndexIds), $indices);
         foreach ($indices as $index) {
-            $indexIdNum = str_replace('index', '', $index->getUUID()->composeUUID());
-            $this->assertTrue(in_array($indexIdNum, $resultIndexIds));
+            $indexIdNum = \str_replace('index', '', $index->getUUID()->composeUUID());
+            $this->assertTrue(\in_array($indexIdNum, $resultIndexIds));
         }
 
         $result = $this->await($repository->query($usableRepositoryReference, $this->createQuery()));
         $items = $result->getItems();
 
-        $this->assertCount(count($resultItemIds), $items);
+        $this->assertCount(\count($resultItemIds), $items);
         foreach ($items as $item) {
-            $itemIdNum = str_replace('item', '', $item->getId());
-            $this->assertTrue(in_array($itemIdNum, $resultItemIds));
+            $itemIdNum = \str_replace('item', '', $item->getId());
+            $this->assertTrue(\in_array($itemIdNum, $resultItemIds));
         }
     }
 
@@ -320,7 +324,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
         ?string $appId = 'app1',
         ?string $indexId = 'index1'
     ): RepositoryReference {
-        return is_null($indexId)
+        return \is_null($indexId)
             ? $this->createAppRepositoryReference($appId)
             : RepositoryReference::create(
                 $this->createAppUUID($appId),
@@ -337,7 +341,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
      */
     private function createAppRepositoryReference(?string $appId = 'app1'): RepositoryReference
     {
-        return is_null($appId)
+        return \is_null($appId)
             ? RepositoryReference::create()
             : RepositoryReference::create($this->createAppUUID($appId));
     }

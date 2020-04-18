@@ -72,23 +72,23 @@ class ServerConfigurationCommand extends ApisearchFormattedCommand
         self::printApisearchServer($output);
         self::printMessage($output, '##', 'Server started');
         self::printInfoMessage($output, '##', ' ~~ with');
-        self::printInfoMessage($output, '##', sprintf(' ~~ --env = %s', $this->kernel->getEnvironment()));
+        self::printInfoMessage($output, '##', \sprintf(' ~~ --env = %s', $this->kernel->getEnvironment()));
         self::printInfoMessage($output, '##', '');
         self::printInfoMessage($output, '##', '$_SERVER values');
         self::printStringsArray($output, $_SERVER);
         self::printInfoMessage($output, '##', '');
         self::printInfoMessage($output, '##', 'Loaded plugins');
 
-        $enabledPlugins = array_filter($this->kernel->getBundles(), function (BundleInterface $bundle) {
+        $enabledPlugins = \array_filter($this->kernel->getBundles(), function (BundleInterface $bundle) {
             return $bundle instanceof Plugin;
         });
 
-        $enabledPluginsName = array_map(function (Plugin $plugin) {
+        $enabledPluginsName = \array_map(function (Plugin $plugin) {
             return $plugin->getPluginName();
         }, $enabledPlugins);
 
         foreach ($enabledPluginsName as $enabledPluginName) {
-            self::printInfoMessage($output, '##', sprintf(' ~~ %s', $enabledPluginName));
+            self::printInfoMessage($output, '##', \sprintf(' ~~ %s', $enabledPluginName));
         }
         self::printSystemMessage($output, '##', '');
     }
@@ -147,13 +147,13 @@ class ServerConfigurationCommand extends ApisearchFormattedCommand
         OutputInterface $output,
         array $array
     ) {
-        ksort($array);
+        \ksort($array);
         foreach ($array as $item => $value) {
-            if (!is_string($value)) {
+            if (!\is_string($value)) {
                 continue;
             }
 
-            self::printInfoMessage($output, '##', sprintf(' ~~ %s = %s', $item, $value));
+            self::printInfoMessage($output, '##', \sprintf(' ~~ %s = %s', $item, $value));
         }
     }
 }

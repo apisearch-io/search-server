@@ -60,7 +60,7 @@ class GetIndicesHandler extends WithAppRepository
             ->appRepository
             ->getIndices($getIndices->getRepositoryReference())
             ->then(function (array $indices) use ($getIndices) {
-                return array_map(function (Index $index) {
+                return \array_map(function (Index $index) {
                     $config = $this->configRepository->getConfig(
                         RepositoryReference::create(
                             $index->getAppUUID(),
@@ -73,7 +73,7 @@ class GetIndicesHandler extends WithAppRepository
                         ? $config->getMetadata()
                         : [];
 
-                    $indexAsArray['metadata'] = array_merge(
+                    $indexAsArray['metadata'] = \array_merge(
                         $currentMetadata,
                         $newMetadata
                     );

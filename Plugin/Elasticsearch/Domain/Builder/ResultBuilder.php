@@ -67,7 +67,7 @@ class ResultBuilder
                 $usedKey = $bucket['key'] ?? $key;
                 if (
                     empty($queryAggregation->getSubgroup()) ||
-                    in_array($usedKey, $queryAggregation->getSubgroup())
+                    \in_array($usedKey, $queryAggregation->getSubgroup())
                 ) {
                     $aggregation->addCounter(
                         (string) $usedKey,

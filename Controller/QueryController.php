@@ -44,7 +44,6 @@ class QueryController extends ControllerWithQueryBus
         $queryModel = RequestAccessor::extractQuery($request);
 
         return $this
-            ->queryBus
             ->ask(new Query(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
@@ -52,8 +51,8 @@ class QueryController extends ControllerWithQueryBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $queryModel,
-                array_filter($requestQuery->all(), function (string $key) {
-                    return !in_array($key, [
+                \array_filter($requestQuery->all(), function (string $key) {
+                    return !\in_array($key, [
                         Http::TOKEN_FIELD,
                     ]);
                 }, ARRAY_FILTER_USE_KEY)
@@ -72,7 +71,7 @@ class QueryController extends ControllerWithQueryBus
                         'Access-Control-Allow-Origin' => $request
                             ->headers
                             ->get('origin', '*'),
-                        'Vary' => 'Origin'
+                        'Vary' => 'Origin',
                     ]
                 );
             });

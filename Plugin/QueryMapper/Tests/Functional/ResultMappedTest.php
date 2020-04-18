@@ -47,7 +47,7 @@ class ResultMappedTest extends QueryMapperFunctionalTest
                         '4~bike',
                         '5~gum',
                     ],
-                ], json_decode($response->getContent(), true));
+                ], \json_decode($response->getContent(), true));
             });
 
         $this->await($promise);

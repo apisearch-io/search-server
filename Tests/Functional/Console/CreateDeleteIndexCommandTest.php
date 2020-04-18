@@ -125,8 +125,8 @@ trait CreateDeleteIndexCommandTest
             'app-id' => self::$appId,
         ]);
 
-        $this->assertTrue(strpos($data, '| 10 ') > 0);
-        $this->assertTrue(strpos($data, '| 2 ') > 0);
+        $this->assertTrue(\strpos($data, '| 10 ') > 0);
+        $this->assertTrue(\strpos($data, '| 2 ') > 0);
 
         static::runCommand([
             'command' => 'apisearch-server:delete-index',

@@ -86,11 +86,11 @@ trait AllSearchTests
         $lastIdFound = false;
         $inGroup = false;
         foreach ($ids as $id) {
-            $idWithoutGrouping = trim($id, '{}');
-            $mustCheckExistence = 0 !== strpos($idWithoutGrouping, '*');
-            $mustExist = 0 !== strpos($idWithoutGrouping, '!');
-            $mustCheckRelativity = (0 !== strpos($idWithoutGrouping, '?')) && $mustExist;
-            $cleanId = trim($idWithoutGrouping, '?*!');
+            $idWithoutGrouping = \trim($id, '{}');
+            $mustCheckExistence = 0 !== \strpos($idWithoutGrouping, '*');
+            $mustExist = 0 !== \strpos($idWithoutGrouping, '!');
+            $mustCheckRelativity = (0 !== \strpos($idWithoutGrouping, '?')) && $mustExist;
+            $cleanId = \trim($idWithoutGrouping, '?*!');
 
             if ($mustCheckExistence) {
                 $this->assertSame(
@@ -101,7 +101,7 @@ trait AllSearchTests
 
             if (
                 $mustCheckRelativity &&
-                is_string($lastIdFound)
+                \is_string($lastIdFound)
             ) {
                 $this->assertId1MatchesBetterThanId2(
                     $result,
@@ -110,11 +110,11 @@ trait AllSearchTests
                 );
             }
 
-            if (strlen($id) !== strlen(ltrim($id, '{'))) {
+            if (\strlen($id) !== \strlen(\ltrim($id, '{'))) {
                 $inGroup = true;
             }
 
-            if (strlen($id) !== strlen(rtrim($id, '}'))) {
+            if (\strlen($id) !== \strlen(\rtrim($id, '}'))) {
                 $inGroup = false;
             }
 
@@ -140,7 +140,7 @@ trait AllSearchTests
         string $id
     ) {
         $elements = $result->getItems();
-        if (!array_key_exists($position, $elements)) {
+        if (!\array_key_exists($position, $elements)) {
             $this->fail("Element $position not found in results stack");
         } else {
             $this->assertSame(

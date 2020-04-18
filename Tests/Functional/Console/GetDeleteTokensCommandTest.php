@@ -50,15 +50,15 @@ abstract class GetDeleteTokensCommandTest extends CommandTest
             'app-id' => self::$appId,
         ]);
 
-        $this->assertTrue(strpos($output, "{$this->token}") > 0);
-        $this->assertTrue(strpos($output, '67890') > 0);
+        $this->assertTrue(\strpos($output, "{$this->token}") > 0);
+        $this->assertTrue(\strpos($output, '67890') > 0);
 
         $output = static::runCommand([
             'command' => 'apisearch-server:delete-all-tokens',
             'app-id' => self::$appId,
         ]);
 
-        $this->assertFalse(strpos($output, "{$this->token}"));
-        $this->assertFalse(strpos($output, '67890'));
+        $this->assertFalse(\strpos($output, "{$this->token}"));
+        $this->assertFalse(\strpos($output, '67890'));
     }
 }

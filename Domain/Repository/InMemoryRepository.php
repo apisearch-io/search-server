@@ -61,9 +61,9 @@ class InMemoryRepository implements FullRepository
                 $appUUIDComposed = $appUUID->composeUUID();
                 $indexUUIDComposed = $indexUUID->composeUUID();
 
-                if (!array_key_exists($appUUIDComposed, $this->indices)) {
+                if (!\array_key_exists($appUUIDComposed, $this->indices)) {
                     $this->indices[$appUUIDComposed] = [];
-                } elseif (array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])) {
+                } elseif (\array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])) {
                     throw new ResourceExistsException();
                 }
 
@@ -187,7 +187,7 @@ class InMemoryRepository implements FullRepository
 
                 foreach ($itemUUIDs as $itemUUID) {
                     $itemUUIDComposed = $itemUUID->composeUUID();
-                    if (array_key_exists($itemUUIDComposed, $items)) {
+                    if (\array_key_exists($itemUUIDComposed, $items)) {
                         unset($items[$itemUUIDComposed]);
                     }
                 }
@@ -228,9 +228,9 @@ class InMemoryRepository implements FullRepository
         string $indexUUIDComposed
     ) {
         if (
-            !array_key_exists($appUUIDComposed, $this->indices) ||
-            !is_array($this->indices[$appUUIDComposed]) ||
-            !array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])
+            !\array_key_exists($appUUIDComposed, $this->indices) ||
+            !\is_array($this->indices[$appUUIDComposed]) ||
+            !\array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])
         ) {
             throw new ResourceNotAvailableException();
         }
@@ -254,15 +254,15 @@ class InMemoryRepository implements FullRepository
         $indexUUIDComposed = $indexUUID->composeUUID();
         $this->indices[$appUUIDComposed][$indexUUIDComposed] = [
             'items' => $items,
-            'index' => new Index(
+            'index' => (new Index(
                 $indexUUID,
                 $appUUID,
                 true,
-                count($items),
+                \count($items),
                 '',
                 $config->getReplicas(),
                 $config->getShards()
-            ),
+            ))->toArray(),
         ];
     }
 
@@ -280,7 +280,7 @@ class InMemoryRepository implements FullRepository
     ): Result {
         $subqueries = $query->getSubqueries();
         if (!empty($subqueries)) {
-            $results = array_map(function (Query $query) use ($repositoryReference) {
+            $results = \array_map(function (Query $query) use ($repositoryReference) {
                 return $this->queryMatchAll(
                     $repositoryReference,
                     $query
@@ -305,10 +305,10 @@ class InMemoryRepository implements FullRepository
             $items += $itemsPosition;
         }
 
-        if (!is_null($query->getFilter('_id'))) {
+        if (!\is_null($query->getFilter('_id'))) {
             $filteredItems = $query->getFilter('_id')->getValues();
-            $items = array_filter($items, function ($item) use ($filteredItems) {
-                return in_array($item->composeUUID(), $filteredItems);
+            $items = \array_filter($items, function ($item) use ($filteredItems) {
+                return \in_array($item->composeUUID(), $filteredItems);
             });
         }
 
@@ -320,16 +320,16 @@ class InMemoryRepository implements FullRepository
 
         $fields = $query->getFields();
         if ($fields) {
-            if (in_array('metadata.field', $fields)) {
+            if (\in_array('metadata.field', $fields)) {
                 foreach ($items as $key => $item) {
                     $field = $item->getMetadata()['field'] ?? null;
-                    is_null($field)
+                    \is_null($field)
                         ? $items[$key]->setMetadata([])
                         : $items[$key]->setMetadata(['field' => $field]);
                 }
             }
 
-            if (in_array('!metadata.field', $fields)) {
+            if (\in_array('!metadata.field', $fields)) {
                 foreach ($items as $key => $item) {
                     $metadata = $item->getMetadata();
                     unset($metadata['field']);
@@ -340,11 +340,11 @@ class InMemoryRepository implements FullRepository
 
         return Result::create(
             null,
-            count($items),
-            count($items),
+            \count($items),
+            \count($items),
             null,
             [],
-            array_values($items)
+            \array_values($items)
         );
     }
 
@@ -364,13 +364,13 @@ class InMemoryRepository implements FullRepository
         $appUUID = $repositoryReference->getAppUUID();
         $appUUIDsComposed = ['*'];
         if ($appUUID instanceof AppUUID) {
-            $appUUIDsComposed = explode(',', $appUUID->composeUUID());
+            $appUUIDsComposed = \explode(',', $appUUID->composeUUID());
         }
 
         $indexUUID = $repositoryReference->getIndexUUID();
         $indexUUIDsComposed = ['*'];
         if ($indexUUID instanceof IndexUUID) {
-            $indexUUIDsComposed = explode(',', $indexUUID->composeUUID());
+            $indexUUIDsComposed = \explode(',', $indexUUID->composeUUID());
         }
 
         foreach ($appUUIDsComposed as $appUUIDComposed) {
@@ -402,7 +402,13 @@ class InMemoryRepository implements FullRepository
                                 );
                             }
 
-                            $elements[] = $index[$field];
+                            if ('index' === $field) {
+                                $indexAsArray = $index['index'];
+                                $indexAsArray['doc_count'] = \count($index['items']);
+                                $elements[] = Index::createFromArray($indexAsArray);
+                            } elseif ('items' === $field) {
+                                $elements[] = $index[$field];
+                            }
                         }
                     }
                 }

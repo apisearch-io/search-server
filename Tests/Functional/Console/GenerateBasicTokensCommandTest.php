@@ -43,11 +43,11 @@ trait GenerateBasicTokensCommandTest
         ]);
 
         $appUUID = AppUUID::createById(self::$appId);
-        preg_match('~UUID\s*(.*?)\s*generated for admin~', $output, $matches);
+        \preg_match('~UUID\s*(.*?)\s*generated for admin~', $output, $matches);
         $uuidAdmin = $matches[1];
-        preg_match('~UUID\s*(.*?)\s*generated for query~', $output, $matches);
+        \preg_match('~UUID\s*(.*?)\s*generated for query~', $output, $matches);
         $uuidQuery = $matches[1];
-        preg_match('~UUID\s*(.*?)\s*generated for interaction~', $output, $matches);
+        \preg_match('~UUID\s*(.*?)\s*generated for interaction~', $output, $matches);
         $uuidInteractions = $matches[1];
 
         $adminToken = new Token(TokenUUID::createById($uuidAdmin), $appUUID);

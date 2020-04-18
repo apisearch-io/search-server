@@ -120,7 +120,7 @@ class DomainEventSubscriber implements EventSubscriberInterface
                 $event->occurredOn()
             );
 
-        $data = json_encode([
+        $data = \json_encode([
             'environment' => $this->environment,
             'kernel_uid' => $this->kernelUID,
             'service' => $this->service,
@@ -131,12 +131,12 @@ class DomainEventSubscriber implements EventSubscriberInterface
 
         $this
             ->redisClient
-            ->rpush($this->key, json_encode([
+            ->rpush($this->key, \json_encode([
                 '@fields' => [
                     'channel' => 'apisearch_to_logstash',
                     'level' => $level,
-                    'memory_usage' => memory_get_usage(true),
-                    'memory_peak_usage' => memory_get_peak_usage(true),
+                    'memory_usage' => \memory_get_usage(true),
+                    'memory_peak_usage' => \memory_get_peak_usage(true),
                 ],
                 '@message' => $data,
                 '@type' => 'apisearch',

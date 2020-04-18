@@ -36,7 +36,6 @@ class PingController extends ControllerWithQueryBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->queryBus
             ->ask(new Ping())
             ->then(function (bool $alive) {
                 return true === $alive

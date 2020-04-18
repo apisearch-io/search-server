@@ -62,7 +62,7 @@ class PingTest extends CurlFunctionalTest
     public function dataPing(): array
     {
         return [
-            [$_ENV['APISEARCH_GOD_TOKEN'], 200],
+            [$_ENV['APISEARCH_GOD_TOKEN'], 401],
             [$_ENV['APISEARCH_PING_TOKEN'], 200],
             ['1234', 401],
         ];

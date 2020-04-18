@@ -150,7 +150,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            array_map(function (ItemUUID $itemUUID) {
+            \array_map(function (ItemUUID $itemUUID) {
                 return $itemUUID->toArray();
             }, $itemsUUID)
         );
@@ -177,7 +177,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            array_map(function (Item $item) {
+            \array_map(function (Item $item) {
                 return $item->toArray();
             }, $items)
         );
@@ -285,7 +285,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            is_null($config)
+            \is_null($config)
                 ? []
                 : $config->toArray()
         );
@@ -441,7 +441,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         );
         self::$lastResponse = $response;
 
-        return array_map(function (array $tokenAsArray) {
+        return \array_map(function (array $tokenAsArray) {
             return Token::createFromArray($tokenAsArray);
         }, $response['body']);
     }
@@ -568,58 +568,58 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             ? $route->getMethods()[0]
             : 'GET';
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, sprintf('http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s',
+        $ch = \curl_init();
+        \curl_setopt($ch, CURLOPT_URL, \sprintf('http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s',
             $routePath,
-            http_build_query($queryParameters)
+            \http_build_query($queryParameters)
         ));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        $body = is_string($body)
+        \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        \curl_setopt($ch, CURLOPT_HEADER, 1);
+        $body = \is_string($body)
             ? $body
-            : json_encode($body);
+            : \json_encode($body);
 
         if (!empty($body)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+            \curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             $headers[] = 'Content-Type: application/json';
-            $headers[] = 'Content-Length: '.strlen($body);
+            $headers[] = 'Content-Length: '.\strlen($body);
         }
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        \curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $response = curl_exec($ch);
-        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-        $responseHeadersAsString = substr($response, 0, $headerSize);
-        $content = substr($response, $headerSize);
+        $response = \curl_exec($ch);
+        $headerSize = \curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $responseHeadersAsString = \substr($response, 0, $headerSize);
+        $content = \substr($response, $headerSize);
 
-        $responseCode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-        if (false !== array_search('Accept-Encoding: gzip', $headers)) {
-            $content = gzdecode($content);
+        $responseCode = \curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        $contentLength = \curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        if (false !== \array_search('Accept-Encoding: gzip', $headers)) {
+            $content = \gzdecode($content);
         }
-        if (false !== array_search('Accept-Encoding: deflate', $headers)) {
-            $content = gzinflate($content);
+        if (false !== \array_search('Accept-Encoding: deflate', $headers)) {
+            $content = \gzinflate($content);
         }
 
         $responseHeaders = [];
-        $responseHeadersLines = explode("\r\n", $responseHeadersAsString);
+        $responseHeadersLines = \explode("\r\n", $responseHeadersAsString);
         foreach ($responseHeadersLines as $line) {
-            $parts = explode(':', $line, 2);
-            if (1 === count($parts)) {
+            $parts = \explode(':', $line, 2);
+            if (1 === \count($parts)) {
                 continue;
             }
 
-            $responseHeaders[$parts[0]] = trim($parts[1]);
+            $responseHeaders[$parts[0]] = \trim($parts[1]);
         }
 
         $result = [
             'code' => $responseCode,
-            'body' => json_decode($content, true) ?? $content,
+            'body' => \json_decode($content, true) ?? $content,
             'length' => $contentLength,
             'headers' => $responseHeaders,
         ];
-        if (is_string($result['body'])) {
+        if (\is_string($result['body'])) {
             $result['body'] = ['message' => $result['body']];
         }
 

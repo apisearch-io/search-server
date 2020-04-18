@@ -76,13 +76,13 @@ final class TokenQueryMiddleware
             }
 
             if (!empty($parameters)) {
-                $queryJson = json_encode($queryAsArray);
-                $queryJson = preg_replace_callback('~\{\{.*?\}\}~', function (array $matches) use ($parameters) {
-                    $key = ltrim(rtrim($matches[0], '}'), '{');
+                $queryJson = \json_encode($queryAsArray);
+                $queryJson = \preg_replace_callback('~\{\{.*?\}\}~', function (array $matches) use ($parameters) {
+                    $key = \ltrim(\rtrim($matches[0], '}'), '{');
 
                     return $parameters[$key] ?? '';
                 }, $queryJson);
-                $queryAsArray = json_decode($queryJson, true);
+                $queryAsArray = \json_decode($queryJson, true);
             }
 
             $query = new Query(

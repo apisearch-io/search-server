@@ -55,7 +55,7 @@ abstract class CommandWithQueryBusAndGodToken extends ApisearchServerCommand
      *
      * @return mixed
      */
-    public function askQuery($query)
+    public function askAndWait($query)
     {
         $promise = $this
             ->queryBus

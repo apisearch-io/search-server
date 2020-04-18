@@ -55,8 +55,8 @@ class RouterRedirectionToJsonResponse implements EventSubscriberInterface
                         }
 
                         $location =
-                            explode('?', $response->getTargetUrl())[0].'?'.
-                            http_build_query($queryAll);
+                            \explode('?', $response->getTargetUrl())[0].'?'.
+                            \http_build_query($queryAll);
 
                         $response->headers->set('location', $location);
                         $event->setResponse(new JsonResponse(

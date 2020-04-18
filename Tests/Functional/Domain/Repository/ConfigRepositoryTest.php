@@ -144,7 +144,7 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
             static::$appId,
             '--with-metadata',
         ]);
-        sleep(2);
+        \sleep(2);
         $output = $process->getOutput();
         $this->assertContains('configurable-index', $output);
         $this->assertContains('value3', $output);

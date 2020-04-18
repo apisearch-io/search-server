@@ -39,7 +39,6 @@ class DeleteTokenController extends ControllerWithCommandBus
         $tokenUUID = TokenUUID::createById($request->get('token_id', ''));
 
         return $this
-            ->commandBus
             ->execute(new DeleteToken(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

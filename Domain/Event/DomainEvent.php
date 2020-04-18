@@ -125,7 +125,7 @@ abstract class DomainEvent
     public function toLogger(): array
     {
         return [
-            'type' => str_replace('Apisearch\Server\Domain\Event\\', '', get_class($this)),
+            'type' => \str_replace('Apisearch\Server\Domain\Event\\', '', \get_class($this)),
             'occurred_on' => $this->occurredOn(),
         ] + $this->toArrayPayload();
     }

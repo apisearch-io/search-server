@@ -70,7 +70,7 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
 
         $repositoryReference = $command->getRepositoryReference();
         $indexUUID = $repositoryReference->getIndexUUID()->composeUUID();
-        $indicesIds = explode(',', $indexUUID);
+        $indicesIds = \explode(',', $indexUUID);
         $isAllowed = true;
 
         foreach ($indicesIds as $indicesId) {
@@ -89,7 +89,7 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
                         $origin,
                         $allowedDomains
                     );
-                    var_dump($isPartialAllowed);
+                    \var_dump($isPartialAllowed);
 
                     $isAllowed &= $isPartialAllowed;
                 }

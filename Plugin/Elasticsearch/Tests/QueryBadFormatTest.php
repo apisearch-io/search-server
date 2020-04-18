@@ -40,11 +40,11 @@ class QueryBadFormatTest extends HttpFunctionalTest
      */
     public function testQueryBadFormat()
     {
-        $context = stream_context_create([
+        $context = \stream_context_create([
             'http' => ['ignore_errors' => true],
         ]);
 
-        $result = file_get_contents(sprintf('http://localhost:%d/v1/%s/indices/%s?token=%s&query=%s',
+        $result = \file_get_contents(\sprintf('http://localhost:%d/v1/%s/indices/%s?token=%s&query=%s',
             self::HTTP_TEST_SERVICE_PORT,
             self::$appId,
             self::$index,
@@ -53,8 +53,8 @@ class QueryBadFormatTest extends HttpFunctionalTest
         ), false, $context);
 
         $result = [
-            'code' => explode(' ', $http_response_header[0], 3)[1],
-            'body' => json_decode($result, true),
+            'code' => \explode(' ', $http_response_header[0], 3)[1],
+            'body' => \json_decode($result, true),
         ];
 
         self::throwTransportableExceptionIfNeeded($result);

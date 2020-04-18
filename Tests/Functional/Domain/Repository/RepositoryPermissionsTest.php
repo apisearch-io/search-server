@@ -32,7 +32,7 @@ trait RepositoryPermissionsTest
      */
     public function testBadPermissions($appId, $index, $method, $data = null)
     {
-        if (is_null($data)) {
+        if (\is_null($data)) {
             $this->$method(
                 $appId,
                 $index

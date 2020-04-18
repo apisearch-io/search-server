@@ -38,7 +38,6 @@ class DeleteIndexController extends ControllerWithCommandBus
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
         return $this
-            ->commandBus
             ->execute(new DeleteIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),

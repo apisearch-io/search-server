@@ -56,7 +56,7 @@ class DeleteTokensCommand extends CommandWithCommandBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        $this->executeCommand(new DeleteTokens(
+        $this->executeAndWait(new DeleteTokens(
             $objects['repository_reference'],
             $objects['token']
         ));

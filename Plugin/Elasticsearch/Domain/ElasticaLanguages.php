@@ -107,7 +107,7 @@ class ElasticaLanguages
             '_' => 'turkish',
         ][$iso] ?? null;
 
-        return is_null($value)
+        return \is_null($value)
             ? $value
             : (string) $value;
     }

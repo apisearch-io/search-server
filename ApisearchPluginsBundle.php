@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server;
 
+use Apisearch\Plugin\Admin\AdminPluginBundle;
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
 use Apisearch\Plugin\Elasticsearch\ElasticsearchPluginBundle;
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
@@ -42,14 +43,14 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
     public static function getBundleDependencies(KernelInterface $kernel): array
     {
         $pluginsAsString = Env::get('APISEARCH_ENABLED_PLUGINS', '');
-        $pluginsAsArray = explode(',', $pluginsAsString);
-        $pluginsAsArray = array_map('trim', $pluginsAsArray);
+        $pluginsAsArray = \explode(',', $pluginsAsString);
+        $pluginsAsArray = \array_map('trim', $pluginsAsArray);
         $pluginsAsArray = self::resolveAliases($pluginsAsArray);
 
-        $pluginsAsArray = array_filter($pluginsAsArray, function (string $pluginNamespace) {
+        $pluginsAsArray = \array_filter($pluginsAsArray, function (string $pluginNamespace) {
             if (
                 empty($pluginNamespace) ||
-                !class_exists($pluginNamespace)
+                !\class_exists($pluginNamespace)
             ) {
                 return false;
             }
@@ -72,6 +73,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
     private static function resolveAliases(array $bundles): array
     {
         $aliases = [
+            'admin' => AdminPluginBundle::class,
             'elasticsearch' => ElasticsearchPluginBundle::class,
             'logstash' => LogstashPluginBundle::class,
             'dbal' => DBALPluginBundle::class,
@@ -80,15 +82,15 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
             'query_mapper' => QueryMapperPluginBundle::class,
         ];
 
-        $combined = array_combine(
-            array_values($bundles),
-            array_values($bundles)
+        $combined = \array_combine(
+            \array_values($bundles),
+            \array_values($bundles)
         );
 
-        return array_values(
-            array_replace(
+        return \array_values(
+            \array_replace(
                 $combined,
-                array_intersect_key(
+                \array_intersect_key(
                     $aliases,
                     $combined
                 )

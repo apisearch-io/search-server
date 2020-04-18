@@ -55,8 +55,8 @@ class BasicUsageTest extends LogstashFunctionalTest
         static::await($redis->lPop(static::KEY));
         static::await($redis->lPop(static::KEY));
 
-        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
-        $message = json_decode($body['@message'], true);
+        $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
+        $message = \json_decode($body['@message'], true);
 
         $this->assertEquals(200, $body['@fields']['level']);
         $this->assertEquals('dev', $message['environment']);
@@ -64,8 +64,8 @@ class BasicUsageTest extends LogstashFunctionalTest
         $this->assertEquals('apisearch', $message['service']);
         $this->assertEquals('26178621test_default', $message['repository_reference']);
         $this->assertEquals('ItemsWereIndexed', $message['type']);
-        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
-        $message = json_decode($body['@message'], true);
+        $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
+        $message = \json_decode($body['@message'], true);
         $this->assertEquals(200, $body['@fields']['level']);
         $this->assertEquals('QueryWasMade', $message['type']);
 
@@ -75,7 +75,7 @@ class BasicUsageTest extends LogstashFunctionalTest
             // Ignoring exception
         }
 
-        $body = json_decode(static::await($redis->lPop(static::KEY)), true);
+        $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
         $this->assertEquals(400, $body['@fields']['level']);
     }
 }

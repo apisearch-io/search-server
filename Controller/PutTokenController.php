@@ -46,7 +46,6 @@ class PutTokenController extends ControllerWithCommandBus
         $newTokenAsArray['uuid'] = ['id' => $request->get('token_id')];
 
         return $this
-            ->commandBus
             ->execute(new PutToken(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

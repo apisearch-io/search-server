@@ -148,14 +148,14 @@ final class QueryWasMade extends DomainEvent
         return [
             'q' => $this->queryText,
             'q_empty' => empty($this->queryText),
-            'q_length' => strlen($this->queryText),
+            'q_length' => \strlen($this->queryText),
             'size' => $this->size,
-            'item_uuid' => array_values(
-                array_map(function (ItemUUID $itemUUID) {
+            'item_uuid' => \array_values(
+                \array_map(function (ItemUUID $itemUUID) {
                     return $itemUUID->composeUUID();
                 }, $this->itemsUUID)
             ),
-            'result_length' => count($this->itemsUUID),
+            'result_length' => \count($this->itemsUUID),
             'user' => ($this->user instanceof User)
                 ? $this->user->toArray()
                 : null,
