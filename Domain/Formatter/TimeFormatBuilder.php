@@ -33,16 +33,16 @@ class TimeFormatBuilder
     public function formatTimeFromMillisecondsToBasicDateTime(int $time): string
     {
         $formattedDatetime = (string) ($time / 1000000);
-        if (10 === strlen($formattedDatetime)) {
+        if (10 === \strlen($formattedDatetime)) {
             $formattedDatetime .= '.';
         }
 
-        $formattedDatetime = str_pad($formattedDatetime, 17, '0', STR_PAD_RIGHT);
+        $formattedDatetime = \str_pad($formattedDatetime, 17, '0', STR_PAD_RIGHT);
         $datetime = DateTime::createFromFormat('U.u', $formattedDatetime);
 
         return
             $datetime->format('Ymd\THis').'.'.
-            str_pad(((string) (int) (((int) $datetime->format('u')) / 1000)), 3, '0', STR_PAD_LEFT).
+            \str_pad(((string) (int) (((int) $datetime->format('u')) / 1000)), 3, '0', STR_PAD_LEFT).
             $datetime->format('P');
     }
 }

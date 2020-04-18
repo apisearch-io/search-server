@@ -117,8 +117,12 @@ apisearch_check_health:
     path: /health
     methods: ["GET"]
     controller: Apisearch\Server\Controller\CheckHealthController
+    defaults:
+        firewall: admin
 
 apisearch_ping:
     path: /
     methods: ["HEAD"]
     controller: Apisearch\Server\Controller\PingController
+    defaults:
+        firewall: ping

@@ -47,14 +47,13 @@ class IndexItemsController extends ControllerWithCommandBus
         );
 
         return $this
-            ->commandBus
             ->execute(new IndexItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
                 RequestAccessor::getTokenFromRequest($request),
-                array_map(function (array $object) {
+                \array_map(function (array $object) {
                     return Item::createFromArray($object);
                 }, $itemsAsArray)
             ))

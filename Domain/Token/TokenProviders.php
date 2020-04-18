@@ -57,7 +57,7 @@ class TokenProviders
                 return $tokenProvider
                     ->getTokensByAppUUID($appUUID)
                     ->then(function (array $newTokens) use ($tokens) {
-                        return array_merge($tokens, $newTokens);
+                        return \array_merge($tokens, $newTokens);
                     });
             });
         }

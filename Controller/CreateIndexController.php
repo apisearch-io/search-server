@@ -45,7 +45,6 @@ class CreateIndexController extends ControllerWithCommandBus
         );
 
         return $this
-            ->commandBus
             ->execute(new CreateIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

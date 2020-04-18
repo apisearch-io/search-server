@@ -54,7 +54,6 @@ class UpdateItemsByQueryController extends ControllerWithCommandBus
         );
 
         return $this
-            ->commandBus
             ->execute(new UpdateItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),

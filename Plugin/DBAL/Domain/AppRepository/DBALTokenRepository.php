@@ -84,7 +84,7 @@ class DBALTokenRepository extends TokenRepository
                 ['token_uuid' => $tokenUUIDComposed],
                 [
                     'app_uuid' => $repositoryReference->getAppUUID()->composeUUID(),
-                    'content' => json_encode($this->tokenContentToArray(
+                    'content' => \json_encode($this->tokenContentToArray(
                         $token
                     )),
                 ]
@@ -136,11 +136,11 @@ class DBALTokenRepository extends TokenRepository
             ->connection
             ->findBy($this->table)
             ->then(function ($results) {
-                return array_map(function ($result) {
+                return \array_map(function ($result) {
                     return $this->getTokenFromContentArray(
                         TokenUUID::createById($result['token_uuid']),
                         AppUUID::createById($result['app_uuid']),
-                        json_decode($result['content'], true)
+                        \json_decode($result['content'], true)
                     );
                 }, $results);
             });
@@ -156,7 +156,7 @@ class DBALTokenRepository extends TokenRepository
     private function tokenContentToArray(Token $token): array
     {
         return [
-            'i' => array_map(function (IndexUUID $indexUUID) {
+            'i' => \array_map(function (IndexUUID $indexUUID) {
                 return $indexUUID->composeUUID();
             }, $token->getIndices()),
             'e' => $token->getEndpoints(),
@@ -183,7 +183,7 @@ class DBALTokenRepository extends TokenRepository
         return new Token(
             $tokenUUID,
             $appUUID,
-            array_map(function (string $indexUUIDComposed) {
+            \array_map(function (string $indexUUIDComposed) {
                 return IndexUUID::createById($indexUUIDComposed);
             }, $content['i']),
             $content['e'],

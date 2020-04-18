@@ -47,14 +47,13 @@ class DeleteItemsController extends ControllerWithCommandBus
         );
 
         return $this
-            ->commandBus
             ->execute(new DeleteItems(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
                 RequestAccessor::getTokenFromRequest($request),
-                array_map(function (array $object) {
+                \array_map(function (array $object) {
                     return ItemUUID::createFromArray($object);
                 }, $itemsUUIDAsArray)
             ))

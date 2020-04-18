@@ -37,7 +37,6 @@ class GetIndicesController extends ControllerWithQueryBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->queryBus
             ->ask(new GetIndices(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
@@ -46,7 +45,7 @@ class GetIndicesController extends ControllerWithQueryBus
             ))
             ->then(function (array $indices) {
                 return new JsonResponse(
-                    array_map(function (Index $index) {
+                    \array_map(function (Index $index) {
                         return $index->toArray();
                     }, $indices),
                     200,

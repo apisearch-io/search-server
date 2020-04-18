@@ -40,7 +40,6 @@ class QueryCORSController extends ControllerWithQueryBus
         $origin = $headers->get('Origin', '');
 
         return $this
-            ->queryBus
             ->ask(new GetCORSPermissions(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
@@ -66,7 +65,7 @@ class QueryCORSController extends ControllerWithQueryBus
     {
         return new Response(null, 204, [
             'Access-Control-Allow-Origin' => $origin,
-            'Access-Control-Allow-Headers' => implode([
+            'Access-Control-Allow-Headers' => \implode([
                 Http::TOKEN_ID_HEADER,
             ]),
             'Access-Control-Allow-Methods' => 'GET',

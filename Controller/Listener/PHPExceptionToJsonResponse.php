@@ -69,7 +69,7 @@ class PHPExceptionToJsonResponse implements EventSubscriberInterface
     private function toOwnException(Exception $exception): Exception
     {
         if ($exception instanceof NotFoundHttpException) {
-            preg_match('~No route found for "(.*)"~', $exception->getMessage(), $match);
+            \preg_match('~No route found for "(.*)"~', $exception->getMessage(), $match);
 
             return ResourceNotAvailableException::routeNotAvailable($match[1] ?? $exception->getMessage());
         }

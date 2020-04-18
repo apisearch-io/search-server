@@ -31,11 +31,11 @@ trait ElasticFunctionalTestTrait
     public static function setUpBeforeClass()
     {
         $config = static::getElasticsearchConfig();
-        if (array_key_exists('host', $config)) {
+        if (\array_key_exists('host', $config)) {
             $_ENV['ELASTICSEARCH_HOST'] = $config['host'];
         }
 
-        if (array_key_exists('version', $config)) {
+        if (\array_key_exists('version', $config)) {
             $_ENV['ELASTICSEARCH_VERSION'] = $config['version'];
         }
 

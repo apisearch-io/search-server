@@ -39,9 +39,9 @@ class HealthTest extends HttpFunctionalTest
         $promise = static::$kernel
             ->handleAsync($request)
             ->then(function ($response) {
-                $content = json_decode($response->getContent(), true);
+                $content = \json_decode($response->getContent(), true);
                 $this->assertTrue(
-                    in_array(
+                    \in_array(
                         $content['status']['elasticsearch'],
                         ['green', 'yellow']
                     )

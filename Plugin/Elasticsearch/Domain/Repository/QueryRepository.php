@@ -88,7 +88,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         RepositoryReference $repositoryReference,
         Query $query
     ): PromiseInterface {
-        return (count($query->getSubqueries()) > 0)
+        return (\count($query->getSubqueries()) > 0)
             ? $this->makeMultiQuery($repositoryReference, $query)
             : $this->makeSimpleQuery($repositoryReference, $query);
     }
@@ -217,14 +217,14 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
 
             if (
                 isset($elasticaResult->getParam('sort')[0]) &&
-                is_float($elasticaResult->getParam('sort')[0])
+                \is_float($elasticaResult->getParam('sort')[0])
             ) {
                 $source['distance'] = $elasticaResult->getParam('sort')[0];
             }
 
             $item = Item::createFromArray($source);
             $score = $elasticaResult->getScore();
-            $item->setScore(is_float($score)
+            $item->setScore(\is_float($score)
                 ? $score
                 : 1
             );
@@ -232,7 +232,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
             if ($query->areHighlightEnabled()) {
                 $formedHighlights = [];
                 foreach ($elasticaResult->getHighlights() as $highlightField => $highlightValue) {
-                    $formedHighlights[str_replace('searchable_metadata.', '', $highlightField)] = $highlightValue[0];
+                    $formedHighlights[\str_replace('searchable_metadata.', '', $highlightField)] = $highlightValue[0];
                 }
 
                 $item->setHighlights($formedHighlights);
@@ -364,12 +364,12 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
             return;
         }
 
-        $it = count($itemsPriorized);
+        $it = \count($itemsPriorized);
         foreach ($itemsPriorized as $position => $itemUUID) {
             $boolQuery->addShould(new ElasticaQuery\Term([
                 '_id' => [
                     'value' => $itemUUID->composeUUID(),
-                    'boost' => 10 + ($it-- / (count($itemsPriorized) + 1)),
+                    'boost' => 10 + ($it-- / (\count($itemsPriorized) + 1)),
                 ],
             ]));
         }

@@ -35,7 +35,6 @@ class CheckHealthController extends ControllerWithQueryBus
          * @var array
          */
         return $this
-            ->queryBus
             ->ask(new CheckHealth())
             ->then(function (array $health) {
                 return new JsonResponse($health);

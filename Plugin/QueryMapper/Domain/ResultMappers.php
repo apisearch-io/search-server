@@ -47,7 +47,7 @@ class ResultMappers
     public function findResultMapperByToken(string $token): ? ResultMapper
     {
         foreach ($this->resultMappers as $resultMapper) {
-            if (in_array($token, $resultMapper->getTokens())) {
+            if (\in_array($token, $resultMapper->getTokens())) {
                 return $resultMapper;
             }
         }

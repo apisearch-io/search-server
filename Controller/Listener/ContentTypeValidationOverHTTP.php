@@ -40,7 +40,7 @@ class ContentTypeValidationOverHTTP implements EventSubscriberInterface
             ->then(function (RequestEvent $event) {
                 $request = $event->getRequest();
 
-                if (!in_array($request->getMethod(), [
+                if (!\in_array($request->getMethod(), [
                     Request::METHOD_GET,
                     Request::METHOD_HEAD,
                 ]) && ('json' !== $request->getContentType())

@@ -395,7 +395,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         $realIndex = empty($index) ? self::$index : $index;
 
         return self::configureAbstractRepository(
-            rtrim('apisearch.repository_'.static::getRepositoryName().'.'.$realIndex, '.'),
+            \rtrim('apisearch.repository_'.static::getRepositoryName().'.'.$realIndex, '.'),
             $appId,
             $index,
             $token

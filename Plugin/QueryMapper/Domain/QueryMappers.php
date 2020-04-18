@@ -47,7 +47,7 @@ class QueryMappers
     public function findQueryMapperByToken(string $token): ? QueryMapper
     {
         foreach ($this->queryMappers as $queryMapper) {
-            if (in_array($token, $queryMapper->getMappingTokens())) {
+            if (\in_array($token, $queryMapper->getMappingTokens())) {
                 return $queryMapper;
             }
         }

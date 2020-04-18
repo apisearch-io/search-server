@@ -42,7 +42,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
         $repositoryReference = $query->getRepositoryReference();
         $searchQuery = $query->getQuery();
         $this->assignUUIDIfNeeded($query->getQuery());
-        $from = microtime(true);
+        $from = \microtime(true);
 
         return $this
             ->repository
@@ -57,12 +57,12 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                         (new QueryWasMade(
                             $searchQuery->getQueryText(),
                             $searchQuery->getSize(),
-                            array_map(function (Item $item) {
+                            \array_map(function (Item $item) {
                                 return $item->getUUID();
                             }, $result->getItems()),
                             $searchQuery->getUser(),
-                            json_encode($query->getQuery()->toArray()),
-                            (int) ((microtime(true) - $from) * 1000)
+                            \json_encode($query->getQuery()->toArray()),
+                            (int) ((\microtime(true) - $from) * 1000)
                         ))
                             ->withRepositoryReference($repositoryReference)
                     )

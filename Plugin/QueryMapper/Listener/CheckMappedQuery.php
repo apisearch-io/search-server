@@ -54,7 +54,7 @@ class CheckMappedQuery
         $request = $event->getRequest();
         $route = $request->get('_route');
 
-        if (!in_array($route, [
+        if (!\in_array($route, [
             'apisearch_v1_query',
             'apisearch_v1_query_all_indices',
         ])) {

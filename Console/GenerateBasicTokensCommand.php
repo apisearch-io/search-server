@@ -95,7 +95,7 @@ class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
     ) {
         $tokenId = Uuid::uuid4()->toString();
 
-        $this->executeCommand(new PutToken(
+        $this->executeAndWait(new PutToken(
             RepositoryReference::create($appUUID),
             $godToken,
             new Token(

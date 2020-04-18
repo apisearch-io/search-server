@@ -76,31 +76,31 @@ class QueryMerger
         }
 
         if (self::FORCE === $type) {
-            return array_merge(
+            return \array_merge(
                 $baseQuery,
                 $mergeableQuery
             );
         }
 
         if (self::BASE === $type) {
-            return array_merge(
+            return \array_merge(
                 $mergeableQuery,
                 $baseQuery
             );
         }
 
-        $fieldsKeys = array_fill_keys(self::MERGE_FIELDS, true);
+        $fieldsKeys = \array_fill_keys(self::MERGE_FIELDS, true);
 
-        return array_merge(
-            array_diff_key(array_merge(
+        return \array_merge(
+            \array_diff_key(\array_merge(
                 $mergeableQuery,
                 $baseQuery
             ), $fieldsKeys),
-            array_merge(
+            \array_merge(
                 $baseQuery,
-                array_merge_recursive(
-                    array_intersect_key($baseQuery, array_fill_keys(self::MERGE_FIELDS, true)),
-                    array_intersect_key($mergeableQuery, array_fill_keys(self::MERGE_FIELDS, true))
+                \array_merge_recursive(
+                    \array_intersect_key($baseQuery, \array_fill_keys(self::MERGE_FIELDS, true)),
+                    \array_intersect_key($mergeableQuery, \array_fill_keys(self::MERGE_FIELDS, true))
                 )
             )
         );

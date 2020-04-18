@@ -76,7 +76,7 @@ final class ItemsWereUpdated extends DomainEvent
     public function toArrayPayload(): array
     {
         return [
-            'filters' => \json_encode(array_map(function (Filter $filter) {
+            'filters' => \json_encode(\array_map(function (Filter $filter) {
                 return $filter->toArray();
             }, $this->appliedFilters)),
             'changes' => \json_encode($this->changes->toArray()),

@@ -72,7 +72,7 @@ trait DBALFunctionalTestTrait
         $mainConnection = static::getStatic('dbal.main_connection');
         $tokensTableName = static::getParameterStatic('apisearch_plugin.dbal.tokens_table');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
-        @unlink('/tmp/apisearch.repository');
+        @\unlink('/tmp/apisearch.repository');
 
         $promise = all([
             $mainConnection

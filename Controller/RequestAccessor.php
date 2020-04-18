@@ -47,26 +47,26 @@ class RequestAccessor
         array $default = null
     ): array {
         $requestContent = $request->getContent();
-        $requestBody = json_decode($requestContent, true);
+        $requestBody = \json_decode($requestContent, true);
 
         if (
             !empty($requestContent) &&
-            is_null($requestBody)
+            \is_null($requestBody)
         ) {
             throw $exception;
         }
 
         if (
-            !is_array($requestBody) ||
+            !\is_array($requestBody) ||
             (
                 !empty($field) &&
                 (
                     !isset($requestBody[$field]) ||
-                    !is_array($requestBody[$field])
+                    !\is_array($requestBody[$field])
                 )
             )
         ) {
-            if (is_null($default)) {
+            if (\is_null($default)) {
                 throw $exception;
             }
 
@@ -110,7 +110,7 @@ class RequestAccessor
          */
         if ([] === $queryAsArray) {
             $possibleQuery = $request->query->get(Http::QUERY_FIELD);
-            if (is_string($possibleQuery)) {
+            if (\is_string($possibleQuery)) {
                 $queryAsArray = self::decodeQuery($possibleQuery);
             }
         }

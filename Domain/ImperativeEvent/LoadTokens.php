@@ -23,7 +23,7 @@ use Apisearch\Model\AppUUID;
 final class LoadTokens
 {
     /**
-     * @var AppUUID
+     * @var AppUUID|null
      */
     private $appUUID;
 
@@ -32,15 +32,15 @@ final class LoadTokens
      *
      * @param AppUUID $appUUID
      */
-    public function __construct(AppUUID $appUUID)
+    public function __construct(AppUUID $appUUID = null)
     {
         $this->appUUID = $appUUID;
     }
 
     /**
-     * @return AppUUID
+     * @return AppUUID|null
      */
-    public function getAppUUID(): AppUUID
+    public function getAppUUID(): ?AppUUID
     {
         return $this->appUUID;
     }

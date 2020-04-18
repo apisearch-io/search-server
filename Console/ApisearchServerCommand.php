@@ -173,7 +173,7 @@ abstract class ApisearchServerCommand extends ApisearchFormattedCommand
         $indicesUUID = [];
 
         if ($input->hasOption('index')) {
-            $indicesUUID = array_map(function (string $index) {
+            $indicesUUID = \array_map(function (string $index) {
                 return IndexUUID::createById($index);
             }, $input->getOption('index'));
         }

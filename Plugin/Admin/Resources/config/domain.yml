@@ -1,0 +1,21 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $godToken: "%apisearch_server.god_token%"
+            # string $readonlyToken: "%apisearch_server.readonly_token%"
+            # string $pingToken: "%apisearch_server.ping_token%"
+            # int $numberOfResultsLimitation: "%apisearch_server.limitations_number_of_results%"
+            # array $enabledPlugins: "%apisearch_server.enabled_plugins%"
+
+    Apisearch\Plugin\Admin\Controller\:
+        resource: '../../Controller/'
+        tags: ["controller.service_arguments"]
+
+    Apisearch\Plugin\Admin\Console\:
+        resource: '../../Console/'
+        tags: ["console.command"]
+
+    Apisearch\Plugin\Admin\Domain\:
+        resource: '../../Domain/'

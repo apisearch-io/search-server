@@ -38,7 +38,6 @@ class CheckIndexController extends ControllerWithQueryBus
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
 
         return $this
-            ->queryBus
             ->ask(new CheckIndex(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

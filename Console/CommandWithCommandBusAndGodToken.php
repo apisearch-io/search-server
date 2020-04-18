@@ -55,7 +55,7 @@ abstract class CommandWithCommandBusAndGodToken extends ApisearchServerCommand
      *
      * @return void
      */
-    public function executeCommand($command): void
+    public function executeAndWait($command): void
     {
         $promise = $this
             ->commandBus

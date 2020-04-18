@@ -62,7 +62,7 @@ class DeleteIndexCommand extends CommandWithCommandBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
         try {
-            $this->executeCommand(new DeleteIndex(
+            $this->executeAndWait(new DeleteIndex(
                 $objects['repository_reference'],
                 $objects['token'],
                 $objects['index_uuid']

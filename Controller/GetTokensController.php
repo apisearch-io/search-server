@@ -37,7 +37,6 @@ class GetTokensController extends ControllerWithQueryBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->queryBus
             ->ask(new GetTokens(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)
@@ -46,7 +45,7 @@ class GetTokensController extends ControllerWithQueryBus
             ))
             ->then(function (array $tokens) {
                 return new JsonResponse(
-                    array_map(function (Token $token) {
+                    \array_map(function (Token $token) {
                         return $token->toArray();
                     }, $tokens),
                     200,

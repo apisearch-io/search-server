@@ -76,7 +76,7 @@ class HealthTest extends CurlFunctionalTest
     {
         return [
             [$_ENV['APISEARCH_GOD_TOKEN'], 200],
-            [$_ENV['APISEARCH_PING_TOKEN'], 200],
+            [$_ENV['APISEARCH_PING_TOKEN'], 401],
             ['non-existing-key', 401],
         ];
     }

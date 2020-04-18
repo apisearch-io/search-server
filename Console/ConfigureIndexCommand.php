@@ -138,7 +138,7 @@ class ConfigureIndexCommand extends CommandWithCommandBusAndGodToken
         $objects = $this->getAppIndexToken($input, $output);
         $synonymsFile = $input->getOption('synonyms-file');
 
-        $synonyms = !is_null($synonymsFile)
+        $synonyms = !\is_null($synonymsFile)
             ? $this
                 ->synonymReader
                 ->readSynonymsFromFile($input->getOption('synonyms-file'))
@@ -149,14 +149,14 @@ class ConfigureIndexCommand extends CommandWithCommandBusAndGodToken
             ->readSynonymsFromCommaSeparatedArray($input->getOption('synonym'));
 
         try {
-            $this->executeCommand(new ConfigureIndex(
+            $this->executeAndWait(new ConfigureIndex(
                 $objects['repository_reference'],
                 $objects['token'],
                 $objects['index_uuid'],
                 Config::createFromArray([
                     'language' => $input->getOption('language'),
                     'store_searchable_metadata' => !$input->getOption('no-store-searchable-metadata'),
-                    'synonyms' => $synonyms = array_map(function (Synonym $synonym) {
+                    'synonyms' => $synonyms = \array_map(function (Synonym $synonym) {
                         return $synonym->toArray();
                     }, $synonyms),
                     'shards' => $input->getOption('shards'),

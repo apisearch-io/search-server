@@ -57,14 +57,14 @@ class CredentialsTokenValidator implements TokenValidator
             ) &&
             (
                 empty($token->getIndices()) ||
-                empty(array_diff(
+                empty(\array_diff(
                     $indexUUIDAsStringArray,
                     $tokenIndexUUIDAsStringArray
                 ))
             ) &&
             (
                 empty($token->getEndpoints()) ||
-                in_array($routeName, $token->getEndpoints())
+                \in_array($routeName, $token->getEndpoints())
             )
         );
     }
@@ -80,12 +80,12 @@ class CredentialsTokenValidator implements TokenValidator
     {
         $indexUUIDStrings = [];
         foreach ($indexUUIDs as $indexUUID) {
-            $indexUUIDStrings = array_merge(
+            $indexUUIDStrings = \array_merge(
                 $indexUUIDStrings,
-                array_filter(
-                    explode(
+                \array_filter(
+                    \explode(
                         ',',
-                        trim($indexUUID->composeUUID(), ',* ')
+                        \trim($indexUUID->composeUUID(), ',* ')
                     )
                 )
             );

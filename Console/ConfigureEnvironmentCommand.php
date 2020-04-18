@@ -47,7 +47,7 @@ class ConfigureEnvironmentCommand extends CommandWithCommandBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this->executeCommand(new ConfigureEnvironment());
+        $this->executeAndWait(new ConfigureEnvironment());
     }
 
     /**

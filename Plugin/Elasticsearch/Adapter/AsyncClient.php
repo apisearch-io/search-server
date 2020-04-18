@@ -77,19 +77,19 @@ class AsyncClient implements AsyncRequestAccessor
         array $query = [],
         $contentType = Request::DEFAULT_CONTENT_TYPE
     ): PromiseInterface {
-        if (is_array($data)) {
-            $data = json_encode($data);
+        if (\is_array($data)) {
+            $data = \json_encode($data);
         }
 
-        $fullPath = sprintf('%s/%s?%s',
+        $fullPath = \sprintf('%s/%s?%s',
             $this->elasticsearchEndpoint,
-            ltrim($path, '/'),
+            \ltrim($path, '/'),
             $this->arrayValuesToQuery($query)
         );
 
         if (
-            false === strpos($fullPath, 'http://') &&
-            false === strpos($fullPath, 'https://')
+            false === \strpos($fullPath, 'http://') &&
+            false === \strpos($fullPath, 'https://')
         ) {
             $fullPath = "http://$fullPath";
         }
@@ -97,7 +97,7 @@ class AsyncClient implements AsyncRequestAccessor
         $request = new PSR7Request($method, $fullPath);
         $request = $request->withBody(stream_for($data));
         $request = $request->withHeader('Content-Type', $contentType);
-        $request = $request->withHeader('Content-Length', strlen($data));
+        $request = $request->withHeader('Content-Length', \strlen($data));
 
         return $this
             ->httpClient
@@ -143,12 +143,12 @@ class AsyncClient implements AsyncRequestAccessor
         string $index = null
     ): PromiseInterface {
         $cloned = clone $endpoint;
-        if (is_string($index)) {
+        if (\is_string($index)) {
             $cloned->setIndex($index);
         }
 
         return $this->requestAsync(
-            ltrim($cloned->getURI(), '/'),
+            \ltrim($cloned->getURI(), '/'),
             $cloned->getMethod(),
             null === $cloned->getBody() ? [] : $cloned->getBody(),
             $cloned->getParams()
@@ -166,7 +166,7 @@ class AsyncClient implements AsyncRequestAccessor
     {
         $chain = [];
         foreach ($values as $key => $value) {
-            if (is_bool($value)) {
+            if (\is_bool($value)) {
                 $chain[] = "$key=".($value
                     ? 'true'
                     : 'false');
@@ -176,6 +176,6 @@ class AsyncClient implements AsyncRequestAccessor
             $chain[] = "$key=$value";
         }
 
-        return implode('&', $chain);
+        return \implode('&', $chain);
     }
 }

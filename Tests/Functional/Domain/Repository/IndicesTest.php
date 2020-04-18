@@ -45,7 +45,7 @@ trait IndicesTest
         ];
 
         foreach ($expectedFields as $field) {
-            $this->assertTrue(array_key_exists($field, $givenFields));
+            $this->assertTrue(\array_key_exists($field, $givenFields));
         }
     }
 }

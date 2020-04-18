@@ -44,7 +44,6 @@ class AddInteractionController extends ControllerWithCommandBus
         );
 
         return $this
-            ->commandBus
             ->execute(new AddInteraction(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

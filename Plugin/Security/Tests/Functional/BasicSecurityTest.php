@@ -46,7 +46,7 @@ class BasicSecurityTest extends CurlFunctionalTest
         );
         $token->setMetadataValue('seconds_valid', 1);
         $this->putToken($token, self::$appId);
-        sleep(2);
+        \sleep(2);
 
         try {
             $this->query(
@@ -55,7 +55,7 @@ class BasicSecurityTest extends CurlFunctionalTest
                 self::$index,
                 $token
             );
-            $this->fail(sprintf('%s exception expected', InvalidTokenException::class));
+            $this->fail(\sprintf('%s exception expected', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
             $this->assertTrue(true);
@@ -73,7 +73,7 @@ class BasicSecurityTest extends CurlFunctionalTest
         );
         $token->setMetadataValue('seconds_valid', 2);
         $this->putToken($token, self::$appId);
-        sleep(1);
+        \sleep(1);
         $this->query(
             Query::createMatchAll(),
             self::$appId,
@@ -107,7 +107,7 @@ class BasicSecurityTest extends CurlFunctionalTest
                     'Referer: '.static::CURL_REFERER,
                 ]
             );
-            $this->fail(sprintf('%s exception expected', InvalidTokenException::class));
+            $this->fail(\sprintf('%s exception expected', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
             $this->assertTrue(true);
@@ -184,7 +184,7 @@ class BasicSecurityTest extends CurlFunctionalTest
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $token);
         try {
             $this->query(Query::createMatchAll(), self::$appId, self::$index, $token);
-            $this->fail(sprintf('%s should be thrown', InvalidTokenException::class));
+            $this->fail(\sprintf('%s should be thrown', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
             $this->assertTrue(true);
@@ -205,7 +205,7 @@ class BasicSecurityTest extends CurlFunctionalTest
         $this->query(Query::createMatchAll(), self::$appId, self::$index, $newToken);
         try {
             $this->query(Query::createMatchAll(), self::$appId, self::$index, $newToken);
-            $this->fail(sprintf('%s should be thrown', InvalidTokenException::class));
+            $this->fail(\sprintf('%s should be thrown', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
             $this->assertTrue(true);

@@ -29,7 +29,7 @@ class DiskRepositoryTest extends FullRepositoryTest
     protected function getFullRepository(): FullRepository
     {
         $path = '/tmp/apisearch.repository';
-        @unlink($path);
+        @\unlink($path);
 
         return new DiskRepository($path);
     }

@@ -85,7 +85,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 continue;
             }
 
-            $key = sprintf(
+            $key = \sprintf(
                 'token_requests_limit_%s_%s',
                 $token
                     ->getTokenUUID()
@@ -144,13 +144,13 @@ class RequestsLimitTokenValidator implements TokenValidator
         string $data,
         DateTime $dateTime
     ) {
-        $parts = explode('/', $data);
-        if (1 === count($parts)) {
+        $parts = \explode('/', $data);
+        if (1 === \count($parts)) {
             $parts[1] = '';
         }
 
         list($number, $timeMargin) = $parts;
-        preg_match('~(\d+)(K|MM|M)?~', $number, $match);
+        \preg_match('~(\d+)(K|MM|M)?~', $number, $match);
         $number = $match[1] ?? null;
         if (\is_null($number)) {
             return [];
@@ -180,7 +180,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 break;
             case 'i':
                 $timekey = $dateTime->format('Y-m-d\TH:i');
-                $secondsForExpire = (new DateTime(sprintf(
+                $secondsForExpire = (new DateTime(\sprintf(
                         '%s-%s-%s %s:%s:00',
                         $dateTime->format('Y'),
                         $dateTime->format('m'),
@@ -193,7 +193,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 break;
             case 'h':
                 $timekey = $dateTime->format('Y-m-d\TH');
-                $secondsForExpire = (new DateTime(sprintf(
+                $secondsForExpire = (new DateTime(\sprintf(
                         '%s-%s-%s %s:00:00',
                         $dateTime->format('Y'),
                         $dateTime->format('m'),
@@ -219,7 +219,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 break;
             case 'y':
                 $timekey = $dateTime->format('Y');
-                $secondsForExpire = (new DateTime(sprintf(
+                $secondsForExpire = (new DateTime(\sprintf(
                         '%s-01-01 00:00:00',
                         $dateTime->format('Y')
                     )))

@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Exception\InvalidFormatException;
-use Apisearch\Exception\InvalidTokenException;
 use Apisearch\Http\Http;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
@@ -25,7 +24,6 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Server\Controller\RequestAccessor;
 use Apisearch\Server\Domain\Token\TokenManager;
 use function React\Promise\resolve;
-use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,24 +42,13 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
     private $tokenManager;
 
     /**
-     * @var LoopInterface
-     *
-     * Loop
-     */
-    private $loop;
-
-    /**
      * TokenValidationOverHTTP constructor.
      *
-     * @param TokenManager  $tokenManager
-     * @param LoopInterface $loop
+     * @param TokenManager $tokenManager
      */
-    public function __construct(
-        TokenManager $tokenManager,
-        LoopInterface $loop
-    ) {
+    public function __construct(TokenManager $tokenManager)
+    {
         $this->tokenManager = $tokenManager;
-        $this->loop = $loop;
     }
 
     /**
@@ -80,27 +67,10 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
 
         return resolve()
             ->then(function () use ($request) {
-                $query = $request->query;
-                $headers = $request->headers;
-                $token = $headers->get(
-                    Http::TOKEN_ID_HEADER,
-                    $query->get(
-                        Http::TOKEN_FIELD,
-                        ''
-                    )
-                );
-
-                if (is_null($token)) {
-                    throw InvalidTokenException::createInvalidTokenPermissions('');
-                }
-
-                $tokenString = $token instanceof Token
-                    ? $token->getTokenUUID()->composeUUID()
-                    : $token;
-
+                $tokenString = RequestHelper::getTokenStringFromRequest($request);
                 $referer = $request->headers->get('Referer', '');
                 $indices = $this->getIndices($request);
-                $route = str_replace('apisearch_', '', $request->get('_route'));
+                $route = \str_replace('apisearch_', '', $request->get('_route'));
 
                 return $this
                     ->tokenManager
@@ -123,13 +93,13 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
                 }
 
                 if (!$request->attributes->has('index_id')) {
-                    $indicesAsString = array_map(function (IndexUUID $indexUUID) {
+                    $indicesAsString = \array_map(function (IndexUUID $indexUUID) {
                         return $indexUUID->composeUUID();
                     }, $token->getIndices());
 
                     $request
                         ->attributes
-                        ->set('index_id', implode(',', $indicesAsString));
+                        ->set('index_id', \implode(',', $indicesAsString));
                 }
 
                 return $token;
@@ -165,9 +135,9 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
             }
         }
 
-        $indices = array_unique($indices);
+        $indices = \array_unique($indices);
 
-        return IndexUUID::createById(implode(',', $indices));
+        return IndexUUID::createById(\implode(',', $indices));
     }
 
     /**

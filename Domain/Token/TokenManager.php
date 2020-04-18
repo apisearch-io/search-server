@@ -154,7 +154,7 @@ class TokenManager
         string $referrer,
         string $routeName
     ): PromiseInterface {
-        if (is_null($token)) {
+        if (\is_null($token)) {
             return resolve(false);
         }
 

@@ -73,7 +73,7 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
             $file,
             $output,
             function (QueryModel $query) use ($objects) {
-                return $this->askQuery(new Query(
+                return $this->askAndWait(new Query(
                     $objects['repository_reference'],
                     $objects['token'],
                     $query
@@ -104,6 +104,6 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return sprintf('Exported %d items from index', $result);
+        return \sprintf('Exported %d items from index', $result);
     }
 }

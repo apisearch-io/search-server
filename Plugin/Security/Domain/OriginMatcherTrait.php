@@ -58,12 +58,12 @@ trait OriginMatcherTrait
         string $domain
     ): bool {
         if (
-            0 !== strpos($domain, 'https://') &&
-            0 !== strpos($domain, 'http://')
+            0 !== \strpos($domain, 'https://') &&
+            0 !== \strpos($domain, 'http://')
         ) {
-            $origin = preg_replace('~^https?://~', '', $origin);
+            $origin = \preg_replace('~^https?://~', '', $origin);
         }
 
-        return fnmatch($domain, $origin);
+        return \fnmatch($domain, $origin);
     }
 }

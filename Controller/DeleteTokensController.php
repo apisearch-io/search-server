@@ -36,7 +36,6 @@ class DeleteTokensController extends ControllerWithCommandBus
     public function __invoke(Request $request): PromiseInterface
     {
         return $this
-            ->commandBus
             ->execute(new DeleteTokens(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request)

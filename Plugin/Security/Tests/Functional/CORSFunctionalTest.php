@@ -87,7 +87,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
         ]), static::$appId, static::$anotherIndex);
 
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('Whatever.com', static::$appId, implode(',', [
+        $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ]));
@@ -106,7 +106,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'Whatever.com',
         ]), static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -127,7 +127,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'another.net',
         ]), static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -143,7 +143,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'another.io',
         ]));
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));

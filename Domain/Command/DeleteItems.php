@@ -81,7 +81,7 @@ class DeleteItems extends CommandWithRepositoryReferenceAndToken implements With
             'token' => $this
                 ->getToken()
                 ->toArray(),
-            'items_uuid' => array_map(function (ItemUUID $itemUUID) {
+            'items_uuid' => \array_map(function (ItemUUID $itemUUID) {
                 return $itemUUID->toArray();
             }, $this->itemsUUID),
         ];
@@ -99,7 +99,7 @@ class DeleteItems extends CommandWithRepositoryReferenceAndToken implements With
         return new self(
             RepositoryReference::createFromComposed($data['repository_reference']),
             Token::createFromArray($data['token']),
-            array_map(function (array $itemUUID) {
+            \array_map(function (array $itemUUID) {
                 return ItemUUID::createFromArray($itemUUID);
             }, $data['items_uuid'])
         );

@@ -99,7 +99,7 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
                 $objects['app_uuid']
             )), $this->loop);
 
-        $tokens = $this->askQuery(new GetTokens(
+        $tokens = $this->askAndWait(new GetTokens(
             $objects['repository_reference'],
             $objects['token']
         ));

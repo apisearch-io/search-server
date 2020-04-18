@@ -35,8 +35,8 @@ abstract class BaseController
         string $paramName
     ): ? int {
         $param = $parameters->get($paramName, null);
-        if (!is_null($param)) {
-            $param = intval($param);
+        if (!\is_null($param)) {
+            $param = \intval($param);
         }
 
         return $param;

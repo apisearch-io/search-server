@@ -35,7 +35,7 @@ class PluginMiddlewareCollectorTest extends TestCase
         $middleware->onlyHandle()->willReturn([]);
         $middleware->execute(Argument::cetera())->shouldBeCalledTimes(2);
         $middlewareInstance = $middleware->reveal();
-        $this->assertTrue(0 === strpos(get_class($middlewareInstance), 'Double'));
+        $this->assertTrue(0 === \strpos(\get_class($middlewareInstance), 'Double'));
         $pluginMiddlewareCollector->addPluginMiddleware($middlewareInstance);
         $pluginMiddlewareCollector->execute(new FakeCommand(), function () {});
         $pluginMiddlewareCollector->execute(new AbstractFakeCommand(), function () {});

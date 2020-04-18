@@ -48,15 +48,15 @@ class GenerateCrontabCommand extends CommandWithQueryBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $lines = $this->askQuery(new GetCrontab());
+        $lines = $this->askAndWait(new GetCrontab());
 
-        $lines = array_map(function (CrontabLine $line) {
-            return $line->toString(realpath(__DIR__.'/../'));
+        $lines = \array_map(function (CrontabLine $line) {
+            return $line->toString(\realpath(__DIR__.'/../'));
         }, $lines);
 
-        file_put_contents('/tmp/.crontab', implode(PHP_EOL, $lines).PHP_EOL);
-        exec('crontab /tmp/.crontab');
-        unlink('/tmp/.crontab');
+        \file_put_contents('/tmp/.crontab', \implode(PHP_EOL, $lines).PHP_EOL);
+        \exec('crontab /tmp/.crontab');
+        \unlink('/tmp/.crontab');
 
         return;
     }

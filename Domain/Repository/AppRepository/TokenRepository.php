@@ -152,7 +152,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
         $appUUIDComposed = $appUUID->composeUUID();
 
         return resolve(isset($this->tokens[$appUUIDComposed])
-            ? array_values($this->tokens[$appUUIDComposed])
+            ? \array_values($this->tokens[$appUUIDComposed])
             : []);
     }
 

@@ -62,7 +62,7 @@ class CheckMappedResult
                 $route = $request->get('_route');
 
                 if (
-                    !in_array($route, [
+                    !\in_array($route, [
                         'apisearch_v1_query',
                         'apisearch_v1_query_all_indices',
                     ]) ||
@@ -79,7 +79,7 @@ class CheckMappedResult
                         $request->get('result')
                     );
 
-                if (is_array($response)) {
+                if (\is_array($response)) {
                     $event->setResponse(
                         new JsonResponse(
                             $response,

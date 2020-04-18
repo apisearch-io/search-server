@@ -59,8 +59,8 @@ abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAp
         ?Config $config2
     ): bool {
         return
-            !is_null($config1) &&
-            !is_null($config2) &&
+            !\is_null($config1) &&
+            !\is_null($config2) &&
             $this->getConfigReindexationHash($config1) === $this->getConfigReindexationHash($config2);
     }
 
@@ -78,9 +78,9 @@ abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAp
         foreach ($synonyms as $synonym) {
             $plainSynonyms[] = $synonym->expand();
         }
-        sort($plainSynonyms);
+        \sort($plainSynonyms);
 
-        return md5(json_encode([
+        return \md5(\json_encode([
             $config->getShards(),
             $config->getReplicas(),
             $config->getLanguage(),

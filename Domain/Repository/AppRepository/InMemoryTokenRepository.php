@@ -108,7 +108,7 @@ class InMemoryTokenRepository extends TokenRepository
     {
         $allTokens = [];
         foreach ($this->storedTokens as $_ => $tokens) {
-            $allTokens = array_merge(
+            $allTokens = \array_merge(
                 $allTokens,
                 $tokens
             );

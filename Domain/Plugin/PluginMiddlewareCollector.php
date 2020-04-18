@@ -81,7 +81,7 @@ class PluginMiddlewareCollector
         $middlewares = $this->pluginMiddlewares['_all'];
         foreach ($this->getNamespaceCollectionOfClass($command) as $namespace) {
             if (isset($this->pluginMiddlewares[$namespace])) {
-                $middlewares = array_merge(
+                $middlewares = \array_merge(
                     $middlewares,
                     $this->pluginMiddlewares[$namespace]
                 );
@@ -112,10 +112,10 @@ class PluginMiddlewareCollector
      */
     private function getNamespaceCollectionOfClass($object): array
     {
-        return array_merge(
-            [get_class($object)],
-            class_parents($object, false),
-            class_implements($object, false)
+        return \array_merge(
+            [\get_class($object)],
+            \class_parents($object, false),
+            \class_implements($object, false)
         );
     }
 }

@@ -50,8 +50,8 @@ class GenerateCrontabCommandTest extends CommandTest
         ]);
 
         $this->assertEquals(
-            sprintf('1 * * * * cd %s && blah1.sh', realpath(__DIR__.'/../../..')),
-            exec('crontab -l')
+            \sprintf('1 * * * * cd %s && blah1.sh', \realpath(__DIR__.'/../../..')),
+            \exec('crontab -l')
         );
     }
 }

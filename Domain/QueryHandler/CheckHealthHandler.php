@@ -38,7 +38,7 @@ class CheckHealthHandler
             'status' => [],
             'info' => [],
             'process' => [
-                'memory_used' => memory_get_usage(false),
+                'memory_used' => \memory_get_usage(false),
             ],
         ]);
     }

@@ -23,22 +23,22 @@ use Apisearch\Model\AppUUID;
 final class LoadConfigs
 {
     /**
-     * @var AppUUID
+     * @var AppUUID|null
      */
     private $appUUID;
 
     /**
      * @param AppUUID $appUUID
      */
-    public function __construct(AppUUID $appUUID)
+    public function __construct(AppUUID $appUUID = null)
     {
         $this->appUUID = $appUUID;
     }
 
     /**
-     * @return AppUUID
+     * @return AppUUID|null
      */
-    public function getAppUUID(): AppUUID
+    public function getAppUUID(): ? AppUUID
     {
         return $this->appUUID;
     }

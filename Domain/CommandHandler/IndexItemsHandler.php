@@ -48,7 +48,7 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
                 return $this
                     ->eventBus
                     ->dispatch(
-                        (new ItemsWereIndexed(array_map(function (Item $item) {
+                        (new ItemsWereIndexed(\array_map(function (Item $item) {
                             return $item->getUUID();
                         }, $items)))
                             ->withRepositoryReference($repositoryReference)

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Drift;
 
+use Apisearch\Server\Domain\Plugin\PluginWithRoutes;
 use Drift\HttpKernel\AsyncKernel;
 use Mmoreram\SymfonyBundleDependencies\BundleDependenciesResolver;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -35,13 +36,7 @@ class Kernel extends AsyncKernel
      */
     public function registerBundles(): iterable
     {
-        $bundles = require $this->getApplicationLayerDir().'/config/bundles.php';
-        $bundles = array_filter($bundles, function ($envs, $class) {
-            return $envs[$this->environment] ?? $envs['all'] ?? false;
-        }, ARRAY_FILTER_USE_BOTH);
-        $bundles = array_keys($bundles);
-
-        $bundles = $this->resolveAndReturnBundleDependencies($this, $bundles);
+        $bundles = $this->resolveBundles();
 
         foreach ($bundles as $bundle) {
             yield new $bundle($this);
@@ -86,5 +81,31 @@ class Kernel extends AsyncKernel
     {
         $confDir = $this->getApplicationLayerDir().'/config';
         $routes->import($confDir.'/routes.yml');
+
+        /**
+         * Import enabled bundles routes.
+         */
+        $bundles = $this->resolveBundles();
+        foreach ($bundles as $bundle) {
+            if (\is_a($bundle, PluginWithRoutes::class, true)) {
+                $routes->import($bundle::getRoutesFile());
+            }
+        }
+    }
+
+    /**
+     * Resolve bundles.
+     *
+     * @return string[]
+     */
+    public function resolveBundles(): array
+    {
+        $bundles = require $this->getApplicationLayerDir().'/config/bundles.php';
+        $bundles = \array_filter($bundles, function ($envs, $class) {
+            return $envs[$this->environment] ?? $envs['all'] ?? false;
+        }, ARRAY_FILTER_USE_BOTH);
+        $bundles = \array_keys($bundles);
+
+        return $this->resolveAndReturnBundleDependencies($this, $bundles);
     }
 }

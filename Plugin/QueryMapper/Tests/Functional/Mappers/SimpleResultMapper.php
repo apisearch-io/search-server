@@ -45,8 +45,8 @@ class SimpleResultMapper implements ResultMapper
     public function buildArrayFromResult(Result $result): array
     {
         return [
-            'item_nb' => count($result->getItems()),
-            'item_ids' => array_map(function (Item $item) {
+            'item_nb' => \count($result->getItems()),
+            'item_ids' => \array_map(function (Item $item) {
                 return $item->composeUUID();
             }, $result->getItems()),
         ];

@@ -34,7 +34,7 @@ class ResultSet
 
         $totalHits = $data['hits']['total'];
 
-        return \intval(is_array($totalHits)
+        return \intval(\is_array($totalHits)
             ? $totalHits['value']
             : $totalHits);
     }
