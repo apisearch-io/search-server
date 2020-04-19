@@ -686,6 +686,17 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
+     * @param string|null $appId
+     * @param Token       $token
+     *
+     * @return array
+     */
+    abstract public function getUsage(
+        string $appId = null,
+        Token $token = null
+    ): array;
+
+    /**
      * Add interaction.
      *
      * @param Interaction $interaction

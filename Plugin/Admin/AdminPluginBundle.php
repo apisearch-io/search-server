@@ -18,7 +18,7 @@ namespace Apisearch\Plugin\Admin;
 use Apisearch\Plugin\Admin\DependencyInjection\AdminPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\PluginWithRoutes;
-use Mmoreram\BaseBundle\BaseBundle;
+use Mmoreram\BaseBundle\SimpleBaseBundle;
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 /**
  * Class AdminPluginBundle.
  */
-class AdminPluginBundle extends BaseBundle implements DependentBundleInterface, PluginWithRoutes
+class AdminPluginBundle extends SimpleBaseBundle implements DependentBundleInterface, PluginWithRoutes
 {
     /**
      * Return all bundle dependencies.
@@ -64,6 +64,18 @@ class AdminPluginBundle extends BaseBundle implements DependentBundleInterface, 
     public function getPluginName(): string
     {
         return 'admin';
+    }
+
+    /**
+     * get config files.
+     *
+     * @return array
+     */
+    public function getConfigFiles(): array
+    {
+        return [
+            'domain',
+        ];
     }
 
     /**

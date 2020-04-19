@@ -25,8 +25,6 @@ use React\Promise\PromiseInterface;
 class CheckHealthHandler
 {
     /**
-     * Check the cluster.
-     *
      * @param CheckHealth $checkHealth
      *
      * @return PromiseInterface<array>

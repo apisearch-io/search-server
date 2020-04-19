@@ -25,8 +25,6 @@ use React\Promise\PromiseInterface;
 class CheckIndexHandler extends WithAppRepository
 {
     /**
-     * Check the index.
-     *
      * @param CheckIndex $checkIndex
      *
      * @return PromiseInterface<bool>

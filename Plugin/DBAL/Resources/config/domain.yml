@@ -5,7 +5,10 @@ services:
         bind:
             string $tokensTable: "%apisearch_plugin.dbal.tokens_table%"
             string $configsTable: "%apisearch_plugin.dbal.index_configs_table%"
+            string $usageLinesTable: "%apisearch_plugin.dbal.usage_lines_table%"
             bool $locatorEnabled: "%apisearch_plugin.dbal.locator_enabled%"
+            int $loopPushInterval: "%apisearch_plugin.dbal.loop_push_interval%"
+            $persistentUsageRepository: '@Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository'
 
     Apisearch\Plugin\DBAL\Domain\:
         resource: '../../Domain/'
@@ -33,3 +36,11 @@ services:
 
     Apisearch\Plugin\DBAL\Domain\AppRepository\DBALConfigRepository:
         alias: Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository
+
+    #
+    # Usage Repository
+    #
+    Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository:
+    Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository:
+    Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository

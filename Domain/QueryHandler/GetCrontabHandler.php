@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\QueryHandler;
 
+use Apisearch\Server\Domain\Model\CrontabLine;
 use Apisearch\Server\Domain\Query\GetCrontab;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
@@ -25,8 +26,6 @@ use React\Promise\PromiseInterface;
 class GetCrontabHandler
 {
     /**
-     * Get the crontab.
-     *
      * @param GetCrontab $getCrontab
      *
      * @return PromiseInterface<CrontabLine[]>

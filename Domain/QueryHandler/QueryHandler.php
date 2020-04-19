@@ -31,8 +31,6 @@ use React\Promise\PromiseInterface;
 class QueryHandler extends WithRepositoryAndEventPublisher
 {
     /**
-     * Reset the query.
-     *
      * @param Query $query
      *
      * @return PromiseInterface<Result>

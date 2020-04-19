@@ -33,6 +33,7 @@
         <env name="DBAL_DBNAME" value="apisearch" force="true" />
         <env name="DBAL_TOKENS_TABLE" value="tokens" force="true" />
         <env name="DBAL_INDEX_CONFIGS_TABLE" value="index_config" force="true" />
+        <env name="DBAL_USAGE_LINES_TABLE" value="usage_lines" force="true" />
     </php>
 
     <testsuites>

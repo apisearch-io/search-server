@@ -25,8 +25,6 @@ use React\Promise\PromiseInterface;
 class GetTokensHandler extends WithAppRepositoryAndEventPublisher
 {
     /**
-     * Query events.
-     *
      * @param GetTokens $getTokens
      *
      * @return PromiseInterface<Token[]>

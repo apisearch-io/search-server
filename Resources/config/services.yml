@@ -36,6 +36,13 @@ services:
             - { name: apisearch_plugin.middleware }
 
     #
+    # Event listeners
+    #
+    Apisearch\Server\Domain\Listener\:
+        resource: '../../Domain/Listener/'
+
+
+    #
     # Repositories
     #
     Apisearch\Server\Domain\Repository\InMemoryRepository:
@@ -58,6 +65,13 @@ services:
 
     Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryConfigRepository
+
+    Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository:
+    Apisearch\Server\Domain\Repository\UsageRepository\TemporaryUsageRepository:
+        alias: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
+
+    Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
+        class: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
 
     #
     # Token

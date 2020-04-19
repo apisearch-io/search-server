@@ -45,6 +45,7 @@ use Apisearch\Server\Domain\Query\CheckIndex;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetTokens;
+use Apisearch\Server\Domain\Query\GetUsage;
 use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\User\Interaction;
@@ -477,6 +478,28 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
                     $appUUID
                 )
+        ));
+    }
+
+    /**
+     * @param string|null $appId
+     * @param Token       $token
+     *
+     * @return array
+     */
+    public function getUsage(
+        string $appId = null,
+        Token $token = null
+    ): array {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+
+        return self::askQuery(new GetUsage(
+            RepositoryReference::create($appUUID),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                $appUUID
+            )
         ));
     }
 

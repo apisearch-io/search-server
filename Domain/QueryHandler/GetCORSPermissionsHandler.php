@@ -26,8 +26,6 @@ use React\Promise\PromiseInterface;
 class GetCORSPermissionsHandler extends WithRepositoryAndEventPublisher
 {
     /**
-     * Get CORS permission.
-     *
      * @param GetCORSPermissions $getCORSPermissions
      *
      * @return PromiseInterface<bool>

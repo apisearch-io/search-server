@@ -30,8 +30,6 @@ class GetCrontab
     private $lines = [];
 
     /**
-     * Add line.
-     *
      * @param CrontabLine $line
      */
     public function addLine(CrontabLine $line)

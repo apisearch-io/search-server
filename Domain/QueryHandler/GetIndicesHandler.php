@@ -48,8 +48,6 @@ class GetIndicesHandler extends WithAppRepository
     }
 
     /**
-     * Get indices handler method.
-     *
      * @param GetIndices $getIndices
      *
      * @return PromiseInterface<Index[]>
