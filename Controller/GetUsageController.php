@@ -17,6 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetUsage;
+use DateTime;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,19 +28,30 @@ use Symfony\Component\HttpFoundation\Request;
 class GetUsageController extends ControllerWithQueryBus
 {
     /**
-     * Health controller.
+     * @param Request $request
      *
      * @return PromiseInterface
      */
     public function __invoke(Request $request): PromiseInterface
     {
+        $query = $request->query;
+        $perDay = $request->attributes->get('per_day', false);
+        $from = $query->get('from');
+        $from = $from ? DateTime::createFromFormat('U', $from) : new DateTime('first day of this month');
+        $to = $query->get('to');
+        $to = $to ? DateTime::createFromFormat('U', $to) : null;
+
         return $this
             ->ask(new GetUsage(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
-                RequestAccessor::getTokenFromRequest($request)
+                RequestAccessor::getTokenFromRequest($request),
+                $from,
+                $to,
+                $query->get('event', null),
+                $perDay
             ))
             ->then(function (array $usage) {
                 return new JsonResponse($usage);

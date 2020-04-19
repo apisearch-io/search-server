@@ -16,9 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Server\Console;
 
 use Apisearch\Server\Domain\Query\GetUsage;
+use DateTime;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -42,6 +44,31 @@ class PrintUsageCommand extends CommandWithQueryBusAndGodToken
                 'app-id',
                 InputArgument::REQUIRED,
                 'App id'
+            )
+            ->addOption(
+                'index-id',
+                null,
+                InputOption::VALUE_OPTIONAL
+            )
+            ->addOption(
+                'from',
+                null,
+                InputOption::VALUE_OPTIONAL
+            )
+            ->addOption(
+                'to',
+                null,
+                InputOption::VALUE_OPTIONAL
+            )
+            ->addOption(
+                'event',
+                null,
+                InputOption::VALUE_OPTIONAL
+            )
+            ->addOption(
+                'per-day',
+                null,
+                InputOption::VALUE_NONE
             );
     }
 
@@ -56,18 +83,35 @@ class PrintUsageCommand extends CommandWithQueryBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
+        $from = $input->getOption('from');
+        $from = $from ? DateTime::createFromFormat('U', $from) : new DateTime('first day of this month');
+        $to = $input->getOption('to');
+        $to = $to ? DateTime::createFromFormat('U', $to) : null;
+        $perDay = $input->getOption('per-day');
 
         $usage = $this->askAndWait(new GetUsage(
             $objects['repository_reference'],
-            $objects['token']
+            $objects['token'],
+            $from,
+            $to,
+            $input->getOption('event'),
+            $perDay
         ));
 
         $table = new Table($output);
-        $table->setHeaders(['Event', 'Number of times']);
-        foreach ($usage as $event => $numberOfTimes) {
-            $table->addRow([$event, $numberOfTimes]);
+        if ($perDay) {
+            $table->setHeaders(['Day', 'Event', 'Number of times']);
+            foreach ($usage as $day => $data) {
+                foreach ($data as $event => $numberOfTimes) {
+                    $table->addRow([$day, $event, $numberOfTimes]);
+                }
+            }
+        } else {
+            $table->setHeaders(['Event', 'Number of times']);
+            foreach ($usage as $event => $numberOfTimes) {
+                $table->addRow([$event, $numberOfTimes]);
+            }
         }
-
         $table->render();
 
         return;

@@ -73,12 +73,35 @@ apisearch_v1_delete_items:
     controller: Apisearch\Server\Controller\DeleteItemsController
 
 #
-# App API
+# Usage API
 #
 apisearch_v1_get_usage:
     path: /v1/{app_id}/usage
     methods: ["GET"]
     controller: Apisearch\Server\Controller\GetUsageController
+    defaults:
+        per_day: false
+
+apisearch_v1_get_usage_per_day:
+    path: /v1/{app_id}/usage/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetUsageController
+    defaults:
+        per_day: true
+
+apisearch_v1_get_index_usage:
+    path: /v1/{app_id}/indices/{index_id}/usage
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetUsageController
+    defaults:
+        per_day: false
+
+apisearch_v1_get_index_usage_per_day:
+    path: /v1/{app_id}/indices/{index_id}/usage/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetUsageController
+    defaults:
+        per_day: true
 
 #
 # Query API

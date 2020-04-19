@@ -44,13 +44,16 @@ class CreateIndexController extends ControllerWithCommandBus
             []
         );
 
+        $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
+
         return $this
             ->execute(new CreateIndex(
                 RepositoryReference::create(
-                    RequestAccessor::getAppUUIDFromRequest($request)
+                    RequestAccessor::getAppUUIDFromRequest($request),
+                    $indexUUID
                 ),
                 RequestAccessor::getTokenFromRequest($request),
-                RequestAccessor::getIndexUUIDFromRequest($request),
+                $indexUUID,
                 Config::createFromArray($configAsArray)
             ))
             ->then(function () {

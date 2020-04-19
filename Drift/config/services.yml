@@ -3,6 +3,7 @@ imports:
 
 parameters:
     kernel.secret: nsdjkfhdsupoifjñksd
+    in_memory: "in_memory"
 
 framework:
     form: false

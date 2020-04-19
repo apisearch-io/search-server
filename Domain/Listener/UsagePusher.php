@@ -40,44 +40,47 @@ class UsagePusher implements EventSubscriberInterface
     }
 
     /**
-     * Register event usage.
+     * Register query event usage.
      *
      * @param DomainEventEnvelope $domainEventEnvelope
      */
-    public function registerEventUsage(DomainEventEnvelope $domainEventEnvelope)
+    public function registerQueryEventUsage(DomainEventEnvelope $domainEventEnvelope)
     {
+        $this->registerEventUsage($domainEventEnvelope, 'query');
+    }
+
+    /**
+     * Register admin event usage.
+     *
+     * @param DomainEventEnvelope $domainEventEnvelope
+     */
+    public function registerAdminEventUsage(DomainEventEnvelope $domainEventEnvelope)
+    {
+        $this->registerEventUsage($domainEventEnvelope, 'admin');
+    }
+
+    /**
+     * Register event by name.
+     *
+     * @param DomainEventEnvelope $domainEventEnvelope
+     * @param string              $eventName
+     */
+    public function registerEventUsage(
+        DomainEventEnvelope $domainEventEnvelope,
+        string $eventName
+    ) {
         /**
          * @var DomainEvent
          */
         $event = $domainEventEnvelope->getDomainEvent();
+        $today = new \DateTime();
+        $today->setTime(0, 0, 0);
         $this
             ->usageRepository
             ->registerEvent(
                 $event->getRepositoryReference(),
-                $this->getEventName($event),
-                new \DateTime(),
-                1
-            );
-    }
-
-    /**
-     * Register indexed items N.
-     *
-     * @param DomainEventEnvelope $domainEventEnvelope
-     */
-    public function registerIndexedItemsN(DomainEventEnvelope $domainEventEnvelope)
-    {
-        /**
-         * @var Event\ItemsWereIndexed
-         */
-        $event = $domainEventEnvelope->getDomainEvent();
-        $this
-            ->usageRepository
-            ->registerEvent(
-                $event->getRepositoryReference(),
-                'itemsN',
-                new \DateTime(),
-                \count($event->getItemsUUID())
+                $eventName,
+                $today
             );
     }
 
@@ -86,9 +89,18 @@ class UsagePusher implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        $events = [
+        $queryEvents = [
             Event\QueryWasMade::class,
+        ];
 
+        $eventsStructure = [];
+        foreach ($queryEvents as $event) {
+            $eventsStructure[$event] = [
+                ['registerQueryEventUsage', 0],
+            ];
+        }
+
+        $adminEvents = [
             Event\ItemsWereIndexed::class,
             Event\ItemsWereUpdated::class,
             Event\ItemsWereDeleted::class,
@@ -103,15 +115,10 @@ class UsagePusher implements EventSubscriberInterface
             Event\TokensWereDeleted::class,
         ];
 
-        $eventsStructure = [];
-        foreach ($events as $event) {
+        foreach ($adminEvents as $event) {
             $eventsStructure[$event] = [
-                ['registerEventUsage', 0],
+                ['registerAdminEventUsage', 0],
             ];
-
-            if (Event\ItemsWereIndexed::class === $event) {
-                $eventsStructure[$event][] = ['registerIndexedItemsN', 0];
-            }
         }
 
         return $eventsStructure;
@@ -120,14 +127,13 @@ class UsagePusher implements EventSubscriberInterface
     /**
      * Get event name.
      *
-     * @param object|string $event
+     * @param object $event
      *
      * @return string
      */
     private function getEventName($event): string
     {
-        $namespace = \is_object($event) ? \get_class($event) : $event;
-        $parts = \explode('\\', $namespace);
+        $parts = \explode('\\', \get_class($event));
 
         return \strtolower(\end($parts));
     }

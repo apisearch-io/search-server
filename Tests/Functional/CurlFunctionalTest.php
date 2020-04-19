@@ -28,6 +28,7 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\User\Interaction;
+use DateTime;
 use Symfony\Component\Routing\Route;
 
 /**
@@ -466,21 +467,40 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param string|null $appId
-     * @param Token       $token
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $event
+     * @param bool|null     $perDay
      *
      * @return array
      */
     public function getUsage(
         string $appId = null,
-        Token $token = null
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $event = null,
+        ?bool $perDay = false
     ): array {
+        $routeParameters = ['app_id' => $appId ?? static::$appId];
+        if ($indexId) {
+            $routeParameters['index_id'] = $indexId;
+        }
+
         $response = self::makeCurl(
-            'v1_get_usage',
-            [
-                'app_id' => $appId ?? static::$appId,
-            ],
-            $token
+            'v1_get_'.($indexId ? 'index_' : '').'usage'.($perDay ? '_per_day' : ''),
+            $routeParameters,
+            $token,
+            [],
+            \array_filter([
+                'from' => (\is_null($from) ? false : $from->getTimestamp()),
+                'to' => (\is_null($to) ? false : $to->getTimestamp()),
+                'event' => $event ?? false,
+            ])
         );
         self::$lastResponse = $response;
 

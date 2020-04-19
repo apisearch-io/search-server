@@ -53,14 +53,22 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
             return resolve([]);
         }
 
+        $when->setTime(0, 0, 0);
         $indexUUID = $repositoryReference->getIndexUUID();
-        $this->useLines[] = new UseLine(
-            $eventName,
-            $appUUID->composeUUID(),
-            $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null,
-            $when,
-            $n
-        );
+        $indexUUIDComposed = $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null;
+        $appUUIDComposed = $appUUID->composeUUID();
+        $useLineHash = \sprintf('%s_%s_%s_%d', $eventName, $appUUIDComposed, $indexUUIDComposed, $when->getTimestamp());
+        if (!\array_key_exists($useLineHash, $this->useLines)) {
+            $this->useLines[$useLineHash] = new UseLine(
+                $eventName,
+                $appUUIDComposed,
+                $indexUUIDComposed,
+                $when,
+                $n
+            );
+        } else {
+            $this->useLines[$useLineHash]->increaseBy(1);
+        }
 
         return resolve();
     }
@@ -72,6 +80,7 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
      * @param string|null         $eventType
      * @param DateTime            $from
      * @param DateTime|null       $to
+     * @param bool                $perDay
      *
      * @return PromiseInterface
      */
@@ -79,7 +88,8 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
         RepositoryReference $repositoryReference,
         ?string $eventType,
         DateTime $from,
-        ?DateTime $to = null
+        ?DateTime $to = null,
+        bool $perDay = false
     ): PromiseInterface {
         $appUUID = $repositoryReference->getAppUUID();
         if (!$appUUID instanceof AppUUID) {
@@ -114,11 +124,19 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
                 continue;
             }
 
-            if (!\array_key_exists($event, $finalUses)) {
-                $finalUses[$event] = 0;
+            $bucket = &$finalUses;
+            if ($perDay) {
+                $day = $useLine->getWhen()->getTimestamp();
+                if (!\array_key_exists($day, $finalUses)) {
+                    $finalUses[$day] = [];
+                }
+                $bucket = &$finalUses[$day];
             }
 
-            $finalUses[$event] += $useLine->getN();
+            if (!\array_key_exists($event, $bucket)) {
+                $bucket[$event] = 0;
+            }
+            $bucket[$event] += $useLine->getN();
         }
 
         return resolve($finalUses);
