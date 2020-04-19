@@ -15,51 +15,21 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Console;
 
-use Apisearch\Command\PrintTokensCommand as BasePrintTokensCommand;
-use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
-use Apisearch\Server\Domain\Query\GetTokens;
-use Clue\React\Block;
-use Drift\CommandBus\Bus\QueryBus;
-use Drift\EventBus\Bus\InlineEventBus;
-use React\EventLoop\LoopInterface;
+use Apisearch\Server\Domain\Query\GetUsage;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class PrintTokensCommand.
+ * Class PrintAppUsageCommand.
  */
-class PrintTokensCommand extends CommandWithQueryBusAndGodToken
+class PrintUsageCommand extends CommandWithQueryBusAndGodToken
 {
     /**
      * @var string
      */
-    protected static $defaultName = 'apisearch-server:print-tokens';
-
-    /**
-     * @var InlineEventBus
-     */
-    private $eventBus;
-
-    /**
-     * Controller constructor.
-     *
-     * @param QueryBus       $queryBus
-     * @param LoopInterface  $loop
-     * @param string         $godToken
-     * @param InlineEventBus $eventBus
-     */
-    public function __construct(
-        QueryBus $queryBus,
-        LoopInterface $loop,
-        string $godToken,
-        InlineEventBus $eventBus
-    ) {
-        parent::__construct($queryBus, $loop, $godToken);
-
-        $this->eventBus = $eventBus;
-    }
+    protected static $defaultName = 'apisearch-server:print-usage';
 
     /**
      * Configures the current command.
@@ -67,17 +37,11 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
     protected function configure()
     {
         $this
-            ->setDescription('Print all tokens of an app-id')
+            ->setDescription('Print usage')
             ->addArgument(
                 'app-id',
                 InputArgument::REQUIRED,
                 'App id'
-            )
-            ->addOption(
-                'with-metadata',
-                null,
-                InputOption::VALUE_NONE,
-                'Print metadata'
             );
     }
 
@@ -93,24 +57,20 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        Block\await($this
-            ->eventBus
-            ->dispatch(new LoadTokens(
-                $objects['app_uuid']
-            )), $this->loop);
-
-        $tokens = $this->askAndWait(new GetTokens(
+        $usage = $this->askAndWait(new GetUsage(
             $objects['repository_reference'],
             $objects['token']
         ));
 
-        BasePrintTokensCommand::printTokens(
-            $input,
-            $output,
-            $tokens
-        );
+        $table = new Table($output);
+        $table->setHeaders(['Event', 'Number of times']);
+        foreach ($usage as $event => $numberOfTimes) {
+            $table->addRow([$event, $numberOfTimes]);
+        }
 
-        return 0;
+        $table->render();
+
+        return;
     }
 
     /**
@@ -120,7 +80,7 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
      */
     protected static function getHeader(): string
     {
-        return 'Get tokens';
+        return 'Get usage';
     }
 
     /**

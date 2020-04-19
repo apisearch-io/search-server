@@ -118,6 +118,10 @@ class DBALPluginExtension extends BaseExtension
 
             'apisearch_plugin.dbal.index_configs_table' => Env::get('DBAL_INDEX_CONFIGS_TABLE', $config['index_configs_table'] ?? null, true),
             'apisearch_plugin.dbal.tokens_table' => Env::get('DBAL_TOKENS_TABLE', $config['tokens_table'] ?? null, true),
+            'apisearch_plugin.dbal.usage_lines_table' => Env::get('DBAL_USAGE_LINES_TABLE', $config['usage_lines_table'] ?? null, true),
+
+            'apisearch_plugin.dbal.loop_push_interval' => \intval(Env::get('DBAL_LOOP_PUSH_INTERVAL', $config['loop_push_interval'])),
+
             'apisearch_plugin.dbal.locator_enabled' => $config['locator_enabled'],
         ];
     }

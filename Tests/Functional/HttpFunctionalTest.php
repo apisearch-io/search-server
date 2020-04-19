@@ -314,6 +314,19 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * @param string|null $appId
+     * @param Token       $token
+     *
+     * @return array
+     */
+    public function getUsage(
+        string $appId = null,
+        Token $token = null
+    ): array {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
      * Add interaction.
      *
      * @param Interaction $interaction

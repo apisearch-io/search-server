@@ -32,8 +32,6 @@ class GetCORSPermissions implements IndexRequiredCommand
     private $origin;
 
     /**
-     * ResetCommand constructor.
-     *
      * @param RepositoryReference $repositoryReference
      * @param string              $origin
      */

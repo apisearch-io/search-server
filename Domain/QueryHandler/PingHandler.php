@@ -25,8 +25,6 @@ use React\Promise\PromiseInterface;
 class PingHandler
 {
     /**
-     * Ping.
-     *
      * @param Ping $ping
      *
      * @return PromiseInterface<bool>

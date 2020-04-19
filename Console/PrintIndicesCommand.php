@@ -20,7 +20,7 @@ use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Clue\React\Block;
 use Drift\CommandBus\Bus\QueryBus;
-use Drift\HttpKernel\AsyncEventDispatcherInterface;
+use Drift\EventBus\Bus\InlineEventBus;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,27 +38,27 @@ class PrintIndicesCommand extends CommandWithQueryBusAndGodToken
     protected static $defaultName = 'apisearch-server:print-indices';
 
     /**
-     * @var AsyncEventDispatcherInterface
+     * @var InlineEventBus
      */
-    private $eventDispatcher;
+    private $eventBus;
 
     /**
      * Controller constructor.
      *
-     * @param QueryBus                      $queryBus
-     * @param LoopInterface                 $loop
-     * @param string                        $godToken
-     * @param AsyncEventDispatcherInterface $eventDispatcher
+     * @param QueryBus       $queryBus
+     * @param LoopInterface  $loop
+     * @param string         $godToken
+     * @param InlineEventBus $eventBus
      */
     public function __construct(
         QueryBus $queryBus,
         LoopInterface $loop,
         string $godToken,
-        AsyncEventDispatcherInterface $eventDispatcher
+        InlineEventBus $eventBus
     ) {
         parent::__construct($queryBus, $loop, $godToken);
 
-        $this->eventDispatcher = $eventDispatcher;
+        $this->eventBus = $eventBus;
     }
 
     /**
@@ -99,8 +99,8 @@ class PrintIndicesCommand extends CommandWithQueryBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
         Block\await($this
-            ->eventDispatcher
-            ->asyncDispatch(new LoadConfigs(
+            ->eventBus
+            ->dispatch(new LoadConfigs(
                 $objects['app_uuid']
             )), $this->loop);
 

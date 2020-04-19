@@ -13,21 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Middleware;
+namespace Apisearch\Server\Domain\Query;
+
+use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 
 /**
- * Class EmptyMiddleware.
+ * Class GetUsage.
  */
-final class EmptyMiddleware
+class GetUsage extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @param object   $command
-     * @param callable $next
-     *
-     * @return mixed
-     */
-    public function execute($command, callable $next)
-    {
-        return $next($command);
-    }
 }

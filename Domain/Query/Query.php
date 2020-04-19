@@ -42,8 +42,6 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
     private $parameters = [];
 
     /**
-     * DeleteCommand constructor.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param SearchQuery         $query

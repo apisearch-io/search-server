@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "537d1dcad131b918f81965ccf07e3d15",
+    "content-hash": "bd95069b42b7cb196dd7eb75f13806ba",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -417,6 +417,63 @@
                 "reactphp"
             ],
             "time": "2020-02-26T12:05:32+00:00"
+        },
+        {
+            "name": "clue/mq-react",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-mq.git",
+                "reference": "d04c4fa7ba607f649a83d946c23fc7b7c57f1125"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-mq/zipball/d04c4fa7ba607f649a83d946c23fc7b7c57f1125",
+                "reference": "d04c4fa7ba607f649a83d946c23fc7b7c57f1125",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "react/promise": "^2.2.1 || ^1.2.1"
+            },
+            "require-dev": {
+                "clue/block-react": "^1.0",
+                "clue/buzz-react": "^2.4",
+                "phpunit/phpunit": "^7.0 || ^6.4 || ^5.7 || ^4.8.35",
+                "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Mq\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Mini Queue, the lightweight in-memory message queue to concurrently do many (but not too many) things at once, built on top of ReactPHP",
+            "homepage": "https://github.com/clue/reactphp-mq",
+            "keywords": [
+                "Mini Queue",
+                "async",
+                "concurrency",
+                "job",
+                "message",
+                "message queue",
+                "queue",
+                "rate limit",
+                "reactphp",
+                "throttle",
+                "worker"
+            ],
+            "time": "2019-12-05T08:45:06+00:00"
         },
         {
             "name": "clue/redis-protocol",
@@ -7432,16 +7489,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "aed98a490f9a8f78468232db345ab9cf606cf598"
+                "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/aed98a490f9a8f78468232db345ab9cf606cf598",
-                "reference": "aed98a490f9a8f78468232db345ab9cf606cf598",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
+                "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
                 "shasum": ""
             },
             "require": {
@@ -7449,7 +7506,7 @@
                 "symfony/polyfill-ctype": "^1.8"
             },
             "conflict": {
-                "vimeo/psalm": "<3.6.0"
+                "vimeo/psalm": "<3.9.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.8.36 || ^7.5.13"
@@ -7476,7 +7533,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2020-02-14T12:15:55+00:00"
+            "time": "2020-04-18T12:12:48+00:00"
         }
     ],
     "aliases": [],

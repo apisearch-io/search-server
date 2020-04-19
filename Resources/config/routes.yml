@@ -73,6 +73,14 @@ apisearch_v1_delete_items:
     controller: Apisearch\Server\Controller\DeleteItemsController
 
 #
+# App API
+#
+apisearch_v1_get_usage:
+    path: /v1/{app_id}/usage
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetUsageController
+
+#
 # Query API
 #
 apisearch_v1_query:

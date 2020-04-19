@@ -466,6 +466,28 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * @param string|null $appId
+     * @param Token       $token
+     *
+     * @return array
+     */
+    public function getUsage(
+        string $appId = null,
+        Token $token = null
+    ): array {
+        $response = self::makeCurl(
+            'v1_get_usage',
+            [
+                'app_id' => $appId ?? static::$appId,
+            ],
+            $token
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
      * Add interaction.
      *
      * @param Interaction $interaction

@@ -43,8 +43,14 @@ class DBALPluginConfiguration extends BaseConfiguration
                 ->scalarNode('user')->end()
                 ->scalarNode('password')->end()
                 ->scalarNode('dbname')->end()
+
                 ->scalarNode('tokens_table')->end()
                 ->scalarNode('index_configs_table')->end()
+                ->scalarNode('usage_lines_table')->end()
+
+                ->scalarNode('loop_push_interval')
+                    ->defaultValue('60')
+                ->end()
 
                 ->booleanNode('locator_enabled')
                     ->defaultTrue()
