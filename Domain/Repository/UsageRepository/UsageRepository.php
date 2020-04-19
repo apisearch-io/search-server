@@ -48,6 +48,7 @@ interface UsageRepository
      * @param string|null         $eventType
      * @param DateTime            $from
      * @param DateTime|null       $to
+     * @param bool                $perDay
      *
      * @return PromiseInterface
      */
@@ -55,6 +56,7 @@ interface UsageRepository
         RepositoryReference $repositoryReference,
         ?string $eventType,
         DateTime $from,
-        ?DateTime $to = null
+        ?DateTime $to = null,
+        bool $perDay = false
     ): PromiseInterface;
 }

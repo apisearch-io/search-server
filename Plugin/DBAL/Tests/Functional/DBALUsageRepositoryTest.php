@@ -35,19 +35,21 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
      */
     public function getEmptyRepository(LoopInterface $loop): UsageRepository
     {
-        return static::createEmptyRepository($loop);
+        return static::createEmptyRepository(
+            static::createConnection($loop)
+        );
     }
 
     /**
-     * Create new EmptyRepository.
+     * Create connection.
      *
      * @param LoopInterface $loop
      *
-     * @return UsageRepository
+     * @return Connection
      */
-    public static function createEmptyRepository(LoopInterface $loop): UsageRepository
+    public static function createConnection(LoopInterface $loop): Connection
     {
-        $connection = Connection::createConnected(
+        return Connection::createConnected(
             new SQLiteDriver($loop),
             new Credentials(
                 '',
@@ -58,7 +60,17 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
             ),
             new SqlitePlatform()
         );
+    }
 
+    /**
+     * Create new EmptyRepository.
+     *
+     * @param Connection $connection
+     *
+     * @return UsageRepository
+     */
+    public static function createEmptyRepository(Connection $connection): UsageRepository
+    {
         $tableName = 'uses';
         $schema = new Schema();
         $table = $schema->createTable($tableName);

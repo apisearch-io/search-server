@@ -61,6 +61,7 @@ class DBALUsageRepository implements UsageRepository
     ): PromiseInterface {
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();
+        $when->setTime(0, 0, 0);
 
         return $this
             ->connection
@@ -80,7 +81,8 @@ class DBALUsageRepository implements UsageRepository
         RepositoryReference $repositoryReference,
         ?string $eventType,
         DateTime $from,
-        ?DateTime $to = null
+        ?DateTime $to = null,
+        bool $perDay = false
     ): PromiseInterface {
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();
@@ -91,11 +93,18 @@ class DBALUsageRepository implements UsageRepository
         $queryBuilder = $this
             ->connection
             ->createQueryBuilder()
-            ->select('u.event as e, SUM(u.n) as s')
             ->from($this->tableName, 'u')
             ->where('u.time >= ?')
             ->andWhere('u.app_uuid = ?')
             ->groupBy('u.event');
+
+        if ($perDay) {
+            $queryBuilder
+                ->select('u.event as e, SUM(u.n) as s, u.time as t')
+                ->addGroupBy('u.time');
+        } else {
+            $queryBuilder->select('u.event as e, SUM(u.n) as s');
+        }
 
         $parameters = [
             $from->getTimestamp(),
@@ -126,13 +135,49 @@ class DBALUsageRepository implements UsageRepository
         return $this
             ->connection
             ->query($queryBuilder)
-            ->then(function (Result $result) {
-                $indexedRows = [];
-                foreach ($result->fetchAllRows() as $row) {
-                    $indexedRows[$row['e']] = $row['s'];
-                }
-
-                return $indexedRows;
+            ->then(function (Result $result) use ($perDay) {
+                return $perDay
+                    ? $this->formatResultsPerDay($result->fetchAllRows())
+                    : $this->formatResults($result->fetchAllRows());
             });
+    }
+
+    /**
+     * Format results.
+     *
+     * @param array $rows
+     *
+     * @return array
+     */
+    private function formatResults(array $rows): array
+    {
+        $indexedRows = [];
+        foreach ($rows as $row) {
+            $indexedRows[$row['e']] = $row['s'];
+        }
+
+        return $indexedRows;
+    }
+
+    /**
+     * Format results per day.
+     *
+     * @param array $rows
+     *
+     * @return array
+     */
+    private function formatResultsPerDay(array $rows): array
+    {
+        $indexedRows = [];
+        foreach ($rows as $row) {
+            $t = $row['t'];
+            if (!\array_key_exists($t, $indexedRows)) {
+                $indexedRows[$t] = [];
+            }
+
+            $indexedRows[$t][$row['e']] = $row['s'];
+        }
+
+        return $indexedRows;
     }
 }

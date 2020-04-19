@@ -17,7 +17,6 @@ namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\GetUsage;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use DateTime;
 use React\Promise\PromiseInterface;
 
 /**
@@ -49,8 +48,10 @@ class GetUsageHandler
             ->usageRepository
             ->getRegisteredEvents(
                 $getUsage->getRepositoryReference(),
-                null,
-                new DateTime('first day of this month')
+                $getUsage->getEventName(),
+                $getUsage->getFrom(),
+                $getUsage->getTo(),
+                $getUsage->isPerDay()
             );
     }
 }

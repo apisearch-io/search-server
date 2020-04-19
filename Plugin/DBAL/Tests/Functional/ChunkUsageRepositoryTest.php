@@ -19,6 +19,8 @@ use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Apisearch\Server\Tests\Unit\Domain\Repository\UsageRepository\UsageRepositoryTest;
+use function Clue\React\Block\await;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 
 /**
@@ -33,7 +35,9 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
     {
         return new ChunkUsageRepository(
             new InMemoryUsageRepository(),
-            DBALUsageRepositoryTest::createEmptyRepository($loop),
+            DBALUsageRepositoryTest::createEmptyRepository(
+                DBALUsageRepositoryTest::createConnection($loop)
+            ),
             $loop,
             1
         );
@@ -47,5 +51,31 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
     public function secondsSleepingBeforeQuery(): int
     {
         return 2;
+    }
+
+    /**
+     * Test inserted rows.
+     */
+    public function testInsertedRows()
+    {
+        $loop = Factory::create();
+        $connection = DBALUsageRepositoryTest::createConnection($loop);
+        $repository = new ChunkUsageRepository(
+            new InMemoryUsageRepository(),
+            DBALUsageRepositoryTest::createEmptyRepository($connection),
+            $loop,
+            1
+        );
+
+        $this->setUpEnvironment($repository, $loop);
+
+        $rows = await($connection->findBy('uses'), $loop);
+        $this->assertCount(23, $rows);
+        $this->assertEquals(63, $rows[0]['n']);
+        $this->assertEquals(12, $rows[1]['n']);
+        $this->assertEquals(23, $rows[2]['n']);
+        $this->assertEquals(79, $rows[3]['n']);
+        $this->assertEquals(23, $rows[4]['n']);
+        $this->assertEquals(77, $rows[5]['n']);
     }
 }

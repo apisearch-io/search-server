@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Query\Query;
-use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
+use DateTime;
 
 /**
- * Class UsageRepositoryTest.
+ * Trait UsageRepositoryTest.
  */
-class UsageRepositoryTest extends ServiceFunctionalTest
+trait UsageRepositoryTest
 {
     /**
      * Test simple.
@@ -34,11 +34,8 @@ class UsageRepositoryTest extends ServiceFunctionalTest
         $usage = $this->getUsage();
 
         $this->assertEquals([
-            'indexwascreated' => 2,
-            'tokensweredeleted' => 1,
-            'itemswereindexed' => 1,
-            'itemsN' => 5,
-            'querywasmade' => 3,
+            'query' => 3,
+            'admin' => 4,
         ], $usage);
 
         $this->query(Query::createMatchAll());
@@ -48,22 +45,80 @@ class UsageRepositoryTest extends ServiceFunctionalTest
         $usage = $this->getUsage();
 
         $this->assertEquals([
-            'indexwascreated' => 2,
-            'tokensweredeleted' => 1,
-            'itemswereindexed' => 1,
-            'itemsN' => 5,
-            'querywasmade' => 7,
+            'query' => 7,
+            'admin' => 4,
         ], $usage);
 
         static::indexTestingItems();
         $usage = $this->getUsage();
 
         $this->assertEquals([
-            'indexwascreated' => 2,
-            'tokensweredeleted' => 1,
-            'itemswereindexed' => 2,
-            'itemsN' => 10,
-            'querywasmade' => 7,
+            'query' => 7,
+            'admin' => 5,
+        ], $usage);
+
+        static::indexTestingItems(static::$appId, static::$anotherIndex);
+        $this->query(Query::createMatchAll());
+        $this->query(Query::createMatchAll(), static::$appId, static::$anotherIndex);
+
+        $usage = $this->getUsage();
+        $this->assertEquals([
+            'query' => 9,
+            'admin' => 6,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId);
+        $this->assertEquals([
+            'query' => 9,
+            'admin' => 6,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index);
+        $this->assertEquals([
+            'query' => 8,
+            'admin' => 3,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$anotherIndex);
+        $this->assertEquals([
+            'query' => 1,
+            'admin' => 2,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('+ 1 minute'));
+        $this->assertEquals([], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'));
+        $this->assertEquals([
+            'query' => 8,
+            'admin' => 3,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-2 day'), new DateTime('-1 day'));
+        $this->assertEquals([], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'));
+        $this->assertEquals([
+            'query' => 8,
+            'admin' => 3,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'), 'query');
+        $this->assertEquals([
+            'query' => 8,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'), 'admin');
+        $this->assertEquals([
+            'admin' => 3,
+        ], $usage);
+
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'), null, true);
+        $this->assertEquals([
+            (new DateTime())->setTime(0, 0, 0)->getTimestamp() => [
+                'query' => 8,
+                'admin' => 3,
+                ],
         ], $usage);
     }
 }

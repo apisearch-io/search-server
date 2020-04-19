@@ -17,6 +17,7 @@
 
         <env name="APISEARCH_EVENTS_EXCHANGE" value="events" force="true" />
         <env name="APISEARCH_TOKENS_UPDATE_EXCHANGE" value="tokens_update" force="true" />
+        <env name="APISEARCH_ASYNC_EVENTS_ADAPTER" value="in_memory" force="true" />
 
         <env name="ELASTICSEARCH_HOST" value="127.0.0.1" force="true" />
         <env name="ELASTICSEARCH_REFRESH_ON_WRITE" value="true" force="true" />

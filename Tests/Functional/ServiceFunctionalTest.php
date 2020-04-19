@@ -50,6 +50,7 @@ use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\User\Interaction;
 use Clue\React\Block;
+use DateTime;
 
 /**
  * Class ServiceFunctionalTest.
@@ -482,24 +483,38 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param string|null $appId
-     * @param Token       $token
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $event
+     * @param bool|null     $perDay
      *
      * @return array
      */
     public function getUsage(
         string $appId = null,
-        Token $token = null
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $event = null,
+        ?bool $perDay = false
     ): array {
-        $appUUID = AppUUID::createById($appId ?? self::$appId);
+        $appId = $appId ?? self::$appId;
 
         return self::askQuery(new GetUsage(
-            RepositoryReference::create($appUUID),
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
-                $appUUID
-            )
+                AppUUID::createById($appId)
+            ),
+            $from ?? (new DateTime('first day of this month')),
+            $to,
+            $event,
+            $perDay ?? false
         ));
     }
 

@@ -84,7 +84,8 @@ class ChunkUsageRepository implements UsageRepository
         RepositoryReference $repositoryReference,
         ?string $eventType,
         DateTime $from,
-        ?DateTime $to = null
+        ?DateTime $to = null,
+        bool $perDay = false
     ): PromiseInterface {
         return $this
             ->persistentUsageRepository
@@ -92,7 +93,8 @@ class ChunkUsageRepository implements UsageRepository
                 $repositoryReference,
                 $eventType,
                 $from,
-                $to
+                $to,
+                $perDay
             );
     }
 
@@ -105,8 +107,6 @@ class ChunkUsageRepository implements UsageRepository
             ->temporaryUsageRepository
             ->getAndResetUseLines();
 
-        $useLines = $this->mergeUseLines($useLines);
-
         return Queue::all(3, $useLines, function (UseLine $useLine) {
             return $this
                 ->persistentUsageRepository
@@ -117,25 +117,5 @@ class ChunkUsageRepository implements UsageRepository
                     $useLine->getN()
                 );
         });
-    }
-
-    /**
-     * Merge use lines.
-     *
-     * @param UseLine[] $useLines
-     *
-     * @return array
-     */
-    public function mergeUseLines(array $useLines): array
-    {
-        $improvedUseLines = [];
-        foreach ($useLines as $useLine) {
-            $useLineHash = \sprintf('%s_%s_%s', $useLine->getEvent(), $useLine->getAppUUID(), $useLine->getIndexUUID());
-            if (\array_key_exists($useLineHash, $improvedUseLines)) {
-                $improvedUseLines[$useLineHash]->increaseBy($useLine->getN());
-            }
-        }
-
-        return \array_values($useLines);
     }
 }
