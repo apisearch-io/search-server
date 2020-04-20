@@ -44,8 +44,10 @@ class DBALUsageRepository implements UsageRepository
      * @param Connection $connection
      * @param string     $usageLinesTable
      */
-    public function __construct(Connection $connection, string $usageLinesTable)
-    {
+    public function __construct(
+        Connection $connection,
+        string $usageLinesTable
+    ) {
         $this->connection = $connection;
         $this->tableName = $usageLinesTable;
     }
@@ -69,7 +71,7 @@ class DBALUsageRepository implements UsageRepository
                 'event' => $eventName,
                 'app_uuid' => $appUUID instanceof AppUUID ? $appUUID->composeUUID() : null,
                 'index_uuid' => $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null,
-                'time' => $when->getTimestamp(),
+                'time' => $when->format('Ymd'),
                 'n' => $n,
             ]);
     }
@@ -107,7 +109,7 @@ class DBALUsageRepository implements UsageRepository
         }
 
         $parameters = [
-            $from->getTimestamp(),
+            $from->format('Ymd'),
             $appUUID->composeUUID(),
         ];
 
@@ -127,7 +129,7 @@ class DBALUsageRepository implements UsageRepository
 
         if (!\is_null($to)) {
             $queryBuilder->andWhere('u.time < ?');
-            $parameters[] = $to->getTimestamp();
+            $parameters[] = $to->format('Ymd');
         }
 
         $queryBuilder->setParameters($parameters);

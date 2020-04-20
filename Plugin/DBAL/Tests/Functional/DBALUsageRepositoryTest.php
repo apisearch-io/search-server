@@ -77,7 +77,7 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
         $table->addColumn('event', 'string', ['length' => 15]);
         $table->addColumn('app_uuid', 'string', ['length' => 50]);
         $table->addColumn('index_uuid', 'string', ['length' => 50]);
-        $table->addColumn('time', 'integer', ['length' => 11]);
+        $table->addColumn('time', 'integer', ['length' => 8]);
         $table->addColumn('n', 'integer', ['length' => 6]);
 
         $table->addIndex(['event']);

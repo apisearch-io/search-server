@@ -85,7 +85,7 @@ trait UsageRepositoryTest
             'admin' => 2,
         ], $usage);
 
-        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('+ 1 minute'));
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('+ 1 day'));
         $this->assertEquals([], $usage);
 
         $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'));
@@ -115,7 +115,7 @@ trait UsageRepositoryTest
 
         $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'), null, true);
         $this->assertEquals([
-            (new DateTime())->setTime(0, 0, 0)->getTimestamp() => [
+            (new DateTime())->setTime(0, 0, 0)->format('Ymd') => [
                 'query' => 8,
                 'admin' => 3,
                 ],
