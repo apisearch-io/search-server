@@ -53,8 +53,16 @@ class GetUsageController extends ControllerWithQueryBus
                 $query->get('event', null),
                 $perDay
             ))
-            ->then(function (array $usage) {
-                return new JsonResponse($usage);
+            ->then(function (array $usage) use ($request) {
+                return new JsonResponse(
+                    $usage,
+                    200, [
+                        'Access-Control-Allow-Origin' => $request
+                            ->headers
+                            ->get('origin', '*'),
+                        'Vary' => 'Origin',
+                    ]
+                );
             });
     }
 }
