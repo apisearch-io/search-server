@@ -32,62 +32,52 @@ abstract class UsageRepositoryTest extends TestCase
     /**
      * @var int
      */
-    const TIMESTAMP_MINUS_INF = 1291161600;
+    const DAY_MINUS_INF = 20000101;
 
     /**
      * @var int
      */
-    const TIMESTAMP_31_12_2019 = 1577750400;
+    const DAY_31_12_2019 = 20191231;
 
     /**
      * @var int
      */
-    const TIMESTAMP_1_1_2020 = 1577836800;
+    const DAY_1_1_2020 = 20200101;
 
     /**
      * @var int
      */
-    const TIMESTAMP_15_1_2020 = 1579046400;
+    const DAY_15_1_2020 = 20200115;
 
     /**
      * @var int
      */
-    const TIMESTAMP_1_2_2020 = 1580515200;
+    const DAY_1_2_2020 = 20200201;
 
     /**
      * @var int
      */
-    const TIMESTAMP_15_2_2020 = 1581724800;
+    const DAY_15_2_2020 = 20200215;
 
     /**
      * @var int
      */
-    const TIMESTAMP_1_3_2020 = 1583020800;
+    const DAY_1_3_2020 = 20200301;
 
     /**
      * @var int
      */
-    const TIMESTAMP_1_4_2020 = 1585699200;
+    const DAY_1_4_2020 = 20200401;
 
     /**
      * @var int
      */
-    const TIMESTAMP_1_5_2020 = 1588291200;
+    const DAY_1_5_2020 = 20200501;
 
     /**
      * @var int
      */
-    const TIMESTAMP_INF = 1991161600;
-
-    /**
-     * @var int
-     */
-    const DAY = 86400;
-
-    /**
-     * @var int
-     */
-    const HALF_DAY = self::DAY / 2;
+    const DAY_INF = 20303131;
 
     /**
      * Get empty repository.
@@ -123,10 +113,10 @@ abstract class UsageRepositoryTest extends TestCase
                 await($repository->getRegisteredEvents(
                     RepositoryReference::createFromComposed("{$result[1]}_{$result[2]}"),
                     $result[0],
-                    \DateTime::createFromFormat('U', \strval($result[3])),
+                    \DateTime::createFromFormat('Ymd', \strval($result[3])),
                     \is_null($result[4])
                         ? null
-                        : \DateTime::createFromFormat('U', \strval($result[4]))
+                        : \DateTime::createFromFormat('Ymd', \strval($result[4]))
                 ), $loop)
             );
         }
@@ -151,45 +141,45 @@ abstract class UsageRepositoryTest extends TestCase
     private function getEvents(): array
     {
         return [
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020, 20],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020, 43],
-            ['q', 'a1', 'i1', static::TIMESTAMP_15_1_2020 + self::HALF_DAY, 12],
-            ['q', 'a2', 'i2', static::TIMESTAMP_15_1_2020, 23],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_2_2020, 34],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_2_2020, 45],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_2_2020, 23],
-            ['q', 'a1', 'i1', static::TIMESTAMP_15_2_2020 + self::HALF_DAY, 54],
-            ['q', 'a1', 'i1', static::TIMESTAMP_15_2_2020, 23],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_4_2020, 34],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 45],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 67],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_5_2020, 23],
-            ['q', 'a3', 'i3', static::TIMESTAMP_1_5_2020 + self::HALF_DAY, 1],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 34],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 45],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 12],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_5_2020, 54],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020, 20],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020, 43],
+            ['q', 'a1', 'i1', static::DAY_15_1_2020, 12],
+            ['q', 'a2', 'i2', static::DAY_15_1_2020, 23],
+            ['q', 'a1', 'i1', static::DAY_1_2_2020, 34],
+            ['q', 'a1', 'i1', static::DAY_1_2_2020, 45],
+            ['q', 'a2', 'i2', static::DAY_1_2_2020, 23],
+            ['q', 'a1', 'i1', static::DAY_15_2_2020, 54],
+            ['q', 'a1', 'i1', static::DAY_15_2_2020, 23],
+            ['q', 'a2', 'i2', static::DAY_1_4_2020, 34],
+            ['q', 'a1', 'i1', static::DAY_1_5_2020, 45],
+            ['q', 'a1', 'i1', static::DAY_1_5_2020, 67],
+            ['q', 'a2', 'i2', static::DAY_1_5_2020, 23],
+            ['q', 'a3', 'i3', static::DAY_1_5_2020, 1],
+            ['q', 'a1', 'i1', static::DAY_1_5_2020, 34],
+            ['q', 'a1', 'i1', static::DAY_1_5_2020, 45],
+            ['q', 'a1', 'i1', static::DAY_1_5_2020, 12],
+            ['q', 'a2', 'i2', static::DAY_1_5_2020, 54],
 
-            ['ii', 'a1', 'i1', static::TIMESTAMP_15_1_2020, 23],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_15_1_2020, 443],
-            ['ii', 'a2', 'i3', static::TIMESTAMP_15_1_2020 + self::HALF_DAY, 12],
-            ['ii', 'a2', 'i3', static::TIMESTAMP_1_1_2020, 43],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_1_2_2020, 64],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_1_2_2020, 25],
-            ['ii', 'a2', 'i2', static::TIMESTAMP_15_2_2020, 253],
-            ['ii', 'a1', 'i3', static::TIMESTAMP_15_2_2020, 523],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_1_3_2020 + self::HALF_DAY, 3],
-            ['ii', 'a2', 'i3', static::TIMESTAMP_1_4_2020, 5],
-            ['ii', 'a2', 'i3', static::TIMESTAMP_1_5_2020, 77],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_1_5_2020, 22],
-            ['ii', 'a1', 'i3', static::TIMESTAMP_1_5_2020, 88],
-            ['ii', 'a2', 'i3', static::TIMESTAMP_1_5_2020, 33],
-            ['ii', 'a1', 'i3', static::TIMESTAMP_1_5_2020 + self::HALF_DAY, 88],
-            ['ii', 'a1', 'i3', static::TIMESTAMP_1_5_2020, 2],
-            ['ii', 'a2', 'i1', static::TIMESTAMP_1_5_2020, 7],
-            ['ii', 'a2', 'i1', static::TIMESTAMP_1_5_2020 + self::HALF_DAY, 44],
+            ['ii', 'a1', 'i1', static::DAY_15_1_2020, 23],
+            ['ii', 'a1', 'i1', static::DAY_15_1_2020, 443],
+            ['ii', 'a2', 'i3', static::DAY_15_1_2020, 12],
+            ['ii', 'a2', 'i3', static::DAY_1_1_2020, 43],
+            ['ii', 'a1', 'i1', static::DAY_1_2_2020, 64],
+            ['ii', 'a1', 'i1', static::DAY_1_2_2020, 25],
+            ['ii', 'a2', 'i2', static::DAY_15_2_2020, 253],
+            ['ii', 'a1', 'i3', static::DAY_15_2_2020, 523],
+            ['ii', 'a1', 'i1', static::DAY_1_3_2020, 3],
+            ['ii', 'a2', 'i3', static::DAY_1_4_2020, 5],
+            ['ii', 'a2', 'i3', static::DAY_1_5_2020, 77],
+            ['ii', 'a1', 'i1', static::DAY_1_5_2020, 22],
+            ['ii', 'a1', 'i3', static::DAY_1_5_2020, 88],
+            ['ii', 'a2', 'i3', static::DAY_1_5_2020, 33],
+            ['ii', 'a1', 'i3', static::DAY_1_5_2020, 88],
+            ['ii', 'a1', 'i3', static::DAY_1_5_2020, 2],
+            ['ii', 'a2', 'i1', static::DAY_1_5_2020, 7],
+            ['ii', 'a2', 'i1', static::DAY_1_5_2020, 44],
 
-            ['x', 'a9', 'i1', static::TIMESTAMP_1_1_2020, 1],
+            ['x', 'a9', 'i1', static::DAY_1_1_2020, 1],
         ];
     }
 
@@ -199,31 +189,31 @@ abstract class UsageRepositoryTest extends TestCase
     private function getResults(): array
     {
         return [
-            [null, 'a1', null, static::TIMESTAMP_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
-            [null, 'a1', '', static::TIMESTAMP_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
-            [null, 'a1', '*', static::TIMESTAMP_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
-            [null, 'a1', null, static::TIMESTAMP_MINUS_INF, static::TIMESTAMP_INF, ['q' => 434, 'ii' => 1281]],
-            ['q', 'a1', null, static::TIMESTAMP_31_12_2019, null, ['q' => 434]],
-            ['ii', 'a1', null, static::TIMESTAMP_31_12_2019, null, ['ii' => 1281]],
-            ['ñ', 'a1', null, static::TIMESTAMP_31_12_2019, null, []],
+            [null, 'a1', null, static::DAY_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
+            [null, 'a1', '', static::DAY_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
+            [null, 'a1', '*', static::DAY_31_12_2019, null, ['q' => 434, 'ii' => 1281]],
+            [null, 'a1', null, static::DAY_MINUS_INF, static::DAY_INF, ['q' => 434, 'ii' => 1281]],
+            ['q', 'a1', null, static::DAY_31_12_2019, null, ['q' => 434]],
+            ['ii', 'a1', null, static::DAY_31_12_2019, null, ['ii' => 1281]],
+            ['ñ', 'a1', null, static::DAY_31_12_2019, null, []],
 
-            [null, 'a1', 'i1', static::TIMESTAMP_31_12_2019, null, ['q' => 434, 'ii' => 580]],
-            [null, 'a1', 'i3', static::TIMESTAMP_31_12_2019, null, ['ii' => 701]],
+            [null, 'a1', 'i1', static::DAY_31_12_2019, null, ['q' => 434, 'ii' => 580]],
+            [null, 'a1', 'i3', static::DAY_31_12_2019, null, ['ii' => 701]],
 
-            [null, 'a1', null, static::TIMESTAMP_1_2_2020, static::TIMESTAMP_1_4_2020, ['q' => 156, 'ii' => 615]],
-            ['q', 'a1', null, static::TIMESTAMP_1_2_2020, static::TIMESTAMP_1_4_2020, ['q' => 156]],
-            ['ii', 'a1', null, static::TIMESTAMP_1_2_2020, static::TIMESTAMP_1_4_2020, ['ii' => 615]],
+            [null, 'a1', null, static::DAY_1_2_2020, static::DAY_1_4_2020, ['q' => 156, 'ii' => 615]],
+            ['q', 'a1', null, static::DAY_1_2_2020, static::DAY_1_4_2020, ['q' => 156]],
+            ['ii', 'a1', null, static::DAY_1_2_2020, static::DAY_1_4_2020, ['ii' => 615]],
 
-            [null, 'a1', null, static::TIMESTAMP_INF, null, []],
-            [null, 'a1', null, static::TIMESTAMP_INF, static::TIMESTAMP_INF + 10000, []],
-            [null, 'a1', null, static::TIMESTAMP_MINUS_INF, static::TIMESTAMP_31_12_2019, []],
-            [null, null, null, static::TIMESTAMP_31_12_2019, null, []],
+            [null, 'a1', null, static::DAY_INF, null, []],
+            [null, 'a1', null, static::DAY_INF, static::DAY_INF + 10000, []],
+            [null, 'a1', null, static::DAY_MINUS_INF, static::DAY_31_12_2019, []],
+            [null, null, null, static::DAY_31_12_2019, null, []],
 
-            [null, 'a3', null, static::TIMESTAMP_31_12_2019, null, ['q' => 1]],
+            [null, 'a3', null, static::DAY_31_12_2019, null, ['q' => 1]],
 
-            [null, 'a1', null, static::TIMESTAMP_15_1_2020 - static::DAY, static::TIMESTAMP_15_1_2020 + self::DAY, ['q' => 12, 'ii' => 466]],
-            [null, 'a1', null, static::TIMESTAMP_15_1_2020, static::TIMESTAMP_15_1_2020 + 1, ['q' => 12, 'ii' => 466]],
-            [null, 'a1', null, static::TIMESTAMP_15_1_2020 - static::DAY - static::DAY, static::TIMESTAMP_15_1_2020 - self::DAY, []],
+            [null, 'a1', null, static::DAY_15_1_2020 - 1, static::DAY_15_1_2020 + 1, ['q' => 12, 'ii' => 466]],
+            [null, 'a1', null, static::DAY_15_1_2020, static::DAY_15_1_2020 + 1, ['q' => 12, 'ii' => 466]],
+            [null, 'a1', null, static::DAY_15_1_2020 - 2, static::DAY_15_1_2020 - 1, []],
         ];
     }
 
@@ -242,10 +232,10 @@ abstract class UsageRepositoryTest extends TestCase
                 await($repository->getRegisteredEvents(
                     RepositoryReference::createFromComposed("{$result[1]}_{$result[2]}"),
                     $result[0],
-                    \DateTime::createFromFormat('U', \strval($result[3])),
+                    \DateTime::createFromFormat('Ymd', \strval($result[3])),
                     \is_null($result[4])
                         ? null
-                        : \DateTime::createFromFormat('U', \strval($result[4])),
+                        : \DateTime::createFromFormat('Ymd', \strval($result[4])),
                     true
                 ), $loop)
             );
@@ -258,20 +248,20 @@ abstract class UsageRepositoryTest extends TestCase
     private function getEventsPerDay(): array
     {
         return [
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + static::DAY, 20],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + static::DAY, 43],
-            ['ii', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + static::DAY, 22],
-            ['ii', 'a1', 'i2', static::TIMESTAMP_1_1_2020 + static::DAY, 23],
-            ['q', 'a1', 'i2', static::TIMESTAMP_1_1_2020 + static::DAY, 4],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_1_2020 + static::DAY, 4],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + 2 * static::DAY, 20],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + 2 * static::DAY, 25],
-            ['ii', 'a1', 'i2', static::TIMESTAMP_1_1_2020 + 2 * static::DAY, 11],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + 4 * static::DAY, 1],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + 4 * static::DAY, 2],
-            ['q', 'a1', 'i1', static::TIMESTAMP_1_1_2020 + 4 * static::DAY, 100],
-            ['q', 'a2', 'i2', static::TIMESTAMP_1_1_2020 + 4 * static::DAY, 89],
-            ['ii', 'a1', 'i2', static::TIMESTAMP_1_1_2020 + 20 * static::DAY, 89],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 1, 20],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 1, 43],
+            ['ii', 'a1', 'i1', static::DAY_1_1_2020 + 1, 22],
+            ['ii', 'a1', 'i2', static::DAY_1_1_2020 + 1, 23],
+            ['q', 'a1', 'i2', static::DAY_1_1_2020 + 1, 4],
+            ['q', 'a2', 'i2', static::DAY_1_1_2020 + 1, 4],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 2, 20],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 2, 25],
+            ['ii', 'a1', 'i2', static::DAY_1_1_2020 + 2, 11],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 4, 1],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 4, 2],
+            ['q', 'a1', 'i1', static::DAY_1_1_2020 + 4, 100],
+            ['q', 'a2', 'i2', static::DAY_1_1_2020 + 4, 89],
+            ['ii', 'a1', 'i2', static::DAY_1_1_2020 + 20, 89],
         ];
     }
 
@@ -281,31 +271,31 @@ abstract class UsageRepositoryTest extends TestCase
     private function getResultsPerDay(): array
     {
         return [
-            ['q', 'a1', null, static::TIMESTAMP_1_1_2020, static::TIMESTAMP_1_1_2020 + 31 * self::DAY, [
-                static::TIMESTAMP_1_1_2020 + static::DAY => ['q' => 67],
-                static::TIMESTAMP_1_1_2020 + 2 * static::DAY => ['q' => 45],
-                static::TIMESTAMP_1_1_2020 + 4 * static::DAY => ['q' => 103],
+            ['q', 'a1', null, static::DAY_1_1_2020, static::DAY_1_1_2020 + 31, [
+                static::DAY_1_1_2020 + 1 => ['q' => 67],
+                static::DAY_1_1_2020 + 2 * 1 => ['q' => 45],
+                static::DAY_1_1_2020 + 4 * 1 => ['q' => 103],
             ]],
-            [null, 'a1', null, static::TIMESTAMP_1_1_2020, static::TIMESTAMP_1_1_2020 + 31 * self::DAY, [
-                static::TIMESTAMP_1_1_2020 + static::DAY => ['q' => 67, 'ii' => 45],
-                static::TIMESTAMP_1_1_2020 + 2 * static::DAY => ['q' => 45, 'ii' => 11],
-                static::TIMESTAMP_1_1_2020 + 4 * static::DAY => ['q' => 103],
-                static::TIMESTAMP_1_1_2020 + 20 * static::DAY => ['ii' => 89],
+            [null, 'a1', null, static::DAY_1_1_2020, static::DAY_1_1_2020 + 31, [
+                static::DAY_1_1_2020 + 1 => ['q' => 67, 'ii' => 45],
+                static::DAY_1_1_2020 + 2 => ['q' => 45, 'ii' => 11],
+                static::DAY_1_1_2020 + 4 => ['q' => 103],
+                static::DAY_1_1_2020 + 20 => ['ii' => 89],
             ]],
-            [null, 'a1', 'i2', static::TIMESTAMP_1_1_2020, static::TIMESTAMP_1_1_2020 + 31 * self::DAY, [
-                static::TIMESTAMP_1_1_2020 + static::DAY => ['q' => 4, 'ii' => 23],
-                static::TIMESTAMP_1_1_2020 + 2 * static::DAY => ['ii' => 11],
-                static::TIMESTAMP_1_1_2020 + 20 * static::DAY => ['ii' => 89],
+            [null, 'a1', 'i2', static::DAY_1_1_2020, static::DAY_1_1_2020 + 31, [
+                static::DAY_1_1_2020 + 1 => ['q' => 4, 'ii' => 23],
+                static::DAY_1_1_2020 + 2 => ['ii' => 11],
+                static::DAY_1_1_2020 + 20 => ['ii' => 89],
             ]],
-            [null, 'a1', 'i2', static::TIMESTAMP_1_1_2020, null, [
-                static::TIMESTAMP_1_1_2020 + static::DAY => ['q' => 4, 'ii' => 23],
-                static::TIMESTAMP_1_1_2020 + 2 * static::DAY => ['ii' => 11],
-                static::TIMESTAMP_1_1_2020 + 20 * static::DAY => ['ii' => 89],
+            [null, 'a1', 'i2', static::DAY_1_1_2020, null, [
+                static::DAY_1_1_2020 + 1 => ['q' => 4, 'ii' => 23],
+                static::DAY_1_1_2020 + 2 => ['ii' => 11],
+                static::DAY_1_1_2020 + 20 => ['ii' => 89],
             ]],
-            [null, 'a1', 'i2', static::TIMESTAMP_MINUS_INF, static::TIMESTAMP_INF, [
-                static::TIMESTAMP_1_1_2020 + static::DAY => ['q' => 4, 'ii' => 23],
-                static::TIMESTAMP_1_1_2020 + 2 * static::DAY => ['ii' => 11],
-                static::TIMESTAMP_1_1_2020 + 20 * static::DAY => ['ii' => 89],
+            [null, 'a1', 'i2', static::DAY_MINUS_INF, static::DAY_INF, [
+                static::DAY_1_1_2020 + 1 => ['q' => 4, 'ii' => 23],
+                static::DAY_1_1_2020 + 2 => ['ii' => 11],
+                static::DAY_1_1_2020 + 20 => ['ii' => 89],
             ]],
         ];
     }
@@ -336,7 +326,7 @@ abstract class UsageRepositoryTest extends TestCase
                 await($repository->registerEvent(
                     $repositoryReference,
                     $event[0],
-                    \DateTime::createFromFormat('U', \strval($event[3]))
+                    \DateTime::createFromFormat('Ymd', \strval($event[3]))
                 ), $loop);
             }
         }
