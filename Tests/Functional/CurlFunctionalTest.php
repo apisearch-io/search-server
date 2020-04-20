@@ -497,8 +497,8 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             $token,
             [],
             \array_filter([
-                'from' => (\is_null($from) ? false : $from->getTimestamp()),
-                'to' => (\is_null($to) ? false : $to->getTimestamp()),
+                'from' => (\is_null($from) ? false : $from->format('Ymd')),
+                'to' => (\is_null($to) ? false : $to->format('Ymd')),
                 'event' => $event ?? false,
             ])
         );
