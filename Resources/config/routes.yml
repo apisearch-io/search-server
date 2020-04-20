@@ -103,6 +103,35 @@ apisearch_v1_get_index_usage_per_day:
     defaults:
         per_day: true
 
+
+#
+# Usage API CORS
+#
+apisearch_v1_get_usage_preflight:
+    path: /v1/{app_id}/usage
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+    defaults:
+        index_id: "*"
+
+apisearch_v1_get_usage_per_day_preflight:
+    path: /v1/{app_id}/usage/per-day
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+    defaults:
+        index_id: "*"
+
+apisearch_v1_get_index_usage_preflight:
+    path: /v1/{app_id}/indices/{index_id}/usage
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+
+apisearch_v1_get_index_usage_per_day_preflight:
+    path: /v1/{app_id}/indices/{index_id}/usage/per-day
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+
+
 #
 # Query API
 #
