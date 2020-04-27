@@ -12,6 +12,16 @@ services:
             - "discovery.type=single-node"
             - "action.auto_create_index=-apisearch*,+*"
 
+    elasticsearch_legacy:
+        image: "docker.elastic.co/elasticsearch/elasticsearch:6.1.4"
+        networks: [apisearch]
+        ports:
+            - "9201:9200"
+        environment:
+            - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+            - "discovery.type=single-node"
+            - "action.auto_create_index=-apisearch*,+*"
+
     amqp:
         image: "rabbitmq:3-management"
         networks: [apisearch]

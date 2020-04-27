@@ -26,8 +26,12 @@ use Apisearch\Model\Item;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use function Drift\React\wait_for_stream_listeners;
 use function React\Promise\resolve;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use React\Stream\DuplexStreamInterface;
+use React\Stream\ThroughStream;
 
 /**
  * Class InMemoryRepository.
@@ -38,6 +42,19 @@ class InMemoryRepository implements FullRepository
      * @var Index[]
      */
     protected $indices = [];
+
+    /**
+     * @var LoopInterface
+     */
+    private $loop;
+
+    /**
+     * @param LoopInterface $loop
+     */
+    public function __construct(LoopInterface $loop)
+    {
+        $this->loop = $loop;
+    }
 
     /**
      * {@inheritdoc}
@@ -146,6 +163,33 @@ class InMemoryRepository implements FullRepository
             $repositoryReference,
             $query
         ));
+    }
+
+    /**
+     * Export index.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<DuplexStreamInterface>
+     */
+    public function exportIndex(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        $stream = new ThroughStream();
+
+        wait_for_stream_listeners($stream, $this->loop, 1)
+            ->then(function (ThroughStream $stream) use ($repositoryReference) {
+                $items = $this->queryMatchAll(
+                    $repositoryReference,
+                    Query::createMatchAll()
+                )->getItems();
+
+                foreach ($items as $item) {
+                    $stream->write($item);
+                }
+                $stream->end();
+            });
+
+        return resolve($stream);
     }
 
     /**

@@ -24,6 +24,7 @@ use Apisearch\Model\Index as ApisearchIndex;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Elasticsearch\Adapter\AsyncClient;
 use Apisearch\Plugin\Elasticsearch\Adapter\AsyncMultiSearch;
+use Apisearch\Plugin\Elasticsearch\Adapter\AsyncScroll;
 use Apisearch\Plugin\Elasticsearch\Adapter\AsyncSearch;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Exception\ParsedCreatingIndexException;
@@ -44,12 +45,15 @@ use Elasticsearch\Endpoints\Indices\Alias\Delete as DeleteAlias;
 use Elasticsearch\Endpoints\Indices\Aliases\Update as UpdateAlias;
 use Elasticsearch\Endpoints\Indices\Create as CreateIndex;
 use Elasticsearch\Endpoints\Indices\Delete as DeleteIndex;
-use Elasticsearch\Endpoints\Indices\Mapping as MappingEndpoint;
+use Elasticsearch\Endpoints\Indices\GetMapping;
+use Elasticsearch\Endpoints\Indices\PutMapping;
 use Elasticsearch\Endpoints\Indices\Refresh;
 use Elasticsearch\Endpoints\Reindex;
 use Elasticsearch\Serializers\ArrayToJSONSerializer;
+use React\EventLoop\LoopInterface;
 use React\Promise;
 use React\Promise\PromiseInterface;
+use React\Stream\ReadableStreamInterface;
 
 /**
  * Class ElasticaWrapper.
@@ -58,30 +62,34 @@ class ElasticaWrapper implements AsyncRequestAccessor
 {
     /**
      * @var AsyncClient
-     *
-     * Elastica client
      */
     private $client;
 
     /**
      * @var string
-     *
-     * Version
      */
     private $elasticsearchVersion;
 
     /**
+     * @var LoopInterface
+     */
+    private $loop;
+
+    /**
      * Construct.
      *
-     * @param AsyncClient $client
-     * @param string      $elasticsearchVersion
+     * @param AsyncClient   $client
+     * @param string        $elasticsearchVersion
+     * @param LoopInterface $loop
      */
     public function __construct(
         AsyncClient $client,
-        string $elasticsearchVersion
+        string $elasticsearchVersion,
+        LoopInterface $loop
     ) {
         $this->client = $client;
         $this->elasticsearchVersion = $elasticsearchVersion;
+        $this->loop = $loop;
     }
 
     /**
@@ -384,7 +392,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
 
         $mappingPromise = $this
             ->client
-            ->requestAsyncEndpoint((new MappingEndpoint\Get()), $indexSearchKeyword);
+            ->requestAsyncEndpoint((new GetMapping()), $indexSearchKeyword);
 
         return
             Promise\all([
@@ -805,6 +813,23 @@ class ElasticaWrapper implements AsyncRequestAccessor
     }
 
     /**
+     * Export index.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return ReadableStreamInterface
+     */
+    public function exportIndex(RepositoryReference $repositoryReference): ReadableStreamInterface
+    {
+        $scroll = new AsyncScroll($this->client, $this->loop);
+
+        return $scroll->scroll(
+            $this->getIndexAliasName($repositoryReference),
+            100
+        );
+    }
+
+    /**
      * Refresh.
      *
      * @param string $indexName
@@ -854,7 +879,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         string $indexName,
         Config $config
     ): PromiseInterface {
-        $endpoint = new MappingEndpoint\Put();
+        $endpoint = new PutMapping();
         $endpoint->setBody($this->getIndexMapping($config));
         Polyfill\Type::setEndpointType($endpoint, $this->elasticsearchVersion);
 

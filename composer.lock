@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd95069b42b7cb196dd7eb75f13806ba",
+    "content-hash": "864e9779797bf47ce8d3c22e4047c9dd",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -476,6 +476,56 @@
             "time": "2019-12-05T08:45:06+00:00"
         },
         {
+            "name": "clue/ndjson-react",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-ndjson.git",
+                "reference": "767ec9543945802b5766fab0da4520bf20626f66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-ndjson/zipball/767ec9543945802b5766fab0da4520bf20626f66",
+                "reference": "767ec9543945802b5766fab0da4520bf20626f66",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3",
+                "react/stream": "^1.0 || ^0.7 || ^0.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0 || ^6.0 || ^5.7 || ^4.8.35",
+                "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\NDJson\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Streaming newline-delimited JSON (NDJSON) parser and encoder for ReactPHP.",
+            "homepage": "https://github.com/clue/reactphp-ndjson",
+            "keywords": [
+                "NDJSON",
+                "json",
+                "jsonlines",
+                "newline",
+                "reactphp",
+                "streaming"
+            ],
+            "time": "2020-02-04T11:48:52+00:00"
+        },
+        {
             "name": "clue/redis-protocol",
             "version": "v0.3.1",
             "source": {
@@ -574,6 +624,117 @@
             "time": "2019-03-11T10:20:19+00:00"
         },
         {
+            "name": "clue/stream-filter",
+            "version": "v1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/php-stream-filter.git",
+                "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/php-stream-filter/zipball/5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
+                "reference": "5a58cc30a8bd6a4eb8f856adf61dd3e013f53f71",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0 || ^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\StreamFilter\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@lueck.tv"
+                }
+            ],
+            "description": "A simple and modern approach to stream filtering in PHP",
+            "homepage": "https://github.com/clue/php-stream-filter",
+            "keywords": [
+                "bucket brigade",
+                "callback",
+                "filter",
+                "php_user_filter",
+                "stream",
+                "stream_filter_append",
+                "stream_filter_register"
+            ],
+            "time": "2019-04-09T12:31:48+00:00"
+        },
+        {
+            "name": "clue/zlib-react",
+            "version": "v0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/clue/reactphp-zlib.git",
+                "reference": "e6a77eee88d8fbf22d1a90530dd0c810fa2d3ad3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clue/reactphp-zlib/zipball/e6a77eee88d8fbf22d1a90530dd0c810fa2d3ad3",
+                "reference": "e6a77eee88d8fbf22d1a90530dd0c810fa2d3ad3",
+                "shasum": ""
+            },
+            "require": {
+                "clue/stream-filter": "~1.3",
+                "php": ">=5.3",
+                "react/stream": "^1.0 || ^0.7 || ^0.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0 || ^4.8",
+                "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3"
+            },
+            "suggest": {
+                "ext-zlib": "Requires ext-zlib extension"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clue\\React\\Zlib\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering"
+                }
+            ],
+            "description": "Streaming zlib compressor and decompressor for ReactPHP, supporting compression and decompression of GZIP, ZLIB and raw DEFLATE formats.",
+            "homepage": "https://github.com/clue/reactphp-zlib",
+            "keywords": [
+                "RFC 1950",
+                "RFC 1951",
+                "RFC 1952",
+                "compression",
+                "decompression",
+                "deflate",
+                "gz",
+                "gzip",
+                "inflate",
+                "reactphp",
+                "zlib"
+            ],
+            "time": "2020-04-20T11:34:29+00:00"
+        },
+        {
             "name": "doctrine/cache",
             "version": "1.10.0",
             "source": {
@@ -657,16 +818,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "v2.10.1",
+            "version": "2.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "c2b8e6e82732a64ecde1cddf9e1e06cb8556e3d8"
+                "reference": "aab745e7b6b2de3b47019da81e7225e14dcfdac8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/c2b8e6e82732a64ecde1cddf9e1e06cb8556e3d8",
-                "reference": "c2b8e6e82732a64ecde1cddf9e1e06cb8556e3d8",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/aab745e7b6b2de3b47019da81e7225e14dcfdac8",
+                "reference": "aab745e7b6b2de3b47019da81e7225e14dcfdac8",
                 "shasum": ""
             },
             "require": {
@@ -678,9 +839,11 @@
             "require-dev": {
                 "doctrine/coding-standard": "^6.0",
                 "jetbrains/phpstorm-stubs": "^2019.1",
-                "phpstan/phpstan": "^0.11.3",
+                "nikic/php-parser": "^4.4",
+                "phpstan/phpstan": "^0.12",
                 "phpunit/phpunit": "^8.4.1",
-                "symfony/console": "^2.0.5|^3.0|^4.0|^5.0"
+                "symfony/console": "^2.0.5|^3.0|^4.0|^5.0",
+                "vimeo/psalm": "^3.11"
             },
             "suggest": {
                 "symfony/console": "For helpful console commands such as SQL execution and import of files."
@@ -745,7 +908,7 @@
                 "sqlserver",
                 "sqlsrv"
             ],
-            "time": "2020-01-04T12:56:21+00:00"
+            "time": "2020-04-20T17:19:26+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -1334,16 +1497,16 @@
         },
         {
             "name": "drift/preload-bundle",
-            "version": "0.1.0",
+            "version": "0.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/preload-bundle.git",
-                "reference": "86902aae7f2266ff4851882790b01fc4b5a007d1"
+                "reference": "7dad89aae4c9ada6bdf6ecc6784880732b1cf30b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/preload-bundle/zipball/86902aae7f2266ff4851882790b01fc4b5a007d1",
-                "reference": "86902aae7f2266ff4851882790b01fc4b5a007d1",
+                "url": "https://api.github.com/repos/driftphp/preload-bundle/zipball/7dad89aae4c9ada6bdf6ecc6784880732b1cf30b",
+                "reference": "7dad89aae4c9ada6bdf6ecc6784880732b1cf30b",
                 "shasum": ""
             },
             "require": {
@@ -1377,28 +1540,29 @@
             ],
             "description": "Preload Bundle for DriftPHP, a framework on top of Symfony and ReactPHP components",
             "homepage": "https://github.com/driftphp/preload-bundle",
-            "time": "2019-12-18T12:59:58+00:00"
+            "time": "2020-04-22T23:54:22+00:00"
         },
         {
             "name": "drift/react-functions",
-            "version": "0.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/reactphp-functions.git",
-                "reference": "85faa3343b6b20a0b20cd212cd80d74bcf38d953"
+                "reference": "1cb6e8126bfdfabecf9083ecd6bbb0ead915b7ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/reactphp-functions/zipball/85faa3343b6b20a0b20cd212cd80d74bcf38d953",
-                "reference": "85faa3343b6b20a0b20cd212cd80d74bcf38d953",
+                "url": "https://api.github.com/repos/driftphp/reactphp-functions/zipball/1cb6e8126bfdfabecf9083ecd6bbb0ead915b7ff",
+                "reference": "1cb6e8126bfdfabecf9083ecd6bbb0ead915b7ff",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1",
+                "php": "^7.3",
                 "react/child-process": "^0.6",
                 "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3.5",
                 "react/promise": "^2.7 || ^1.2.1",
-                "react/promise-timer": "^1.5"
+                "react/promise-timer": "^1.5",
+                "react/stream": "^1.0"
             },
             "require-dev": {
                 "clue/block-react": "^1.3"
@@ -1413,6 +1577,12 @@
             "license": [
                 "MIT"
             ],
+            "authors": [
+                {
+                    "name": "Marc Morera",
+                    "email": "yuhu@mmoreram.com"
+                }
+            ],
             "description": "Lightweight library that provides regular PHP methods is a non-blocking implementation.",
             "homepage": "https://github.com/driftphp/reactphp-functions",
             "keywords": [
@@ -1424,7 +1594,7 @@
                 "reactphp",
                 "sleep"
             ],
-            "time": "2019-11-25T13:16:24+00:00"
+            "time": "2020-04-27T16:53:04+00:00"
         },
         {
             "name": "drift/redis-bundle",
@@ -1475,19 +1645,20 @@
         },
         {
             "name": "drift/server",
-            "version": "0.1.10",
+            "version": "0.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/server.git",
-                "reference": "69ee167ed24501f29d2a82643e004d932ddd0ce9"
+                "reference": "3ed8edb751f65a2c836a667c3ff82a8ca43f6e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/server/zipball/69ee167ed24501f29d2a82643e004d932ddd0ce9",
-                "reference": "69ee167ed24501f29d2a82643e004d932ddd0ce9",
+                "url": "https://api.github.com/repos/driftphp/server/zipball/3ed8edb751f65a2c836a667c3ff82a8ca43f6e32",
+                "reference": "3ed8edb751f65a2c836a667c3ff82a8ca43f6e32",
                 "shasum": ""
             },
             "require": {
+                "clue/zlib-react": "^0.2.2",
                 "drift/console-bridge": "0.1.*",
                 "drift/event-loop-utils": "0.1.*",
                 "drift/http-kernel": "0.1.*, >=0.1.3",
@@ -1531,7 +1702,7 @@
                 }
             ],
             "description": "ReactPHP based server for DriftPHP",
-            "time": "2020-04-11T11:08:40+00:00"
+            "time": "2020-04-27T13:37:38+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",
@@ -5860,56 +6031,6 @@
     ],
     "packages-dev": [
         {
-            "name": "clue/ndjson-react",
-            "version": "v1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/clue/reactphp-ndjson.git",
-                "reference": "767ec9543945802b5766fab0da4520bf20626f66"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/clue/reactphp-ndjson/zipball/767ec9543945802b5766fab0da4520bf20626f66",
-                "reference": "767ec9543945802b5766fab0da4520bf20626f66",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3",
-                "react/stream": "^1.0 || ^0.7 || ^0.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.0 || ^6.0 || ^5.7 || ^4.8.35",
-                "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Clue\\React\\NDJson\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christian Lück",
-                    "email": "christian@clue.engineering"
-                }
-            ],
-            "description": "Streaming newline-delimited JSON (NDJSON) parser and encoder for ReactPHP.",
-            "homepage": "https://github.com/clue/reactphp-ndjson",
-            "keywords": [
-                "NDJSON",
-                "json",
-                "jsonlines",
-                "newline",
-                "reactphp",
-                "streaming"
-            ],
-            "time": "2020-02-04T11:48:52+00:00"
-        },
-        {
             "name": "clue/reactphp-sqlite",
             "version": "v1.0.1",
             "source": {
@@ -6164,23 +6285,20 @@
         },
         {
             "name": "phpdocumentor/reflection-common",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionCommon.git",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a"
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/63a995caa1ca9e5590304cd845c15ad6d482a62a",
-                "reference": "63a995caa1ca9e5590304cd845c15ad6d482a62a",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionCommon/zipball/6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
+                "reference": "6568f4687e5b41b054365f9ae03fcb1ed5f2069b",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6"
             },
             "type": "library",
             "extra": {
@@ -6212,7 +6330,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2018-08-07T13:53:10+00:00"
+            "time": "2020-04-27T09:25:28+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -7536,9 +7654,17 @@
             "time": "2020-04-18T12:12:48+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "0.1.1",
+            "alias_normalized": "0.1.1.0",
+            "version": "9999999-dev",
+            "package": "drift/react-functions"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "drift/react-functions": 20,
         "ruflin/elastica": 10
     },
     "prefer-stable": true,

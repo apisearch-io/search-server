@@ -32,7 +32,12 @@ use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
 use Elastica\Query as ElasticaQuery;
 use Elastica\ResultSet as ElasticaResultSet;
 use Elastica\Suggest;
+use function Drift\React\wait_for_stream_listeners;
+use function React\Promise\resolve;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use React\Stream\DuplexStreamInterface;
+use React\Stream\ThroughStream;
 
 /**
  * Class QueryRepository.
@@ -41,17 +46,18 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
 {
     /**
      * @var QueryBuilder
-     *
-     * Query builder
      */
     private $queryBuilder;
 
     /**
      * @var ResultBuilder
-     *
-     * Result builder
      */
     private $resultBuilder;
+
+    /**
+     * @var LoopInterface
+     */
+    private $loop;
 
     /**
      * ElasticaSearchRepository constructor.
@@ -60,12 +66,14 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
      * @param bool            $refreshOnWrite
      * @param QueryBuilder    $queryBuilder
      * @param ResultBuilder   $resultBuilder
+     * @param LoopInterface   $loop
      */
     public function __construct(
         ElasticaWrapper $elasticaWrapper,
         bool $refreshOnWrite,
         QueryBuilder $queryBuilder,
-        ResultBuilder $resultBuilder
+        ResultBuilder $resultBuilder,
+        LoopInterface $loop
     ) {
         parent::__construct(
             $elasticaWrapper,
@@ -74,6 +82,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
 
         $this->queryBuilder = $queryBuilder;
         $this->resultBuilder = $resultBuilder;
+        $this->loop = $loop;
     }
 
     /**
@@ -91,6 +100,47 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         return (\count($query->getSubqueries()) > 0)
             ? $this->makeMultiQuery($repositoryReference, $query)
             : $this->makeSimpleQuery($repositoryReference, $query);
+    }
+
+    /**
+     * Export index.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<DuplexStreamInterface>
+     */
+    public function exportIndex(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        $stream = new ThroughStream();
+        $query = Query::createMatchAll();
+
+        wait_for_stream_listeners($stream, $this->loop, 1, 1)
+            ->then(function (ThroughStream $stream) use ($repositoryReference, $query) {
+                $scrollStream = $this
+                    ->elasticaWrapper
+                    ->exportIndex($repositoryReference);
+
+                $scrollStream->on('data', function (ElasticaResultSet $resultSet) use ($stream, $query) {
+                    $result = $this->elasticaResultSetToResult(
+                        $query,
+                        $resultSet
+                    );
+
+                    foreach ($result->getItems() as $item) {
+                        $stream->write($item);
+                    }
+                });
+
+                $scrollStream->on('end', function () use ($stream) {
+                    $stream->end();
+                });
+
+                $scrollStream->on('close', function () use ($stream) {
+                    $stream->close();
+                });
+            });
+
+        return resolve($stream);
     }
 
     /**

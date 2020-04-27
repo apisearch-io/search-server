@@ -15,10 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\StaticTokens\Tests\Functional;
 
-use Apisearch\Http\Endpoints;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
 use Apisearch\Query\Query;
+use Apisearch\Server\Domain\Endpoints;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**

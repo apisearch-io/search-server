@@ -15,14 +15,14 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
-use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
+use Drift\CommandBus\Middleware\DiscriminableMiddleware;
 use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthPluginsMiddleware.
  */
-final class CheckHealthPluginsMiddleware implements PluginMiddleware
+final class CheckHealthPluginsMiddleware implements DiscriminableMiddleware
 {
     /**
      * @var string[]

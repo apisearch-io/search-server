@@ -48,6 +48,7 @@ trait AllSearchTests
     use TokenQueriesTest;
     use MultiqueryTest;
     use IndicesTest;
+    use ExportTest;
 
     /**
      * Assert IDS sequence.

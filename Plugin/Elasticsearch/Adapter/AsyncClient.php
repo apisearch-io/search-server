@@ -108,7 +108,7 @@ class AsyncClient implements AsyncRequestAccessor
                     $response->getStatusCode()
                 );
             })
-            ->otherwise(function (\Throwable $exception) {
+            ->otherwise(function (\Throwable $exception) use ($path, $request) {
                 throw new ResponseException(
                     $exception->getMessage(),
                     $exception->getCode()

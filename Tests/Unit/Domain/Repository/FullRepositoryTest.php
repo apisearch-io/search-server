@@ -26,6 +26,9 @@ use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\FullRepository;
 use Apisearch\Server\Tests\Unit\BaseUnitTest;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 
 /**
  * Class FullRepositoryTest.
@@ -33,9 +36,11 @@ use Apisearch\Server\Tests\Unit\BaseUnitTest;
 abstract class FullRepositoryTest extends BaseUnitTest
 {
     /**
+     * @param LoopInterface $loop
+     *
      * @return FullRepository
      */
-    abstract protected function getFullRepository(): FullRepository;
+    abstract protected function getFullRepository(LoopInterface $loop = null): FullRepository;
 
     /**
      * Test delete index on empty repository.
@@ -233,6 +238,30 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $firstResult = $result->getFirstItem();
         $this->assertFalse(\array_key_exists('field', $firstResult->getMetadata()));
         $this->assertFalse(\array_key_exists('another_field', $firstResult->getMetadata()));
+    }
+
+    /**
+     * Test export.
+     */
+    public function testIndexExport()
+    {
+        $loop = Factory::create();
+        $repository = $this->getFullRepository($loop);
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $stream = $this->await($repository->exportIndex($repositoryReference));
+        $deferred = new Deferred();
+        $items = [];
+        $stream->on('data', function (Item $item) use (&$items) {
+            $items[] = $item;
+        });
+        $stream->on('end', function () use (&$items, $deferred) {
+            $deferred->resolve($items);
+        });
+
+        $data = $this->await($deferred->promise(), $loop);
+        $this->assertCount(2, $data);
     }
 
     /**

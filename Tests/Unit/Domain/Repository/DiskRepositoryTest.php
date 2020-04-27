@@ -17,6 +17,8 @@ namespace Apisearch\Server\Tests\Unit\Domain\Repository;
 
 use Apisearch\Server\Domain\Repository\DiskRepository;
 use Apisearch\Server\Domain\Repository\FullRepository;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 
 /**
  * Class DiskRepositoryTest.
@@ -26,11 +28,12 @@ class DiskRepositoryTest extends FullRepositoryTest
     /**
      * {@inheritdoc}
      */
-    protected function getFullRepository(): FullRepository
+    protected function getFullRepository(LoopInterface $loop = null): FullRepository
     {
+        $loop = $loop ?? Factory::create();
         $path = '/tmp/apisearch.repository';
         @\unlink($path);
 
-        return new DiskRepository($path);
+        return new DiskRepository($path, $loop);
     }
 }

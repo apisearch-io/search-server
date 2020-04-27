@@ -1,7 +1,6 @@
 .env
 .env.dist
 .formatter.yml
-.ppm
 .git
 .gitignore
 .idea

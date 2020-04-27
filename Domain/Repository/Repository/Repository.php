@@ -21,7 +21,9 @@ use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Result\Result;
 use React\Promise\PromiseInterface;
+use React\Stream\DuplexStreamInterface;
 
 /**
  * Class Repository.
@@ -139,5 +141,19 @@ final class Repository
                 $query,
                 $changes
             );
+    }
+
+    /**
+     * Export index.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<DuplexStreamInterface>
+     */
+    public function exportIndex(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        return $this
+            ->queryRepository
+            ->exportIndex($repositoryReference);
     }
 }
