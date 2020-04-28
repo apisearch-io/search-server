@@ -131,6 +131,40 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * Export index.
+     *
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     *
+     * @return Item[]
+     */
+    public function exportIndex(
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ): array {
+        $content = $this->makeStreamCall(
+            'v1_export_index',
+            [
+                'app_id' => $appId ?? static::$appId,
+                'index_id' => $index ?? static::$index,
+            ],
+            $token,
+            []
+        );
+
+        $rows = \explode(PHP_EOL, $content['body']['message']);
+        $rows = \array_filter($rows, function ($row) {
+            return !empty($row);
+        });
+
+        return \array_map(function (string $row) {
+            return Item::createFromArray(\json_decode($row, true));
+        }, $rows);
+    }
+
+    /**
      * Delete using the bus.
      *
      * @param ItemUUID[] $itemsUUID
@@ -660,6 +694,64 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             'body' => \json_decode($content, true) ?? $content,
             'length' => $contentLength,
             'headers' => $responseHeaders,
+        ];
+        if (\is_string($result['body'])) {
+            $result['body'] = ['message' => $result['body']];
+        }
+
+        self::throwTransportableExceptionIfNeeded($result);
+
+        return $result;
+    }
+
+    /**
+     * Make stream call.
+     *
+     * @param string     $routeName
+     * @param array      $routeParameters
+     * @param Token|null $token
+     * @param array      $queryParameters
+     *
+     * @return array
+     */
+    protected function makeStreamCall(
+        string $routeName,
+        array $routeParameters = [],
+        ?Token $token = null,
+        array $queryParameters = []
+    ): array {
+        /**
+         * @var Route
+         */
+        $routeName = 'apisearch_'.$routeName;
+        $router = self::getStatic('router');
+        $route = $router
+            ->getRouteCollection()
+            ->get($routeName);
+
+        $routePath = $route
+            ? $router->generate($routeName, $routeParameters)
+            : '/not-found';
+
+        $queryParameters[Http::TOKEN_FIELD] = ($token
+                ? $token->getTokenUUID()->composeUUID()
+                : self::getParameterStatic('apisearch_server.god_token'));
+
+        $url = \sprintf('http://127.0.0.1:'.static::HTTP_TEST_SERVICE_PORT.'%s?%s',
+            $routePath,
+            \http_build_query($queryParameters)
+        );
+
+        $stream = \fopen($url, 'r');
+        $contents = \stream_get_contents($stream);
+
+        \fclose($stream);
+        $headers = $http_response_header;
+        $codeParts = \explode(' ', $headers[0]);
+
+        $result = [
+            'code' => (int) $codeParts[1],
+            'body' => \json_decode($contents, true) ?? $contents,
         ];
         if (\is_string($result['body'])) {
             $result['body'] = ['message' => $result['body']];

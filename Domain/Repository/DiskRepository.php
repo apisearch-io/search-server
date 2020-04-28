@@ -22,7 +22,9 @@ use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
 use function React\Promise\resolve;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use React\Stream\DuplexStreamInterface;
 
 /**
  * Class DiskRepository.
@@ -35,10 +37,14 @@ class DiskRepository extends InMemoryRepository implements FullRepository
     private $file;
 
     /**
-     * @param string $file
+     * @param string        $file
+     * @param LoopInterface $loop
      */
-    public function __construct(string $file)
-    {
+    public function __construct(
+        string $file,
+        LoopInterface $loop
+    ) {
+        parent::__construct($loop);
         $this->file = $file;
     }
 
@@ -178,6 +184,22 @@ class DiskRepository extends InMemoryRepository implements FullRepository
                             return $result;
                         });
                     });
+            });
+    }
+
+    /**
+     * Export index.
+     *
+     * @param RepositoryReference $repositoryReference
+     *
+     * @return PromiseInterface<DuplexStreamInterface>
+     */
+    public function exportIndex(RepositoryReference $repositoryReference): PromiseInterface
+    {
+        return $this
+            ->loadFromDisk()
+            ->then(function () use ($repositoryReference) {
+                return parent::exportIndex($repositoryReference);
             });
     }
 

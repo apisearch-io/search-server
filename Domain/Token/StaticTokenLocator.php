@@ -15,10 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Token;
 
-use Apisearch\Http\Endpoints;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use Apisearch\Server\Domain\Endpoints;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 

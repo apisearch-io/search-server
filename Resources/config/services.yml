@@ -31,10 +31,6 @@ services:
     Apisearch\Server\Domain\Middleware\:
         resource: '../../Domain/Middleware/'
 
-    Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware:
-        tags:
-            - { name: apisearch_plugin.middleware }
-
     #
     # Event listeners
     #

@@ -20,6 +20,7 @@ use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 
 /**
@@ -31,14 +32,17 @@ abstract class BaseUnitTest extends TestCase
      * Await.
      *
      * @param PromiseInterface $promise
+     * @param LoopInterface    $loop
      *
      * @return mixed
      *
      * @throws Exception
      */
-    protected function await(PromiseInterface $promise)
-    {
-        $loop = Factory::create();
+    protected function await(
+        PromiseInterface $promise,
+        LoopInterface $loop = null
+    ) {
+        $loop = $loop ?? Factory::create();
 
         return await($promise, $loop);
     }
@@ -47,14 +51,17 @@ abstract class BaseUnitTest extends TestCase
      * Await all.
      *
      * @param PromiseInterface[] $promises
+     * @param LoopInterface      $loop
      *
      * @return mixed
      *
      * @throws Exception
      */
-    protected function awaitAll(array $promises)
-    {
-        $loop = Factory::create();
+    protected function awaitAll(
+        array $promises,
+        LoopInterface $loop = null
+    ) {
+        $loop = $loop ?? Factory::create();
 
         return awaitAll($promises, $loop);
     }

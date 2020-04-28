@@ -42,6 +42,7 @@ use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Apisearch\Server\Domain\Query\CheckIndex;
+use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetTokens;
@@ -51,6 +52,7 @@ use Apisearch\Server\Domain\Query\Query;
 use Apisearch\User\Interaction;
 use Clue\React\Block;
 use DateTime;
+use React\Promise\Deferred;
 
 /**
  * Class ServiceFunctionalTest.
@@ -113,6 +115,42 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             RepositoryReference::create($appUUID, $indexUUID),
             $origin
         ));
+    }
+
+    /**
+     * Export index.
+     *
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     *
+     * @return Item[]
+     */
+    public function exportIndex(
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ): array {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+
+        $stream = self::askQuery(new ExportIndex(
+            RepositoryReference::create(
+                $appUUID,
+                IndexUUID::createById($index ?? self::$index)
+            )
+        ));
+
+        $deferred = new Deferred();
+        $items = [];
+        $stream->on('data', function (Item $item) use (&$items) {
+            $items[] = $item;
+        });
+
+        $stream->on('end', function () use (&$items, $deferred) {
+            $deferred->resolve($items);
+        });
+
+        return $this->await($deferred->promise());
     }
 
     /**

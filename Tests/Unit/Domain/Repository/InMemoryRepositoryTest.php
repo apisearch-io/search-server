@@ -17,6 +17,8 @@ namespace Apisearch\Server\Tests\Unit\Domain\Repository;
 
 use Apisearch\Server\Domain\Repository\FullRepository;
 use Apisearch\Server\Domain\Repository\InMemoryRepository;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 
 /**
  * Class InMemoryRepositoryTest.
@@ -26,8 +28,8 @@ class InMemoryRepositoryTest extends FullRepositoryTest
     /**
      * {@inheritdoc}
      */
-    protected function getFullRepository(): FullRepository
+    protected function getFullRepository(LoopInterface $loop = null): FullRepository
     {
-        return new InMemoryRepository();
+        return new InMemoryRepository($loop ?? Factory::create());
     }
 }

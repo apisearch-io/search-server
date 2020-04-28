@@ -54,6 +54,11 @@ apisearch_v1_check_index:
     methods: ["HEAD"]
     controller: Apisearch\Server\Controller\CheckIndexController
 
+apisearch_v1_export_index:
+    path: /v1/{app_id}/indices/{index_id}/export
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\ExportIndexController
+
 #
 # Items API
 #

@@ -463,6 +463,21 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     ): string;
 
     /**
+     * Export index.
+     *
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     *
+     * @return Item[]
+     */
+    abstract public function exportIndex(
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ): array;
+
+    /**
      * Delete using the bus.
      *
      * @param ItemUUID[] $itemsUUID

@@ -54,6 +54,7 @@ trait DBALFunctionalTestTrait
             'class' => DiskRepository::class,
             'arguments' => [
                 '/tmp/apisearch.repository',
+                '@reactphp.event_loop',
             ],
         ];
         $configuration['services'][DiskRepository::class] = [

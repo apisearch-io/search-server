@@ -19,11 +19,12 @@ use Apisearch\Exception\ForbiddenException;
 use Apisearch\Server\Domain\AppRequiredCommand;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
+use Drift\CommandBus\Middleware\DiscriminableMiddleware;
 
 /**
  * Class RepositoryReferenceMiddleware.
  */
-final class RepositoryReferenceMiddleware
+final class RepositoryReferenceMiddleware implements DiscriminableMiddleware
 {
     /**
      * @param object   $command
@@ -33,23 +34,32 @@ final class RepositoryReferenceMiddleware
      */
     public function execute($command, callable $next)
     {
-        $hasRepositoryReference = ($command instanceof CommandWithRepositoryReferenceAndToken);
-        if ($hasRepositoryReference) {
-            if (
-                ($command instanceof AppRequiredCommand) &&
-                empty($command->getAppUUID())
-            ) {
-                throw ForbiddenException::createAppIdIsRequiredException();
-            }
+        if (
+            ($command instanceof AppRequiredCommand) &&
+            empty($command->getAppUUID())
+        ) {
+            throw ForbiddenException::createAppIdIsRequiredException();
+        }
 
-            if (
-                ($command instanceof IndexRequiredCommand) &&
-                empty($command->getIndexUUID())
-            ) {
-                throw ForbiddenException::createIndexIsRequiredException();
-            }
+        if (
+            ($command instanceof IndexRequiredCommand) &&
+            empty($command->getIndexUUID())
+        ) {
+            throw ForbiddenException::createIndexIsRequiredException();
         }
 
         return $next($command);
+    }
+
+    /**
+     * Only handle.
+     *
+     * @return string[]
+     */
+    public function onlyHandle(): array
+    {
+        return [
+            CommandWithRepositoryReferenceAndToken::class,
+        ];
     }
 }

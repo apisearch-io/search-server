@@ -74,7 +74,24 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $index = null
     ): string {
-        throw new \Exception('Method not usable');
+        $this->markTestSkipped('Method not allowed. Skipping');
+    }
+
+    /**
+     * Export index.
+     *
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     *
+     * @return Item[]
+     */
+    public function exportIndex(
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ): array {
+        $this->markTestSkipped('Method not allowed. Skipping');
     }
 
     /**
@@ -353,7 +370,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function ping(Token $token = null): bool
     {
-        throw new Exception('Cannot test ping with this endpoint');
+        $this->markTestSkipped('Method not allowed. Skipping');
     }
 
     /**
@@ -367,7 +384,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function checkHealth(Token $token = null): array
     {
-        throw new Exception('Cannot test health check with this endpoint');
+        $this->markTestSkipped('Method not allowed. Skipping');
     }
 
     /**

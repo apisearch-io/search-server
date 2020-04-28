@@ -18,6 +18,7 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 use Apisearch\Config\Config;
 use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
 use React\Promise\PromiseInterface;
