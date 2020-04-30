@@ -15,9 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Controller;
 
-use Apisearch\Model\Item;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\ExportIndex;
+use Apisearch\Server\Domain\Stream\ItemToArrayTransformerStream;
 use Clue\React\NDJson\Encoder as NDJsonEncoder;
 use Drift\CommandBus\Bus\QueryBus;
 use function Drift\React\wait_for_stream_listeners;
@@ -26,6 +26,7 @@ use React\Http\Response;
 use React\Promise\PromiseInterface;
 use React\Stream\ReadableStreamInterface;
 use React\Stream\ThroughStream;
+use React\Stream\Util;
 use React\Stream\WritableStreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -76,14 +77,10 @@ class ExportIndexController extends ControllerWithQueryBus
                 wait_for_stream_listeners($responseStream, $this->loop, 1, 1)
                     ->then(function (WritableStreamInterface $responseStream) use ($stream) {
                         $encoder = new NDJsonEncoder($responseStream);
-                        $through = new ThroughStream(function (Item $item) {
-                            return $item->toArray();
-                        });
+                        $itemToArrayTransformer = new ItemToArrayTransformerStream($encoder);
 
-                        $stream
-                            ->pipe($through)
-                            ->pipe($encoder)
-                            ->pipe($responseStream);
+                        $stream->pipe($itemToArrayTransformer);
+                        Util::forwardEvents($itemToArrayTransformer, $stream, ['close']);
                     });
 
                 return new Response(200, [

@@ -3,31 +3,19 @@ imports:
 
 parameters:
     kernel.secret: nsdjkfhdsupoifjñksd
-    in_memory: "in_memory"
 
 framework:
     form: false
     assets: false
+    esi: false
     session: false
     translator: false
+    profiler: false
+    validation: false
+    fragments: false
+    csrf_protection: false
     php_errors:
         log: false
 
 apisearch:
     load_commands: false
-
-event_bus:
-    router:
-        TokensWereDeleted: events, tokens_update
-        TokensWereAdded: events, tokens_update
-        TokensWasDeleted: events, tokens_update
-    exchanges:
-        events: "%env(APISEARCH_EVENTS_EXCHANGE)%"
-        tokens_update: "%env(APISEARCH_TOKENS_UPDATE_EXCHANGE)%"
-    async_adapter:
-        adapter: "%env(APISEARCH_ASYNC_EVENTS_ADAPTER)%"
-        amqp:
-            host: "%env(AMQP_HOST)%"
-            user: "%env(AMQP_USER)%"
-            password: "%env(AMQP_PASSWORD)%"
-            vhost: "%env(AMQP_VHOST)%"

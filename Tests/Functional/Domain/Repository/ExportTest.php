@@ -33,30 +33,24 @@ trait ExportTest
 
     /**
      * Test item export with not found index.
-     *
-     * @group export
      */
     public function testIndexExportAppNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->exportIndex(static::$anotherInexistentAppId);
+        $this->exportIndex(false, static::$anotherInexistentAppId);
     }
 
     /**
      * Test item export with not found index.
-     *
-     * @group export
      */
     public function testIndexExportIndexNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->exportIndex(static::$appId, static::$yetAnotherIndex);
+        $this->exportIndex(false, static::$appId, static::$yetAnotherIndex);
     }
 
     /**
      * Test complete export.
-     *
-     * @group export
      */
     public function testCompleteExport()
     {

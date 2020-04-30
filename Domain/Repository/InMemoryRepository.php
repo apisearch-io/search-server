@@ -176,16 +176,23 @@ class InMemoryRepository implements FullRepository
     {
         $stream = new ThroughStream();
 
-        wait_for_stream_listeners($stream, $this->loop, 1)
+        wait_for_stream_listeners($stream, $this->loop, 1, 1)
             ->then(function (ThroughStream $stream) use ($repositoryReference) {
-                $items = $this->queryMatchAll(
-                    $repositoryReference,
-                    Query::createMatchAll()
-                )->getItems();
+                $itemsAsArray = $this->getIndexBlocksByRepositoryReference(RepositoryReference::create(
+                    $repositoryReference->getAppUUID(),
+                    $repositoryReference->getIndexUUID()
+                ), 'items');
 
-                foreach ($items as $item) {
-                    $stream->write($item);
+                foreach ($itemsAsArray as $indexItems) {
+                    foreach ($indexItems as $item) {
+                        if (!$stream->isWritable()) {
+                            continue 2;
+                        }
+
+                        $stream->write($item);
+                    }
                 }
+
                 $stream->end();
             });
 
@@ -382,13 +389,17 @@ class InMemoryRepository implements FullRepository
             }
         }
 
+        $from = $query->getFrom();
+        $n = $query->getSize();
+        $slicedItems = \array_slice($items, $from, $n);
+
         return Result::create(
             null,
             \count($items),
             \count($items),
             null,
             [],
-            \array_values($items)
+            \array_values($slicedItems)
         );
     }
 

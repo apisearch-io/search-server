@@ -38,6 +38,7 @@ use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use React\Stream\DuplexStreamInterface;
 use React\Stream\ThroughStream;
+use React\Stream\TransformerStream;
 
 /**
  * Class QueryRepository.
@@ -112,31 +113,30 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
     public function exportIndex(RepositoryReference $repositoryReference): PromiseInterface
     {
         $stream = new ThroughStream();
-        $query = Query::createMatchAll();
 
         wait_for_stream_listeners($stream, $this->loop, 1, 1)
-            ->then(function (ThroughStream $stream) use ($repositoryReference, $query) {
-                $scrollStream = $this
+            ->then(function (ThroughStream $stream) use ($repositoryReference) {
+                $query = Query::createMatchAll();
+                $sourceStream = $this
                     ->elasticaWrapper
                     ->exportIndex($repositoryReference);
 
-                $scrollStream->on('data', function (ElasticaResultSet $resultSet) use ($stream, $query) {
-                    $result = $this->elasticaResultSetToResult(
-                        $query,
-                        $resultSet
-                    );
+                $elasticaTransformer = TransformerStream::withCallback(
+                    $stream,
+                    function (ElasticaResultSet $resultSet) use ($query, $stream) {
+                        $result = $this->elasticaResultSetToResult(
+                            $query,
+                            $resultSet
+                        );
 
-                    foreach ($result->getItems() as $item) {
-                        $stream->write($item);
-                    }
-                });
+                        foreach ($result->getItems() as $item) {
+                            $stream->write($item);
+                        }
+                    });
 
-                $scrollStream->on('end', function () use ($stream) {
-                    $stream->end();
-                });
-
-                $scrollStream->on('close', function () use ($stream) {
-                    $stream->close();
+                $sourceStream->pipe($elasticaTransformer);
+                $elasticaTransformer->on('close', function () use ($sourceStream) {
+                    $sourceStream->close();
                 });
             });
 

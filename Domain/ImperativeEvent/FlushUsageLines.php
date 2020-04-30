@@ -1,0 +1,47 @@
+<?php
+
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
+
+namespace Apisearch\Server\Domain\ImperativeEvent;
+
+use Apisearch\Model\AppUUID;
+
+/**
+ * Class FlushUsageLines.
+ */
+final class FlushUsageLines
+{
+    /**
+     * @var AppUUID|null
+     */
+    private $appUUID;
+
+    /**
+     * LoadTokens constructor.
+     *
+     * @param AppUUID $appUUID
+     */
+    public function __construct(AppUUID $appUUID = null)
+    {
+        $this->appUUID = $appUUID;
+    }
+
+    /**
+     * @return AppUUID|null
+     */
+    public function getAppUUID(): ?AppUUID
+    {
+        return $this->appUUID;
+    }
+}

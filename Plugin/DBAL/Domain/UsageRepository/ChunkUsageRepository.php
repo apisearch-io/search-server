@@ -16,18 +16,19 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Domain\UsageRepository;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
 use Apisearch\Server\Domain\Repository\UsageRepository\TemporaryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use Apisearch\Server\Domain\Repository\UsageRepository\UseLine;
 use Clue\React\Mq\Queue;
 use DateTime;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class ChunkUsageRepository.
  */
-class ChunkUsageRepository implements UsageRepository
+class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
 {
     /**
      * @var TemporaryUsageRepository
@@ -38,6 +39,11 @@ class ChunkUsageRepository implements UsageRepository
      * @var UsageRepository
      */
     private $persistentUsageRepository;
+
+    /**
+     * @var LoopInterface
+     */
+    private $loop;
 
     /**
      * @param TemporaryUsageRepository $temporaryUsageRepository
@@ -53,6 +59,7 @@ class ChunkUsageRepository implements UsageRepository
     ) {
         $this->temporaryUsageRepository = $temporaryUsageRepository;
         $this->persistentUsageRepository = $persistentUsageRepository;
+        $this->loop = $loop;
         $loop->addPeriodicTimer($loopPushInterval, function () {
             $this->flush();
         });
@@ -107,15 +114,29 @@ class ChunkUsageRepository implements UsageRepository
             ->temporaryUsageRepository
             ->getAndResetUseLines();
 
-        return Queue::all(3, $useLines, function (UseLine $useLine) {
-            return $this
-                ->persistentUsageRepository
-                ->registerEvent(
-                    RepositoryReference::createFromComposed("{$useLine->getAppUUID()}_{$useLine->getIndexUUID()}"),
-                    $useLine->getEvent(),
-                    $useLine->getWhen(),
-                    $useLine->getN()
-                );
+        $this->loop->futureTick(function () use ($useLines) {
+            return Queue::all(1, $useLines, function ($useLine) {
+                return $this
+                    ->persistentUsageRepository
+                    ->registerEvent(
+                        RepositoryReference::createFromComposed("{$useLine->getAppUUID()}_{$useLine->getIndexUUID()}"),
+                        $useLine->getEvent(),
+                        $useLine->getWhen(),
+                        $useLine->getN()
+                    );
+            });
         });
+    }
+
+    /**
+     * @return array|void
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            FlushUsageLines::class => [
+                ['flush', 0],
+            ],
+        ];
     }
 }

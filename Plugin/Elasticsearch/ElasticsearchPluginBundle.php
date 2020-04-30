@@ -64,6 +64,6 @@ class ElasticsearchPluginBundle extends BaseBundle implements Plugin, SearchEngi
      */
     public function getPluginName(): string
     {
-        return 'elastica';
+        return 'elasticsearch';
     }
 }

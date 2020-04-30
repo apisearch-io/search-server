@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Query\Query;
+use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use DateTime;
 
 /**
@@ -24,10 +26,29 @@ use DateTime;
 trait UsageRepositoryTest
 {
     /**
+     * Decorate configuration.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function decorateConfiguration(array $configuration): array
+    {
+        $configuration = parent::decorateConfiguration($configuration);
+        $configuration['services'][UsageRepository::class] = [
+            'alias' => InMemoryUsageRepository::class,
+        ];
+
+        return $configuration;
+    }
+
+    /**
      * Test simple.
      */
     public function testSimpleUsage()
     {
+        \date_default_timezone_set('UTC');
+
         $this->query(Query::createMatchAll());
         $this->query(Query::createMatchAll());
         $this->query(Query::createMatchAll());
@@ -85,7 +106,7 @@ trait UsageRepositoryTest
             'admin' => 2,
         ], $usage);
 
-        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('+ 1 day'));
+        $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('+1 day'));
         $this->assertEquals([], $usage);
 
         $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'));
@@ -114,6 +135,7 @@ trait UsageRepositoryTest
         ], $usage);
 
         $usage = $this->getUsage(static::$appId, null, static::$index, new DateTime('-1 day'), new DateTime('+1 day'), null, true);
+
         $this->assertEquals([
             (new DateTime())->setTime(0, 0, 0)->format('Ymd') => [
                 'query' => 8,

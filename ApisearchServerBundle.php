@@ -87,6 +87,7 @@ class ApisearchServerBundle extends BaseBundle
             new CompilerPass\TokenProvidersCompilerPass(),
             new CompilerPass\TokenValidatorsCompilerPass(),
             new CompilerPass\CleanCommandsCompilerPass($this->kernel),
+            new CompilerPass\EventBusCompilerPass(),
         ];
     }
 }

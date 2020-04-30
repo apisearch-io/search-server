@@ -13,14 +13,15 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\DBAL\Tests\Functional;
+namespace Apisearch\Plugin\Elasticsearch\Tests\Http;
 
-use Apisearch\Server\Tests\Functional\Domain\Repository\ServiceUsageRepositoryTest;
+use Apisearch\Plugin\Elasticsearch\Tests\ElasticFunctionalTestTrait;
+use Apisearch\Server\Tests\Functional\Http\ServerMemoryControlTest as BaseTest;
 
 /**
- * Class DBALUsageRepositoryTest.
+ * Class ServerMemoryControlTest.
  */
-class DBALUsageRepositoryTest extends ServiceUsageRepositoryTest
+class ServerMemoryControlTest extends BaseTest
 {
-    use DBALFunctionalTestTrait;
+    use ElasticFunctionalTestTrait;
 }

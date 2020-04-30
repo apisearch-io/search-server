@@ -80,6 +80,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -87,6 +88,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null

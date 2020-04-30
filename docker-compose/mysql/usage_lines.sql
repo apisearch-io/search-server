@@ -3,7 +3,7 @@ create table usage_lines
     event varchar(15) not null,
     app_uuid varchar(50) not null,
     index_uuid varchar(50) not null,
-    time int default 8 not null,
+    time int(8) not null,
     n int(7) not null
 );
 

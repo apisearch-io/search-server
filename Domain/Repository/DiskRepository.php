@@ -20,7 +20,6 @@ use Apisearch\Model\Changes;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Result\Result;
 use function React\Promise\resolve;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
@@ -178,12 +177,7 @@ class DiskRepository extends InMemoryRepository implements FullRepository
         return $this
             ->loadFromDisk()
             ->then(function () use ($repositoryReference, $query) {
-                return parent::query($repositoryReference, $query)
-                    ->then(function (Result $result) {
-                        return $this->saveToDisk()->then(function () use ($result) {
-                            return $result;
-                        });
-                    });
+                return parent::query($repositoryReference, $query);
             });
     }
 

@@ -40,8 +40,6 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test index metadata.
-     *
-     * @group lele
      */
     public function testIndexMetadata()
     {

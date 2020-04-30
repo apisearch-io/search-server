@@ -18,6 +18,7 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class CheckHealthController.
@@ -27,10 +28,16 @@ class CheckHealthController extends ControllerWithQueryBus
     /**
      * Health controller.
      *
+     * @param Request $request
+     *
      * @return PromiseInterface
      */
-    public function __invoke(): PromiseInterface
+    public function __invoke(Request $request): PromiseInterface
     {
+        if ($request->query->has('optimize')) {
+            \gc_collect_cycles();
+        }
+
         /*
          * @var array
          */
