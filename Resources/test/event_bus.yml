@@ -1,0 +1,9 @@
+services:
+
+    drift.event_bus.test:
+        alias: drift.event_bus
+        public: true
+
+    drift.inline_event_bus.test:
+        alias: drift.inline_event_bus
+        public: true

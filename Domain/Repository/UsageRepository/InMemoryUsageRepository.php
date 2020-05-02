@@ -52,7 +52,6 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
         if (!$appUUID instanceof AppUUID) {
             return resolve([]);
         }
-
         $when->setTime(0, 0, 0);
         $indexUUID = $repositoryReference->getIndexUUID();
         $indexUUIDComposed = $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null;

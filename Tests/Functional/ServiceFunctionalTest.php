@@ -40,6 +40,7 @@ use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Command\PutToken;
 use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
+use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Apisearch\Server\Domain\Query\CheckIndex;
 use Apisearch\Server\Domain\Query\ExportIndex;
@@ -120,6 +121,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -127,6 +129,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -541,6 +544,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?bool $perDay = false
     ): array {
         $appId = $appId ?? self::$appId;
+        $this->dispatchImperative(new FlushUsageLines());
+        self::usleep(100000);
 
         return self::askQuery(new GetUsage(
             RepositoryReference::createFromComposed("{$appId}_{$indexId}"),

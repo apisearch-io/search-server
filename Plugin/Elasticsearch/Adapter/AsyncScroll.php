@@ -85,7 +85,7 @@ class AsyncScroll extends AsyncAdapter
      *
      * @param WritableStreamInterface $stream
      * @param DefaultBuilder          $builder
-     * @param string                  $index
+     * @param string                  $indexName
      * @param int                     $chunkSize
      * @param string|null             $scrollId
      */
@@ -116,16 +116,10 @@ class AsyncScroll extends AsyncAdapter
                 $responseSet = $builder->buildResultSet($data, $query);
                 $scrollId = $data->getScrollId();
 
-                if (empty($responseSet->getResults())) {
-                    $stream->end();
-
-                    $deleteScroll = new DeleteScroll();
-                    $body = ['scroll_id' => $scrollId];
-                    $deleteScroll->setBody($body);
-                    $this
-                        ->getAsyncClient()
-                        ->requestAsyncEndpoint($deleteScroll);
-                } else {
+                if (
+                    !empty($responseSet->getResults()) &&
+                    $stream->isWritable()
+                ) {
                     $stream->write($responseSet);
                     $this->makeAtomicScroll(
                         $stream,
@@ -134,7 +128,27 @@ class AsyncScroll extends AsyncAdapter
                         $chunkSize,
                         $scrollId
                     );
+
+                    return;
                 }
+
+                $stream->end();
+                $this->deleteScrollContext($scrollId);
             });
+    }
+
+    /**
+     * Delete scroll context.
+     *
+     * @param string $scrollId
+     */
+    private function deleteScrollContext(string $scrollId)
+    {
+        $deleteScroll = new DeleteScroll();
+        $body = ['scroll_id' => $scrollId];
+        $deleteScroll->setBody($body);
+        $this
+            ->getAsyncClient()
+            ->requestAsyncEndpoint($deleteScroll);
     }
 }

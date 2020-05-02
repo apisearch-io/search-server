@@ -113,6 +113,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         $imports = [
             ['resource' => '@ApisearchServerBundle/Resources/config/command_bus.yml'],
             ['resource' => '@ApisearchServerBundle/Resources/test/command_bus.yml'],
+            ['resource' => '@ApisearchServerBundle/Resources/test/event_bus.yml'],
             ['resource' => '@ApisearchServerBundle/Resources/test/services.yml'],
         ];
 
@@ -132,7 +133,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
                 'kernel.secret' => 'sdhjshjkds',
             ],
             'framework' => [
-                'test' => true,
+                'form' => false,
+                'assets' => false,
+                'session' => false,
+                'translator' => false,
+                'php_errors' => [
+                    'log' => false,
+                ],
             ],
             'apisearch_server' => [
                 'god_token' => self::$godToken,
@@ -341,7 +348,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             static::$lastServer = null;
         }
 
-        static::$lastServer = static::runServer(__DIR__.'/../../vendor/bin', static::HTTP_TEST_SERVICE_PORT);
+        static::$lastServer = static::runServer(
+            __DIR__.'/../../vendor/bin',
+            static::HTTP_TEST_SERVICE_PORT, [
+                '--quiet',
+            ]
+        );
         \sleep(2);
     }
 
@@ -465,6 +477,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Export index.
      *
+     * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -472,6 +485,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @return Item[]
      */
     abstract public function exportIndex(
+        bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -816,5 +830,15 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             TokenUUID::createById(static::$godToken),
             AppUUID::createById($appId ?? static::$appId)
         );
+    }
+
+    /**
+     * Dispatch imperative event.
+     *
+     * @param object $event
+     */
+    protected function dispatchImperative($event): void
+    {
+        $this->get('drift.event_bus.test')->dispatch($event);
     }
 }

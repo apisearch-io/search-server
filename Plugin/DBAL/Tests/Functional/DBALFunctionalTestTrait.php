@@ -16,9 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
+use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
 use Apisearch\Server\Domain\Repository\DiskRepository;
 use Apisearch\Server\Domain\Repository\InMemoryRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\DBAL\Schema\Schema;
 use function React\Promise\all;
 
 /**
@@ -62,6 +65,15 @@ trait DBALFunctionalTestTrait
             'public' => true,
         ];
 
+        /*
+         * This block is already configured by the bundle, but the main test
+         * sets manually the value because the default one is an empty
+         * implementation. We only overwrite this value again.
+         */
+        $configuration['services'][UsageRepository::class] = [
+            'alias' => ChunkUsageRepository::class,
+        ];
+
         return $configuration;
     }
 
@@ -73,6 +85,7 @@ trait DBALFunctionalTestTrait
         $mainConnection = static::getStatic('dbal.main_connection');
         $tokensTableName = static::getParameterStatic('apisearch_plugin.dbal.tokens_table');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
+        $usageTableName = static::getParameterStatic('apisearch_plugin.dbal.usage_lines_table');
         @\unlink('/tmp/apisearch.repository');
 
         $promise = all([
@@ -86,8 +99,13 @@ trait DBALFunctionalTestTrait
                 ->otherwise(function (TableNotFoundException $_) {
                     // Silent pass
                 }),
+            $mainConnection
+                ->dropTable($usageTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
         ])
-            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName) {
+            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName) {
                 return all([
                     $mainConnection->createTable($tokensTableName, [
                         'token_uuid' => 'string',
@@ -98,6 +116,17 @@ trait DBALFunctionalTestTrait
                         'repository_reference_uuid' => 'string',
                         'content' => 'text',
                     ]),
+                    (function ($connection, $usageTableName) {
+                        $schema = new Schema();
+                        $table = $schema->createTable($usageTableName);
+                        $table->addColumn('event', 'string', ['length' => 15]);
+                        $table->addColumn('app_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('index_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('time', 'integer', ['length' => 8]);
+                        $table->addColumn('n', 'integer', ['length' => 7]);
+
+                        return $connection->executeSchema($schema);
+                    })($mainConnection, $usageTableName),
                 ]);
             });
 

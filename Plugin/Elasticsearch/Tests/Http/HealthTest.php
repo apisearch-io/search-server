@@ -47,7 +47,7 @@ class HealthTest extends HttpFunctionalTest
                     )
                 );
 
-                $this->assertNotEmpty($content['info']['plugins']['elastica']);
+                $this->assertNotEmpty($content['info']['plugins']['elasticsearch']);
             });
 
         $this->await($promise);

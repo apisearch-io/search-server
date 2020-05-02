@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ResultMappedTest extends QueryMapperFunctionalTest
 {
     /**
-     * Basic usage.'.
+     * Basic usage.
      */
     public function testBasicUsage()
     {
@@ -33,7 +33,6 @@ class ResultMappedTest extends QueryMapperFunctionalTest
         $request->setMethod('GET');
         $request->server->set('REQUEST_URI', '/v1/'.static::$appId);
         $request->headers->set(Http::TOKEN_ID_HEADER, static::$readonlyToken);
-
         $promise = $this
             ->get('kernel')
             ->handleAsync($request)

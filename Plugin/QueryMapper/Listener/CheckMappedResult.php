@@ -22,6 +22,7 @@ use Apisearch\Result\Result;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
@@ -59,9 +60,11 @@ class CheckMappedResult
             resolve()
             ->then(function () use ($event) {
                 $request = $event->getRequest();
+                $httpResponse = $event->getResponse();
                 $route = $request->get('_route');
 
                 if (
+                    !$httpResponse instanceof Response ||
                     !\in_array($route, [
                         'apisearch_v1_query',
                         'apisearch_v1_query_all_indices',
@@ -83,10 +86,8 @@ class CheckMappedResult
                     $event->setResponse(
                         new JsonResponse(
                             $response,
-                            200,
-                            [
-                                'Access-Control-Allow-Origin' => '*',
-                            ]
+                            $httpResponse->getStatusCode(),
+                            $httpResponse->headers->all()
                         )
                     );
                 }

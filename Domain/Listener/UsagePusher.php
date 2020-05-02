@@ -75,6 +75,7 @@ class UsagePusher implements EventSubscriberInterface
         $event = $domainEventEnvelope->getDomainEvent();
         $today = new \DateTime();
         $today->setTime(0, 0, 0);
+
         $this
             ->usageRepository
             ->registerEvent(

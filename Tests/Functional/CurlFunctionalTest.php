@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional;
 
 use Apisearch\Config\Config;
+use Apisearch\Exception\ConnectionException;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Http\Http;
 use Apisearch\Http\HttpResponsesToException;
@@ -133,6 +134,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -140,6 +142,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -151,8 +154,13 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            []
+            [],
+            $closeImmediately
         );
+
+        if ($closeImmediately) {
+            return [];
+        }
 
         $rows = \explode(PHP_EOL, $content['body']['message']);
         $rows = \array_filter($rows, function ($row) {
@@ -584,7 +592,16 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function checkHealth(Token $token = null): array
     {
-        return [];
+        $response = self::makeCurl(
+            'check_health',
+            [
+                'optimize' => true,
+            ],
+            $token
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
     }
 
     /**
@@ -663,14 +680,18 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         }
 
         \curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
         $response = \curl_exec($ch);
+        if (false === $response) {
+            throw new ConnectionException('Apisearch returned an internal error code [500]');
+        }
+
         $headerSize = \curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $responseHeadersAsString = \substr($response, 0, $headerSize);
         $content = \substr($response, $headerSize);
 
         $responseCode = \curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
         $contentLength = \curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        \curl_close($ch);
         if (false !== \array_search('Accept-Encoding: gzip', $headers)) {
             $content = \gzdecode($content);
         }
@@ -711,6 +732,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param array      $routeParameters
      * @param Token|null $token
      * @param array      $queryParameters
+     * @param bool       $closeImmediately
      *
      * @return array
      */
@@ -718,7 +740,8 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $routeName,
         array $routeParameters = [],
         ?Token $token = null,
-        array $queryParameters = []
+        array $queryParameters = [],
+        bool $closeImmediately = false
     ): array {
         /**
          * @var Route
@@ -743,6 +766,13 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         );
 
         $stream = \fopen($url, 'r');
+        if ($closeImmediately) {
+            \usleep(1000);
+            \fclose($stream);
+
+            return [];
+        }
+
         $contents = \stream_get_contents($stream);
 
         \fclose($stream);

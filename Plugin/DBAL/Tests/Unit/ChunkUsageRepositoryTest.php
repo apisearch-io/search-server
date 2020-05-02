@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\DBAL\Tests\Functional;
+namespace Apisearch\Plugin\DBAL\Tests\Unit;
 
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;

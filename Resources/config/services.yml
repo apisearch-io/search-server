@@ -62,12 +62,13 @@ services:
     Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryConfigRepository
 
+    Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository:
     Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository:
     Apisearch\Server\Domain\Repository\UsageRepository\TemporaryUsageRepository:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
 
     Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
-        class: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
+        alias: Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository
 
     #
     # Token

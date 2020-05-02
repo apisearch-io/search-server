@@ -241,6 +241,24 @@ abstract class FullRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test size.
+     */
+    public function testSize()
+    {
+        $repository = $this->getFullRepository();
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems('item3', 'item4')));
+        $this->await($repository->addItems($repositoryReference, $this->createItems('item5', 'item6')));
+        $result = $this->await($repository->query($repositoryReference, Query::create('', 0, 3)));
+        $this->assertCount(3, $result->getItems());
+        $this->assertEquals(6, $result->getTotalHits());
+        $this->assertEquals(6, $result->getTotalItems());
+        $this->assertEquals('item1', $result->getFirstItem()->getId());
+    }
+
+    /**
      * Test export.
      */
     public function testIndexExport()
