@@ -47,6 +47,7 @@ class DBALPluginConfiguration extends BaseConfiguration
                 ->scalarNode('tokens_table')->end()
                 ->scalarNode('index_configs_table')->end()
                 ->scalarNode('usage_lines_table')->end()
+                ->scalarNode('metadata_table')->end()
 
                 ->scalarNode('loop_push_interval')
                     ->defaultValue('60')

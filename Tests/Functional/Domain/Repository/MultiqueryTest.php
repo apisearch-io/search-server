@@ -112,5 +112,7 @@ trait MultiqueryTest
 
         $this->deleteIndex(self::$appId, self::$anotherIndex);
         $this->deleteIndex(self::$appId, self::$yetAnotherIndex);
+
+        static::resetScenario();
     }
 }

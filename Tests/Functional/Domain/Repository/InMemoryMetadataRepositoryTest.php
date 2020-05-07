@@ -13,21 +13,17 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Tests\Functional\Domain\Token;
-
-use Apisearch\Server\Tests\Functional\Domain\Repository\ConfigRepositoryTest;
+namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 /**
- * Class InMemoryIndexMetadataTest.
+ * Class InMemoryMetadataRepositoryTest.
  */
-class InMemoryConfigRepositoryTest extends ConfigRepositoryTest
+class InMemoryMetadataRepositoryTest extends MetadataRepositoryTest
 {
     /**
-     * Is distributed token respository.
-     *
-     * @return bool
+     * Is distributed Metadata respository.
      */
-    public function isDistributedConfigRepository(): bool
+    public function isDistributedMetadataRepository(): bool
     {
         return false;
     }

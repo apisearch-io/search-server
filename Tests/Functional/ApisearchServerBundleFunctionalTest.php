@@ -839,6 +839,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      */
     protected function dispatchImperative($event): void
     {
-        $this->get('drift.event_bus.test')->dispatch($event);
+        static::await(
+            $this->get('drift.event_bus.test')->dispatch($event)
+        );
+        static::usleep(10000);
     }
 }

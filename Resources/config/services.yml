@@ -70,6 +70,10 @@ services:
     Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository
 
+    Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository:
+    Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository:
+        alias: Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository
+
     #
     # Token
     #

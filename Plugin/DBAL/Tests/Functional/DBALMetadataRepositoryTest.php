@@ -15,21 +15,19 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
-use Apisearch\Server\Tests\Functional\Domain\Repository\ConfigRepositoryTest;
+use Apisearch\Server\Tests\Functional\Domain\Repository\MetadataRepositoryTest;
 
 /**
- * Class DBALConfigRepositoryTest.
+ * Class DBALMetadataRepositoryTest.
  */
-class DBALConfigRepositoryTest extends ConfigRepositoryTest
+class DBALMetadataRepositoryTest extends MetadataRepositoryTest
 {
     use DBALFunctionalTestTrait;
 
     /**
-     * Is distributed config respository.
-     *
-     * @return bool
+     * Is distributed metadata respository.
      */
-    public function isDistributedConfigRepository(): bool
+    public function isDistributedMetadataRepository(): bool
     {
         return true;
     }

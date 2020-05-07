@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
+use Apisearch\Model\Index;
+
 /**
  * Class IndicesTest.
  */
@@ -25,17 +27,24 @@ trait IndicesTest
      */
     public function testIndicesFields()
     {
-        $indices = $this->getIndices();
-        $this->assertCount(1, $indices);
-        $givenFields = $indices[0]->getFields();
+        $indices = $this->getIndices(self::$appId);
+        $this->assertCount(2, $indices);
+        $indices = \array_filter($indices, function (Index $index) {
+            return \array_key_exists('indexed_metadata.brand', $index->getFields());
+        });
+        $index = \reset($indices);
+
+        $givenFields = $index->getFields();
         $expectedFields = [
             'uuid.id',
             'uuid.type',
             'metadata.array_of_arrays.id',
             'metadata.array_of_arrays.name',
             'metadata.field1',
-            'indexed_metadata.brand.id',
-            'indexed_metadata.brand.rank',
+            'indexed_metadata.brand',
+            'indexed_metadata.category',
+            'indexed_metadata.author',
+            'indexed_metadata.editorial',
             'indexed_metadata.price',
             'searchable_metadata.editorial',
             'searchable_metadata.title',
@@ -44,8 +53,12 @@ trait IndicesTest
             'exact_matching_metadata',
         ];
 
-        foreach ($expectedFields as $field) {
-            $this->assertTrue(\array_key_exists($field, $givenFields));
-        }
+        $this->assertCount(
+            \count($expectedFields),
+            \array_intersect(
+                $expectedFields,
+                \array_keys($givenFields)
+            )
+        );
     }
 }

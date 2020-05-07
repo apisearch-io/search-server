@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a6fe227b0bd5bf9fa2ebe04a510e0ef",
+    "content-hash": "40651ced5e9eef96c415effa7ff974e3",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -56,20 +56,20 @@
         },
         {
             "name": "apisearch-io/apisearch-bundle",
-            "version": "0.1.15",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/apisearch-bundle.git",
-                "reference": "edde102d940aea455a6b824dfa0406993c834c51"
+                "reference": "4b897064971a920e0635938274d00130f5679aef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/apisearch-bundle/zipball/edde102d940aea455a6b824dfa0406993c834c51",
-                "reference": "edde102d940aea455a6b824dfa0406993c834c51",
+                "url": "https://api.github.com/repos/apisearch-io/apisearch-bundle/zipball/4b897064971a920e0635938274d00130f5679aef",
+                "reference": "4b897064971a920e0635938274d00130f5679aef",
                 "shasum": ""
             },
             "require": {
-                "apisearch-io/php-client": "0.1.*, >=0.1.23",
+                "apisearch-io/php-client": "0.1.*, >=0.1.27",
                 "mmoreram/base-bundle": "^2.1.2",
                 "php": ">=7.1",
                 "ramsey/uuid": "^3.7.1",
@@ -104,20 +104,20 @@
                     "email": "hello@puntmig.com"
                 }
             ],
-            "time": "2020-02-28T00:59:19+00:00"
+            "time": "2020-05-07T09:59:45+00:00"
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.26",
+            "version": "0.1.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "e39f99a05daa6643445f069bb93d56713cd3bc8a"
+                "reference": "2de4e3081f9ef83dfd1c60a5c843684eacf80f93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/e39f99a05daa6643445f069bb93d56713cd3bc8a",
-                "reference": "e39f99a05daa6643445f069bb93d56713cd3bc8a",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/2de4e3081f9ef83dfd1c60a5c843684eacf80f93",
+                "reference": "2de4e3081f9ef83dfd1c60a5c843684eacf80f93",
                 "shasum": ""
             },
             "require": {
@@ -144,7 +144,7 @@
                 }
             ],
             "description": "PHP Library for Apisearch",
-            "time": "2020-04-06T15:28:24+00:00"
+            "time": "2020-05-06T23:39:02+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -3419,16 +3419,16 @@
         },
         {
             "name": "react/stream",
-            "version": "v1.1.0",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/stream.git",
-                "reference": "50426855f7a77ddf43b9266c22320df5bf6c6ce6"
+                "reference": "7c02b510ee3f582c810aeccd3a197b9c2f52ff1a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/stream/zipball/50426855f7a77ddf43b9266c22320df5bf6c6ce6",
-                "reference": "50426855f7a77ddf43b9266c22320df5bf6c6ce6",
+                "url": "https://api.github.com/repos/reactphp/stream/zipball/7c02b510ee3f582c810aeccd3a197b9c2f52ff1a",
+                "reference": "7c02b510ee3f582c810aeccd3a197b9c2f52ff1a",
                 "shasum": ""
             },
             "require": {
@@ -3438,7 +3438,7 @@
             },
             "require-dev": {
                 "clue/stream-filter": "~1.2",
-                "phpunit/phpunit": "^6.4 || ^5.7 || ^4.8.35"
+                "phpunit/phpunit": "^7.0 || ^6.4 || ^5.7 || ^4.8.35"
             },
             "type": "library",
             "autoload": {
@@ -3461,7 +3461,7 @@
                 "stream",
                 "writable"
             ],
-            "time": "2019-01-01T16:15:09+00:00"
+            "time": "2020-05-04T10:17:57+00:00"
         },
         {
             "name": "ringcentral/psr7",
@@ -5543,6 +5543,139 @@
             "time": "2020-04-28T17:58:55+00:00"
         },
         {
+            "name": "thecodingmachine/safe",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thecodingmachine/safe.git",
+                "reference": "04f9ffae372a9816d4472dfb7bcf6126b623a9df"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thecodingmachine/safe/zipball/04f9ffae372a9816d4472dfb7bcf6126b623a9df",
+                "reference": "04f9ffae372a9816d4472dfb7bcf6126b623a9df",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12",
+                "squizlabs/php_codesniffer": "^3.2",
+                "thecodingmachine/phpstan-strict-rules": "^0.12"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Safe\\": [
+                        "lib/",
+                        "generated/"
+                    ]
+                },
+                "files": [
+                    "generated/apache.php",
+                    "generated/apc.php",
+                    "generated/apcu.php",
+                    "generated/array.php",
+                    "generated/bzip2.php",
+                    "generated/classobj.php",
+                    "generated/com.php",
+                    "generated/cubrid.php",
+                    "generated/curl.php",
+                    "generated/datetime.php",
+                    "generated/dir.php",
+                    "generated/eio.php",
+                    "generated/errorfunc.php",
+                    "generated/exec.php",
+                    "generated/fileinfo.php",
+                    "generated/filesystem.php",
+                    "generated/filter.php",
+                    "generated/fpm.php",
+                    "generated/ftp.php",
+                    "generated/funchand.php",
+                    "generated/gmp.php",
+                    "generated/gnupg.php",
+                    "generated/hash.php",
+                    "generated/ibase.php",
+                    "generated/ibmDb2.php",
+                    "generated/iconv.php",
+                    "generated/image.php",
+                    "generated/imap.php",
+                    "generated/info.php",
+                    "generated/ingres-ii.php",
+                    "generated/inotify.php",
+                    "generated/json.php",
+                    "generated/ldap.php",
+                    "generated/libevent.php",
+                    "generated/libxml.php",
+                    "generated/lzf.php",
+                    "generated/mailparse.php",
+                    "generated/mbstring.php",
+                    "generated/misc.php",
+                    "generated/msql.php",
+                    "generated/mssql.php",
+                    "generated/mysql.php",
+                    "generated/mysqli.php",
+                    "generated/mysqlndMs.php",
+                    "generated/mysqlndQc.php",
+                    "generated/network.php",
+                    "generated/oci8.php",
+                    "generated/opcache.php",
+                    "generated/openssl.php",
+                    "generated/outcontrol.php",
+                    "generated/password.php",
+                    "generated/pcntl.php",
+                    "generated/pcre.php",
+                    "generated/pdf.php",
+                    "generated/pgsql.php",
+                    "generated/posix.php",
+                    "generated/ps.php",
+                    "generated/pspell.php",
+                    "generated/readline.php",
+                    "generated/rpminfo.php",
+                    "generated/rrd.php",
+                    "generated/sem.php",
+                    "generated/session.php",
+                    "generated/shmop.php",
+                    "generated/simplexml.php",
+                    "generated/sockets.php",
+                    "generated/sodium.php",
+                    "generated/solr.php",
+                    "generated/spl.php",
+                    "generated/sqlsrv.php",
+                    "generated/ssdeep.php",
+                    "generated/ssh2.php",
+                    "generated/stats.php",
+                    "generated/stream.php",
+                    "generated/strings.php",
+                    "generated/swoole.php",
+                    "generated/uodbc.php",
+                    "generated/uopz.php",
+                    "generated/url.php",
+                    "generated/var.php",
+                    "generated/xdiff.php",
+                    "generated/xml.php",
+                    "generated/xmlrpc.php",
+                    "generated/yaml.php",
+                    "generated/yaz.php",
+                    "generated/zip.php",
+                    "generated/zlib.php",
+                    "lib/special_cases.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP core functions that throw exceptions instead of returning FALSE on error",
+            "time": "2020-05-04T15:25:36+00:00"
+        },
+        {
             "name": "tivie/php-os-detector",
             "version": "1.1.0",
             "source": {
@@ -5777,24 +5910,24 @@
         },
         {
             "name": "wyrihaximus/json-utilities",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WyriHaximus/php-json-utilities.git",
-                "reference": "f0f5007df750f8e44c8ba8ce9ee8e701472ea4c7"
+                "reference": "6da6fb482760e0eed7cc39ae9477fd665a6e1330"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WyriHaximus/php-json-utilities/zipball/f0f5007df750f8e44c8ba8ce9ee8e701472ea4c7",
-                "reference": "f0f5007df750f8e44c8ba8ce9ee8e701472ea4c7",
+                "url": "https://api.github.com/repos/WyriHaximus/php-json-utilities/zipball/6da6fb482760e0eed7cc39ae9477fd665a6e1330",
+                "reference": "6da6fb482760e0eed7cc39ae9477fd665a6e1330",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.4",
+                "thecodingmachine/safe": "^1.1"
             },
             "require-dev": {
-                "api-clients/cs-fixer-config": "^1.1",
-                "api-clients/test-utilities": "^5.2"
+                "wyrihaximus/test-utilities": "^2.3"
             },
             "type": "library",
             "autoload": {
@@ -5816,7 +5949,7 @@
                 }
             ],
             "description": "Utilities for php-json-* packages",
-            "time": "2018-12-25T10:58:17+00:00"
+            "time": "2020-05-05T20:08:50+00:00"
         },
         {
             "name": "wyrihaximus/react-child-process-messenger",
@@ -7584,9 +7717,18 @@
             "time": "2020-04-18T12:12:48+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "0.1.17",
+            "alias_normalized": "0.1.17.0",
+            "version": "9999999-dev",
+            "package": "apisearch-io/apisearch-bundle"
+        }
+    ],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "apisearch-io/apisearch-bundle": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
