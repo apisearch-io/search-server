@@ -30,6 +30,13 @@ use Symfony\Component\HttpKernel\KernelInterface;
 abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 {
     /**
+     * Is distributed config respository.
+     *
+     * @return bool
+     */
+    abstract public function isDistributedConfigRepository(): bool;
+
+    /**
      * Test initial configuration repository state.
      */
     public function testInitialConfigRepositoryState()
@@ -97,7 +104,7 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
      */
     public function testNewServiceConfig()
     {
-        if (!$this->isDistributedTokenRepository()) {
+        if (!$this->isDistributedConfigRepository()) {
             $this->markTestSkipped('Skipped. Testing a non-distributed adapter');
 
             return;

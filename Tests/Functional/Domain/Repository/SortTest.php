@@ -139,6 +139,7 @@ trait SortTest
      */
     public function testNestedFieldAndFilter()
     {
+        $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(Query::createMatchAll()
             ->sortBy(SortBy::create()->byNestedField('brand.rank', SortBy::ASC, SortBy::MODE_MIN))
         );

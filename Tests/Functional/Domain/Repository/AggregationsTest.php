@@ -222,7 +222,7 @@ trait AggregationsTest
             ->query(
                 Query::createMatchAll()
                     ->FilterBy('category', 'category', ['1'], Filter::MUST_ALL_WITH_LEVELS)
-                    ->aggregateBy('category', 'category_data', Filter::MUST_ALL_WITH_LEVELS)
+                    ->aggregateBy('category', 'category', Filter::MUST_ALL_WITH_LEVELS)
             )
             ->getAggregation('category');
         $this->assertCount(2, $aggregation->getCounters());

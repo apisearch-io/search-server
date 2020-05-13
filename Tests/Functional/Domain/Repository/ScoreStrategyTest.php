@@ -93,13 +93,14 @@ trait ScoreStrategyTest
      */
     public function testScoreStrategyWithNested()
     {
+        $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(
             Query::createMatchAll()
-                ->filterBy('brand', 'brand.id', [1, 2, 3, 4])
+                ->filterBy('brand', 'brand_id', [1, 2, 3, 4])
                 ->sortBy(
                     SortBy::create()
                         ->byValue(SortBy::SCORE)
-                        ->byNestedField('brand.id', 'ASC')
+                        ->byNestedField('brand_id', 'ASC')
                 )
                 ->setScoreStrategies(
                     ScoreStrategies::createEmpty()
@@ -240,6 +241,7 @@ trait ScoreStrategyTest
      */
     public function testScoreStrategyInsideArrayOfArrays()
     {
+        $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(
             Query::createMatchAll()
                 ->setScoreStrategies(

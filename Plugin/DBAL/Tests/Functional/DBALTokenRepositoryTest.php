@@ -18,7 +18,7 @@ namespace Apisearch\Plugin\DBAL\Tests\Functional;
 use Apisearch\Server\Tests\Functional\Domain\Token\TokenTest;
 
 /**
- * Class PostgresTokenRepositoryTest.
+ * Class DBALTokenRepositoryTest.
  */
 class DBALTokenRepositoryTest extends TokenTest
 {

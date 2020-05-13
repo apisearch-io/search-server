@@ -7,3 +7,7 @@ services:
     apisearch_server.config_repository_test:
         alias: Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository
         public: true
+
+    apisearch_server.metadata_repository_test:
+        alias: Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository
+        public: true

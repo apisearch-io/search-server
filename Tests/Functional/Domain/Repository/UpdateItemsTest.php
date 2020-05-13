@@ -118,7 +118,7 @@ trait UpdateItemsTest
             Changes::create()
                 ->updateElementFromList(
                     'indexed_metadata.category',
-                    'element == 6',
+                    'element.id == 6',
                     160,
                     Changes::TYPE_VALUE
                 )

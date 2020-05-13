@@ -86,6 +86,7 @@ trait DBALFunctionalTestTrait
         $tokensTableName = static::getParameterStatic('apisearch_plugin.dbal.tokens_table');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
         $usageTableName = static::getParameterStatic('apisearch_plugin.dbal.usage_lines_table');
+        $metadataTableName = static::getParameterStatic('apisearch_plugin.dbal.metadata_table');
         @\unlink('/tmp/apisearch.repository');
 
         $promise = all([
@@ -104,8 +105,13 @@ trait DBALFunctionalTestTrait
                 ->otherwise(function (TableNotFoundException $_) {
                     // Silent pass
                 }),
+            $mainConnection
+                ->dropTable($metadataTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
         ])
-            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName) {
+            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName) {
                 return all([
                     $mainConnection->createTable($tokensTableName, [
                         'token_uuid' => 'string',
@@ -127,6 +133,15 @@ trait DBALFunctionalTestTrait
 
                         return $connection->executeSchema($schema);
                     })($mainConnection, $usageTableName),
+                    (function ($connection, $metadataTableName) {
+                        $schema = new Schema();
+                        $table = $schema->createTable($metadataTableName);
+                        $table->addColumn('repository_reference_uuid', 'string', ['length' => 255]);
+                        $table->addColumn('`key`', 'string', ['length' => 15]);
+                        $table->addColumn('val', 'text');
+
+                        return $connection->executeSchema($schema);
+                    })($mainConnection, $metadataTableName),
                 ]);
             });
 

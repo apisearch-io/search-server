@@ -25,6 +25,9 @@ trait ErrorRecoveryTest
 {
     /**
      * Test server after fatal error.
+     *
+     * This error is produced when we index an Item with a malformed field or a
+     * different item format.
      */
     public function testAfterFatalError()
     {
@@ -36,10 +39,11 @@ trait ErrorRecoveryTest
                         'type' => 'product',
                     ],
                     'indexed_metadata' => [
-                        'category' => 'lala',
+                        'price' => 'lala',
                     ],
                 ]),
             ]);
+            $this->fail('An exception should be thrown here');
         } catch (\Exception $exception) {
             // Silent pass
         }
