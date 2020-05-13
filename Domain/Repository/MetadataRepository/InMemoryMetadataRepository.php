@@ -16,13 +16,14 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Repository\MetadataRepository;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Repository\ResetableRepository;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
  * Class InMemoryMetadataRepository.
  */
-class InMemoryMetadataRepository extends MetadataRepository
+class InMemoryMetadataRepository extends MetadataRepository implements ResetableRepository
 {
     /**
      * @var array
@@ -94,10 +95,12 @@ class InMemoryMetadataRepository extends MetadataRepository
     }
 
     /**
-     * Flush all tokens.
+     * @param PromiseInterface
      */
-    public function truncate()
+    public function reset(): PromiseInterface
     {
         $this->storedMetadata = [];
+
+        return $this->forceLoadAllMetadata();
     }
 }

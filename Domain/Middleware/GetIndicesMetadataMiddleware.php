@@ -50,7 +50,7 @@ class GetIndicesMetadataMiddleware implements DiscriminableMiddleware
 
         return $next($command)
             ->then(function (array $indices) use ($repositoryReference) {
-                /**
+                /*
                  * @var Index
                  */
                 foreach ($indices as $index) {

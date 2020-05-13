@@ -36,7 +36,7 @@ use React\Stream\ThroughStream;
 /**
  * Class InMemoryRepository.
  */
-class InMemoryRepository implements FullRepository
+class InMemoryRepository implements FullRepository, ResetableRepository
 {
     /**
      * @var Index[]
@@ -471,5 +471,15 @@ class InMemoryRepository implements FullRepository
         }
 
         return $elements;
+    }
+
+    /**
+     * @return PromiseInterface
+     */
+    public function reset(): PromiseInterface
+    {
+        $this->indices = [];
+
+        return resolve();
     }
 }

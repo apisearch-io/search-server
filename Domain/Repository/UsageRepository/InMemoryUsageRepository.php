@@ -18,6 +18,7 @@ namespace Apisearch\Server\Domain\Repository\UsageRepository;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Repository\ResetableRepository;
 use DateTime;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
@@ -25,7 +26,7 @@ use React\Promise\PromiseInterface;
 /**
  * Class InMemoryUsageRepository.
  */
-class InMemoryUsageRepository implements UsageRepository, TemporaryUsageRepository
+class InMemoryUsageRepository implements UsageRepository, TemporaryUsageRepository, ResetableRepository
 {
     /**
      * @var array
@@ -148,8 +149,18 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
     public function getAndResetUseLines(): array
     {
         $useLines = $this->useLines;
-        $this->useLines = [];
+        $this->reset();
 
         return $useLines;
+    }
+
+    /**
+     * @return PromiseInterface
+     */
+    public function reset(): PromiseInterface
+    {
+        $this->useLines = [];
+
+        return resolve();
     }
 }
