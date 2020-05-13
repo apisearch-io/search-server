@@ -22,6 +22,7 @@ use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
+use Apisearch\Plugin\Testing\TestingPluginBundle;
 use Apisearch\Server\DependencyInjection\Env;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Mmoreram\BaseBundle\BaseBundle;
@@ -80,6 +81,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
             'static_tokens' => StaticTokensPluginBundle::class,
             'security' => SecurityPluginBundle::class,
             'query_mapper' => QueryMapperPluginBundle::class,
+            'testing' => TestingPluginBundle::class,
         ];
 
         $combined = \array_combine(

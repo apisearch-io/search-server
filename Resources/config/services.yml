@@ -58,6 +58,8 @@ services:
         tags:
             - { name: apisearch_server.token_locator }
             - { name: apisearch_server.token_provider }
+    Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository
 
     Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryConfigRepository

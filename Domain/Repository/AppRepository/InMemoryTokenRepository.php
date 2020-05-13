@@ -18,13 +18,14 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Repository\ResetableRepository;
 use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
  * Class InMemoryTokenRepository.
  */
-class InMemoryTokenRepository extends TokenRepository
+class InMemoryTokenRepository extends TokenRepository implements ResetableRepository
 {
     /**
      * @var array
@@ -118,11 +119,13 @@ class InMemoryTokenRepository extends TokenRepository
     }
 
     /**
-     * Flush all tokens.
+     * @return PromiseInterface
      */
-    public function truncate()
+    public function reset(): PromiseInterface
     {
         $this->storedTokens = [];
+
+        return $this->forceLoadAllTokens();
     }
 
     /**

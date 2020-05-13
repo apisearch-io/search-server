@@ -1,0 +1,5 @@
+apisearch_testing:
+    resource: 'testing_routes.yml'
+    prefix: /testing
+    defaults:
+        firewall: admin
