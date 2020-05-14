@@ -460,6 +460,7 @@ class InMemoryRepository implements FullRepository, ResetableRepository
                             if ('index' === $field) {
                                 $indexAsArray = $index['index'];
                                 $indexAsArray['doc_count'] = \count($index['items']);
+                                $indexAsArray['fields'] = $this->getFields($index['items']);
                                 $elements[] = Index::createFromArray($indexAsArray);
                             } elseif ('items' === $field) {
                                 $elements[] = $index[$field];
@@ -481,5 +482,53 @@ class InMemoryRepository implements FullRepository, ResetableRepository
         $this->indices = [];
 
         return resolve();
+    }
+
+    /**
+     * Get fields.
+     *
+     * @param Item[] $items
+     *
+     * @return string[]
+     */
+    private function getFields(array $items)
+    {
+        $fields = [
+            'uuid.id' => 'string',
+            'uuid.type' => 'string',
+        ];
+
+        $items = \array_slice($items, 0, 100);
+        foreach ($items as $item) {
+            $this->addFieldsFromArray($item->getMetadata(), 'metadata', $fields);
+            $this->addFieldsFromArray($item->getIndexedMetadata(), 'indexed_metadata', $fields);
+            $this->addFieldsFromArray($item->getSearchableMetadata(), 'searchable_metadata', $fields);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Add fields from array.
+     *
+     * @param array  $array
+     * @param string $prefix
+     * @param array  $fields
+     */
+    private function addFieldsFromArray(
+        array $array,
+        string $prefix,
+        array &$fields
+    ) {
+        foreach ($array as $field => $value) {
+            $type = 'string';
+            if (\is_int($value) || \is_float($value)) {
+                $type = 'long';
+            } elseif (\is_array($value)) {
+                $type = 'object';
+            }
+
+            $fields["$prefix.".$field] = $type;
+        }
     }
 }
