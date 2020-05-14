@@ -283,6 +283,59 @@ abstract class FullRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test get index fields.
+     */
+    public function testIndexGetFields()
+    {
+        $loop = Factory::create();
+        $repository = $this->getFullRepository($loop);
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $this->await($repository->addItems($repositoryReference, [
+            Item::createFromArray([
+                'uuid' => [
+                    'id' => '111',
+                    'type' => 'lol',
+                ],
+                'metadata' => [
+                    'field' => 'value',
+                    'another_field' => 'value1',
+                    'yet_another_field' => 1,
+                ],
+                'indexed_metadata' => [
+                    'f1' => 1,
+                    'f2' => 1.1,
+                    'f3' => [
+                        'id' => 'a',
+                        'lol' => '1',
+                    ],
+                    'f4' => 'haha',
+                ],
+                'searchable_metadata' => [
+                    's1' => 'v1',
+                    's2' => 2,
+                ],
+            ]),
+        ]));
+
+        $indices = $this->await($repository->getIndices($repositoryReference));
+        $this->assertEquals([
+            'uuid.id' => 'string',
+            'uuid.type' => 'string',
+            'metadata.field' => 'string',
+            'metadata.another_field' => 'string',
+            'metadata.yet_another_field' => 'long',
+            'indexed_metadata.f1' => 'long',
+            'indexed_metadata.f2' => 'long',
+            'indexed_metadata.f3' => 'object',
+            'indexed_metadata.f4' => 'string',
+            'searchable_metadata.s1' => 'string',
+            'searchable_metadata.s2' => 'long',
+        ], $indices[0]->getFields());
+    }
+
+    /**
      * Test repository reference selector.
      *
      * app1
