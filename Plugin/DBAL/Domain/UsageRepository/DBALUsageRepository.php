@@ -177,7 +177,7 @@ class DBALUsageRepository implements UsageRepository
                 $indexedRows[$t] = [];
             }
 
-            $indexedRows[$t][$row['e']] = $row['s'];
+            $indexedRows[$t][$row['e']] = \intval($row['s']);
         }
 
         return $indexedRows;
