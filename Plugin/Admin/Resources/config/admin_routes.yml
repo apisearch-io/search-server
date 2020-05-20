@@ -7,3 +7,8 @@ apisearch_admin_get_apps:
     path: /apps
     methods: ["GET"]
     controller: Apisearch\Plugin\Admin\Controller\GetAppsController
+
+apisearch_admin_get_tokens:
+    path: /tokens
+    methods: ["GET"]
+    controller: Apisearch\Plugin\Admin\Controller\GetTokensController

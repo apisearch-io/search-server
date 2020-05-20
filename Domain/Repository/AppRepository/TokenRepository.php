@@ -111,11 +111,33 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
      *
      * @param RepositoryReference $repositoryReference
      *
-     * @return array
+     * @return Token[]
      */
     public function getTokens(RepositoryReference $repositoryReference): array
     {
-        return $this->tokens[$repositoryReference->getAppUUID()->composeUUID()] ?? [];
+        $appUUIDComposed = $repositoryReference->getAppUUID()->composeUUID();
+
+        return '*' === $appUUIDComposed
+            ? $this->getAllTokens()
+            : $this->tokens[$repositoryReference->getAppUUID()->composeUUID()] ?? [];
+    }
+
+    /**
+     * Get all tokens.
+     *
+     * @return Token[]
+     */
+    private function getAllTokens(): array
+    {
+        $allTokens = [];
+        foreach ($this->tokens as $_ => $tokens) {
+            $allTokens = \array_merge(
+                $allTokens,
+                $tokens
+            );
+        }
+
+        return $allTokens;
     }
 
     /**

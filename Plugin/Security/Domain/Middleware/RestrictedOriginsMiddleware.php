@@ -89,7 +89,6 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
                         $origin,
                         $allowedDomains
                     );
-                    \var_dump($isPartialAllowed);
 
                     $isAllowed &= $isPartialAllowed;
                 }

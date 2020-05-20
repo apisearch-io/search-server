@@ -102,7 +102,7 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             !empty($this->pingToken) &&
             $tokenUUID->composeUUID() === $this->pingToken
         ) {
-            return resolve($this->createPingToken());
+            return resolve($this->createPingToken($appUUID));
         }
 
         return resolve();
@@ -155,13 +155,15 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
     /**
      * Create ping token instance.
      *
+     * @param AppUUID $appUUID
+     *
      * @return Token
      */
-    private function createPingToken(): Token
+    private function createPingToken(AppUUID $appUUID): Token
     {
         return new Token(
             TokenUUID::createById($this->pingToken),
-            AppUUID::createById(''),
+            $appUUID,
             [],
             [
                 'ping', // Ping
@@ -191,7 +193,7 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
         }
 
         if (!empty($this->pingToken)) {
-            $tokens[] = $this->createPingToken();
+            $tokens[] = $this->createPingToken($appUUID);
         }
 
         return resolve($tokens);

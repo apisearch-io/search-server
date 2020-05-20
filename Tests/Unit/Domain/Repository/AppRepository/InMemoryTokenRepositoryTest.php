@@ -22,6 +22,7 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository;
 use Apisearch\Server\Tests\Unit\BaseUnitTest;
+use function React\Promise\all;
 
 /**
  * Class InMemoryTokenRepositoryTest.
@@ -186,6 +187,51 @@ class InMemoryTokenRepositoryTest extends BaseUnitTest
             })
             ->then(function (array $tokens) {
                 $this->assertCount(0, $tokens);
+            });
+
+        $this->await($promise);
+    }
+
+    /**
+     * Test get all tokens.
+     */
+    public function testGetAllTokens()
+    {
+        $repository = new InMemoryTokenRepository();
+        $appUUID1 = AppUUID::createById('yyy');
+        $appUUID2 = AppUUID::createById('zzz');
+        $indexUUID = IndexUUID::createById('index');
+
+        $mainRepositoryReference = RepositoryReference::create(
+            $appUUID1,
+            $indexUUID
+        );
+
+        $zzzRepositoryReference = RepositoryReference::create(
+            $appUUID2,
+            $indexUUID
+        );
+
+        $promise = all([
+                $repository->putToken($mainRepositoryReference, new Token(TokenUUID::createById('token1'), $appUUID1)),
+                $repository->putToken($mainRepositoryReference, new Token(TokenUUID::createById('token2'), $appUUID1)),
+                $repository->putToken($zzzRepositoryReference, new Token(TokenUUID::createById('token3'), $appUUID2)),
+                $repository->putToken($mainRepositoryReference, new Token(TokenUUID::createById('token4'), $appUUID1)),
+                $repository->putToken($mainRepositoryReference, new Token(TokenUUID::createById('token5'), $appUUID1)),
+                $repository->putToken($zzzRepositoryReference, new Token(TokenUUID::createById('token6'), $appUUID2)),
+                $repository->putToken($zzzRepositoryReference, new Token(TokenUUID::createById('token3'), $appUUID2)),
+            ])
+            ->then(function () use ($repository) {
+                return $repository->forceLoadAllTokens();
+            })
+            ->then(function () use ($repository) {
+                return $repository->getTokens(RepositoryReference::create(
+                    AppUUID::createById('*'),
+                    IndexUUID::createById('*'),
+                ));
+            })
+            ->then(function (array $tokens) {
+                $this->assertCount(6, $tokens);
             });
 
         $this->await($promise);
