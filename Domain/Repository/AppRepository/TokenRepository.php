@@ -115,7 +115,9 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
      */
     public function getTokens(RepositoryReference $repositoryReference): array
     {
-        $appUUIDComposed = $repositoryReference->getAppUUID()->composeUUID();
+        $appUUIDComposed = $repositoryReference
+            ->getAppUUID()
+            ->composeUUID();
 
         return '*' === $appUUIDComposed
             ? $this->getAllTokens()
@@ -171,11 +173,7 @@ abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubs
      */
     public function getTokensByAppUUID(AppUUID $appUUID): PromiseInterface
     {
-        $appUUIDComposed = $appUUID->composeUUID();
-
-        return resolve(isset($this->tokens[$appUUIDComposed])
-            ? \array_values($this->tokens[$appUUIDComposed])
-            : []);
+        return resolve($this->getTokens(RepositoryReference::create($appUUID)));
     }
 
     /**
