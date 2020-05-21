@@ -25,33 +25,16 @@ class GetTokensTest extends AdminPluginFunctionalTest
      */
     public function testController()
     {
+        $this->putToken($this->createTokenByIdAndAppId('token1', static::$appId));
+        $this->putToken($this->createTokenByIdAndAppId('token2', static::$appId));
+        $this->putToken($this->createTokenByIdAndAppId('token3', static::$anotherAppId));
+        $this->putToken($this->createTokenByIdAndAppId('token4', 'yet-another-app'));
         $response = self::makeCurl('admin_get_tokens');
-        $this->putToken($this->createTokenByIdAndAppId(static::$appId, 'token1'));
-        $this->putToken($this->createTokenByIdAndAppId(static::$appId, 'token2'));
-        $this->putToken($this->createTokenByIdAndAppId(static::$anotherAppId, 'token3'));
-        $this->putToken($this->createTokenByIdAndAppId('yet-another-app', 'token4'));
-        \var_dump($response['body']);
-        die();
-        $this->assertEquals([
-            static::$appId => [
-                static::$index => [
-                    'ok' => true,
-                    'items' => 5,
-                    'size' => '',
-                ],
-                static::$anotherIndex => [
-                    'ok' => true,
-                    'items' => 0,
-                    'size' => '',
-                ],
-            ],
-            static::$anotherAppId => [
-                static::$index => [
-                    'ok' => true,
-                    'items' => 0,
-                    'size' => '',
-                ],
-            ],
-        ], $response['body']);
+        $apps = $response['body'];
+
+        $this->assertCount(3, $apps);
+        $this->assertCount(2, $apps[static::$appId]);
+        $this->assertCount(1, $apps[static::$anotherAppId]);
+        $this->assertCount(1, $apps['yet-another-app']);
     }
 }
