@@ -33,23 +33,19 @@ class EventBusCompilerPass implements CompilerPassInterface
         $passThrough = true;
         $asyncAdapterEnabled = (bool) ($_ENV['APISEARCH_ASYNC_EVENTS_ENABLED'] ?? false);
 
-        $distribution = Bus::DISTRIBUTION_NEXT_TICK;
-        $middlewares = [];
-        $eventBusRouter = [
-            'TokensWereDeleted' => 'events, tokens_update',
-            'TokensWereAdded' => 'events, tokens_update',
-            'TokensWasDeleted' => 'events, tokens_update',
-        ];
+        $distribution = Bus::DISTRIBUTION_INLINE;
+        $eventBusRouter = ['*' => 'events'];
 
         EventBusBuilder::createBuses(
             $container,
             $asyncAdapterEnabled,
             $passThrough,
             $distribution,
-            $middlewares
+            []
         );
 
         if ($asyncAdapterEnabled) {
+
             $eventBusExchanges = [
                 'events' => $_ENV['APISEARCH_EVENTS_EXCHANGE'] ?? 'events',
                 'tokens_update' => $_ENV['APISEARCH_TOKENS_UPDATE_EXCHANGE'] ?? 'tokens_update',
