@@ -45,7 +45,6 @@ class EventBusCompilerPass implements CompilerPassInterface
         );
 
         if ($asyncAdapterEnabled) {
-
             $eventBusExchanges = [
                 'events' => $_ENV['APISEARCH_EVENTS_EXCHANGE'] ?? 'events',
                 'tokens_update' => $_ENV['APISEARCH_TOKENS_UPDATE_EXCHANGE'] ?? 'tokens_update',

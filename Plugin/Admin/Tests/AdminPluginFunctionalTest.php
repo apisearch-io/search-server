@@ -16,6 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Tests;
 
 use Apisearch\Plugin\Admin\AdminPluginBundle;
+use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
@@ -35,6 +37,23 @@ abstract class AdminPluginFunctionalTest extends CurlFunctionalTest
         $bundles[] = AdminPluginBundle::class;
 
         return $bundles;
+    }
+
+    /**
+     * Decorate configuration.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function decorateConfiguration(array $configuration): array
+    {
+        $configuration = parent::decorateConfiguration($configuration);
+        $configuration['services'][UsageRepository::class] = [
+            'alias' => InMemoryUsageRepository::class,
+        ];
+
+        return $configuration;
     }
 
     /**

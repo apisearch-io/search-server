@@ -110,7 +110,10 @@ class InMemoryUsageRepository implements UsageRepository, TemporaryUsageReposito
                     $event === $eventType
                 ) &&
                 $whenFormatted >= $formattedFrom &&
-                $appUUID->composeUUID() === $useLine->getAppUUID() &&
+                (
+                    '*' === $appUUID->composeUUID() ||
+                    $appUUID->composeUUID() === $useLine->getAppUUID()
+                ) &&
                 (
                     \is_null($indexUUID) ||
                     '' === $indexUUID->composeUUID() ||
