@@ -17,3 +17,12 @@ apisearch_admin_get_usage:
     path: /usage
     methods: ["GET"]
     controller: Apisearch\Plugin\Admin\Controller\GetUsageController
+    defaults:
+        per_day: false
+
+apisearch_admin_get_usage_per_day:
+    path: /usage/per-day
+    methods: ["GET"]
+    controller: Apisearch\Plugin\Admin\Controller\GetUsageController
+    defaults:
+        per_day: true
