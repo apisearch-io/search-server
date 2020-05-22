@@ -97,7 +97,6 @@ class DBALUsageRepository implements UsageRepository
             ->createQueryBuilder()
             ->from($this->tableName, 'u')
             ->where('u.time >= ?')
-            ->andWhere('u.app_uuid = ?')
             ->groupBy('u.event');
 
         if ($perDay) {
@@ -110,12 +109,16 @@ class DBALUsageRepository implements UsageRepository
 
         $parameters = [
             $from->format('Ymd'),
-            $appUUID->composeUUID(),
         ];
 
         if (!\is_null($eventType)) {
             $queryBuilder->andWhere('u.event = ?');
             $parameters[] = $eventType;
+        }
+
+        if ('*' !== $appUUID->composeUUID()) {
+            $queryBuilder->andWhere('u.app_uuid = ?');
+            $parameters[] = $appUUID->composeUUID();
         }
 
         if (

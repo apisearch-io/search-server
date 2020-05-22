@@ -20,34 +20,15 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Controller\ControllerWithQueryBus;
 use Apisearch\Server\Domain\Query\GetTokens;
-use Drift\CommandBus\Bus\QueryBus;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class GetTokensController.
  */
-class GetTokensController extends ControllerWithQueryBus
+class GetTokensController extends ControllerWithQueryBusAsGod
 {
-    /**
-     * @var string
-     */
-    private $godToken;
-
-    /**
-     * @param QueryBus $queryBus
-     * @param string   $godToken
-     */
-    public function __construct(
-        QueryBus $queryBus,
-        string $godToken
-    ) {
-        parent::__construct($queryBus);
-        $this->godToken = $godToken;
-    }
-
     /**
      * Get all apps.
      *

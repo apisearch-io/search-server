@@ -12,3 +12,8 @@ apisearch_admin_get_tokens:
     path: /tokens
     methods: ["GET"]
     controller: Apisearch\Plugin\Admin\Controller\GetTokensController
+
+apisearch_admin_get_usage:
+    path: /usage
+    methods: ["GET"]
+    controller: Apisearch\Plugin\Admin\Controller\GetUsageController

@@ -214,6 +214,10 @@ abstract class UsageRepositoryTest extends TestCase
             [null, 'a1', null, static::DAY_15_1_2020 - 1, static::DAY_15_1_2020 + 1, ['q' => 12, 'ii' => 466]],
             [null, 'a1', null, static::DAY_15_1_2020, static::DAY_15_1_2020 + 1, ['q' => 12, 'ii' => 466]],
             [null, 'a1', null, static::DAY_15_1_2020 - 2, static::DAY_15_1_2020 - 1, []],
+
+            [null, '*', '*', static::DAY_MINUS_INF, static::DAY_INF, ['q' => 592, 'ii' => 1755, 'x' => 1]],
+            [null, '*', '*', static::DAY_1_2_2020, static::DAY_INF, ['q' => 494, 'ii' => 1234]],
+            [null, '*', '*', static::DAY_MINUS_INF, static::DAY_1_2_2020, ['q' => 98, 'ii' => 521, 'x' => 1]],
         ];
     }
 
