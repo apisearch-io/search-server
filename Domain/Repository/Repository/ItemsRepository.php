@@ -54,6 +54,17 @@ interface ItemsRepository
     ): PromiseInterface;
 
     /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface
+     */
+    public function deleteItemsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface;
+
+    /**
      * Update items.
      *
      * @param RepositoryReference $repositoryReference

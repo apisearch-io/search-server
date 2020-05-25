@@ -58,7 +58,7 @@ abstract class ControllerWithQueryBus extends BaseController
      *
      * @return string
      */
-    protected function getOrigin(Request $request) : string
+    protected function getOrigin(Request $request): string
     {
         $headers = $request->headers;
 
@@ -70,7 +70,7 @@ abstract class ControllerWithQueryBus extends BaseController
      *
      * @return string
      */
-    protected function getRemoteAddr(Request $request) : string
+    protected function getRemoteAddr(Request $request): string
     {
         $headers = $request->headers;
 

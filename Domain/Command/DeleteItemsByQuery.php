@@ -15,52 +15,46 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Command;
 
-use Apisearch\Model\Item;
 use Apisearch\Model\Token;
+use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
 
 /**
- * Class IndexItems.
+ * Class DeleteItemsByQuery.
  */
-class IndexItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
+class DeleteItemsByQuery extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
     /**
-     * @var Item[]
-     *
-     * Items
+     * @var Query
      */
-    private $items;
+    private $query;
 
     /**
-     * IndexCommand constructor.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param Item[]              $items
+     * @param Query               $query
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        array $items
+        Query $query
     ) {
         parent::__construct(
             $repositoryReference,
             $token
         );
 
-        $this->items = $items;
+        $this->query = $query;
     }
 
     /**
-     * Get Items.
-     *
-     * @return Item[]
+     * @return Query
      */
-    public function getItems(): array
+    public function getQuery(): Query
     {
-        return $this->items;
+        return $this->query;
     }
 }

@@ -77,6 +77,11 @@ apisearch_v1_delete_items:
     methods: ["DELETE"]
     controller: Apisearch\Server\Controller\DeleteItemsController
 
+apisearch_v1_delete_items_by_query:
+    path: /v1/{app_id}/indices/{index_id}/items/by-query
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Controller\DeleteItemsByQueryController
+
 #
 # Usage API
 #

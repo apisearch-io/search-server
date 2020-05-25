@@ -942,7 +942,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @return PromiseInterface
      *
-     * @throws ResourceExistsException
+     * @throws ResourceNotAvailableException
      */
     public function deleteDocumentsByIds(
         RepositoryReference $repositoryReference,
@@ -951,6 +951,37 @@ class ElasticaWrapper implements AsyncRequestAccessor
     ): PromiseInterface {
         $indexName = $this->getIndexAliasName($repositoryReference);
         $query = Query::create(new Query\Ids(\array_values($documentsId)));
+
+        $endpoint = new DeleteByQuery();
+        $endpoint->setBody($query->toArray());
+        $endpoint->setParams([
+            'refresh' => $refresh,
+        ]);
+
+        return $this
+            ->client
+            ->requestAsyncEndpoint($endpoint, $indexName)
+            ->then(null, function (ResponseException $exception) {
+                throw $this->getIndexNotAvailableException($exception->getMessage());
+            });
+    }
+
+    /**
+     * Delete documents by query.
+     *
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param bool                $refresh
+     *
+     * @return PromiseInterface
+     * @return ResourceNotAvailableException
+     */
+    public function deleteDocumentsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        bool $refresh
+    ): PromiseInterface {
+        $indexName = $this->getIndexAliasName($repositoryReference);
 
         $endpoint = new DeleteByQuery();
         $endpoint->setBody($query->toArray());

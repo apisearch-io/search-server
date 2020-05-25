@@ -19,16 +19,13 @@ use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
-use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use Apisearch\Server\Domain\LoggableCommand;
-use Apisearch\Server\Domain\WriteCommand;
 
 /**
  * Class DeleteItems.
  */
-class DeleteItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, WriteCommand, LoggableCommand, AsynchronousableCommand, IndexRequiredCommand
+class DeleteItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
     /**
      * @var ItemUUID[]
@@ -65,43 +62,5 @@ class DeleteItems extends CommandWithRepositoryReferenceAndToken implements With
     public function getItemsUUID(): array
     {
         return $this->itemsUUID;
-    }
-
-    /**
-     * To array.
-     *
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return [
-            'repository_reference' => $this
-                ->getRepositoryReference()
-                ->compose(),
-            'token' => $this
-                ->getToken()
-                ->toArray(),
-            'items_uuid' => \array_map(function (ItemUUID $itemUUID) {
-                return $itemUUID->toArray();
-            }, $this->itemsUUID),
-        ];
-    }
-
-    /**
-     * Create command from array.
-     *
-     * @param array $data
-     *
-     * @return self
-     */
-    public static function fromArray(array $data)
-    {
-        return new self(
-            RepositoryReference::createFromComposed($data['repository_reference']),
-            Token::createFromArray($data['token']),
-            \array_map(function (array $itemUUID) {
-                return ItemUUID::createFromArray($itemUUID);
-            }, $data['items_uuid'])
-        );
     }
 }

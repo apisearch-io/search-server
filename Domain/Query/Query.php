@@ -20,12 +20,11 @@ use Apisearch\Query\Query as SearchQuery;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use Apisearch\Server\Domain\LoggableCommand;
 
 /**
  * Class Query.
  */
-class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCommand, IndexRequiredCommand
+class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequiredCommand
 {
     /**
      * @var SearchQuery
@@ -57,7 +56,7 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
      * @param SearchQuery         $query
      * @param array               $parameters
      * @param string              $origin
-     * @param string $ip
+     * @param string              $ip
      */
     public function __construct(
         RepositoryReference $repositoryReference,
@@ -109,7 +108,7 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
     /**
      * @return string
      */
-    public function getIP() : string
+    public function getIP(): string
     {
         return $this->ip;
     }

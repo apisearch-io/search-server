@@ -54,14 +54,14 @@ trait OriginMatcherTrait
     private function IPIsAllowed(
         string $ip,
         array $blockedIps
-    ) : bool {
+    ): bool {
         if (empty($blockedIps)) {
             return true;
         }
 
-        $ip = trim($ip);
+        $ip = \trim($ip);
         foreach ($blockedIps as $blockedIp) {
-            if ($ip === trim($blockedIp)) {
+            if ($ip === \trim($blockedIp)) {
                 return false;
             }
         }

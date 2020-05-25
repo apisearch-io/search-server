@@ -155,6 +155,26 @@ class DiskRepository extends InMemoryRepository implements FullRepository
     }
 
     /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface
+     */
+    public function deleteItemsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
+            ->loadFromDisk()
+            ->then(function () use ($repositoryReference, $query) {
+                return parent::deleteItemsByQuery($repositoryReference, $query)
+                    ->then(function () {
+                        return $this->saveToDisk();
+                    });
+            });
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function updateItems(RepositoryReference $repositoryReference, Query $query, Changes $changes): PromiseInterface

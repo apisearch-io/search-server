@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\Domain\Middleware;
 
@@ -7,11 +19,11 @@ use Apisearch\Exception\ForbiddenException;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\Query;
 use Closure;
-use React\Promise\PromiseInterface;
 use function React\Promise\reject;
+use React\Promise\PromiseInterface;
 
 /**
- * Class RestrictedQueryOriginsMiddleware
+ * Class RestrictedQueryOriginsMiddleware.
  */
 class RestrictedQueryOriginsMiddleware extends RestrictedOriginsMiddleware implements PluginMiddleware
 {
@@ -26,10 +38,10 @@ class RestrictedQueryOriginsMiddleware extends RestrictedOriginsMiddleware imple
     }
 
     /**
-     * @param Object $command
+     * @param object  $command
      * @param Closure $next
-     * @param bool $isAllowed
-     * @param string $origin
+     * @param bool    $isAllowed
+     * @param string  $origin
      *
      * @return PromiseInterface
      */
@@ -38,8 +50,7 @@ class RestrictedQueryOriginsMiddleware extends RestrictedOriginsMiddleware imple
         $next,
         bool $isAllowed,
         string $origin
-    ) : PromiseInterface
-    {
+    ): PromiseInterface {
         return $isAllowed
             ? $next($command)
             : reject(new ForbiddenException());

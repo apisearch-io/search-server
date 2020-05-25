@@ -250,7 +250,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
     }
 
     /**
-     * Test ips unsecured
+     * Test ips unsecured.
      */
     public function testBlockedIPSUnsecured()
     {
@@ -264,14 +264,14 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
     }
 
     /**
-     * Test secure by blocked ips
+     * Test secure by blocked ips.
      */
     public function testBlockedIPSSecured()
     {
         static::resetScenario();
         $this->configureIndex(Config::createEmpty()->addMetadataValue('blocked_ips', [
             '1.2.3.4',
-            '5.6.7.8'
+            '5.6.7.8',
         ]));
 
         $this->getCORSPermissions('localhost', '0.2.3.4');
@@ -282,11 +282,11 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
     }
 
     /**
-     * Test mixed security
+     * Test mixed security.
      *
      * @param array $allowedOrigins
      * @param array $blockedIPs
-     * @param bool $allowed
+     * @param bool  $allowed
      *
      * @dataProvider dataMixedSecurity
      */
@@ -294,8 +294,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         array $allowedOrigins,
         array $blockedIPs,
         bool $allowed
-    )
-    {
+    ) {
         $this->configureIndex(Config::createEmpty()
             ->addMetadataValue('allowed_domains', $allowedOrigins)
             ->addMetadataValue('blocked_ips', $blockedIPs)
@@ -317,7 +316,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
      *
      * @return array
      */
-    public function dataMixedSecurity() : array
+    public function dataMixedSecurity(): array
     {
         return [
             [['http://whatever.com'], ['1.1.1.2'], true],

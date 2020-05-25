@@ -19,16 +19,13 @@ use Apisearch\Config\Config;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use Apisearch\Server\Domain\LoggableCommand;
-use Apisearch\Server\Domain\WriteCommand;
 
 /**
  * Class CreateIndex.
  */
-class CreateIndex extends CommandWithRepositoryReferenceAndToken implements WriteCommand, LoggableCommand, AsynchronousableCommand, IndexRequiredCommand
+class CreateIndex extends CommandWithRepositoryReferenceAndToken implements IndexRequiredCommand
 {
     /**
      * @var IndexUUID
@@ -85,45 +82,5 @@ class CreateIndex extends CommandWithRepositoryReferenceAndToken implements Writ
     public function getConfig(): Config
     {
         return $this->config;
-    }
-
-    /**
-     * To array.
-     *
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return [
-            'repository_reference' => $this
-                ->getRepositoryReference()
-                ->compose(),
-            'token_uuid' => $this
-                ->getToken()
-                ->toArray(),
-            'configuration' => $this
-                ->config
-                ->toArray(),
-            'index_uuid' => $this
-                ->indexUUID
-                ->toArray(),
-        ];
-    }
-
-    /**
-     * Create command from array.
-     *
-     * @param array $data
-     *
-     * @return self
-     */
-    public static function fromArray(array $data)
-    {
-        return new self(
-            RepositoryReference::createFromComposed($data['repository_reference']),
-            Token::createFromArray($data['token_uuid']),
-            IndexUUID::createFromArray($data['index_uuid']),
-            Config::createFromArray($data['configuration'])
-        );
     }
 }

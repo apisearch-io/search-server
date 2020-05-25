@@ -246,6 +246,30 @@ class InMemoryRepository implements FullRepository, ResetableRepository
     }
 
     /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface
+     */
+    public function deleteItemsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
+            ->query($repositoryReference, $query)
+            ->then(function (Result $result) use ($repositoryReference) {
+                $itemsUUID = \array_map(function (Item $item) {
+                    return $item->getUUID();
+                }, $result->getItems());
+
+                return $this->deleteItems(
+                    $repositoryReference,
+                    $itemsUUID
+                );
+            });
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function updateItems(

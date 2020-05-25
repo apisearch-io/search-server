@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\Tests\Functional;
 
@@ -9,18 +21,18 @@ use Apisearch\Query\Query;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
- * Class QueryRestrictionsFunctionalTest
+ * Class QueryRestrictionsFunctionalTest.
  */
 class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 
     /**
-     * Test mixed security
+     * Test mixed security.
      *
      * @param array $allowedOrigins
      * @param array $blockedIPs
-     * @param bool $allowed
+     * @param bool  $allowed
      *
      * @dataProvider dataMixedSecurity
      */
@@ -28,8 +40,7 @@ class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
         array $allowedOrigins,
         array $blockedIPs,
         bool $allowed
-    )
-    {
+    ) {
         $this->configureIndex(Config::createEmpty()
             ->addMetadataValue('allowed_domains', $allowedOrigins)
             ->addMetadataValue('blocked_ips', $blockedIPs)
@@ -49,7 +60,7 @@ class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
             [],
             [
                 'Origin: http://whatever.com',
-                'REMOTE_ADDR: 1.1.1.1'
+                'REMOTE_ADDR: 1.1.1.1',
             ]
         );
     }
@@ -61,7 +72,7 @@ class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
      *
      * @return array
      */
-    public function dataMixedSecurity() : array
+    public function dataMixedSecurity(): array
     {
         return [
             [['http://whatever.com'], ['1.1.1.2'], true],

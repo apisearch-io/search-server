@@ -99,6 +99,24 @@ final class Repository
     }
 
     /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface
+     */
+    public function deleteItemsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
+            ->itemsRepository
+            ->deleteItemsByQuery(
+                $repositoryReference,
+                $query
+            );
+    }
+
+    /**
      * Search across the index types.
      *
      * @param RepositoryReference $repositoryReference

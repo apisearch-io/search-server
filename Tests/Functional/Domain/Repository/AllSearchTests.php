@@ -29,6 +29,7 @@ trait AllSearchTests
     use ScoreStrategyTest;
     use SearchTest;
     // use SearchNestedTest; => Complex Data fields have to be fixed
+    use ItemsDeletionByQueryTest;
     use IndexStatusTest;
     use ErrorRecoveryTest;
     use SynonymsTest;

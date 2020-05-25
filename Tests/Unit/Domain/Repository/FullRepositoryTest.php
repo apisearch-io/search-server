@@ -413,6 +413,29 @@ abstract class FullRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test items deletion by query.
+     */
+    public function testItemsDeletionByQuery()
+    {
+        $repository = $this->getFullRepository();
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $query = Query::createByUUID(new ItemUUID('item1', 'type'));
+        $this->await($repository->deleteItemsByQuery($repositoryReference, $query));
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()));
+        $this->assertEquals(1, $result->getTotalHits());
+        $this->assertEquals('item2', $result->getFirstItem()->getId());
+
+        $query = Query::createByUUID(new ItemUUID('item2', 'type'));
+        $this->await($repository->deleteItemsByQuery($repositoryReference, $query));
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()));
+        $this->assertEquals(0, $result->getTotalHits());
+    }
+
+    /**
      * Create RepositoryReference.
      *
      * @param string|null $appId

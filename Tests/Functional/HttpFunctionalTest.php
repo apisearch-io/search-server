@@ -120,6 +120,22 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * @param QueryModel $query
+     * @param string     $appId
+     * @param string     $index
+     * @param Token      $token
+     */
+    public function deleteItemsByQuery(
+        QueryModel $query,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $repository = self::configureRepository($appId, $index, $token);
+        $repository->deleteItemsByQuery($query);
+    }
+
+    /**
      * Add items using the bus.
      *
      * @param Item[] $items

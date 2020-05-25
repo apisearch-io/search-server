@@ -37,6 +37,8 @@ use React\Promise\PromiseInterface;
  */
 class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterface
 {
+    use Transformers;
+
     /**
      * @var QueryBuilder
      *
@@ -113,6 +115,25 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
                 \array_map(function (ItemUUID $itemUUID) {
                     return $itemUUID->composeUUID();
                 }, $itemUUIDs),
+                $this->refreshOnWrite
+            );
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface
+     */
+    public function deleteItemsByQuery(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
+            ->elasticaWrapper
+            ->deleteDocumentsByQuery(
+                $repositoryReference,
+                $this->createElasticaQueryByModelQuery($query),
                 $this->refreshOnWrite
             );
     }
