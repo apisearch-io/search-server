@@ -42,6 +42,8 @@ class QueryController extends ControllerWithQueryBus
     {
         $requestQuery = $request->query;
         $queryModel = RequestAccessor::extractQuery($request);
+        $origin = $this->getOrigin($request);
+        $ip = $this->getRemoteAddr($request);
 
         return $this
             ->ask(new Query(
@@ -55,7 +57,9 @@ class QueryController extends ControllerWithQueryBus
                     return !\in_array($key, [
                         Http::TOKEN_FIELD,
                     ]);
-                }, ARRAY_FILTER_USE_KEY)
+                }, ARRAY_FILTER_USE_KEY),
+                $origin,
+                $ip
             ))
             ->then(function (Result $result) use ($requestQuery, $request) {
                 /*

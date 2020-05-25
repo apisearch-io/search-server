@@ -36,9 +36,7 @@ class QueryCORSController extends ControllerWithQueryBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
-        $headers = $request->headers;
-        $origin = $headers->get('Origin', '');
-
+        $origin = $this->getOrigin($request);
         $ip = $this->getRemoteAddr($request);
 
         return $this
@@ -81,17 +79,5 @@ class QueryCORSController extends ControllerWithQueryBus
     private function createForbiddenResponse()
     {
         return new Response(null, 403);
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return string
-     */
-    private function getRemoteAddr(Request $request) : string
-    {
-        $headers = $request->headers;
-
-        return $headers->get('HTTP_X_FORWARDED_FOR', $headers->get('REMOTE_ADDR', $headers->get('HTTP_CLIENT_IP', '')));
     }
 }

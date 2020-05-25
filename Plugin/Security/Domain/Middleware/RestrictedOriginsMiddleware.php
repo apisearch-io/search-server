@@ -18,16 +18,14 @@ namespace Apisearch\Plugin\Security\Domain\Middleware;
 use Apisearch\Config\Config;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Security\Domain\OriginMatcherTrait;
-use Apisearch\Server\Domain\Plugin\PluginMiddleware;
-use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use Closure;
 
 /**
  * Class RestrictedOriginsMiddleware.
  */
-class RestrictedOriginsMiddleware implements PluginMiddleware
+abstract class RestrictedOriginsMiddleware
 {
     use OriginMatcherTrait;
 
@@ -45,27 +43,20 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function onlyHandle(): array
-    {
-        return [
-            GetCORSPermissions::class,
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
+     * @param Object $command
+     * @param Closure $next
+     *
+     * @return PromiseInterface
      */
     public function execute($command, $next): PromiseInterface
     {
-        if (!$command instanceof GetCORSPermissions) {
-            return $next($command);
-        }
-
         $origin = $command->getOrigin();
         $ip = $command->getIP();
-        if (empty($origin)) {
+
+        if (
+            empty($origin) &&
+            empty($ip)
+        ) {
             return $next($command);
         }
 
@@ -98,13 +89,31 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
                         $blockedIps
                     );
 
-                    $isAllowed &= $isPartialAllowed & $isPartialBlocked;
+                    $isAllowed = $isAllowed && $isPartialAllowed && $isPartialBlocked;
                 }
             }
         }
 
-        return resolve($isAllowed
-            ? $origin
-            : false);
+        return $this->executeIfIsAllowed(
+            $command,
+            $next,
+            $isAllowed,
+            $origin
+        );
     }
+
+    /**
+     * @param Object $command
+     * @param Closure $next
+     * @param bool $isAllowed
+     * @param string $origin
+     *
+     * @return PromiseInterface
+     */
+    abstract protected function executeIfIsAllowed(
+        $command,
+        $next,
+        bool $isAllowed,
+        string $origin
+    ) : PromiseInterface;
 }

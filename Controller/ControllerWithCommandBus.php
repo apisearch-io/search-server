@@ -41,13 +41,11 @@ abstract class ControllerWithCommandBus extends BaseController
     }
 
     /**
-     * Execute command.
-     *
      * @param object $command
      *
      * @return PromiseInterface
      */
-    public function execute($command)
+    protected function execute($command)
     {
         return $this
             ->commandBus

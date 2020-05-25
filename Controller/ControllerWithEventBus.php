@@ -42,15 +42,13 @@ abstract class ControllerWithEventBus extends BaseController
     }
 
     /**
-     * Dispatch event.
-     *
      * @param object $event
      *
      * @return PromiseInterface
      *
      * @throws InvalidEventException
      */
-    public function dispatch($event): PromiseInterface
+    protected function dispatch($event): PromiseInterface
     {
         return $this
             ->eventBus
