@@ -27,5 +27,8 @@ services:
     Apisearch\Plugin\Security\Domain\Middleware\RestrictedFieldsMiddleware:
         tags: ["apisearch_plugin.middleware"]
 
-    Apisearch\Plugin\Security\Domain\Middleware\RestrictedOriginsMiddleware:
+    Apisearch\Plugin\Security\Domain\Middleware\RestrictedCORSOriginsMiddleware:
+        tags: ["apisearch_plugin.middleware"]
+
+    Apisearch\Plugin\Security\Domain\Middleware\RestrictedQueryOriginsMiddleware:
         tags: ["apisearch_plugin.middleware"]

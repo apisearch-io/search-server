@@ -22,7 +22,7 @@ use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 /**
  * Class CORSFunctionalTest.
  */
-class CORSFunctionalTest extends CurlFunctionalTest
+class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 

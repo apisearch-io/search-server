@@ -42,16 +42,30 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
     private $parameters = [];
 
     /**
+     * @var string
+     */
+    private $origin;
+
+    /**
+     * @var string
+     */
+    private $ip;
+
+    /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param SearchQuery         $query
      * @param array               $parameters
+     * @param string              $origin
+     * @param string $ip
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
         SearchQuery $query,
-        array $parameters = []
+        array $parameters = [],
+        string $origin = '',
+        string $ip = ''
     ) {
         parent::__construct(
             $repositoryReference,
@@ -60,6 +74,8 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
 
         $this->query = $query;
         $this->parameters = $parameters;
+        $this->origin = $origin;
+        $this->ip = $ip;
     }
 
     /**
@@ -80,5 +96,21 @@ class Query extends CommandWithRepositoryReferenceAndToken implements LoggableCo
     public function getParameters(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrigin(): string
+    {
+        return $this->origin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIP() : string
+    {
+        return $this->ip;
     }
 }

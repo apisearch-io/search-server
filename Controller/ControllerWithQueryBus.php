@@ -17,6 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Drift\CommandBus\Bus\QueryBus;
 use React\Promise\PromiseInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ControllerWithQueryBus.
@@ -41,16 +42,38 @@ abstract class ControllerWithQueryBus extends BaseController
     }
 
     /**
-     * Ask query.
-     *
      * @param object $query
      *
      * @return PromiseInterface
      */
-    public function ask($query)
+    protected function ask($query)
     {
         return $this
             ->queryBus
             ->ask($query);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getOrigin(Request $request) : string
+    {
+        $headers = $request->headers;
+
+        return $headers->get('Origin', '');
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    protected function getRemoteAddr(Request $request) : string
+    {
+        $headers = $request->headers;
+
+        return $headers->get('HTTP_X_FORWARDED_FOR', $headers->get('REMOTE_ADDR', $headers->get('HTTP_CLIENT_IP', '')));
     }
 }
