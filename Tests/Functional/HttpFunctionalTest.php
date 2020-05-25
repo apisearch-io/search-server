@@ -64,6 +64,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Preflight CORS query.
      *
      * @param string $origin
+     * @param string $ip
      * @param string $appId
      * @param string $index
      *
@@ -71,6 +72,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function getCORSPermissions(
         string $origin,
+        string $ip,
         string $appId = null,
         string $index = null
     ): string {

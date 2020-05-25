@@ -32,15 +32,23 @@ class GetCORSPermissions implements IndexRequiredCommand
     private $origin;
 
     /**
+     * @var string
+     */
+    private $ip;
+
+    /**
      * @param RepositoryReference $repositoryReference
      * @param string              $origin
+     * @param string $ip
      */
     public function __construct(
         RepositoryReference $repositoryReference,
-        string $origin
+        string $origin,
+        string $ip
     ) {
         $this->repositoryReference = $repositoryReference;
         $this->origin = $origin;
+        $this->ip = $ip;
     }
 
     /**
@@ -49,5 +57,13 @@ class GetCORSPermissions implements IndexRequiredCommand
     public function getOrigin(): string
     {
         return $this->origin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIP() : string
+    {
+        return $this->ip;
     }
 }
