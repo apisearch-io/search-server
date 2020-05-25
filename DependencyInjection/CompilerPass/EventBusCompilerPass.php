@@ -15,6 +15,16 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
+use Apisearch\Server\Domain\Event\IndexWasConfigured;
+use Apisearch\Server\Domain\Event\IndexWasCreated;
+use Apisearch\Server\Domain\Event\IndexWasDeleted;
+use Apisearch\Server\Domain\Event\TokensWereDeleted;
+use Apisearch\Server\Domain\Event\TokenWasDeleted;
+use Apisearch\Server\Domain\Event\TokenWasPut;
+use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
+use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
+use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
+use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
 use Drift\EventBus\Bus\Bus;
 use Drift\EventBus\DependencyInjection\CompilerPass\EventBusCompilerPass as EventBusBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -34,7 +44,27 @@ class EventBusCompilerPass implements CompilerPassInterface
         $asyncAdapterEnabled = (bool) ($_ENV['APISEARCH_ASYNC_EVENTS_ENABLED'] ?? false);
 
         $distribution = Bus::DISTRIBUTION_INLINE;
-        $eventBusRouter = ['*' => 'events'];
+        $events = [
+            FlushUsageLines::class,
+            LoadConfigs::class,
+            LoadMetadata::class,
+            LoadTokens::class,
+
+            IndexWasConfigured::class,
+            IndexWasCreated::class,
+            IndexWasDeleted::class,
+
+            TokensWereDeleted::class,
+            TokenWasPut::class,
+            TokenWasDeleted::class
+        ];
+
+        $eventBusRouter = array_combine(
+            $events,
+            array_values(
+                array_fill(0, count($events), 'events')
+            )
+        );
 
         EventBusBuilder::createBuses(
             $container,
@@ -47,7 +77,6 @@ class EventBusCompilerPass implements CompilerPassInterface
         if ($asyncAdapterEnabled) {
             $eventBusExchanges = [
                 'events' => $_ENV['APISEARCH_EVENTS_EXCHANGE'] ?? 'events',
-                'tokens_update' => $_ENV['APISEARCH_TOKENS_UPDATE_EXCHANGE'] ?? 'tokens_update',
             ];
 
             $asyncAdapter = [

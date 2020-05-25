@@ -1363,16 +1363,16 @@
         },
         {
             "name": "drift/event-bus-bundle",
-            "version": "0.1.7",
+            "version": "0.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/event-bus-bundle.git",
-                "reference": "af3b571e50881a2a8b6b22f3092cdeb3171ed97e"
+                "reference": "70e5d1a2c457f41cf1e1f83441a85b4c4333da33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/event-bus-bundle/zipball/af3b571e50881a2a8b6b22f3092cdeb3171ed97e",
-                "reference": "af3b571e50881a2a8b6b22f3092cdeb3171ed97e",
+                "url": "https://api.github.com/repos/driftphp/event-bus-bundle/zipball/70e5d1a2c457f41cf1e1f83441a85b4c4333da33",
+                "reference": "70e5d1a2c457f41cf1e1f83441a85b4c4333da33",
                 "shasum": ""
             },
             "require": {
@@ -1411,7 +1411,7 @@
             ],
             "description": "Event Bus for DriftPHP, a framework on top of Symfony and ReactPHP components",
             "homepage": "https://github.com/driftphp/event-bus-bundle",
-            "time": "2020-04-29T12:06:43+00:00"
+            "time": "2020-05-25T13:29:32+00:00"
         },
         {
             "name": "drift/event-loop-utils",
@@ -2142,16 +2142,16 @@
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9"
+                "reference": "fcd87520e4943d968557803919523772475e8ea3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9",
-                "reference": "bfbbdb6c998d50dbf69d2187cb78a5f1fa36e1e9",
+                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/fcd87520e4943d968557803919523772475e8ea3",
+                "reference": "fcd87520e4943d968557803919523772475e8ea3",
                 "shasum": ""
             },
             "require": {
@@ -2190,7 +2190,7 @@
                 "laminas",
                 "zf"
             ],
-            "time": "2020-04-03T16:01:00+00:00"
+            "time": "2020-05-20T16:45:56+00:00"
         },
         {
             "name": "mmoreram/base-bundle",
