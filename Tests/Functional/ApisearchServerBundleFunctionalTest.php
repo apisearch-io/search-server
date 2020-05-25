@@ -463,6 +463,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Preflight CORS query.
      *
      * @param string $origin
+     * @param string $ip
      * @param string $appId
      * @param string $index
      *
@@ -470,6 +471,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      */
     abstract public function getCORSPermissions(
         string $origin,
+        string $ip,
         string $appId = null,
         string $index = null
     ): string;

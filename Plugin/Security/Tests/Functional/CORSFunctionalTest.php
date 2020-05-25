@@ -44,8 +44,8 @@ class CORSFunctionalTest extends CurlFunctionalTest
      */
     public function testNoSecurity()
     {
-        $this->getCORSPermissions('Whatever.com');
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com'));
+        $this->getCORSPermissions('Whatever.com', '0.0.0.0');
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0'));
     }
 
     /**
@@ -57,7 +57,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'Whatever.com',
         ]));
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com'));
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0'));
     }
 
     /**
@@ -70,7 +70,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
         ]));
 
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('Whatever.com');
+        $this->getCORSPermissions('Whatever.com', '0.0.0.0');
     }
 
     /**
@@ -87,7 +87,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
         ]), static::$appId, static::$anotherIndex);
 
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
+        $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ]));
@@ -106,7 +106,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'Whatever.com',
         ]), static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -127,7 +127,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'another.net',
         ]), static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -143,7 +143,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
             'another.io',
         ]));
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -173,7 +173,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
 
         $this->assertEquals(
             $origin,
-            $this->getCORSPermissions($origin)
+            $this->getCORSPermissions($origin, '0.0.0.0')
         );
     }
 
@@ -223,7 +223,7 @@ class CORSFunctionalTest extends CurlFunctionalTest
         }
 
         $this->assertEquals(
-            $origin, $this->getCORSPermissions($origin, static::$appId, '*')
+            $origin, $this->getCORSPermissions($origin, '0.0.0.0', static::$appId, '*')
         );
     }
 
@@ -246,6 +246,90 @@ class CORSFunctionalTest extends CurlFunctionalTest
             ['https://lol.whatever.com', 'https://cat.whatever.com', false],
             ['http://whatever.com', 'https://whatever.com', false],
             ['https://whatever.com', 'http://whatever.com', false],
+        ];
+    }
+
+    /**
+     * Test ips unsecured
+     */
+    public function testBlockedIPSUnsecured()
+    {
+        static::resetScenario();
+        $this->configureIndex(Config::createEmpty()->addMetadataValue('blocked_ips', [
+            '1.2.3.4',
+        ]));
+
+        $this->expectNotToPerformAssertions();
+        $this->getCORSPermissions('localhost', '0.0.0.0');
+    }
+
+    /**
+     * Test secure by blocked ips
+     */
+    public function testBlockedIPSSecured()
+    {
+        static::resetScenario();
+        $this->configureIndex(Config::createEmpty()->addMetadataValue('blocked_ips', [
+            '1.2.3.4',
+            '5.6.7.8'
+        ]));
+
+        $this->getCORSPermissions('localhost', '0.2.3.4');
+        $this->getCORSPermissions('localhost', '0.0.0.0');
+        $this->getCORSPermissions('localhost', '5.5.6.7');
+        $this->expectException(ForbiddenException::class);
+        $this->getCORSPermissions('localhost', '1.2.3.4');
+    }
+
+    /**
+     * Test mixed security
+     *
+     * @param array $allowedOrigins
+     * @param array $blockedIPs
+     * @param bool $allowed
+     *
+     * @dataProvider dataMixedSecurity
+     */
+    public function testMixedSecurity(
+        array $allowedOrigins,
+        array $blockedIPs,
+        bool $allowed
+    )
+    {
+        $this->configureIndex(Config::createEmpty()
+            ->addMetadataValue('allowed_domains', $allowedOrigins)
+            ->addMetadataValue('blocked_ips', $blockedIPs)
+        );
+
+        if (!$allowed) {
+            $this->expectException(ForbiddenException::class);
+        } else {
+            $this->expectNotToPerformAssertions();
+        }
+
+        $this->getCORSPermissions('http://whatever.com', '1.1.1.1', static::$appId, '*');
+    }
+
+    /**
+     * Data for mixed security.
+     *
+     * Accessing always with whatever.com and 1.1.1.1
+     *
+     * @return array
+     */
+    public function dataMixedSecurity() : array
+    {
+        return [
+            [['http://whatever.com'], ['1.1.1.2'], true],
+            [['whatever.com'], ['1.1.1.2'], true],
+            [['whatever.com'], [], true],
+            [[], [], true],
+            [[], ['1.1.1.2'], true],
+
+            [[], ['1.1.1.1'], false],
+            [['another.com'], ['1.1.1.1'], false],
+            [['another.com'], [], false],
+            [['another.com', 'yetanother.com'], ['1.1.1.1', '2.2.2.2'], false],
         ];
     }
 }

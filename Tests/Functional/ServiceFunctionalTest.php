@@ -99,6 +99,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Preflight CORS query.
      *
      * @param string $origin
+     * @param string $ip
      * @param string $appId
      * @param string $index
      *
@@ -106,6 +107,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function getCORSPermissions(
         string $origin,
+        string $ip,
         string $appId = null,
         string $index = null
     ): string {
@@ -114,7 +116,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
 
         return self::askQuery(new GetCORSPermissions(
             RepositoryReference::create($appUUID, $indexUUID),
-            $origin
+            $origin,
+            $ip
         ));
     }
 

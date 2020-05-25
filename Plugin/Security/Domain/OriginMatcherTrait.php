@@ -46,6 +46,30 @@ trait OriginMatcherTrait
     }
 
     /**
+     * @param string $ip
+     * @param array  $blockedIps
+     *
+     * @return bool
+     */
+    private function IPIsAllowed(
+        string $ip,
+        array $blockedIps
+    ) : bool {
+        if (empty($blockedIps)) {
+            return true;
+        }
+
+        $ip = trim($ip);
+        foreach ($blockedIps as $blockedIp) {
+            if ($ip === trim($blockedIp)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Domain matches origin.
      *
      * @param string $origin

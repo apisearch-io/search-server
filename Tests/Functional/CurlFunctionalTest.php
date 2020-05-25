@@ -95,6 +95,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Preflight CORS query.
      *
      * @param string $origin
+     * @param string $ip
      * @param string $appId
      * @param string $index
      *
@@ -102,6 +103,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function getCORSPermissions(
         string $origin,
+        string $ip,
         string $appId = null,
         string $index = null
     ): string {
@@ -112,7 +114,10 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                     'app_id' => $appId ?? static::$appId,
                 ],
                 null, [], [],
-                ['Origin:'.$origin]
+                [
+                    'Origin:' . $origin,
+                    'REMOTE_ADDR:' . $ip,
+                ]
             );
         } else {
             $response = self::makeCurl(
@@ -122,7 +127,10 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                     'index_id' => $index ?? static::$index,
                 ],
                 null, [], [],
-                ['Origin:'.$origin]
+                [
+                    'Origin:' . $origin,
+                    'REMOTE_ADDR:' . $ip,
+                ]
             );
         }
 
@@ -716,6 +724,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             'length' => $contentLength,
             'headers' => $responseHeaders,
         ];
+
         if (\is_string($result['body'])) {
             $result['body'] = ['message' => $result['body']];
         }

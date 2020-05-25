@@ -64,6 +64,7 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
         }
 
         $origin = $command->getOrigin();
+        $ip = $command->getIP();
         if (empty($origin)) {
             return $next($command);
         }
@@ -84,13 +85,20 @@ class RestrictedOriginsMiddleware implements PluginMiddleware
 
             foreach ($configs as $config) {
                 if ($config instanceof Config) {
-                    $allowedDomains = $config->getMetadata()['allowed_domains'] ?? [];
+                    $metadata = $config->getMetadata();
+                    $allowedDomains = $metadata['allowed_domains'] ?? [];
                     $isPartialAllowed = $this->originIsAllowed(
                         $origin,
                         $allowedDomains
                     );
 
-                    $isAllowed &= $isPartialAllowed;
+                    $blockedIps = $metadata['blocked_ips'] ?? [];
+                    $isPartialBlocked = $this->IPIsAllowed(
+                        $ip,
+                        $blockedIps
+                    );
+
+                    $isAllowed &= $isPartialAllowed & $isPartialBlocked;
                 }
             }
         }

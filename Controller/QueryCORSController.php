@@ -39,13 +39,16 @@ class QueryCORSController extends ControllerWithQueryBus
         $headers = $request->headers;
         $origin = $headers->get('Origin', '');
 
+        $ip = $this->getRemoteAddr($request);
+
         return $this
             ->ask(new GetCORSPermissions(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
-                $origin
+                $origin,
+                $ip
             ))
             ->then(function ($origin) {
                 return false === $origin
@@ -78,5 +81,17 @@ class QueryCORSController extends ControllerWithQueryBus
     private function createForbiddenResponse()
     {
         return new Response(null, 403);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
+    private function getRemoteAddr(Request $request) : string
+    {
+        $headers = $request->headers;
+
+        return $headers->get('HTTP_X_FORWARDED_FOR', $headers->get('REMOTE_ADDR', $headers->get('HTTP_CLIENT_IP', '')));
     }
 }
