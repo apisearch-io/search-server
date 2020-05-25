@@ -115,8 +115,8 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ],
                 null, [], [],
                 [
-                    'Origin:' . $origin,
-                    'REMOTE_ADDR:' . $ip,
+                    'Origin:'.$origin,
+                    'REMOTE_ADDR:'.$ip,
                 ]
             );
         } else {
@@ -128,8 +128,8 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 ],
                 null, [], [],
                 [
-                    'Origin:' . $origin,
-                    'REMOTE_ADDR:' . $ip,
+                    'Origin:'.$origin,
+                    'REMOTE_ADDR:'.$ip,
                 ]
             );
         }
@@ -204,6 +204,29 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             \array_map(function (ItemUUID $itemUUID) {
                 return $itemUUID->toArray();
             }, $itemsUUID)
+        );
+    }
+
+    /**
+     * @param QueryModel $query
+     * @param string     $appId
+     * @param string     $index
+     * @param Token      $token
+     */
+    public function deleteItemsByQuery(
+        QueryModel $query,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        self::$lastResponse = self::makeCurl(
+            'v1_delete_items_by_query',
+            [
+                'app_id' => $appId ?? static::$appId,
+                'index_id' => $index ?? static::$index,
+            ],
+            $token,
+            $query->toArray()
         );
     }
 
@@ -729,6 +752,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             $result['body'] = ['message' => $result['body']];
         }
 
+        static::debugLastApisearchServer();
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;

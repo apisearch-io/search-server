@@ -1,16 +1,28 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Plugin\Security\Domain\Middleware;
 
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Closure;
-use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
+use React\Promise\PromiseInterface;
 
 /**
- * Class RestrictedQueryOriginsMiddleware
+ * Class RestrictedQueryOriginsMiddleware.
  */
 class RestrictedCORSOriginsMiddleware extends RestrictedOriginsMiddleware implements PluginMiddleware
 {
@@ -25,10 +37,10 @@ class RestrictedCORSOriginsMiddleware extends RestrictedOriginsMiddleware implem
     }
 
     /**
-     * @param Object $command
+     * @param object  $command
      * @param Closure $next
-     * @param bool $isAllowed
-     * @param string $origin
+     * @param bool    $isAllowed
+     * @param string  $origin
      *
      * @return PromiseInterface
      */
@@ -37,8 +49,7 @@ class RestrictedCORSOriginsMiddleware extends RestrictedOriginsMiddleware implem
         $next,
         bool $isAllowed,
         string $origin
-    ) : PromiseInterface
-    {
+    ): PromiseInterface {
         return resolve($isAllowed
             ? $origin
             : false);

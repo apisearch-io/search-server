@@ -17,7 +17,6 @@ namespace Apisearch\Plugin\Elasticsearch\Domain\Repository;
 
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
-use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\QueryBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\ResultBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\ElasticaWrapper;
@@ -29,9 +28,7 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Repository\Repository\QueryRepository as QueryRepositoryInterface;
 use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
-use Elastica\Query as ElasticaQuery;
 use Elastica\ResultSet as ElasticaResultSet;
-use Elastica\Suggest;
 use function Drift\React\wait_for_stream_listeners;
 use function React\Promise\resolve;
 use React\EventLoop\LoopInterface;
@@ -45,6 +42,8 @@ use React\Stream\TransformerStream;
  */
 class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInterface
 {
+    use Transformers;
+
     /**
      * @var QueryBuilder
      */
@@ -337,109 +336,6 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         }
 
         return Result::createMultiResult($subresults);
-    }
-
-    /**
-     * Create Elasticsearch query by model query.
-     *
-     * @param Query $query
-     *
-     * @return ElasticaQuery
-     */
-    private function createElasticaQueryByModelQuery(Query $query): ElasticaQuery
-    {
-        $mainQuery = new ElasticaQuery();
-        $boolQuery = new ElasticaQuery\BoolQuery();
-        $this
-            ->queryBuilder
-            ->buildQuery(
-                $query,
-                $mainQuery,
-                $boolQuery
-            );
-
-        $this->promoteUUIDs(
-            $boolQuery,
-            $query->getItemsPromoted()
-        );
-
-        if ($query->areHighlightEnabled()) {
-            $this->addHighlights($mainQuery);
-        }
-
-        $this->addSuggest(
-            $mainQuery,
-            $query
-        );
-
-        $mainQuery->setExplain(false);
-
-        return $mainQuery;
-    }
-
-    /**
-     * Add suggest into an Elastica Query.
-     *
-     * @param ElasticaQuery $mainQuery
-     * @param Query         $query
-     */
-    private function addSuggest($mainQuery, $query)
-    {
-        if ($query->areSuggestionsEnabled()) {
-            $completitionText = new Suggest\Completion(
-                'completion',
-                'suggest'
-            );
-            $completitionText->setText($query->getQueryText());
-
-            $mainQuery->setSuggest(
-                new Suggest($completitionText)
-            );
-        }
-    }
-
-    /**
-     * Promote UUID.
-     *
-     * The boosting values go from 1 (not included) to 3 (not included)
-     *
-     * @param ElasticaQuery\BoolQuery $boolQuery
-     * @param ItemUUID[]              $itemsPriorized
-     */
-    private function promoteUUIDs(
-        ElasticaQuery\BoolQuery $boolQuery,
-        array $itemsPriorized
-    ) {
-        if (empty($itemsPriorized)) {
-            return;
-        }
-
-        $it = \count($itemsPriorized);
-        foreach ($itemsPriorized as $position => $itemUUID) {
-            $boolQuery->addShould(new ElasticaQuery\Term([
-                '_id' => [
-                    'value' => $itemUUID->composeUUID(),
-                    'boost' => 10 + ($it-- / (\count($itemsPriorized) + 1)),
-                ],
-            ]));
-        }
-    }
-
-    /**
-     * Highlight.
-     *
-     * @param ElasticaQuery $query
-     */
-    private function addHighlights(ElasticaQuery $query)
-    {
-        $query->setHighlight([
-            'fields' => [
-                '*' => [
-                    'fragment_size' => 100,
-                    'number_of_fragments' => 3,
-                ],
-            ],
-        ]);
     }
 
     /**

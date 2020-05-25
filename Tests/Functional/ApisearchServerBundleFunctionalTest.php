@@ -509,6 +509,19 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
+     * @param QueryModel $query
+     * @param string     $appId
+     * @param string     $index
+     * @param Token      $token
+     */
+    abstract public function deleteItemsByQuery(
+        QueryModel $query,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
      * Add items using the bus.
      *
      * @param Item[] $items

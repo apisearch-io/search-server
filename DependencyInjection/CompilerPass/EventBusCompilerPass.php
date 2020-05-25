@@ -56,13 +56,13 @@ class EventBusCompilerPass implements CompilerPassInterface
 
             TokensWereDeleted::class,
             TokenWasPut::class,
-            TokenWasDeleted::class
+            TokenWasDeleted::class,
         ];
 
-        $eventBusRouter = array_combine(
+        $eventBusRouter = \array_combine(
             $events,
-            array_values(
-                array_fill(0, count($events), 'events')
+            \array_values(
+                \array_fill(0, \count($events), 'events')
             )
         );
 

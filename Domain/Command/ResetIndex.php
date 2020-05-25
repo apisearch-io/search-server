@@ -15,13 +15,12 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Command;
 
-use Apisearch\Server\Domain\AsynchronousCommandWithRepositoryReferenceAndTokenAndIndexUUID;
+use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndTokenAndIndexUUID;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use Apisearch\Server\Domain\LoggableCommand;
 
 /**
  * Class ResetIndex.
  */
-class ResetIndex extends AsynchronousCommandWithRepositoryReferenceAndTokenAndIndexUUID implements LoggableCommand, IndexRequiredCommand
+class ResetIndex extends CommandWithRepositoryReferenceAndTokenAndIndexUUID implements IndexRequiredCommand
 {
 }

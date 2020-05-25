@@ -34,6 +34,7 @@ use Apisearch\Server\Domain\Command\ConfigureIndex;
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\Command\DeleteIndex;
 use Apisearch\Server\Domain\Command\DeleteItems;
+use Apisearch\Server\Domain\Command\DeleteItemsByQuery;
 use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Command\IndexItems;
@@ -186,6 +187,34 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     $appUUID
                 ),
             $itemsUUID
+        ));
+    }
+
+    /**
+     * @param QueryModel $query
+     * @param string     $appId
+     * @param string     $index
+     * @param Token      $token
+     */
+    public function deleteItemsByQuery(
+        QueryModel $query,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+
+        self::executeCommand(new DeleteItemsByQuery(
+            RepositoryReference::create(
+                $appUUID,
+                IndexUUID::createById($index ?? self::$index)
+            ),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                $appUUID
+            ),
+            $query
         ));
     }
 

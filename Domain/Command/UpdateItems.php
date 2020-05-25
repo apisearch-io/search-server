@@ -20,16 +20,13 @@ use Apisearch\Model\Token;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
-use Apisearch\Server\Domain\AsynchronousableCommand;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
-use Apisearch\Server\Domain\LoggableCommand;
-use Apisearch\Server\Domain\WriteCommand;
 
 /**
  * Class UpdateItems.
  */
-class UpdateItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, WriteCommand, LoggableCommand, AsynchronousableCommand, IndexRequiredCommand
+class UpdateItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
     /**
      * @var Query
@@ -86,45 +83,5 @@ class UpdateItems extends CommandWithRepositoryReferenceAndToken implements With
     public function getChanges(): Changes
     {
         return $this->changes;
-    }
-
-    /**
-     * To array.
-     *
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return [
-            'repository_reference' => $this
-                ->getRepositoryReference()
-                ->compose(),
-            'token' => $this
-                ->getToken()
-                ->toArray(),
-            'query' => $this
-                ->query
-                ->toArray(),
-            'changes' => $this
-                ->changes
-                ->toArray(),
-        ];
-    }
-
-    /**
-     * Create command from array.
-     *
-     * @param array $data
-     *
-     * @return self
-     */
-    public static function fromArray(array $data)
-    {
-        return new self(
-            RepositoryReference::createFromComposed($data['repository_reference']),
-            Token::createFromArray($data['token']),
-            Query::createFromArray($data['query']),
-            Changes::createFromArray($data['changes'])
-        );
     }
 }

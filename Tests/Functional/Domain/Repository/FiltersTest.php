@@ -223,7 +223,7 @@ trait FiltersTest
     /**
      * Build created at filtered Result.
      *
-     * @pram string $filter
+     * @param string $filter
      *
      * @return Result
      */
@@ -289,7 +289,7 @@ trait FiltersTest
     /**
      * Build created at filtered Result.
      *
-     * @pram string $filter
+     * @param string $filter
      *
      * @return Result
      */
@@ -306,6 +306,29 @@ trait FiltersTest
         $this->assertCount(
             1,
             $this->query(Query::createMatchAll()->filterBy('char', 'strange_field', ['煮']))->getItems()
+        );
+    }
+
+    /**
+     * Test exclude filter.
+     *
+     * @group exclude
+     */
+    public function testExcludeFilter()
+    {
+        $this->assertResults(
+            $this->query(Query::createMatchAll()->filterBy('color', 'color', ['yellow'], Filter::EXCLUDE, false)),
+            ['?1', '?2', '!3', '?4', '!5']
+        );
+
+        $this->assertResults(
+            $this->query(Query::createMatchAll()->filterBy('color', 'color', ['yellow', 'pink'], Filter::EXCLUDE, false)),
+            ['!1', '?2', '!3', '?4', '!5']
+        );
+
+        $this->assertResults(
+            $this->query(Query::createMatchAll()->filterBy('color', 'color', [], Filter::EXCLUDE, false)),
+            ['?1', '?2', '?3', '?4', '?5']
         );
     }
 }

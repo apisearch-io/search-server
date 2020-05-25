@@ -19,8 +19,8 @@ use Apisearch\Config\Config;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Security\Domain\OriginMatcherTrait;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
-use React\Promise\PromiseInterface;
 use Closure;
+use React\Promise\PromiseInterface;
 
 /**
  * Class RestrictedOriginsMiddleware.
@@ -43,7 +43,7 @@ abstract class RestrictedOriginsMiddleware
     }
 
     /**
-     * @param Object $command
+     * @param object  $command
      * @param Closure $next
      *
      * @return PromiseInterface
@@ -103,10 +103,10 @@ abstract class RestrictedOriginsMiddleware
     }
 
     /**
-     * @param Object $command
+     * @param object  $command
      * @param Closure $next
-     * @param bool $isAllowed
-     * @param string $origin
+     * @param bool    $isAllowed
+     * @param string  $origin
      *
      * @return PromiseInterface
      */
@@ -115,5 +115,5 @@ abstract class RestrictedOriginsMiddleware
         $next,
         bool $isAllowed,
         string $origin
-    ) : PromiseInterface;
+    ): PromiseInterface;
 }
