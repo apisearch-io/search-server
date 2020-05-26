@@ -122,6 +122,12 @@ class ConfigureIndexCommand extends CommandWithCommandBusAndGodToken
                 InputOption::VALUE_OPTIONAL,
                 'Replicas for the index',
                 Config::DEFAULT_REPLICAS
+            )
+            ->addOption(
+                'force-reindex',
+                null,
+                InputOption::VALUE_NONE,
+                'Force reindex'
             );
     }
 
@@ -161,7 +167,8 @@ class ConfigureIndexCommand extends CommandWithCommandBusAndGodToken
                     }, $synonyms),
                     'shards' => $input->getOption('shards'),
                     'replicas' => $input->getOption('replicas'),
-                ])
+                ]),
+                $input->getOption('force-reindex')
             ));
         } catch (ResourceNotAvailableException $exception) {
             $this->printInfoMessage(

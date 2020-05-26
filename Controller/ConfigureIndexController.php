@@ -37,6 +37,7 @@ class ConfigureIndexController extends ControllerWithCommandBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
+        $requestQuery = $request->query;
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
         $configAsArray = RequestAccessor::extractRequestContentObject(
             $request,
@@ -52,7 +53,8 @@ class ConfigureIndexController extends ControllerWithCommandBus
                 ),
                 RequestAccessor::getTokenFromRequest($request),
                 $indexUUID,
-                Config::createFromArray($configAsArray)
+                Config::createFromArray($configAsArray),
+                \boolval($requestQuery->get('force_reindex', false))
             ))
             ->then(function () {
                 return new JsonResponse(

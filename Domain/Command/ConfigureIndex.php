@@ -43,18 +43,25 @@ class ConfigureIndex extends CommandWithRepositoryReferenceAndToken implements W
     private $config;
 
     /**
+     * @var bool
+     */
+    private $forceReindex;
+
+    /**
      * ResetCommand constructor.
      *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param IndexUUID           $indexUUID
      * @param Config              $config
+     * @param bool $forceReindex
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
         IndexUUID $indexUUID,
-        Config $config
+        Config $config,
+        bool $forceReindex
     ) {
         parent::__construct(
             $repositoryReference,
@@ -63,6 +70,7 @@ class ConfigureIndex extends CommandWithRepositoryReferenceAndToken implements W
 
         $this->indexUUID = $indexUUID;
         $this->config = $config;
+        $this->forceReindex = $forceReindex;
     }
 
     /**
@@ -83,5 +91,13 @@ class ConfigureIndex extends CommandWithRepositoryReferenceAndToken implements W
     public function getConfig(): Config
     {
         return $this->config;
+    }
+
+    /**
+     * @return bool
+     */
+    public function forceReindex() : bool
+    {
+        return $this->forceReindex;
     }
 }

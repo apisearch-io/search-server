@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6edcbd4c91a5a7a15939dcb0fae3c6f5",
+    "content-hash": "cfc2d780102cf317e27d97f1847de31d",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -108,16 +108,16 @@
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.28",
+            "version": "0.1.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "b83e1846f1598f15c8e7903c6796810be9d4398c"
+                "reference": "2180ab1a9281b1c82f9a49cd33d5400e2fabf8f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/b83e1846f1598f15c8e7903c6796810be9d4398c",
-                "reference": "b83e1846f1598f15c8e7903c6796810be9d4398c",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/2180ab1a9281b1c82f9a49cd33d5400e2fabf8f9",
+                "reference": "2180ab1a9281b1c82f9a49cd33d5400e2fabf8f9",
                 "shasum": ""
             },
             "require": {
@@ -144,7 +144,7 @@
                 }
             ],
             "description": "PHP Library for Apisearch",
-            "time": "2020-05-25T17:35:55+00:00"
+            "time": "2020-05-26T09:28:29+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -988,20 +988,20 @@
         },
         {
             "name": "doctrine/inflector",
-            "version": "1.4.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/inflector.git",
-                "reference": "4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3"
+                "reference": "889b42b8155f2aa274596b6e0424371b1e3c51bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/inflector/zipball/4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3",
-                "reference": "4111f6853aea6f28b2b1dcfdde83d12dd3d5e6e3",
+                "url": "https://api.github.com/repos/doctrine/inflector/zipball/889b42b8155f2aa274596b6e0424371b1e3c51bb",
+                "reference": "889b42b8155f2aa274596b6e0424371b1e3c51bb",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": "^7.2 || ^8.0"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^7.0",
@@ -1062,7 +1062,7 @@
                 "uppercase",
                 "words"
             ],
-            "time": "2020-05-09T15:09:09+00:00"
+            "time": "2020-05-25T20:02:40+00:00"
         },
         {
             "name": "doctrine/instantiator",

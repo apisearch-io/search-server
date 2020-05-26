@@ -84,7 +84,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
 
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Another.com',
-        ]), static::$appId, static::$anotherIndex);
+        ]), false, static::$appId, static::$anotherIndex);
 
         $this->expectException(ForbiddenException::class);
         $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
@@ -104,7 +104,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
 
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
-        ]), static::$appId, static::$anotherIndex);
+        ]), false, static::$appId, static::$anotherIndex);
 
         $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,
@@ -125,7 +125,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
             'another.net',
-        ]), static::$appId, static::$anotherIndex);
+        ]), false, static::$appId, static::$anotherIndex);
 
         $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
             static::$index,

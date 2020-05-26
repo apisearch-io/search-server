@@ -4,6 +4,7 @@ command_bus:
             - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\IndexComplexFieldsMiddleware
+            - Apisearch\Server\Domain\Middleware\ComplexFields\ResetOrDeleteIndexComplexFieldsMiddleware
             - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
 
     query_bus:

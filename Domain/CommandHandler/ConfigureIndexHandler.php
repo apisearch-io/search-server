@@ -23,9 +23,9 @@ use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
 
 /**
- * Class ConfigIndexHandler.
+ * Class ConfigureIndexHandler.
  */
-class ConfigIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublisher
+class ConfigureIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublisher
 {
     /**
      * Configure the index.
@@ -52,7 +52,10 @@ class ConfigIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                     ->configRepository
                     ->putConfig($repositoryReference, $config),
 
-                $this->configHashesAreEqual($config, $currentMetadataConfig)
+                (
+                    !$configureIndex->forceReindex() &&
+                    $this->configHashesAreEqual($config, $currentMetadataConfig)
+                )
                     ? resolve(false)
                     : $this
                         ->appRepository
