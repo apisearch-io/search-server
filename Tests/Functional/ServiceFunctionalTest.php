@@ -371,12 +371,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Configure index using the bus.
      *
      * @param Config $config
+     * @param bool $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
      */
     public function configureIndex(
         Config $config,
+        bool $forceReindex = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -395,7 +397,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     $appUUID
                 ),
             $indexUUID,
-            $config
+            $config,
+            $forceReindex
         ));
     }
 

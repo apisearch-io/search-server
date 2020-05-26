@@ -80,12 +80,7 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
         $repositoryReference = RepositoryReference::createFromComposed(static::$appId.'_'.static::$index);
         static::await($repository->set($repositoryReference, 'key1', 'value1'));
         $this->dispatchImperative(new LoadMetadata($repositoryReference));
-        $indices = $this->getIndices();
-        $indices = \array_filter($indices, function (Index $index) {
-            return 'default' === $index->getUUID()->composeUUID();
-        });
-
-        $index = \reset($indices);
+        $index = $this->getPrincipalIndex();
         $this->assertEquals('value1', $index->getMetadataValue('stored_metadata')['key1']);
     }
 

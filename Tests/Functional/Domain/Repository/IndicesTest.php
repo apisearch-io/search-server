@@ -29,10 +29,7 @@ trait IndicesTest
     {
         $indices = $this->getIndices(self::$appId);
         $this->assertCount(2, $indices);
-        $indices = \array_filter($indices, function (Index $index) {
-            return \array_key_exists('indexed_metadata.brand', $index->getFields());
-        });
-        $index = \reset($indices);
+        $index = $this->getPrincipalIndex();
 
         $givenFields = $index->getFields();
         $expectedFields = [

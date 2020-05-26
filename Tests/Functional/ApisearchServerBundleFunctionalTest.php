@@ -585,12 +585,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Configure index using the bus.
      *
      * @param Config $config
+     * @param bool $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
      */
     abstract public function configureIndex(
         Config $config,
+        bool $forceReindex = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -606,6 +608,23 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         string $appId = null,
         Token $token = null
     ): array;
+
+    /**
+     * @param string $fieldToCheck
+     *
+     * @return Index|null
+     */
+    protected function getPrincipalIndex(string $fieldToCheck = 'indexed_metadata.brand')
+    {
+        $indices = $this->getIndices(self::$appId);
+        $indices = \array_filter($indices, function (Index $index) use ($fieldToCheck) {
+            return \array_key_exists($fieldToCheck, $index->getFields());
+        });
+
+        return count($indices) === 1
+            ? \reset($indices)
+            : null;
+    }
 
     /**
      * Check index.

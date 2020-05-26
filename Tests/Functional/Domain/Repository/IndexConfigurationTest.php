@@ -41,13 +41,45 @@ trait IndexConfigurationTest
      */
     public function testConfigureIndexWithSynonyms()
     {
+        $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
         $this->assertCount(0, $this->query(Query::create('Flipencio'))->getItems());
         $this->configureIndex(Config::createEmpty()->addSynonym(Synonym::createByWords(['Alfaguarra', 'Flipencio'])));
+        $remoteIndexUUID2 = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
         $this->configureIndex(Config::createEmpty()->addSynonym(Synonym::createByWords(['hermenegildo', 'Alfaguarra', 'eleuterio'])));
+        $remoteIndexUUID3 = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
         $this->assertCount(1, $this->query(Query::create('hermenegildo'))->getItems());
         $this->assertCount(1, $this->query(Query::create('Hermenegildo'))->getItems());
         $this->assertCount(1, $this->query(Query::create('eleuterio'))->getItems());
         $this->assertCount(1, $this->query(Query::create('Eleuterio'))->getItems());
+
+        $this->assertNotEquals($remoteIndexUUID, $remoteIndexUUID2);
+        $this->assertNotEquals($remoteIndexUUID, $remoteIndexUUID3);
+        $this->assertNotEquals($remoteIndexUUID2, $remoteIndexUUID3);
+    }
+
+    /**
+     * Test soft configuration, for example, changing a simple metadata. That
+     * should not reindex
+     */
+    public function testSoftConfigureIndex()
+    {
+        $this->configureIndex(Config::createEmpty());
+        $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
+        $this->configureIndex(Config::createEmpty()->addMetadataValue('key1', 'val1'));
+        $remoteIndexUUID2 = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
+        $this->assertEquals($remoteIndexUUID, $remoteIndexUUID2);
+    }
+
+    /**
+     * Test force configuration reindex
+     */
+    public function testConfigurationIndexWithForceReindex()
+    {
+        $this->configureIndex(Config::createEmpty());
+        $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
+        $this->configureIndex(Config::createEmpty()->addMetadataValue('key1', 'val1'), true);
+        $remoteIndexUUID2 = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
+        $this->assertNotEquals($remoteIndexUUID, $remoteIndexUUID2);
     }
 
     /**

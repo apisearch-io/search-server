@@ -86,11 +86,7 @@ trait ComplexFieldsTest
         $this->assertFalse(\array_key_exists('complex_field_2', $firstItem->getMetadata()));
         $this->assertFalse(\array_key_exists('complex_field_2', $firstItem->getIndexedMetadata()));
 
-        $indices = $this->getIndices(static::$appId);
-        $indices = \array_filter($indices, function (Index $index) {
-            return \array_key_exists('indexed_metadata.complex_field_2', $index->getFields());
-        });
-        $index = \reset($indices);
+        $index = $this->getPrincipalIndex('indexed_metadata.complex_field_2');
         $fields = $index->getFields();
         $this->assertTrue(\array_key_exists('indexed_metadata.complex_field_2', $fields));
         $this->assertFalse(\array_key_exists('indexed_metadata.complex_field_2_id', $fields));

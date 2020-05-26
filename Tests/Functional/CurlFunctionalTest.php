@@ -369,12 +369,14 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Configure index using the bus.
      *
      * @param Config $config
+     * @param bool $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
      */
     public function configureIndex(
         Config $config,
+        bool $forceReindex = false,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -386,7 +388,10 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            $config->toArray()
+            $config->toArray(),
+            [
+                'force_reindex' => $forceReindex
+            ]
         );
     }
 
@@ -752,7 +757,6 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             $result['body'] = ['message' => $result['body']];
         }
 
-        static::debugLastApisearchServer();
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;
