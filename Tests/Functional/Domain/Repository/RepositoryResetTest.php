@@ -41,7 +41,7 @@ trait RepositoryResetTest
     }
 
     /**
-     * Test reset after field change
+     * Test reset after field change.
      */
     public function testResetRepositoryAfterFieldChange()
     {
@@ -49,20 +49,20 @@ trait RepositoryResetTest
             Item::createFromArray([
                 'uuid' => [
                     'id' => '10',
-                    'type' => 'test'
+                    'type' => 'test',
                 ],
                 'indexed_metadata' => [
                     'an_object' => [
                         'id' => '10',
-                        'name' => 'lol'
-                    ]
-                ]
-            ])
+                        'name' => 'lol',
+                    ],
+                ],
+            ]),
         ]);
 
         $index = $this->getPrincipalIndex();
         $this->assertEquals('object', $index->getFields()['indexed_metadata.an_object']);
-        $this->assertTrue(in_array('an_object', $index->getMetadataValue('stored_metadata')['complex_fields']));
+        $this->assertTrue(\in_array('an_object', $index->getMetadataValue('stored_metadata')['complex_fields']));
 
         $this->resetIndex();
         $this->assertCount(
@@ -77,19 +77,19 @@ trait RepositoryResetTest
             Item::createFromArray([
                 'uuid' => [
                     'id' => '10',
-                    'type' => 'test'
+                    'type' => 'test',
                 ],
                 'indexed_metadata' => [
                     'an_object' => [
                         'obj1',
-                        'obj2'
-                    ]
-                ]
-            ])
+                        'obj2',
+                    ],
+                ],
+            ]),
         ]);
 
         $index = $this->getPrincipalIndex('indexed_metadata.an_object');
-        $this->assertFalse(array_key_exists('complex_fields', $index->getMetadataValue('stored_metadata')));
+        $this->assertFalse(\array_key_exists('complex_fields', $index->getMetadataValue('stored_metadata')));
         $this->resetScenario();
     }
 }

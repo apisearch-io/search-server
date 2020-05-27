@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
+use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 
 /**
@@ -51,6 +52,21 @@ trait ItemsDeletionByQueryTest
     {
         $this->deleteItemsByQuery(Query::create('', 1, 1)->filterByRange('cheap', 'price', [], ['0..1501']));
         $this->assertCount(1, $this->query(Query::createMatchAll())->getItems());
+
+        static::resetScenario();
+    }
+
+    /**
+     * Test item deletion with EXCLUDE filter.
+     *
+     * @group lala
+     */
+    public function testItemDeletionByExclude()
+    {
+        $this->deleteItemsByQuery(Query::create('', 1, 1)->filterBy('but_pink', 'color', ['pink'], Filter::EXCLUDE));
+        $this->assertCount(1, $this->query(Query::createMatchAll())->getItems());
+        $this->deleteItemsByQuery(Query::create('', 1, 1)->filterBy('another', 'non-existing', ['what'], Filter::EXCLUDE));
+        $this->assertCount(0, $this->query(Query::createMatchAll())->getItems());
 
         static::resetScenario();
     }

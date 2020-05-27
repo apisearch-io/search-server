@@ -74,8 +74,12 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         array $parameters = [],
         array $headers = []
     ): Result {
+        $route = '' === $index
+            ? 'v1_query_all_indices'
+            : 'v1_query';
+
         $response = self::makeCurl(
-            'v1_query',
+            $route,
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $index ?? static::$index,
@@ -369,7 +373,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Configure index using the bus.
      *
      * @param Config $config
-     * @param bool $forceReindex
+     * @param bool   $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -390,7 +394,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             $token,
             $config->toArray(),
             [
-                'force_reindex' => $forceReindex
+                'force_reindex' => $forceReindex,
             ]
         );
     }

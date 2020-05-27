@@ -35,7 +35,7 @@ class ResetOrDeleteIndexComplexFieldsMiddleware extends ComplexFieldsMiddleware 
     public function execute($command, callable $next)
     {
         /**
-         * @var CommandWithRepositoryReferenceAndTokenAndIndexUUID $command
+         * @var CommandWithRepositoryReferenceAndTokenAndIndexUUID
          */
         $repositoryReference = $command->getRepositoryReference();
 
@@ -66,7 +66,7 @@ class ResetOrDeleteIndexComplexFieldsMiddleware extends ComplexFieldsMiddleware 
     {
         return [
             ResetIndex::class,
-            DeleteIndex::class
+            DeleteIndex::class,
         ];
     }
 }

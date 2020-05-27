@@ -17,7 +17,6 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Config\Config;
 use Apisearch\Model\AppUUID;
-use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
 use Apisearch\Model\Token;
