@@ -59,7 +59,7 @@ trait IndexConfigurationTest
 
     /**
      * Test soft configuration, for example, changing a simple metadata. That
-     * should not reindex
+     * should not reindex.
      */
     public function testSoftConfigureIndex()
     {
@@ -71,7 +71,7 @@ trait IndexConfigurationTest
     }
 
     /**
-     * Test force configuration reindex
+     * Test force configuration reindex.
      */
     public function testConfigurationIndexWithForceReindex()
     {

@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
-use Apisearch\Model\Index;
-
 /**
  * Class IndicesTest.
  */

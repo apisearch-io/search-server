@@ -424,7 +424,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
                 \preg_match_all($regexToParse, $elasticaResponse->getData()['message'], $matches, PREG_SET_ORDER, 0);
                 if ($matches) {
                     foreach ($matches as $metaData) {
-
                         $indices[] = new ApisearchIndex(
                             IndexUUID::createById($metaData['id']),
                             AppUUID::createById($metaData['app_id']),
@@ -441,7 +440,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                                 'allocated' => ('green' === $metaData['color']),
                                 'doc_deleted' => (int) $metaData['doc_deleted'],
                                 'remote_uuid' => $metaData['uuid'],
-                                'storage_size' => $metaData['storage_size']
+                                'storage_size' => $metaData['storage_size'],
                             ]
                         );
                     }
@@ -993,10 +992,14 @@ class ElasticaWrapper implements AsyncRequestAccessor
         ]);
 
         return $this
-            ->client
-            ->requestAsyncEndpoint($endpoint, $indexName)
-            ->otherwise(function (ResponseException $exception) {
-                throw $this->getIndexNotAvailableException($exception->getMessage());
+            ->refresh($indexName)
+            ->then(function () use ($endpoint, $indexName) {
+                return $this
+                    ->client
+                    ->requestAsyncEndpoint($endpoint, $indexName)
+                    ->otherwise(function (ResponseException $exception) {
+                        throw $this->getIndexNotAvailableException($exception->getMessage());
+                    });
             });
     }
 

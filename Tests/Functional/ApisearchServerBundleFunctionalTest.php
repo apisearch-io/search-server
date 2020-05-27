@@ -585,7 +585,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Configure index using the bus.
      *
      * @param Config $config
-     * @param bool $forceReindex
+     * @param bool   $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
@@ -621,7 +621,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             return \array_key_exists($fieldToCheck, $index->getFields());
         });
 
-        return count($indices) === 1
+        return 1 === \count($indices)
             ? \reset($indices)
             : null;
     }

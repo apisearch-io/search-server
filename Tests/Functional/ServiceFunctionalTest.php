@@ -371,7 +371,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Configure index using the bus.
      *
      * @param Config $config
-     * @param bool $forceReindex
+     * @param bool   $forceReindex
      * @param string $appId
      * @param string $index
      * @param Token  $token
