@@ -121,7 +121,7 @@ class AsyncClient implements AsyncRequestAccessor
                     true === $data['errors']
                 ) {
                     throw new ResponseException(
-                        $elasticaResponse->getErrorMessage(),
+                        $this->getErrorText($elasticaResponse),
                         $elasticaResponse->getStatus()
                     );
                 }
@@ -177,5 +177,50 @@ class AsyncClient implements AsyncRequestAccessor
         }
 
         return \implode('&', $chain);
+    }
+
+    /**
+     * Get error text.
+     *
+     * @param Response $response
+     *
+     * @return string
+     */
+    private function getErrorText(Response $response): string
+    {
+        $data = $response->getData();
+        if (false === $data['errors']) {
+            return '';
+        }
+
+        if (
+            !\array_key_exists('items', $data) ||
+            !\is_array($data['items']) ||
+            0 === \count($data['items'])
+        ) {
+            return '';
+        }
+
+        $block = \reset($data['items']);
+
+        if (
+            !\is_array($block) ||
+            0 === \count($block)
+        ) {
+            return '';
+        }
+
+        $error = \reset($block);
+
+        if (
+            !\is_array($error) ||
+            !\array_key_exists('error', $error) ||
+            !\is_array($error['error']) ||
+            !\array_key_exists('reason', $error['error'])
+        ) {
+            return '';
+        }
+
+        return \strval($error['error']['reason']);
     }
 }
