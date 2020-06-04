@@ -56,12 +56,7 @@ final class ItemsWereIndexed extends DomainEvent
     public function toArrayPayload(): array
     {
         return [
-            'nb_items' => \count($this->itemsUUID),
-            'item_uuid' => \array_values(
-                \array_map(function (ItemUUID $itemUUID) {
-                    return $itemUUID->composeUUID();
-                }, $this->itemsUUID)
-            ),
+            'nb_items' => \count($this->itemsUUID)
         ];
     }
 }

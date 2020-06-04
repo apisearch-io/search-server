@@ -34,15 +34,22 @@ class BasicUsageTest extends LogstashFunctionalTest
     public function testBasicUsage()
     {
         $redis = static::getStatic('redis.logstash_client_test');
+        usleep(100000);
         self::await($redis->del(static::KEY));
-
         $this->query(Query::createMatchAll());
+        usleep(10000);
+
         $this->assertEquals(
             1,
             static::await($redis->lLen(static::KEY))
         );
+        $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
+        $message = \json_decode($body['@message'], true);
+        $this->assertEquals('QueryWasMade', $message['type']);
+        $this->assertEquals(5, $message['result_length']);
+        $this->assertEquals(true, $message['q_empty']);
+        $this->assertEquals(0, $message['q_length']);
 
-        static::await($redis->del(static::KEY));
         $this->deleteIndex();
         $this->createIndex();
         $this->indexTestingItems();
@@ -60,7 +67,6 @@ class BasicUsageTest extends LogstashFunctionalTest
 
         $this->assertEquals(200, $body['@fields']['level']);
         $this->assertEquals('dev', $message['environment']);
-        $this->assertEquals(self::$kernel->getUID(), $message['kernel_uid']);
         $this->assertEquals('apisearch', $message['service']);
         $this->assertEquals('26178621test_default', $message['repository_reference']);
         $this->assertEquals('ItemsWereIndexed', $message['type']);
@@ -75,6 +81,7 @@ class BasicUsageTest extends LogstashFunctionalTest
             // Ignoring exception
         }
 
+        usleep(100000);
         $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
         $this->assertEquals(400, $body['@fields']['level']);
     }

@@ -196,6 +196,8 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             ['https://lol.whatever.com', 'https://cat.whatever.com', false],
             ['http://whatever.com', 'https://whatever.com', false],
             ['https://whatever.com', 'http://whatever.com', false],
+            ['https://lol.whatever.com', 'whatever.com', false],
+            ['http://lol.whatever.com', 'whatever.com', false],
         ];
     }
 
