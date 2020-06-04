@@ -16,7 +16,7 @@
     "symfony/framework-bundle": "^5.0",
     "symfony/http-kernel": "^5.0",
     "symfony/console": "^5.0",
-    "symfony/dependency-injection" : "^5.0",
+    "symfony/dependency-injection" : "^5.0, <5.1.0",
     "symfony/http-foundation" : "^5.0, >=5.0.7",
     "symfony/event-dispatcher" : "^5.0",
     "symfony/dotenv" : "^5.0",

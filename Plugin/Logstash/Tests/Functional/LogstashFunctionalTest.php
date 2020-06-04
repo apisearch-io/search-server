@@ -16,12 +16,13 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Logstash\Tests\Functional;
 
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
  * Class LogstashFunctionalTest.
  */
-abstract class LogstashFunctionalTest extends ServiceFunctionalTest
+abstract class LogstashFunctionalTest extends CurlFunctionalTest
 {
     /**
      * Decorate bundles.
