@@ -20,6 +20,7 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Ramsey\Uuid\Uuid;
 
@@ -40,6 +41,7 @@ class BasicSecurityTest extends CurlFunctionalTest
      */
     public function testSecondsAvailableFailing()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -58,7 +60,6 @@ class BasicSecurityTest extends CurlFunctionalTest
             $this->fail(\sprintf('%s exception expected', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
     }
 
@@ -67,6 +68,7 @@ class BasicSecurityTest extends CurlFunctionalTest
      */
     public function testSecondsAvailableAccepted()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -74,13 +76,13 @@ class BasicSecurityTest extends CurlFunctionalTest
         $token->setMetadataValue('seconds_valid', 2);
         $this->putToken($token, self::$appId);
         \sleep(1);
+
         $this->query(
             Query::createMatchAll(),
             self::$appId,
             self::$index,
             $token
         );
-        $this->assertTrue(true);
     }
 
     /**
@@ -92,6 +94,7 @@ class BasicSecurityTest extends CurlFunctionalTest
      */
     public function testBadReferrers(array $referrers)
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -103,14 +106,13 @@ class BasicSecurityTest extends CurlFunctionalTest
                 Query::createMatchAll(),
                 self::$appId,
                 self::$index,
-                $token, [], [
+                $token, [], Origin::createEmpty(), [
                     'Referer: '.static::CURL_REFERER,
                 ]
             );
             $this->fail(\sprintf('%s exception expected', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
     }
 
@@ -135,6 +137,7 @@ class BasicSecurityTest extends CurlFunctionalTest
      */
     public function testGoodReferrers(array $referrers)
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -145,12 +148,10 @@ class BasicSecurityTest extends CurlFunctionalTest
             Query::createMatchAll(),
             self::$appId,
             self::$index,
-            $token, [], [
+            $token, [], Origin::createEmpty(), [
                 'Referer: '.static::CURL_REFERER,
             ]
         );
-
-        $this->assertTrue(true);
     }
 
     /**
@@ -172,6 +173,7 @@ class BasicSecurityTest extends CurlFunctionalTest
      */
     public function testRequestsLimit()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -187,7 +189,6 @@ class BasicSecurityTest extends CurlFunctionalTest
             $this->fail(\sprintf('%s should be thrown', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
 
         $newToken = new Token(
@@ -208,7 +209,6 @@ class BasicSecurityTest extends CurlFunctionalTest
             $this->fail(\sprintf('%s should be thrown', InvalidTokenException::class));
         } catch (InvalidTokenException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
     }
 

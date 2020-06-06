@@ -56,7 +56,7 @@ final class ItemsWereDeleted extends DomainEvent
     public function toArrayPayload(): array
     {
         return [
-            'nb_items' => \count($this->itemsUUID)
+            'nb_items' => \count($this->itemsUUID),
         ];
     }
 }

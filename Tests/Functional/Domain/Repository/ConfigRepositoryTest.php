@@ -55,7 +55,7 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
             ->addMetadataValue('key2', 'value2')
         );
 
-        $index = $this->getIndices()[0];
+        $index = $this->getPrincipalIndex();
         $this->assertEquals('value1', $index->getMetadataValue('key1'));
         $this->assertEquals('value2', $index->getMetadataValue('key2'));
 

@@ -17,6 +17,7 @@ namespace Apisearch\Server\Console;
 
 use Apisearch\Command\ExportIndexCommand as BaseExportIndexCommand;
 use Apisearch\Query\Query as QueryModel;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Query\Query;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -76,7 +77,8 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
                 return $this->askAndWait(new Query(
                     $objects['repository_reference'],
                     $objects['token'],
-                    $query
+                    $query,
+                    Origin::createEmpty()
                 ));
             }
         );

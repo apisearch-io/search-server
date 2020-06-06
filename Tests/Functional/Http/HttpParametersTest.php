@@ -27,13 +27,12 @@ class HttpParametersTest extends CurlFunctionalTest
      */
     public function testMandatoryAppId()
     {
+        $this->expectNotToPerformAssertions();
         static::makeCurl(
             'v1_query_all_indices',
             [
                 'app_id' => '1234',
             ]
         );
-
-        $this->assertTrue(true);
     }
 }

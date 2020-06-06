@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\Security\Tests\Functional;
 use Apisearch\Config\Config;
 use Apisearch\Exception\ForbiddenException;
 use Apisearch\Query\Query;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
@@ -58,10 +59,10 @@ class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
             '*',
             null,
             [],
-            [
-                'Origin: http://whatever.com',
-                'REMOTE_ADDR: 1.1.1.1',
-            ]
+            new Origin(
+                'http://whatever.com',
+                '1.1.1.1'
+            )
         );
     }
 

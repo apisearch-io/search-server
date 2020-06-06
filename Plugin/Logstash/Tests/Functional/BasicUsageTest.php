@@ -34,10 +34,10 @@ class BasicUsageTest extends LogstashFunctionalTest
     public function testBasicUsage()
     {
         $redis = static::getStatic('redis.logstash_client_test');
-        usleep(100000);
+        \usleep(100000);
         self::await($redis->del(static::KEY));
         $this->query(Query::createMatchAll());
-        usleep(10000);
+        \usleep(10000);
 
         $this->assertEquals(
             1,
@@ -81,7 +81,7 @@ class BasicUsageTest extends LogstashFunctionalTest
             // Ignoring exception
         }
 
-        usleep(100000);
+        \usleep(100000);
         $body = \json_decode(static::await($redis->lPop(static::KEY)), true);
         $this->assertEquals(400, $body['@fields']['level']);
     }

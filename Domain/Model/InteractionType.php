@@ -13,14 +13,15 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Tests\Functional\Domain\Repository;
-
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+namespace Apisearch\Server\Domain\Model;
 
 /**
- * Class CurlUsageRepositoryTest.
+ * Class Interaction type.
  */
-class CurlUsageRepositoryTest extends CurlFunctionalTest
+class InteractionType
 {
-    use UsageRepositoryTest;
+    /**
+     * @var string
+     */
+    const CLICK = 'cli';
 }

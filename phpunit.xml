@@ -34,6 +34,7 @@
         <env name="DBAL_INDEX_CONFIGS_TABLE" value="index_config" force="true" />
         <env name="DBAL_USAGE_LINES_TABLE" value="usage_lines" force="true" />
         <env name="DBAL_METADATA_TABLE" value="metadata" force="true" />
+        <env name="DBAL_INTERACTIONS_TABLE" value="interactions" force="true" />
     </php>
 
     <testsuites>

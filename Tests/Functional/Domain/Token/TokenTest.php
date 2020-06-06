@@ -59,8 +59,6 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test token without index permissions.
-     *
-     * @expectedException \Apisearch\Exception\InvalidTokenException
      */
     public function testTokenWithoutIndexPermissions()
     {
@@ -71,6 +69,7 @@ abstract class TokenTest extends HttpFunctionalTest
         );
         $this->putToken($token, self::$appId);
 
+        $this->expectException(InvalidTokenException::class);
         $this->query(
             Query::createMatchAll(),
             self::$appId,
@@ -82,7 +81,6 @@ abstract class TokenTest extends HttpFunctionalTest
     /**
      * Test token without endpoint permissions.
      *
-     * @expectedException \Apisearch\Exception\InvalidTokenException
      * @dataProvider dataTokenWithEndpointPermissionsFailing
      */
     public function testTokenWithEndpointPermissionsFailing(array $routes)
@@ -95,6 +93,7 @@ abstract class TokenTest extends HttpFunctionalTest
         $token->setEndpoints($routes);
         $this->putToken($token, self::$appId);
 
+        $this->expectException(InvalidTokenException::class);
         $this->query(
             Query::createMatchAll(),
             self::$appId,
@@ -124,6 +123,7 @@ abstract class TokenTest extends HttpFunctionalTest
      */
     public function testTokenWithEndpointPermissionsAccepted(array $routes)
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)
@@ -138,7 +138,6 @@ abstract class TokenTest extends HttpFunctionalTest
             self::$index,
             $token
         );
-        $this->assertTrue(true);
     }
 
     /**
@@ -158,8 +157,6 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test different app id.
-     *
-     * @expectedException \Apisearch\Exception\InvalidTokenException
      */
     public function testInvalidAppId()
     {
@@ -168,6 +165,7 @@ abstract class TokenTest extends HttpFunctionalTest
             AppUUID::createById(self::$appId)
         );
         $this->putToken($token, self::$appId);
+        $this->expectException(InvalidTokenException::class);
         $this->query(
             Query::createMatchAll(),
             self::$anotherAppId,
@@ -238,6 +236,7 @@ abstract class TokenTest extends HttpFunctionalTest
      */
     public function testUpdateTokenPermissions()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('token-multiquery'),
             AppUUID::createById(static::$appId),
@@ -259,7 +258,6 @@ abstract class TokenTest extends HttpFunctionalTest
         );
         $this->putToken($token);
         $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
-        $this->assertTrue(true);
     }
 
     /**
@@ -267,6 +265,7 @@ abstract class TokenTest extends HttpFunctionalTest
      */
     public function testMultiqueryValidToken()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(
             TokenUUID::createById('token-multiquery'),
             AppUUID::createById(static::$appId),
@@ -287,7 +286,6 @@ abstract class TokenTest extends HttpFunctionalTest
         /*
          * Forcing an assertion. At this point, the test was good.
          */
-        $this->assertTrue(true);
     }
 
     /**
@@ -296,8 +294,6 @@ abstract class TokenTest extends HttpFunctionalTest
      * @param Query $query
      *
      * @dataProvider dataMultiqueryInvalidToken
-     *
-     * @expectedException \Apisearch\Exception\InvalidTokenException
      */
     public function testMultiqueryInvalidToken(Query $query)
     {
@@ -308,6 +304,7 @@ abstract class TokenTest extends HttpFunctionalTest
         );
 
         $this->putToken($token);
+        $this->expectException(InvalidTokenException::class);
         $this->query($query, static::$appId, '*', $token);
     }
 

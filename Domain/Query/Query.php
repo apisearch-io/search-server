@@ -16,10 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Query;
 
 use Apisearch\Model\Token;
-use Apisearch\Query\Query as SearchQuery;
+use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
+use Apisearch\Server\Domain\Model\Origin;
 
 /**
  * Class Query.
@@ -27,44 +28,33 @@ use Apisearch\Server\Domain\IndexRequiredCommand;
 class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequiredCommand
 {
     /**
-     * @var SearchQuery
-     *
-     * Query
+     * @var QueryModel
      */
     private $query;
 
     /**
      * @var array
-     *
-     * Parameters
      */
     private $parameters = [];
 
     /**
-     * @var string
+     * @var Origin
      */
     private $origin;
 
     /**
-     * @var string
-     */
-    private $ip;
-
-    /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param SearchQuery         $query
+     * @param QueryModel          $query
+     * @param Origin              $origin
      * @param array               $parameters
-     * @param string              $origin
-     * @param string              $ip
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        SearchQuery $query,
-        array $parameters = [],
-        string $origin = '',
-        string $ip = ''
+        QueryModel $query,
+        Origin $origin,
+        array $parameters = []
     ) {
         parent::__construct(
             $repositoryReference,
@@ -72,24 +62,19 @@ class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequi
         );
 
         $this->query = $query;
-        $this->parameters = $parameters;
         $this->origin = $origin;
-        $this->ip = $ip;
+        $this->parameters = $parameters;
     }
 
     /**
-     * Get Query.
-     *
-     * @return SearchQuery
+     * @return QueryModel
      */
-    public function getQuery(): SearchQuery
+    public function getQuery(): QueryModel
     {
         return $this->query;
     }
 
     /**
-     * Get parameters.
-     *
      * @return array
      */
     public function getParameters(): array
@@ -98,18 +83,10 @@ class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequi
     }
 
     /**
-     * @return string
+     * @return Origin
      */
-    public function getOrigin(): string
+    public function getOrigin(): Origin
     {
         return $this->origin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIP(): string
-    {
-        return $this->ip;
     }
 }

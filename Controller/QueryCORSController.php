@@ -36,8 +36,7 @@ class QueryCORSController extends ControllerWithQueryBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
-        $origin = $this->getOrigin($request);
-        $ip = $this->getRemoteAddr($request);
+        $origin = $this->createOriginByRequest($request);
 
         return $this
             ->ask(new GetCORSPermissions(
@@ -45,8 +44,7 @@ class QueryCORSController extends ControllerWithQueryBus
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
-                $origin,
-                $ip
+                $origin
             ))
             ->then(function ($origin) {
                 return false === $origin

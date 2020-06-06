@@ -30,6 +30,7 @@ class MalformedQueryTest extends CurlFunctionalTest
      */
     public function testMalformedQuery(string $query)
     {
+        $this->expectNotToPerformAssertions();
         try {
             self::makeCurl(
                 'v1_query',
@@ -43,7 +44,6 @@ class MalformedQueryTest extends CurlFunctionalTest
             $this->fail('InvalidFormatException should be thrown');
         } catch (InvalidFormatException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
     }
 

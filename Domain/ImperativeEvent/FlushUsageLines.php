@@ -15,33 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\ImperativeEvent;
 
-use Apisearch\Model\AppUUID;
-
 /**
  * Class FlushUsageLines.
  */
 final class FlushUsageLines
 {
-    /**
-     * @var AppUUID|null
-     */
-    private $appUUID;
-
-    /**
-     * LoadTokens constructor.
-     *
-     * @param AppUUID $appUUID
-     */
-    public function __construct(AppUUID $appUUID = null)
-    {
-        $this->appUUID = $appUUID;
-    }
-
-    /**
-     * @return AppUUID|null
-     */
-    public function getAppUUID(): ?AppUUID
-    {
-        return $this->appUUID;
-    }
 }

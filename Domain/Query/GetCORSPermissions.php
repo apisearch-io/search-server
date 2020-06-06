@@ -18,6 +18,7 @@ namespace Apisearch\Server\Domain\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReferenceTrait;
 use Apisearch\Server\Domain\IndexRequiredCommand;
+use Apisearch\Server\Domain\Model\Origin;
 
 /**
  * Class GetCORSPermissions.
@@ -27,43 +28,27 @@ class GetCORSPermissions implements IndexRequiredCommand
     use WithRepositoryReferenceTrait;
 
     /**
-     * @var string
+     * @var Origin
      */
     private $origin;
 
     /**
-     * @var string
-     */
-    private $ip;
-
-    /**
      * @param RepositoryReference $repositoryReference
-     * @param string              $origin
-     * @param string              $ip
+     * @param Origin              $origin
      */
     public function __construct(
         RepositoryReference $repositoryReference,
-        string $origin,
-        string $ip
+        Origin $origin
     ) {
         $this->repositoryReference = $repositoryReference;
         $this->origin = $origin;
-        $this->ip = $ip;
     }
 
     /**
-     * @return string
+     * @return Origin
      */
-    public function getOrigin(): string
+    public function getOrigin(): Origin
     {
         return $this->origin;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIP(): string
-    {
-        return $this->ip;
     }
 }

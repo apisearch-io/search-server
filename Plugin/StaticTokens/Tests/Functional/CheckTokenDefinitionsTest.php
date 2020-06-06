@@ -32,6 +32,7 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
      */
     public function testSimpleWorkflow()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('blablabla'), AppUUID::createById(self::$appId));
         $this->query(
             Query::createMatchAll(),
@@ -51,7 +52,6 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
             $this->fail('Non accepted app should throw exception');
         } catch (\Exception $e) {
             // Silence Pass
-            $this->assertTrue(true);
         }
     }
 
@@ -60,6 +60,7 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
      */
     public function testSpecificIndex()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('onlyindex'), AppUUID::createById(self::$appId));
         $this->query(
             Query::createMatchAll(),
@@ -79,7 +80,6 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
             $this->fail('Non accepted index should throw exception');
         } catch (\Exception $e) {
             // Silence Pass
-            $this->assertTrue(true);
         }
     }
 
@@ -88,6 +88,7 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
      */
     public function testSpecificEndpoint()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('onlyaddtoken'), AppUUID::createById(self::$appId));
         $this->query(
             Query::createMatchAll(),
@@ -107,7 +108,6 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
             $this->fail('Non accepted endpoints should throw exception');
         } catch (\Exception $e) {
             // Silence Pass
-            $this->assertTrue(true);
         }
     }
 
@@ -116,6 +116,7 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
      */
     public function testLongTokenIdFormat()
     {
+        $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('bla-bla-blah'), AppUUID::createById(self::$appId));
         $this->query(
             Query::createMatchAll(),
@@ -123,7 +124,6 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
             null,
             $token
         );
-        $this->assertTrue(true);
     }
 
     /**

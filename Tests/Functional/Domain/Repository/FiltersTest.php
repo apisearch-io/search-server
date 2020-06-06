@@ -311,8 +311,6 @@ trait FiltersTest
 
     /**
      * Test exclude filter.
-     *
-     * @group exclude
      */
     public function testExcludeFilter()
     {

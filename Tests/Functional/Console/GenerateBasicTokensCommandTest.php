@@ -31,6 +31,7 @@ trait GenerateBasicTokensCommandTest
      */
     public function testTokenCreation()
     {
+        $this->expectNotToPerformAssertions();
         static::runCommand([
             'command' => 'apisearch-server:create-index',
             'app-id' => self::$appId,
@@ -62,7 +63,6 @@ trait GenerateBasicTokensCommandTest
             $this->fail('Query endpoint should not be accessible with an interactions token');
         } catch (InvalidTokenException $e) {
             // Silent pass
-            $this->assertTrue(true);
         }
     }
 }

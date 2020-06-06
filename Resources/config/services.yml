@@ -76,6 +76,12 @@ services:
     Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository:
         alias: Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository
 
+    Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository:
+    Apisearch\Server\Domain\Repository\InteractionRepository\TemporaryInteractionRepository:
+        alias: Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository
+    Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository:
+        alias: Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository
+
     #
     # Token
     #

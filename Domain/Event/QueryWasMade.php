@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\Event;
 
 use Apisearch\Model\ItemUUID;
 use Apisearch\Model\User;
+use Apisearch\Server\Domain\Model\Origin;
 
 /**
  * Class QueryWasMade.
@@ -25,31 +26,33 @@ final class QueryWasMade extends DomainEvent
 {
     /**
      * @var string
-     *
-     * Query text
      */
     private $queryText;
 
     /**
      * @var int
-     *
-     * Size
      */
     private $size;
 
     /**
      * @var ItemUUID[]
-     *
-     * Items UUID
      */
     private $itemsUUID;
 
     /**
      * @var User|null
-     *
-     * User
      */
     private $user;
+
+    /**
+     * @var array
+     */
+    private $parameters = [];
+
+    /**
+     * @var Origin
+     */
+    private $origin;
 
     /**
      * @var string
@@ -71,6 +74,8 @@ final class QueryWasMade extends DomainEvent
      * @param ItemUUID[] $itemsUUID
      * @param User|null  $user
      * @param string     $querySerialized
+     * @param array      $parameters
+     * @param Origin     $origin
      * @param int        $cost
      */
     public function __construct(
@@ -79,6 +84,8 @@ final class QueryWasMade extends DomainEvent
         array $itemsUUID,
         ? User $user,
         string $querySerialized,
+        Origin $origin,
+        array $parameters = [],
         int $cost = -1
     ) {
         parent::__construct();
@@ -87,6 +94,8 @@ final class QueryWasMade extends DomainEvent
         $this->itemsUUID = $itemsUUID;
         $this->user = $user;
         $this->querySerialized = $querySerialized;
+        $this->parameters = $parameters;
+        $this->origin = $origin;
         $this->cost = $cost;
     }
 
@@ -128,6 +137,24 @@ final class QueryWasMade extends DomainEvent
     public function getQuerySerialized(): string
     {
         return $this->querySerialized;
+    }
+
+    /**
+     * Get parameters.
+     *
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @return Origin
+     */
+    public function getOrigin(): Origin
+    {
+        return $this->origin;
     }
 
     /**

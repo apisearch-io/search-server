@@ -17,6 +17,7 @@ namespace Apisearch\Plugin\Testing\Controller;
 
 use Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository;
 use Apisearch\Server\Domain\Repository\InMemoryRepository;
+use Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository;
 use Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use function React\Promise\all;
@@ -49,21 +50,29 @@ class ResetInMemoryRepositoriesController
     private $tokenRepository;
 
     /**
-     * @param InMemoryRepository         $repository
-     * @param InMemoryUsageRepository    $usageRepository
-     * @param InMemoryMetadataRepository $metadataRepository
-     * @param InMemoryTokenRepository    $tokenRepository
+     * @var InMemoryInteractionRepository
+     */
+    private $inMemoryInteractionRepository;
+
+    /**
+     * @param InMemoryRepository            $repository
+     * @param InMemoryUsageRepository       $usageRepository
+     * @param InMemoryMetadataRepository    $metadataRepository
+     * @param InMemoryTokenRepository       $tokenRepository
+     * @param InMemoryInteractionRepository $inMemoryInteractionRepository
      */
     public function __construct(
         InMemoryRepository $repository,
         InMemoryUsageRepository $usageRepository,
         InMemoryMetadataRepository $metadataRepository,
-        InMemoryTokenRepository $tokenRepository
+        InMemoryTokenRepository $tokenRepository,
+        InMemoryInteractionRepository $inMemoryInteractionRepository
     ) {
         $this->repository = $repository;
         $this->usageRepository = $usageRepository;
         $this->metadataRepository = $metadataRepository;
         $this->tokenRepository = $tokenRepository;
+        $this->inMemoryInteractionRepository = $inMemoryInteractionRepository;
     }
 
     /**
@@ -77,6 +86,7 @@ class ResetInMemoryRepositoriesController
                 $this->usageRepository->reset(),
                 $this->metadataRepository->reset(),
                 $this->tokenRepository->reset(),
+                $this->inMemoryInteractionRepository->reset(),
             ])
             ->then(function () {
                 return new Response();

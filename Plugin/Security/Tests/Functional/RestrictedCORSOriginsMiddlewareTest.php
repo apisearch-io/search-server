@@ -17,6 +17,7 @@ namespace Apisearch\Plugin\Security\Tests\Functional;
 
 use Apisearch\Config\Config;
 use Apisearch\Exception\ForbiddenException;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 
 /**
@@ -44,8 +45,8 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
      */
     public function testNoSecurity()
     {
-        $this->getCORSPermissions('Whatever.com', '0.0.0.0');
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0'));
+        $this->getCORSPermissions(new Origin('Whatever.com'));
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com')));
     }
 
     /**
@@ -57,7 +58,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             'Whatever.com',
         ]));
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0'));
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com')));
     }
 
     /**
@@ -70,7 +71,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         ]));
 
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('Whatever.com', '0.0.0.0');
+        $this->getCORSPermissions(new Origin('Whatever.com'));
     }
 
     /**
@@ -87,7 +88,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         ]), false, static::$appId, static::$anotherIndex);
 
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
+        $this->getCORSPermissions(new Origin('Whatever.com'), static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ]));
@@ -106,7 +107,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             'Whatever.com',
         ]), false, static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com'), static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -127,7 +128,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             'another.net',
         ]), false, static::$appId, static::$anotherIndex);
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com'), static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -143,7 +144,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             'another.io',
         ]));
 
-        $this->assertEquals('Whatever.com', $this->getCORSPermissions('Whatever.com', '0.0.0.0', static::$appId, \implode(',', [
+        $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com'), static::$appId, \implode(',', [
             static::$index,
             static::$anotherIndex,
         ])));
@@ -173,7 +174,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
 
         $this->assertEquals(
             $origin,
-            $this->getCORSPermissions($origin, '0.0.0.0')
+            $this->getCORSPermissions(new Origin($origin))
         );
     }
 
@@ -225,7 +226,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         }
 
         $this->assertEquals(
-            $origin, $this->getCORSPermissions($origin, '0.0.0.0', static::$appId, '*')
+            $origin, $this->getCORSPermissions(new Origin($origin), static::$appId, '*')
         );
     }
 
@@ -262,7 +263,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
         ]));
 
         $this->expectNotToPerformAssertions();
-        $this->getCORSPermissions('localhost', '0.0.0.0');
+        $this->getCORSPermissions(new Origin('localhost'));
     }
 
     /**
@@ -276,11 +277,11 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             '5.6.7.8',
         ]));
 
-        $this->getCORSPermissions('localhost', '0.2.3.4');
-        $this->getCORSPermissions('localhost', '0.0.0.0');
-        $this->getCORSPermissions('localhost', '5.5.6.7');
+        $this->getCORSPermissions(new Origin('localhost', '0.2.3.4'));
+        $this->getCORSPermissions(new Origin('localhost', '0.0.0.0'));
+        $this->getCORSPermissions(new Origin('localhost', '5.5.6.7'));
         $this->expectException(ForbiddenException::class);
-        $this->getCORSPermissions('localhost', '1.2.3.4');
+        $this->getCORSPermissions(new Origin('localhost', '1.2.3.4'));
     }
 
     /**
@@ -308,7 +309,7 @@ class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
             $this->expectNotToPerformAssertions();
         }
 
-        $this->getCORSPermissions('http://whatever.com', '1.1.1.1', static::$appId, '*');
+        $this->getCORSPermissions(new Origin('http://whatever.com', '1.1.1.1'), static::$appId, '*');
     }
 
     /**
