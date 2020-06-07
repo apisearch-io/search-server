@@ -18,7 +18,7 @@ namespace Apisearch\Server\Domain\Repository\UsageRepository;
 /**
  * Interface TemporaryUsageRepository.
  */
-interface TemporaryUsageRepository
+interface TemporaryUsageRepository extends UsageRepository
 {
     /**
      * Get stored useLines and reset.

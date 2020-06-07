@@ -17,7 +17,6 @@ namespace Apisearch\Plugin\Logstash\Tests\Functional;
 
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
-use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
  * Class LogstashFunctionalTest.

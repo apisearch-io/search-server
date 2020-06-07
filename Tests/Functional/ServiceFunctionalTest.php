@@ -27,7 +27,6 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
-use Apisearch\Server\Domain\Command\AddInteraction;
 use Apisearch\Server\Domain\Command\CleanEnvironment;
 use Apisearch\Server\Domain\Command\ConfigureEnvironment;
 use Apisearch\Server\Domain\Command\ConfigureIndex;
@@ -38,20 +37,25 @@ use Apisearch\Server\Domain\Command\DeleteItemsByQuery;
 use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Command\IndexItems;
+use Apisearch\Server\Domain\Command\PostClick;
 use Apisearch\Server\Domain\Command\PutToken;
 use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
+use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
 use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
+use Apisearch\Server\Domain\Model\InteractionType;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Apisearch\Server\Domain\Query\CheckIndex;
 use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
+use Apisearch\Server\Domain\Query\GetInteractions;
 use Apisearch\Server\Domain\Query\GetTokens;
+use Apisearch\Server\Domain\Query\GetTopInteractions;
 use Apisearch\Server\Domain\Query\GetUsage;
 use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
-use Apisearch\User\Interaction;
 use Clue\React\Block;
 use DateTime;
 use React\Promise\Deferred;
@@ -69,6 +73,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string     $index
      * @param Token      $token
      * @param array      $parameters
+     * @param Origin     $origin
      *
      * @return Result
      */
@@ -77,7 +82,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $index = null,
         Token $token = null,
-        array $parameters = []
+        array $parameters = [],
+        Origin $origin = null
     ): Result {
         $appUUID = AppUUID::createById($appId ?? self::$appId);
 
@@ -92,6 +98,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                         $appUUID
                     ),
                 $query,
+                $origin ?? Origin::createEmpty(),
                 $parameters
             ));
     }
@@ -99,16 +106,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Preflight CORS query.
      *
-     * @param string $origin
-     * @param string $ip
+     * @param Origin $origin
      * @param string $appId
      * @param string $index
      *
      * @return string
      */
     public function getCORSPermissions(
-        string $origin,
-        string $ip,
+        Origin $origin,
         string $appId = null,
         string $index = null
     ): string {
@@ -117,8 +122,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
 
         return self::askQuery(new GetCORSPermissions(
             RepositoryReference::create($appUUID, $indexUUID),
-            $origin,
-            $ip
+            $origin
         ));
     }
 
@@ -597,27 +601,126 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Add interaction.
-     *
-     * @param Interaction $interaction
-     * @param string      $appId
-     * @param Token       $token
+     * @param string $userId
+     * @param string $itemId
+     * @param Origin $origin
+     * @param string $appId
+     * @param string $indexId
+     * @param Token  $token
      */
-    public function addInteraction(
-        Interaction $interaction,
+    public function click(
+        string $userId,
+        string $itemId,
+        Origin $origin,
         string $appId = null,
+        string $indexId = null,
         Token $token = null
     ) {
-        $appUUID = AppUUID::createById($appId ?? self::$appId);
+        $appId = $appId ?? self::$appId;
+        $indexId = $indexId ?? self::$index;
 
-        self::executeCommand(new AddInteraction(
-            RepositoryReference::create($appUUID),
+        self::executeCommand(new PostClick(
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
             $token ??
-                new Token(
-                    TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
-                    $appUUID
-                ),
-            $interaction
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $userId,
+            ItemUUID::createByComposedUUID($itemId),
+            $origin
+        ));
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string|null   $itemId
+     * @param string|null   $type
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getInteractions(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        ?string $itemId = null,
+        ?string $type = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $appId = $appId ?? self::$appId;
+        $indexId = $indexId ?? '';
+        $this->dispatchImperative(new FlushInteractions());
+        self::usleep(200000);
+
+        return self::askQuery(new GetInteractions(
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $from,
+            $to,
+            $perDay,
+            $platform,
+            $userId,
+            $itemId,
+            $type
+        ));
+    }
+
+    /**
+     * @param int|null $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getTopClicks(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    )
+    {
+        $appId = $appId ?? self::$appId;
+        $indexId = $indexId ?? '';
+        $this->dispatchImperative(new FlushInteractions());
+        self::usleep(200000);
+
+        return self::askQuery(new GetTopInteractions(
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $from,
+            $to,
+            $platform,
+            $userId,
+            InteractionType::CLICK,
+            $n
         ));
     }
 

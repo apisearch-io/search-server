@@ -18,6 +18,7 @@ namespace Apisearch\Server\Controller;
 use Drift\CommandBus\Bus\QueryBus;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Request;
+use DateTime;
 
 /**
  * Class ControllerWithQueryBus.
@@ -54,26 +55,20 @@ abstract class ControllerWithQueryBus extends BaseController
     }
 
     /**
+     * Get from-to range from request
+     *
      * @param Request $request
      *
-     * @return string
+     * @return [DateTime|null, DateTime|null]
      */
-    protected function getOrigin(Request $request): string
+    protected function getDateRangeFromRequest(Request $request) : array
     {
-        $headers = $request->headers;
+        $query = $request->query;
+        $from = $query->get('from');
+        $from = $from ? DateTime::createFromFormat('Ymd', $from) : (new DateTime('first day of this month'))->setTime(0, 0, 0);
+        $to = $query->get('to');
+        $to = $to ? DateTime::createFromFormat('Ymd', $to) : null;
 
-        return $headers->get('Origin', '');
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return string
-     */
-    protected function getRemoteAddr(Request $request): string
-    {
-        $headers = $request->headers;
-
-        return $headers->get('HTTP_X_FORWARDED_FOR', $headers->get('REMOTE_ADDR', $headers->get('HTTP_CLIENT_IP', '')));
+        return [$from, $to];
     }
 }

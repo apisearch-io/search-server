@@ -89,9 +89,8 @@ final class TokenQueryMiddleware implements DiscriminableMiddleware
             $query->getRepositoryReference(),
             $token,
             QueryModel::createFromArray($queryAsArray),
-            $query->getParameters(),
             $query->getOrigin(),
-            $query->getIP()
+            $query->getParameters()
         );
 
         return $next($query);

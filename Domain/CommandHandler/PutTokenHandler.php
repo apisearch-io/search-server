@@ -26,16 +26,14 @@ use React\Promise\PromiseInterface;
 class PutTokenHandler extends WithAppRepositoryAndEventPublisher
 {
     /**
-     * Add token.
-     *
-     * @param PutToken $addToken
+     * @param PutToken $putToken
      *
      * @return PromiseInterface
      */
-    public function handle(PutToken $addToken): PromiseInterface
+    public function handle(PutToken $putToken): PromiseInterface
     {
-        $repositoryReference = $addToken->getRepositoryReference();
-        $token = $addToken->getNewToken();
+        $repositoryReference = $putToken->getRepositoryReference();
+        $token = $putToken->getNewToken();
 
         return $this
             ->appRepository

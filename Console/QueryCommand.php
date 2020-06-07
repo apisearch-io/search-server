@@ -17,6 +17,7 @@ namespace Apisearch\Server\Console;
 
 use Apisearch\Command\QueryCommand as BaseQueryCommand;
 use Apisearch\Query\Query as ModelQuery;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Query\Query;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -100,6 +101,7 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
                     $objects['repository_reference'],
                     $objects['token'],
                     $query,
+                    Origin::createEmpty(),
                     $parameters
                 ));
             }

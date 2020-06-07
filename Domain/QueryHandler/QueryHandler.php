@@ -60,6 +60,8 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                             }, $result->getItems()),
                             $searchQuery->getUser(),
                             \json_encode($query->getQuery()->toArray()),
+                            $query->getOrigin(),
+                            $query->getParameters(),
                             (int) ((\microtime(true) - $from) * 1000)
                         ))
                             ->withRepositoryReference($repositoryReference)

@@ -36,7 +36,7 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
     private $temporaryUsageRepository;
 
     /**
-     * @var UsageRepository
+     * @var DBALUsageRepository
      */
     private $persistentUsageRepository;
 
@@ -47,13 +47,13 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
 
     /**
      * @param TemporaryUsageRepository $temporaryUsageRepository
-     * @param UsageRepository          $persistentUsageRepository
+     * @param DBALUsageRepository      $persistentUsageRepository
      * @param LoopInterface            $loop
      * @param int                      $loopPushInterval
      */
     public function __construct(
         TemporaryUsageRepository $temporaryUsageRepository,
-        UsageRepository $persistentUsageRepository,
+        DBALUsageRepository $persistentUsageRepository,
         LoopInterface $loop,
         int $loopPushInterval
     ) {
@@ -115,7 +115,7 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
             ->getAndResetUseLines();
 
         $this->loop->futureTick(function () use ($useLines) {
-            return Queue::all(1, $useLines, function ($useLine) {
+            return Queue::all(5, $useLines, function ($useLine) {
                 return $this
                     ->persistentUsageRepository
                     ->registerEvent(

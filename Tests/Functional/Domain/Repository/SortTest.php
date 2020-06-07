@@ -110,6 +110,7 @@ trait SortTest
      */
     public function testRandomSort()
     {
+        $this->expectNotToPerformAssertions();
         $iterations = 10;
         $id = $this->generateFirstResultRandomSort();
         $sameIdTimes = 0;
@@ -122,8 +123,6 @@ trait SortTest
         if ($sameIdTimes === $iterations) {
             $this->fail('Random sort is not working...');
         }
-
-        $this->assertTrue(true);
     }
 
     /**

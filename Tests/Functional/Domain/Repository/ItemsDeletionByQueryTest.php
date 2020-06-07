@@ -58,8 +58,6 @@ trait ItemsDeletionByQueryTest
 
     /**
      * Test item deletion with EXCLUDE filter.
-     *
-     * @group lala
      */
     public function testItemDeletionByExclude()
     {

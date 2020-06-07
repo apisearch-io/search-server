@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\Security\Domain\Middleware;
 use Apisearch\Config\Config;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Security\Domain\OriginMatcherTrait;
+use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
 use Closure;
 use React\Promise\PromiseInterface;
@@ -50,8 +51,12 @@ abstract class RestrictedOriginsMiddleware
      */
     public function execute($command, $next): PromiseInterface
     {
+        /**
+         * @var GetCORSPermissions
+         */
         $origin = $command->getOrigin();
-        $ip = $command->getIP();
+        $ip = $origin->getIp();
+        $host = $origin->getHost();
 
         if (
             empty($origin) &&
@@ -79,7 +84,7 @@ abstract class RestrictedOriginsMiddleware
                     $metadata = $config->getMetadata();
                     $allowedDomains = $metadata['allowed_domains'] ?? [];
                     $isPartialAllowed = $this->originIsAllowed(
-                        $origin,
+                        $host,
                         $allowedDomains
                     );
 
@@ -98,7 +103,7 @@ abstract class RestrictedOriginsMiddleware
             $command,
             $next,
             $isAllowed,
-            $origin
+            $host
         );
     }
 

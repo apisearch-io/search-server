@@ -36,10 +36,7 @@ class GetUsageController extends ControllerWithQueryBus
     {
         $query = $request->query;
         $perDay = $request->attributes->get('per_day', false);
-        $from = $query->get('from');
-        $from = $from ? DateTime::createFromFormat('Ymd', $from) : new DateTime('first day of this month');
-        $to = $query->get('to');
-        $to = $to ? DateTime::createFromFormat('Ymd', $to) : null;
+        list($from, $to) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetUsage(

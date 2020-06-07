@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Admin\Domain;
 
+use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
 use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
 use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
 use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
@@ -33,5 +34,6 @@ class ImperativeEvents
         'load_tokens' => LoadTokens::class,
         'load_metadata' => LoadMetadata::class,
         'flush_usage_lines' => FlushUsageLines::class,
+        'flush_interactions' => FlushInteractions::class,
     ];
 }

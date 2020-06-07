@@ -28,6 +28,7 @@ class NotFoundTest extends CurlFunctionalTest
      */
     public function testNotFoundResponse()
     {
+        $this->expectNotToPerformAssertions();
         try {
             static::makeCurl(
                 'v2', [], null
@@ -35,7 +36,6 @@ class NotFoundTest extends CurlFunctionalTest
 
             $this->fail('Route v2 should throw exception');
         } catch (TransportableException $exception) {
-            $this->assertTrue(true);
         }
     }
 }

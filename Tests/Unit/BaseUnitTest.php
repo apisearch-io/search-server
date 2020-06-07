@@ -18,6 +18,7 @@ namespace Apisearch\Server\Tests\Unit;
 use Exception;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
+use function Drift\React\sleep as async_sleep;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
@@ -29,8 +30,6 @@ use React\Promise\PromiseInterface;
 abstract class BaseUnitTest extends TestCase
 {
     /**
-     * Await.
-     *
      * @param PromiseInterface $promise
      * @param LoopInterface    $loop
      *
@@ -48,8 +47,6 @@ abstract class BaseUnitTest extends TestCase
     }
 
     /**
-     * Await all.
-     *
      * @param PromiseInterface[] $promises
      * @param LoopInterface      $loop
      *
@@ -64,5 +61,19 @@ abstract class BaseUnitTest extends TestCase
         $loop = $loop ?? Factory::create();
 
         return awaitAll($promises, $loop);
+    }
+
+    /**
+     * @param int           $seconds
+     * @param LoopInterface $loop
+     */
+    protected function sleep(
+        int $seconds,
+        LoopInterface $loop
+    ) {
+        $this->await(
+            async_sleep($seconds, $loop),
+            $loop
+        );
     }
 }

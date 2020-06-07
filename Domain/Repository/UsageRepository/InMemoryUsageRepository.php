@@ -26,7 +26,7 @@ use React\Promise\PromiseInterface;
 /**
  * Class InMemoryUsageRepository.
  */
-class InMemoryUsageRepository implements UsageRepository, TemporaryUsageRepository, ResetableRepository
+class InMemoryUsageRepository implements TemporaryUsageRepository, ResetableRepository
 {
     /**
      * @var array

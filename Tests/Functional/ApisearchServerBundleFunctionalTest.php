@@ -29,8 +29,8 @@ use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\ApisearchPluginsBundle;
 use Apisearch\Server\ApisearchServerBundle;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Exception\ErrorException;
-use Apisearch\User\Interaction;
 use DateTime;
 use Drift\CommandBus\CommandBusBundle;
 use Drift\EventBus\EventBusBundle;
@@ -448,6 +448,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string     $index
      * @param Token      $token
      * @param array      $parameters
+     * @param Origin     $origin
      *
      * @return Result
      */
@@ -456,22 +457,21 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         string $appId = null,
         string $index = null,
         Token $token = null,
-        array $parameters = []
+        array $parameters = [],
+        Origin $origin = null
     ): Result;
 
     /**
      * Preflight CORS query.
      *
-     * @param string $origin
-     * @param string $ip
+     * @param Origin $origin
      * @param string $appId
      * @param string $index
      *
      * @return string
      */
     abstract public function getCORSPermissions(
-        string $origin,
-        string $ip,
+        Origin $origin,
         string $appId = null,
         string $index = null
     ): string;
@@ -760,15 +760,69 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     ): array;
 
     /**
-     * Add interaction.
-     *
-     * @param Interaction $interaction
-     * @param string      $appId
-     * @param Token       $token
+     * @param string $userId
+     * @param string $itemId
+     * @param Origin $origin
+     * @param string $appId
+     * @param string $indexId
+     * @param Token  $token
      */
-    abstract public function addInteraction(
-        Interaction $interaction,
+    abstract public function click(
+        string $userId,
+        string $itemId,
+        Origin $origin,
         string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    );
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string|null   $itemId
+     * @param string|null   $type
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    abstract public function getInteractions(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        ?string $itemId = null,
+        ?string $type = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    );
+
+    /**
+     * @param int|null $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    abstract public function getTopClicks(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
         Token $token = null
     );
 

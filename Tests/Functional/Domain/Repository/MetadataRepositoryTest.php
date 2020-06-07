@@ -26,6 +26,7 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
@@ -100,11 +101,11 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
         $loop1 = $newKernel1->getContainer()->get('reactphp.event_loop');
 
         $repositoryReference = RepositoryReference::createFromComposed('app1_index1');
-        $gotToken = new Token(TokenUUID::createById(self::$godToken), AppUUID::createById('app1'));
+        $godToken = new Token(TokenUUID::createById(self::$godToken), AppUUID::createById('app1'));
 
         $createIndex = new CreateIndex(
             $repositoryReference,
-            $gotToken,
+            $godToken,
             IndexUUID::createById('index1'),
             Config::createEmpty()
         );
@@ -122,9 +123,9 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
             ],
         ]);
 
-        static::await($commandBus1->execute(new IndexItems($repositoryReference, $gotToken, [$item])), $loop1);
+        static::await($commandBus1->execute(new IndexItems($repositoryReference, $godToken, [$item])), $loop1);
 
-        $result = static::await($queryBus1->ask(new Query($repositoryReference, $gotToken, QueryModel::createMatchAll())), $loop1);
+        $result = static::await($queryBus1->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty())), $loop1);
         $this->assertEquals([
             'id' => 1,
             'name' => 'cat1',
@@ -139,7 +140,7 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
         $queryBus2 = $newKernel2->getContainer()->get('drift.query_bus.test');
         $loop2 = $newKernel2->getContainer()->get('reactphp.event_loop');
 
-        $result = static::await($queryBus2->ask(new Query($repositoryReference, $gotToken, QueryModel::createMatchAll())), $loop2);
+        $result = static::await($queryBus2->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty())), $loop2);
         $this->assertEquals([
             'id' => 1,
             'name' => 'cat1',

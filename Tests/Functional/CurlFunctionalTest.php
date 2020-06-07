@@ -28,6 +28,7 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\User\Interaction;
 use DateTime;
 use Symfony\Component\Routing\Route;
@@ -62,6 +63,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string     $index
      * @param Token      $token
      * @param array      $parameters
+     * @param Origin     $origin
      * @param array      $headers
      *
      * @return Result
@@ -72,11 +74,17 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $index = null,
         Token $token = null,
         array $parameters = [],
+        Origin $origin = null,
         array $headers = []
     ): Result {
+        $origin = $origin ?? Origin::createEmpty();
         $route = '' === $index
             ? 'v1_query_all_indices'
             : 'v1_query';
+
+        $headers[] = 'Origin: '. $origin->getHost();
+        $headers[] = 'REMOTE_ADDR: '. $origin->getIp();
+        $headers[] = 'User-Agent: '. $origin->getPlatform();
 
         $response = self::makeCurl(
             $route,
@@ -106,11 +114,16 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return string
      */
     public function getCORSPermissions(
-        string $origin,
-        string $ip,
+        Origin $origin,
         string $appId = null,
         string $index = null
     ): string {
+        $headers = [
+            'Origin: '. $origin->getHost(),
+            'REMOTE_ADDR: '. $origin->getIp(),
+            'User-Agent: '. $origin->getPlatform()
+        ];
+
         if ('*' === $index) {
             $response = self::makeCurl(
                 'v1_query_all_indices_preflight',
@@ -118,10 +131,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                     'app_id' => $appId ?? static::$appId,
                 ],
                 null, [], [],
-                [
-                    'Origin:'.$origin,
-                    'REMOTE_ADDR:'.$ip,
-                ]
+                $headers
             );
         } else {
             $response = self::makeCurl(
@@ -131,10 +141,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                     'index_id' => $index ?? static::$index,
                 ],
                 null, [], [],
-                [
-                    'Origin:'.$origin,
-                    'REMOTE_ADDR:'.$ip,
-                ]
+                $headers
             );
         }
 
@@ -592,23 +599,156 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add interaction.
      *
-     * @param Interaction $interaction
-     * @param string      $appId
-     * @param Token       $token
+     * @param string $userId
+     * @param string $itemId
+     * @param Origin $origin
+     * @param string $appId
+     * @param string $indexId
+     * @param Token  $token
      */
-    public function addInteraction(
-        Interaction $interaction,
+    public function click(
+        string $userId,
+        string $itemId,
+        Origin $origin,
         string $appId = null,
+        string $indexId = null,
         Token $token = null
     ) {
-        self::$lastResponse = self::makeCurl(
-            'v1_post_interaction',
-            [
-                'app_id' => $appId ?? static::$appId,
-            ],
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId ?? static::$index,
+            'item_id' => $itemId,
+        ];
+
+        self::makeCurl(
+            'v1_post_click',
+            $routeParameters,
             $token,
-            $interaction->toArray()
+            [],
+            [
+                'user_id' => $userId,
+            ],
+            [
+                'Origin:'.$origin->getHost(),
+                'Remote_Addr:'.$origin->getIp(),
+                'User_Agent:'.(Origin::PHONE == $origin->getPlatform()
+                    ? 'Mozilla/5.0 (Linux; Android 6.0.1; RedMi Note 5 Build/RB3N5C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.91 Mobile Safari/537.36'
+                    : (
+                        Origin::TABLET == $origin->getPlatform()
+                        ? 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+                        : 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
+                    )
+                ),
+            ]
         );
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string|null   $itemId
+     * @param string|null   $type
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getInteractions(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        ?string $itemId = null,
+        ?string $type = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($indexId)
+            ? ((false === $perDay)
+                ? 'v1_get_interactions_all_indices'
+                : 'v1_get_interactions_all_indices_per_day')
+            : ((false === $perDay)
+                ? 'v1_get_interactions'
+                : 'v1_get_interactions_per_day');
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'platform' => $platform,
+                'item_id' => $itemId,
+                'type' => $type,
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
+     * @param int|null $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getTopClicks(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    )
+    {
+        $routeName = \is_null($indexId)
+            ? 'v1_get_top_clicks_all_indices'
+            : 'v1_get_top_clicks';
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'platform' => $platform,
+                'n' => $n
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
     }
 
     /**

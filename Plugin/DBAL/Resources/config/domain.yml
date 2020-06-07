@@ -7,6 +7,7 @@ services:
             string $configsTable: "%apisearch_plugin.dbal.index_configs_table%"
             string $usageLinesTable: "%apisearch_plugin.dbal.usage_lines_table%"
             string $metadataTable: "%apisearch_plugin.dbal.metadata_table%"
+            string $interactionsTable: "%apisearch_plugin.dbal.interactions_table%"
             bool $locatorEnabled: "%apisearch_plugin.dbal.locator_enabled%"
             int $loopPushInterval: "%apisearch_plugin.dbal.loop_push_interval%"
             $persistentUsageRepository: '@Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository'
@@ -52,3 +53,11 @@ services:
     Apisearch\Plugin\DBAL\Domain\MetadataRepository\DBALMetadataRepository:
     Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository:
         alias: Apisearch\Plugin\DBAL\Domain\MetadataRepository\DBALMetadataRepository
+
+    #
+    # Interaction Repository
+    #
+    Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository:
+    Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository:
+    Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository

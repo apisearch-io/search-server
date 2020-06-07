@@ -29,8 +29,10 @@ use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\Repository;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\User\Interaction;
 use Apisearch\User\UserRepository;
+use DateTime;
 use Exception;
 
 /**
@@ -46,6 +48,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string     $index
      * @param Token      $token
      * @param array      $parameters
+     * @param Origin     $origin
      *
      * @return Result
      */
@@ -54,7 +57,8 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $index = null,
         Token $token = null,
-        array $parameters = []
+        array $parameters = [],
+        Origin $origin = null
     ): Result {
         return self::configureRepository($appId, $index, $token)
             ->query($query, $parameters);
@@ -63,16 +67,14 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Preflight CORS query.
      *
-     * @param string $origin
-     * @param string $ip
+     * @param Origin $origin
      * @param string $appId
      * @param string $index
      *
      * @return string
      */
     public function getCORSPermissions(
-        string $origin,
-        string $ip,
+        Origin $origin,
         string $appId = null,
         string $index = null
     ): string {
@@ -363,6 +365,82 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         Token $token = null
     ): array {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
+     * Add interaction.
+     *
+     * @param string $userId
+     * @param string $itemId
+     * @param Origin $origin
+     * @param string $appId
+     * @param string $indexId
+     * @param Token  $token
+     */
+    public function click(
+        string $userId,
+        string $itemId,
+        Origin $origin,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string|null   $itemId
+     * @param string|null   $type
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getInteractions(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        ?string $itemId = null,
+        ?string $type = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
+     * @param int|null $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getTopClicks(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    )
+    {
         throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
     }
 

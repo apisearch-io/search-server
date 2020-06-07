@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
-use Apisearch\Server\Tests\Functional\Domain\Repository\ServiceUsageRepositoryTest;
+use Apisearch\Server\Tests\Functional\Domain\Repository\UsageRepository\ServiceUsageRepositoryTest;
 
 /**
  * Class DBALUsageRepositoryTest.

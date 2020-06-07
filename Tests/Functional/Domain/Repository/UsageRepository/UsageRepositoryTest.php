@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Tests\Functional\Domain\Repository;
+namespace Apisearch\Server\Tests\Functional\Domain\Repository\UsageRepository;
 
 use Apisearch\Query\Query;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;

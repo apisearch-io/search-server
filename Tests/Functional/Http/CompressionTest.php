@@ -35,7 +35,7 @@ class CompressionTest extends CurlFunctionalTest
         $this->assertEquals($length1, $length2);
         $result = $this->query(
             Query::createMatchAll(),
-            null, null, null, [], [
+            null, null, null, [], null, [
                 'Accept-Encoding: gzip',
             ]
         );
@@ -53,7 +53,7 @@ class CompressionTest extends CurlFunctionalTest
         $length1 = self::$lastResponse['length'];
         $result = $this->query(
             Query::createMatchAll(),
-            null, null, null, [], [
+            null, null, null, [], null, [
                 'Accept-Encoding: deflate',
             ]
         );

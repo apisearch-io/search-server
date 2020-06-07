@@ -175,10 +175,55 @@ apisearch_v1_query_all_indices_preflight:
 #
 # Interaction API
 #
-apisearch_v1_post_interaction:
-    path: /v1/{app_id}/interactions
+apisearch_v1_post_click:
+    path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click
     methods: ["POST"]
-    controller: Apisearch\Server\Controller\AddInteractionController
+    controller: Apisearch\Server\Controller\PostClickController
+
+apisearch_v1_get_interactions:
+    path: /v1/{app_id}/indices/{index_id}/interactions
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetInteractionsController
+    defaults:
+        per_day: false
+
+apisearch_v1_get_interactions_all_indices:
+    path: /v1/{app_id}/interactions
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetInteractionsController
+    defaults:
+        index_id: "*"
+        per_day: false
+
+apisearch_v1_get_interactions_per_day:
+    path: /v1/{app_id}/indices/{index_id}/interactions/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetInteractionsController
+    defaults:
+        per_day: true
+
+apisearch_v1_get_interactions_all_indices_per_day:
+    path: /v1/{app_id}/interactions/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetInteractionsController
+    defaults:
+        index_id: "*"
+        per_day: true
+
+#
+# Metrics API
+#
+apisearch_v1_get_top_clicks:
+    path: /v1/{app_id}/indices/{index_id}/top-clicks
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetTopInteractionsController
+
+apisearch_v1_get_top_clicks_all_indices:
+    path: /v1/{app_id}/top-clicks
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetTopInteractionsController
+    defaults:
+        index_id: "*"
 
 #
 # Server API

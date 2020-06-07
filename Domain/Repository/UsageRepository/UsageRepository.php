@@ -25,8 +25,6 @@ use React\Promise\PromiseInterface;
 interface UsageRepository
 {
     /**
-     * Register event.
-     *
      * @param RepositoryReference $repositoryReference
      * @param string              $eventName
      * @param DateTime            $when
@@ -42,8 +40,6 @@ interface UsageRepository
     ): PromiseInterface;
 
     /**
-     * Get registered events.
-     *
      * @param RepositoryReference $repositoryReference
      * @param string|null         $eventType
      * @param DateTime            $from
