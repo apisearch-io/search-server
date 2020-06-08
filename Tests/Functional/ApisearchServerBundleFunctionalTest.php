@@ -804,7 +804,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
-     * @param int|null $n
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $userId
@@ -821,6 +821,56 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?DateTime $to = null,
         ?string $userId = null,
         ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    );
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    abstract public function getSearches(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    );
+
+    /**
+     * @param int|null
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $platform
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     */
+    abstract public function getTopSearches(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $platform = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
         string $appId = null,
         string $indexId = null,
         Token $token = null

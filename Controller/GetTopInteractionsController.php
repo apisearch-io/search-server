@@ -1,5 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Apisearch Server
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Feel free to edit as you please, and have fun.
+ *
+ * @author Marc Morera <yuhu@mmoreram.com>
+ */
+
+declare(strict_types=1);
 
 namespace Apisearch\Server\Controller;
 
@@ -9,10 +21,9 @@ use Apisearch\Server\Domain\Query\GetTopInteractions;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use DateTime;
 
 /**
- * Class GetTopInteractionsController
+ * Class GetTopInteractionsController.
  */
 class GetTopInteractionsController extends ControllerWithQueryBus
 {
@@ -38,7 +49,7 @@ class GetTopInteractionsController extends ControllerWithQueryBus
                 $query->get('platform', null),
                 $query->get('user_id', null),
                 InteractionType::CLICK,
-                $query->get('n', 10)
+                \intval($query->get('n', 10))
             ))
             ->then(function ($interactions) use ($request) {
                 return new JsonResponse(

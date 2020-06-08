@@ -84,6 +84,8 @@ final class InteractionFilter
 
     /**
      * @param bool $perDay
+     *
+     * @return self
      */
     public function perDay(bool $perDay = true): self
     {

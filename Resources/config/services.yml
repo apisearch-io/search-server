@@ -82,6 +82,13 @@ services:
     Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository:
         alias: Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository
 
+    Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository:
+    Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository:
+    Apisearch\Server\Domain\Repository\SearchesRepository\TemporarySearchesRepository:
+        alias: Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository
+    Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository:
+        alias: Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository
+
     #
     # Token
     #

@@ -166,7 +166,7 @@ trait InteractionRepositoryTest
     }
 
     /**
-     * Test get top clicks
+     * Test get top clicks.
      */
     public function testGetTopClicks()
     {
@@ -174,25 +174,25 @@ trait InteractionRepositoryTest
             '1~it' => 16,
             '2~it' => 9,
             '3~it' => 6,
-            '4~it' => 2
+            '4~it' => 2,
         ], $this->getTopClicks());
 
         $this->assertEquals([
             '1~it' => 16,
-            '2~it' => 9
+            '2~it' => 9,
         ], $this->getTopClicks(2));
 
         $this->assertEquals([
             '1~it' => 6,
             '2~it' => 1,
             '3~it' => 4,
-            '4~it' => 2
+            '4~it' => 2,
         ], $this->getTopClicks(null, null, null, 'u1'));
 
         $this->assertEquals([
             '1~it' => 11,
             '2~it' => 3,
-            '3~it' => 4
+            '3~it' => 4,
         ], $this->getTopClicks(null, null, null, null, origin::PHONE));
 
         $this->assertEquals([

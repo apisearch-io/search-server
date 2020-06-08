@@ -20,11 +20,13 @@ use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DateTime;
+use DateTimeZone;
 
 /**
- * Class UsagePusher.
+ * Class UsageRegister.
  */
-class UsagePusher implements EventSubscriberInterface
+class UsageRegister implements EventSubscriberInterface
 {
     /**
      * @var UsageRepository
@@ -73,7 +75,7 @@ class UsagePusher implements EventSubscriberInterface
          * @var DomainEvent
          */
         $event = $domainEventEnvelope->getDomainEvent();
-        $today = new \DateTime();
+        $today = new DateTime('now',  new DateTimeZone('UTC'));
         $today->setTime(0, 0, 0);
 
         $this

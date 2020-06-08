@@ -105,45 +105,44 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
     }
 
     /**
-     * @param  InteractionFilter $filter
-     * @param int $n
+     * @param InteractionFilter $filter
+     * @param int               $n
      *
      * @return PromiseInterface
      */
     public function getTopInteractedItems(
         InteractionFilter $filter,
         int $n
-    ): PromiseInterface
-    {
+    ): PromiseInterface {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         if (!$appUUID instanceof AppUUID) {
             return resolve(0);
         }
 
-        $interactions = array_filter($this->interactions, function(Interaction $interaction) use ($filter) {
+        $interactions = \array_filter($this->interactions, function (Interaction $interaction) use ($filter) {
             return $this->interactionIsValidFromFilter($interaction, $filter);
         });
 
         $itemsMap = [];
         foreach ($interactions as $interaction) {
             $itemUUID = $interaction->getItemUUID();
-            if (!array_key_exists($interaction->getItemUUID(), $itemsMap)) {
+            if (!\array_key_exists($interaction->getItemUUID(), $itemsMap)) {
                 $itemsMap[$itemUUID] = 1;
             } else {
-                $itemsMap[$itemUUID]++;
+                ++$itemsMap[$itemUUID];
             }
         }
 
-        arsort($itemsMap);
+        \arsort($itemsMap);
 
-        return resolve(array_slice($itemsMap, 0, $n));
+        return resolve(\array_slice($itemsMap, 0, $n));
     }
 
     /**
-     * Interaction is valid given a filter
+     * Interaction is valid given a filter.
      *
-     * @param Interaction $interaction
+     * @param Interaction       $interaction
      * @param InteractionFilter $filter
      *
      * @return bool
@@ -151,8 +150,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
     private function interactionIsValidFromFilter(
         Interaction $interaction,
         InteractionFilter $filter
-    ) : bool
-    {
+    ): bool {
         $whenFormatted = $interaction->getWhen()->format('Ymd');
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();

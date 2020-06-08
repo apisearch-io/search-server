@@ -92,9 +92,16 @@ final class Origin
         string $ip = '',
         string $userAgent = ''
     ) {
+        if (empty($userAgent)) {
+            return new Origin(
+                $host,
+                $ip,
+                self::OTHERS
+            );
+        }
+
         $agent = new Agent();
         $platform = self::OTHERS;
-
         if ($agent->isTablet($userAgent)) {
             $platform = self::TABLET;
         } elseif ($agent->isDesktop($userAgent)) {

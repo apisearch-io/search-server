@@ -13,14 +13,11 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\DBAL\Tests\Functional;
-
-use Apisearch\Server\Tests\Functional\Domain\Repository\InteractionRepository\ServiceInteractionRepositoryTest;
+namespace Apisearch\Server\Domain\ImperativeEvent;
 
 /**
- * Class DBALInteractionRepositoryTest.
+ * Class FlushSearches.
  */
-class DBALInteractionRepositoryTest extends ServiceInteractionRepositoryTest
+final class FlushSearches
 {
-    use DBALFunctionalTestTrait;
 }

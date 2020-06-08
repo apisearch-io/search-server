@@ -53,8 +53,8 @@ interface InteractionRepository
     public function getRegisteredInteractions(InteractionFilter $filter): PromiseInterface;
 
     /**
-     * @param  InteractionFilter $filter
-     * @param int $n
+     * @param InteractionFilter $filter
+     * @param int               $n
      *
      * @return PromiseInterface
      */

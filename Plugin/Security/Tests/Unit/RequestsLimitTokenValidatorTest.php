@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\Security\Tests\Unit;
 use Apisearch\Plugin\Security\Domain\Token\RequestsLimitTokenValidator;
 use Clue\React\Redis\Client;
 use DateTime;
+use DateTimeZone;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -51,7 +52,7 @@ class RequestsLimitTokenValidatorTest extends TestCase
      */
     public function dataFormat()
     {
-        $now = new DateTime('2019-03-11 12:34:57');
+        $now = new DateTime('2019-03-11 12:34:57', new DateTimeZone('UTC'));
         $secondsMissingYear = 25529104;
 
         return [

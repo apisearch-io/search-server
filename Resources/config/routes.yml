@@ -210,9 +210,6 @@ apisearch_v1_get_interactions_all_indices_per_day:
         index_id: "*"
         per_day: true
 
-#
-# Metrics API
-#
 apisearch_v1_get_top_clicks:
     path: /v1/{app_id}/indices/{index_id}/top-clicks
     methods: ["GET"]
@@ -222,6 +219,53 @@ apisearch_v1_get_top_clicks_all_indices:
     path: /v1/{app_id}/top-clicks
     methods: ["GET"]
     controller: Apisearch\Server\Controller\GetTopInteractionsController
+    defaults:
+        index_id: "*"
+
+        
+#
+# Searches API
+#
+apisearch_v1_get_searches:
+    path: /v1/{app_id}/indices/{index_id}/searches
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetSearchesController
+    defaults:
+        per_day: false
+
+apisearch_v1_get_searches_all_indices:
+    path: /v1/{app_id}/searches
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetSearchesController
+    defaults:
+        index_id: "*"
+        per_day: false
+
+apisearch_v1_get_searches_per_day:
+    path: /v1/{app_id}/indices/{index_id}/searches/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetSearchesController
+    defaults:
+        per_day: true
+
+apisearch_v1_get_searches_all_indices_per_day:
+    path: /v1/{app_id}/searches/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetSearchesController
+    defaults:
+        index_id: "*"
+        per_day: true
+
+
+apisearch_v1_get_top_searches:
+    path: /v1/{app_id}/indices/{index_id}/top-searches
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetTopInteractionsController
+
+apisearch_v1_get_top_searches_all_indices:
+    path: /v1/{app_id}/top-searches
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetTopSearchesController
     defaults:
         index_id: "*"
 

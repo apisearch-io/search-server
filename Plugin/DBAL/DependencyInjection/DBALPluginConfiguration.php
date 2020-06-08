@@ -49,6 +49,7 @@ class DBALPluginConfiguration extends BaseConfiguration
                 ->scalarNode('usage_lines_table')->end()
                 ->scalarNode('metadata_table')->end()
                 ->scalarNode('interactions_table')->end()
+                ->scalarNode('searches_table')->end()
 
                 ->scalarNode('loop_push_interval')
                     ->defaultValue('60')

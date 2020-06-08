@@ -90,10 +90,7 @@ class DBALInteractionRepository implements InteractionRepository
                 'platform' => $origin->getPlatform(),
                 'type' => $type,
                 'time' => $when->format('Ymd'),
-            ])
-            ->otherwise(function (\Exception $e) {
-                echo $e->getMessage();
-            });
+            ]);
     }
 
     /**
@@ -138,16 +135,15 @@ class DBALInteractionRepository implements InteractionRepository
     }
 
     /**
-     * @param  InteractionFilter $filter
-     * @param int $n
+     * @param InteractionFilter $filter
+     * @param int               $n
      *
      * @return PromiseInterface
      */
     public function getTopInteractedItems(
         InteractionFilter $filter,
         int $n
-    ): PromiseInterface
-    {
+    ): PromiseInterface {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         if (!$appUUID instanceof AppUUID) {
@@ -181,18 +177,17 @@ class DBALInteractionRepository implements InteractionRepository
     }
 
     /**
-     * Apply filters to querybuilder given a filter
+     * Apply filters to querybuilder given a filter.
      *
-     * @param QueryBuilder $queryBuilder
+     * @param QueryBuilder      $queryBuilder
      * @param InteractionFilter $filter
-     * @param array $parameters
+     * @param array             $parameters
      */
     private function applyFilterToQueryBuilder(
         QueryBuilder $queryBuilder,
         InteractionFilter $filter,
         array &$parameters
-    )
-    {
+    ) {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();
