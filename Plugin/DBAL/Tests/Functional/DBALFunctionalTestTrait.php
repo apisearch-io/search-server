@@ -16,9 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
+use Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
 use Apisearch\Server\Domain\Repository\DiskRepository;
 use Apisearch\Server\Domain\Repository\InMemoryRepository;
+use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Schema\Schema;
@@ -74,6 +76,10 @@ trait DBALFunctionalTestTrait
             'alias' => ChunkUsageRepository::class,
         ];
 
+        $configuration['services'][SearchesRepository::class] = [
+            'alias' => ChunkSearchesRepository::class,
+        ];
+
         return $configuration;
     }
 
@@ -88,6 +94,7 @@ trait DBALFunctionalTestTrait
         $usageTableName = static::getParameterStatic('apisearch_plugin.dbal.usage_lines_table');
         $metadataTableName = static::getParameterStatic('apisearch_plugin.dbal.metadata_table');
         $interactionTableName = static::getParameterStatic('apisearch_plugin.dbal.interactions_table');
+        $searchesTableName = static::getParameterStatic('apisearch_plugin.dbal.searches_table');
         @\unlink('/tmp/apisearch.repository');
 
         $promise = all([
@@ -116,8 +123,13 @@ trait DBALFunctionalTestTrait
                 ->otherwise(function (TableNotFoundException $_) {
                     // Silent pass
                 }),
+            $mainConnection
+                ->dropTable($searchesTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
         ])
-            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName, $interactionTableName) {
+            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName, $interactionTableName, $searchesTableName) {
                 return all([
                     $mainConnection->createTable($tokensTableName, [
                         'token_uuid' => 'string',
@@ -167,6 +179,23 @@ trait DBALFunctionalTestTrait
 
                         return $connection->executeSchema($schema);
                     })($mainConnection, $interactionTableName),
+
+                    (function ($connection, $searchesTableName) {
+                        $schema = new Schema();
+                        $table = $schema->createTable($searchesTableName);
+                        $table->addColumn('user_uuid', 'string', ['length' => 25]);
+                        $table->addColumn('app_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('index_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('text', 'string', ['length' => 50]);
+                        $table->addColumn('nb_of_results', 'integer', ['length' => 8]);
+                        $table->addColumn('with_results', 'boolean');
+                        $table->addColumn('ip', 'string', ['length' => 16]);
+                        $table->addColumn('host', 'string', ['length' => 50]);
+                        $table->addColumn('platform', 'string', ['length' => 25]);
+                        $table->addColumn('time', 'integer', ['length' => 8]);
+
+                        return $connection->executeSchema($schema);
+                    })($mainConnection, $searchesTableName),
                 ]);
             });
 

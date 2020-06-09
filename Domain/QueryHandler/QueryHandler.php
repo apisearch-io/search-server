@@ -66,7 +66,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                         ))
                             ->withRepositoryReference($repositoryReference)
                     )
-                    ->then(null, function (ExternalResourceException $exception) {
+                    ->otherwise(function (ExternalResourceException $exception) {
                         // We should ignore external resources exceptions, as they are
                         // commonly related to connections. These exceptions should be
                         // transparent when making queries in order to always provide the

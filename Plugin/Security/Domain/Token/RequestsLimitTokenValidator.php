@@ -22,6 +22,7 @@ use Apisearch\Model\Token;
 use Apisearch\Server\Domain\Token\TokenValidator;
 use Clue\React\Redis\Client;
 use DateTime;
+use DateTimeZone;
 use function React\Promise\all;
 use React\Promise\PromiseInterface;
 
@@ -76,7 +77,7 @@ class RequestsLimitTokenValidator implements TokenValidator
         string $routeName
     ): PromiseInterface {
         $requestsLimit = $token->getMetadataValue('requests_limit', []);
-        $now = new DateTime();
+        $now = new DateTime('now', new DateTimeZone('UTC'));
         $promises = [];
 
         foreach ($requestsLimit as $element) {
@@ -187,7 +188,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                         $dateTime->format('d'),
                         $dateTime->format('H'),
                         $dateTime->format('i')
-                    )))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 minute')
                         ->getTimestamp() - $dateInTimestamp;
                 break;
@@ -199,7 +200,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                         $dateTime->format('m'),
                         $dateTime->format('d'),
                         $dateTime->format('H')
-                    )))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 hour')
                         ->getTimestamp() - $dateInTimestamp;
                 break;
@@ -222,7 +223,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 $secondsForExpire = (new DateTime(\sprintf(
                         '%s-01-01 00:00:00',
                         $dateTime->format('Y')
-                    )))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 year')
                         ->getTimestamp() - $dateInTimestamp;
                 break;

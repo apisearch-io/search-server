@@ -415,12 +415,28 @@ class InMemoryRepository implements FullRepository, ResetableRepository
 
         $from = $query->getFrom();
         $n = $query->getSize();
-        $slicedItems = \array_slice($items, $from, $n);
+
+        /**
+         * If we have a text, then we can look for this text as exact one in
+         * searchable metadata or exact_matching.
+         */
+        $filteredItems = $items;
+        $queryText = $query->getQueryText();
+
+        if (!empty($query->getQueryText())) {
+            $filteredItems = \array_filter($items, function (Item $item) use ($queryText) {
+                return
+                    \in_array($queryText, $item->getSearchableMetadata()) ||
+                    \in_array($queryText, $item->getSearchableMetadata());
+            });
+        }
+
+        $slicedItems = \array_slice($filteredItems, $from, $n);
 
         return Result::create(
             null,
             \count($items),
-            \count($items),
+            \count($filteredItems),
             null,
             [],
             \array_values($slicedItems)

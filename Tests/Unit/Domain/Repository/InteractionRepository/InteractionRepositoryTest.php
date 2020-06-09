@@ -397,7 +397,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
     }
 
     /**
-     * Test get top interacted items
+     * Test get top interacted items.
      */
     public function testGetTopInteractedItems()
     {

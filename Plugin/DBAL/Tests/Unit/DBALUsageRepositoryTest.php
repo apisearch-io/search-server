@@ -67,9 +67,9 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
      *
      * @param Connection $connection
      *
-     * @return UsageRepository
+     * @return DBALUsageRepository
      */
-    public static function createEmptyRepository(Connection $connection): UsageRepository
+    public static function createEmptyRepository(Connection $connection): DBALUsageRepository
     {
         $tableName = 'uses';
         $schema = new Schema();

@@ -69,9 +69,9 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
      *
      * @param Connection $connection
      *
-     * @return InteractionRepository
+     * @return DBALInteractionRepository
      */
-    public static function createEmptyRepository(Connection $connection): InteractionRepository
+    public static function createEmptyRepository(Connection $connection): DBALInteractionRepository
     {
         $tableName = 'interactions';
         $schema = new Schema();

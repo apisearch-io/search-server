@@ -112,16 +112,15 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
     }
 
     /**
-     * @param  InteractionFilter $filter
-     * @param int $n
+     * @param InteractionFilter $filter
+     * @param int               $n
      *
      * @return PromiseInterface
      */
     public function getTopInteractedItems(
         InteractionFilter $filter,
         int $n
-    ): PromiseInterface
-    {
+    ): PromiseInterface {
         return $this
             ->persistentInteractionRepository
             ->getTopInteractedItems($filter, $n);

@@ -29,7 +29,6 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\User\Interaction;
 use DateTime;
 use Symfony\Component\Routing\Route;
 
@@ -82,9 +81,9 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             ? 'v1_query_all_indices'
             : 'v1_query';
 
-        $headers[] = 'Origin: '. $origin->getHost();
-        $headers[] = 'REMOTE_ADDR: '. $origin->getIp();
-        $headers[] = 'User-Agent: '. $origin->getPlatform();
+        $headers[] = 'Origin: '.$origin->getHost();
+        $headers[] = 'REMOTE_ADDR: '.$origin->getIp();
+        $headers[] = 'User-Agent: '.$this->getUserAgentByPlatform($origin->getPlatform());
 
         $response = self::makeCurl(
             $route,
@@ -119,9 +118,9 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $index = null
     ): string {
         $headers = [
-            'Origin: '. $origin->getHost(),
-            'REMOTE_ADDR: '. $origin->getIp(),
-            'User-Agent: '. $origin->getPlatform()
+            'Origin: '.$origin->getHost(),
+            'REMOTE_ADDR: '.$origin->getIp(),
+            'User-Agent: '.$this->getUserAgentByPlatform($origin->getPlatform()),
         ];
 
         if ('*' === $index) {
@@ -631,14 +630,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             [
                 'Origin:'.$origin->getHost(),
                 'Remote_Addr:'.$origin->getIp(),
-                'User_Agent:'.(Origin::PHONE == $origin->getPlatform()
-                    ? 'Mozilla/5.0 (Linux; Android 6.0.1; RedMi Note 5 Build/RB3N5C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.91 Mobile Safari/537.36'
-                    : (
-                        Origin::TABLET == $origin->getPlatform()
-                        ? 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
-                        : 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
-                    )
-                ),
+                'User_Agent:'.$this->getUserAgentByPlatform($origin->getPlatform()),
             ]
         );
     }
@@ -702,7 +694,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param int|null $n
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $userId
@@ -722,8 +714,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $indexId = null,
         Token $token = null
-    )
-    {
+    ) {
         $routeName = \is_null($indexId)
             ? 'v1_get_top_clicks_all_indices'
             : 'v1_get_top_clicks';
@@ -743,7 +734,167 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'to' => $to ? $to->format('Ymd') : null,
                 'user_id' => $userId,
                 'platform' => $platform,
-                'n' => $n
+                'n' => $n,
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getSearches(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($indexId)
+            ? ((false === $perDay)
+                ? 'v1_get_searches_all_indices'
+                : 'v1_get_searches_all_indices_per_day')
+            : ((false === $perDay)
+                ? 'v1_get_searches'
+                : 'v1_get_searches_per_day');
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'platform' => $platform,
+                'exclude_with_results' => $excludeWithResults,
+                'exclude_without_results' => $excludeWithoutResults,
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
+     * @param int|null      $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $platform
+     * @param string|null   $userId
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     */
+    public function getTopSearches(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $platform = null,
+        ?string $userId = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($indexId)
+            ? 'v1_get_top_searches_all_indices'
+            : 'v1_get_top_searches';
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'platform' => $platform,
+                'user_id' => $userId,
+                'exclude_with_results' => $excludeWithResults,
+                'exclude_without_results' => $excludeWithoutResults,
+                'n' => $n,
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
+     * @param int|null      $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getMetrics(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($indexId)
+            ? 'v1_get_metrics_all_indices'
+            : 'v1_get_metrics';
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'platform' => $platform,
+                'n' => $n,
             ]
         );
         self::$lastResponse = $response;
@@ -971,5 +1122,25 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;
+    }
+
+    /**
+     * @param string $platform
+     *
+     * @return string
+     */
+    private function getUserAgentByPlatform(string $platform): string
+    {
+        return Origin::PHONE == $platform
+            ? 'Mozilla/5.0 (Linux; Android 6.0.1; RedMi Note 5 Build/RB3N5C; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/68.0.3440.91 Mobile Safari/537.36'
+            : (
+            Origin::TABLET == $platform
+                ? 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+                : (
+                    Origin::DESKTOP == $platform
+                        ? 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0'
+                        : ''
+                )
+            );
     }
 }

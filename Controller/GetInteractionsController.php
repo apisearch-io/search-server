@@ -17,7 +17,6 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetInteractions;
-use DateTime;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

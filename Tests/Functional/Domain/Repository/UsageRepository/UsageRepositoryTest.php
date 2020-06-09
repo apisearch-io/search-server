@@ -47,8 +47,6 @@ trait UsageRepositoryTest
      */
     public function testSimpleUsage()
     {
-        \date_default_timezone_set('UTC');
-
         $this->query(Query::createMatchAll());
         $this->query(Query::createMatchAll());
         $this->query(Query::createMatchAll());

@@ -51,8 +51,10 @@ use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetInteractions;
+use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
+use Apisearch\Server\Domain\Query\GetTopSearches;
 use Apisearch\Server\Domain\Query\GetUsage;
 use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
@@ -630,6 +632,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             ItemUUID::createByComposedUUID($itemId),
             $origin
         ));
+
+        $this->dispatchImperative(new FlushInteractions());
+        self::usleep(200000);
     }
 
     /**
@@ -660,8 +665,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     ) {
         $appId = $appId ?? self::$appId;
         $indexId = $indexId ?? '';
-        $this->dispatchImperative(new FlushInteractions());
-        self::usleep(200000);
 
         return self::askQuery(new GetInteractions(
             RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
@@ -681,7 +684,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param int|null $n
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $userId
@@ -701,12 +704,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $indexId = null,
         Token $token = null
-    )
-    {
+    ) {
         $appId = $appId ?? self::$appId;
         $indexId = $indexId ?? '';
-        $this->dispatchImperative(new FlushInteractions());
-        self::usleep(200000);
 
         return self::askQuery(new GetTopInteractions(
             RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
@@ -720,6 +720,96 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $platform,
             $userId,
             InteractionType::CLICK,
+            $n
+        ));
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getSearches(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $appId = $appId ?? self::$appId;
+        $indexId = $indexId ?? '';
+
+        return self::askQuery(new GetSearches(
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $from,
+            $to,
+            $perDay,
+            $platform,
+            $userId,
+            $excludeWithResults,
+            $excludeWithoutResults
+        ));
+    }
+
+    /**
+     * @param int|null
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $platform
+     * @param string|null   $userId
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     */
+    public function getTopSearches(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $platform = null,
+        ?string $userId = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $appId = $appId ?? self::$appId;
+        $indexId = $indexId ?? '';
+
+        return self::askQuery(new GetTopSearches(
+            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $from,
+            $to,
+            $platform,
+            $userId,
+            $excludeWithResults,
+            $excludeWithoutResults,
             $n
         ));
     }

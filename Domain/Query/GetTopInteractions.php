@@ -63,7 +63,7 @@ class GetTopInteractions extends CommandWithRepositoryReferenceAndToken
      * @param string|null         $platform
      * @param string|null         $user
      * @param string|null         $type
-     * @param int $n
+     * @param int                 $n
      */
     public function __construct(
         RepositoryReference $repositoryReference,

@@ -211,6 +211,25 @@ abstract class FullRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test query by text.
+     */
+    public function testQueryByText()
+    {
+        $repository = $this->getFullRepository();
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $result = $this->await($repository->query($repositoryReference, Query::create('item1')));
+        $this->assertEquals(1, $result->getTotalHits());
+
+        $result = $this->await($repository->query($repositoryReference, Query::create('item2')));
+        $this->assertEquals(1, $result->getTotalHits());
+
+        $result = $this->await($repository->query($repositoryReference, Query::create('item3')));
+        $this->assertEquals(0, $result->getTotalHits());
+    }
+
+    /**
      * Test query fields.
      */
     public function testFields()
@@ -332,6 +351,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
             'indexed_metadata.f4' => 'string',
             'searchable_metadata.s1' => 'string',
             'searchable_metadata.s2' => 'long',
+            'searchable_metadata.s_field' => 'string',
         ], $indices[0]->getFields());
     }
 
@@ -525,6 +545,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
             [
                 'field' => true,
                 'another_field' => false,
+            ],
+            [],
+            [
+                's_field' => $itemId,
             ]
         );
     }

@@ -419,7 +419,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param int|null $n
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $userId
@@ -439,8 +439,63 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $appId = null,
         string $indexId = null,
         Token $token = null
-    )
-    {
+    ) {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getSearches(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
+    }
+
+    /**
+     * @param int|null
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $platform
+     * @param string|null   $userId
+     * @param bool          $excludeWithResults
+     * @param bool          $excludeWithoutResults
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     */
+    public function getTopSearches(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $platform = null,
+        ?string $userId = null,
+        bool $excludeWithResults = false,
+        bool $excludeWithoutResults = false,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
         throw new \Exception('Function getUsage not usable in HttpFunctionalTest class');
     }
 
