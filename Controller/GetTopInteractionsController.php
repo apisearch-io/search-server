@@ -48,7 +48,7 @@ class GetTopInteractionsController extends ControllerWithQueryBus
                 $to,
                 $query->get('platform', null),
                 $query->get('user_id', null),
-                InteractionType::CLICK,
+                $query->get('type', InteractionType::CLICK),
                 \intval($query->get('n', 10))
             ))
             ->then(function ($interactions) use ($request) {

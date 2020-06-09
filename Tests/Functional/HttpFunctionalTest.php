@@ -477,6 +477,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $platform
+     * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string        $appId
@@ -488,6 +489,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $platform = null,
+        ?string $userId = null,
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,

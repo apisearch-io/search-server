@@ -270,6 +270,21 @@ apisearch_v1_get_top_searches_all_indices:
         index_id: "*"
 
 #
+# Metrics
+#
+apisearch_v1_get_metrics:
+    path: /v1/{app_id}/metrics/{index_id}/top-searches
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetMetricsController
+
+apisearch_v1_get_metrics_all_indices:
+    path: /v1/{app_id}/metrics
+    methods: ["GET"]
+    controller: Apisearch\Server\Controller\GetMetricsController
+    defaults:
+        index_id: "*"
+
+#
 # Server API
 #
 apisearch_check_health:

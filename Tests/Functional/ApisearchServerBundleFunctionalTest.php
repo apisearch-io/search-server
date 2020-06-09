@@ -858,6 +858,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $platform
+     * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string        $appId
@@ -869,6 +870,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $platform = null,
+        ?string $userId = null,
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,

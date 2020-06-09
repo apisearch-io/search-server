@@ -41,6 +41,11 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
     private $platform;
 
     /**
+     * @var string|null
+     */
+    private $user;
+
+    /**
      * @var bool
      */
     private $excludeWithResults;
@@ -61,6 +66,7 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
      * @param DateTime|null       $from
      * @param DateTime|null       $to
      * @param string|null         $platform
+     * @param string|null         $user
      * @param bool                $excludeWithResults
      * @param bool                $excludeWithoutResults
      * @param int                 $n
@@ -71,6 +77,7 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
         ?DateTime $from,
         ?DateTime $to,
         ?string $platform,
+        ?string $user,
         bool $excludeWithResults,
         bool $excludeWithoutResults,
         ?int $n
@@ -80,6 +87,7 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
         $this->from = $from;
         $this->to = $to;
         $this->platform = $platform;
+        $this->user = $user;
         $this->excludeWithResults = $excludeWithResults;
         $this->excludeWithoutResults = $excludeWithoutResults;
         $this->n = $n;
@@ -107,6 +115,14 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
     public function getPlatform(): ?string
     {
         return $this->platform;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUser(): ?string
+    {
+        return $this->user;
     }
 
     /**

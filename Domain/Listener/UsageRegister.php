@@ -18,10 +18,10 @@ namespace Apisearch\Server\Domain\Listener;
 use Apisearch\Server\Domain\Event;
 use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use Drift\HttpKernel\Event\DomainEventEnvelope;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use DateTime;
 use DateTimeZone;
+use Drift\HttpKernel\Event\DomainEventEnvelope;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * Class UsageRegister.
@@ -75,7 +75,7 @@ class UsageRegister implements EventSubscriberInterface
          * @var DomainEvent
          */
         $event = $domainEventEnvelope->getDomainEvent();
-        $today = new DateTime('now',  new DateTimeZone('UTC'));
+        $today = new DateTime('now', new DateTimeZone('UTC'));
         $today->setTime(0, 0, 0);
 
         $this

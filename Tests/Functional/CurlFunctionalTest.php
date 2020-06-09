@@ -29,9 +29,6 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Domain\Query\GetSearches;
-use Apisearch\Server\Domain\Query\GetTopSearches;
-use Apisearch\User\Interaction;
 use DateTime;
 use Symfony\Component\Routing\Route;
 
@@ -804,10 +801,11 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param int|null
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $platform
+     * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string        $appId
@@ -819,6 +817,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $platform = null,
+        ?string $userId = null,
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,
@@ -843,8 +842,58 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'from' => $from ? $from->format('Ymd') : null,
                 'to' => $to ? $to->format('Ymd') : null,
                 'platform' => $platform,
+                'user_id' => $userId,
                 'exclude_with_results' => $excludeWithResults,
                 'exclude_without_results' => $excludeWithoutResults,
+                'n' => $n,
+            ]
+        );
+        self::$lastResponse = $response;
+
+        return $response['body'];
+    }
+
+    /**
+     * @param int|null      $n
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $platform
+     * @param string        $appId
+     * @param string        $indexId
+     * @param Token         $token
+     *
+     * @return int|int[]
+     */
+    public function getMetrics(
+        ?int $n = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $platform = null,
+        string $appId = null,
+        string $indexId = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($indexId)
+            ? 'v1_get_metrics_all_indices'
+            : 'v1_get_metrics';
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $indexId,
+        ];
+
+        $response = self::makeCurl(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'platform' => $platform,
                 'n' => $n,
             ]
         );

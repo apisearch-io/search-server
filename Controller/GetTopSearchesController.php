@@ -46,6 +46,7 @@ class GetTopSearchesController extends ControllerWithQueryBus
                 $from,
                 $to,
                 $query->get('platform', null),
+                $query->get('user_id', null),
                 \boolval($query->get('exclude_with_results', false)),
                 \boolval($query->get('exclude_without_results', false)),
                 \intval($query->get('n', 10))

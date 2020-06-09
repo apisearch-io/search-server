@@ -188,7 +188,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                         $dateTime->format('d'),
                         $dateTime->format('H'),
                         $dateTime->format('i')
-                    ),  new DateTimeZone('UTC')))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 minute')
                         ->getTimestamp() - $dateInTimestamp;
                 break;
@@ -200,7 +200,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                         $dateTime->format('m'),
                         $dateTime->format('d'),
                         $dateTime->format('H')
-                    ),  new DateTimeZone('UTC')))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 hour')
                         ->getTimestamp() - $dateInTimestamp;
                 break;
@@ -223,7 +223,7 @@ class RequestsLimitTokenValidator implements TokenValidator
                 $secondsForExpire = (new DateTime(\sprintf(
                         '%s-01-01 00:00:00',
                         $dateTime->format('Y')
-                    ),  new DateTimeZone('UTC')))
+                    ), new DateTimeZone('UTC')))
                         ->modify('+1 year')
                         ->getTimestamp() - $dateInTimestamp;
                 break;

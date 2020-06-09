@@ -191,15 +191,15 @@ trait SearchesRepositoryTest
         ], $this->getTopSearches(10));
 
         $this->assertEquals([
+            'No results 2' => 2,
             'Code da vinci' => 1,
             'No results 1' => 1,
-            'No results 2' => 2,
         ], $this->getTopSearches(10, null, null, origin::TABLET));
 
         $this->assertEquals([
+            'No results 2' => 2,
             'Code da vinci' => 1,
             'No results 1' => 1,
-            'No results 2' => 2,
             'Stylestep' => 1,
         ], $this->getTopSearches(10, null, null, origin::MOBILE));
 
@@ -211,22 +211,38 @@ trait SearchesRepositoryTest
             'No results 2' => 3,
             'No results 3' => 1,
             'badalona' => 1,
-        ], $this->getTopSearches(10, null, null, null, false, false));
+        ], $this->getTopSearches(10, null, null, null, null, false, false));
 
         $this->assertEquals([
-            'Code da vinci' => 3,
             'No results 1' => 5,
             'No results 2' => 3,
+            'Code da vinci' => 3,
             'No results 3' => 1,
-        ], $this->getTopSearches(10, null, null, null, true));
+        ], $this->getTopSearches(10, null, null, null, null, true));
 
-        $this->assertEquals([
+        $this->assertSame([
             'Code da vinci' => 8,
             'Matutano' => 7,
             'Stylestep' => 3,
             'badalona' => 1,
-        ], $this->getTopSearches(10, null, null, null, false, true));
+        ], $this->getTopSearches(10, null, null, null, null, false, true));
 
-        $this->assertEquals([], $this->getTopSearches(10, null, null, null, true, true));
+        $this->assertEquals([], $this->getTopSearches(10, null, null, null, null, true, true));
+    }
+
+    /**
+     * Test filter by user.
+     */
+    public function testFilterTopSearchesByUser()
+    {
+        $this->assertEquals([
+            'Code da vinci' => 2,
+            'No results 2' => 2,
+            'No results 1' => 1,
+            'Stylestep' => 1,
+            'No results 3' => 1,
+            'Matutano' => 1,
+            'badalona' => 1,
+        ], $this->getTopSearches(10, null, null, null, 'u1'));
     }
 }

@@ -52,6 +52,7 @@ class GetTopSearchesHandler
                     ->from($getTopSearches->getFrom())
                     ->to($getTopSearches->getTo())
                     ->byPlatform($getTopSearches->getPlatform())
+                    ->byUser($getTopSearches->getUser())
                     ->excludeWithResults($getTopSearches->withResultsAreExcluded())
                     ->excludeWithoutResults($getTopSearches->withoutResultsAreExcluded()),
                 $getTopSearches->getN() ?? 10
