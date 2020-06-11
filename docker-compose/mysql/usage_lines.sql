@@ -1,18 +1,10 @@
-create table usage_lines
-(
-    event varchar(15) not null,
-    app_uuid varchar(50) not null,
-    index_uuid varchar(50) not null,
-    time int(8) not null,
-    n int(7) not null
-);
-
-create index app_event_index_time
-    on usage_lines (app_uuid, event, index_uuid, time);
-
-create index app_event_time
-    on usage_lines (app_uuid, event, time);
-
-create index app_time
-    on usage_lines (app_uuid, time);
-
+CREATE TABLE `usage_lines` (
+  `event` varchar(15) NOT NULL,
+  `app_uuid` varchar(50) NOT NULL,
+  `index_uuid` varchar(50) NOT NULL,
+  `time` int(11) NOT NULL,
+  `n` int(7) NOT NULL,
+  KEY `time_event` (`time`, `event`),
+  KEY `time_event_app` (`time`, `event`, `app_uuid`),
+  KEY `time_event_app_index` (`time`, `event`, `app_uuid`, `index_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

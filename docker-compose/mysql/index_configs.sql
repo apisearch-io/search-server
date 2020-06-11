@@ -1,8 +1,5 @@
-create table index_configs
-(
-    repository_reference_uuid varchar(255) not null
-        primary key,
-    content varchar(255) not null
-)
-    collate=utf8_unicode_ci;
-
+CREATE TABLE `index_configs` (
+  `repository_reference_uuid` varchar(50) NOT NULL,
+  `content` text,
+  PRIMARY KEY (`repository_reference_uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

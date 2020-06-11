@@ -51,6 +51,7 @@ class GetInteractionsController extends ControllerWithQueryBus
                 $query->get('user_id', null),
                 $query->get('item_id', null),
                 $query->get('type', null),
+                $query->get('count', null),
             ))
             ->then(function ($interactions) use ($request) {
                 return new JsonResponse(

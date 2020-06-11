@@ -20,6 +20,7 @@ use Apisearch\Query\Query;
 use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository;
+use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use DateTime;
 
@@ -108,12 +109,15 @@ trait SearchesRepositoryTest
 
     /**
      * Test filter by user.
+     *
+     * We check that empty user means IP.
      */
     public function testFilterByUser()
     {
         $this->assertEquals(9, $this->getSearches(false, null, null, 'u1'));
         $this->assertEquals(4, $this->getSearches(false, null, null, 'u2'));
-        $this->assertEquals(15, $this->getSearches(false, null, null, ''));
+        $this->assertEquals(15, $this->getSearches(false, null, null, '0.0.0.0'));
+        $this->assertEquals(0, $this->getSearches(false, null, null, ''));
     }
 
     /**
@@ -151,8 +155,8 @@ trait SearchesRepositoryTest
         self::usleep(100000);
 
         $this->assertEquals(31, $this->getSearches(false));
-        $this->assertEquals(28, $this->getSearches(false, null, null, null, null, false, false, static::$appId, static::$index));
-        $this->assertEquals(3, $this->getSearches(false, null, null, null, null, false, false, static::$appId, static::$anotherIndex));
+        $this->assertEquals(28, $this->getSearches(false, null, null, null, null, false, false, null, static::$appId, static::$index));
+        $this->assertEquals(3, $this->getSearches(false, null, null, null, null, false, false, null, static::$appId, static::$anotherIndex));
     }
 
     /**
@@ -169,10 +173,10 @@ trait SearchesRepositoryTest
         $this->dispatchImperative(new FlushSearches());
         self::usleep(100000);
 
-        $this->assertEquals(31, $this->getSearches(false, null, null, null, null, false, false, static::$appId));
-        $this->assertEquals(3, $this->getSearches(false, null, null, null, null, false, false, static::$anotherAppId, static::$index));
-        $this->assertEquals(1, $this->getSearches(false, null, null, null, null, false, false, static::$anotherAppId, static::$anotherIndex));
-        $this->assertEquals(0, $this->getSearches(false, null, null, null, null, false, false, static::$anotherAppId, static::$yetAnotherIndex));
+        $this->assertEquals(31, $this->getSearches(false, null, null, null, null, false, false, null, static::$appId));
+        $this->assertEquals(3, $this->getSearches(false, null, null, null, null, false, false, null, static::$anotherAppId, static::$index));
+        $this->assertEquals(1, $this->getSearches(false, null, null, null, null, false, false, null, static::$anotherAppId, static::$anotherIndex));
+        $this->assertEquals(0, $this->getSearches(false, null, null, null, null, false, false, null, static::$anotherAppId, static::$yetAnotherIndex));
     }
 
     /**
@@ -244,5 +248,25 @@ trait SearchesRepositoryTest
             'Matutano' => 1,
             'badalona' => 1,
         ], $this->getTopSearches(10, null, null, null, 'u1'));
+    }
+
+    /**
+     * Test count unique users.
+     */
+    public function testCountUniqueUsers()
+    {
+        $searches = $this->getSearches(true, null, null, null, null, false, false, SearchesFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertCount(1, $searches);
+        $this->assertEquals(3, \reset($searches));
+
+        $searches = $this->getSearches(true, null, null, null, origin::DESKTOP, false, false, SearchesFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertCount(1, $searches);
+        $this->assertEquals(2, \reset($searches));
+
+        $searches = $this->getSearches(false, null, null, null, null, false, false, SearchesFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertEquals(3, $searches);
+
+        $searches = $this->getSearches(false, null, null, null, origin::DESKTOP, false, false, SearchesFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertEquals(2, $searches);
     }
 }

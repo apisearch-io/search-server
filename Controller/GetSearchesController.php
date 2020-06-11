@@ -51,6 +51,7 @@ class GetSearchesController extends ControllerWithQueryBus
                 $query->get('user_id', null),
                 \boolval($query->get('exclude_with_results', false)),
                 \boolval($query->get('exclude_without_results', false)),
+                $query->get('count', null),
             ))
             ->then(function ($searches) use ($request) {
                 return new JsonResponse(

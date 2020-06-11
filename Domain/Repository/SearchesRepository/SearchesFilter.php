@@ -24,6 +24,16 @@ use DateTime;
 class SearchesFilter
 {
     /**
+     * @var string
+     */
+    const LINES = 'lines';
+
+    /**
+     * @var string
+     */
+    const UNIQUE_USERS = 'unique_users';
+
+    /**
      * @var RepositoryReference
      */
     private $repositoryReference;
@@ -63,6 +73,11 @@ class SearchesFilter
      */
     private $excludeWithoutResults;
 
+    /**
+     * @var string|null
+     */
+    private $count;
+
     private function __construct()
     {
     }
@@ -79,6 +94,7 @@ class SearchesFilter
         $filter->perDay = false;
         $filter->excludeWithResults = false;
         $filter->excludeWithoutResults = false;
+        $filter->count = self::LINES;
 
         return $filter;
     }
@@ -168,6 +184,18 @@ class SearchesFilter
     }
 
     /**
+     * @var string|null
+     *
+     * @return self
+     */
+    public function count(?string $count): self
+    {
+        $this->count = $count;
+
+        return $this;
+    }
+
+    /**
      * @return RepositoryReference
      */
     public function getRepositoryReference(): RepositoryReference
@@ -229,5 +257,13 @@ class SearchesFilter
     public function withoutResultsAreExcluded(): bool
     {
         return $this->excludeWithoutResults;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCount(): string
+    {
+        return $this->count ?? self::LINES;
     }
 }

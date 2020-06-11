@@ -124,7 +124,7 @@ final class Origin
      */
     public static function createEmpty(): Origin
     {
-        return new Origin('', '', '');
+        return new Origin('localhost', '0.0.0.0', '');
     }
 
     /**

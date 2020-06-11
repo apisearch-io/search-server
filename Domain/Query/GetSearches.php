@@ -61,6 +61,11 @@ class GetSearches extends CommandWithRepositoryReferenceAndToken
     private $excludeWithoutResults;
 
     /**
+     * @var string|null
+     */
+    private $count;
+
+    /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param DateTime|null       $from
@@ -70,6 +75,7 @@ class GetSearches extends CommandWithRepositoryReferenceAndToken
      * @param string|null         $user
      * @param bool                $excludeWithResults
      * @param bool                $excludeWithoutResults
+     * @param string|null         $count
      */
     public function __construct(
         RepositoryReference $repositoryReference,
@@ -80,7 +86,8 @@ class GetSearches extends CommandWithRepositoryReferenceAndToken
         ?string $platform,
         ?string $user,
         bool $excludeWithResults,
-        bool $excludeWithoutResults
+        bool $excludeWithoutResults,
+        ?string $count
     ) {
         parent::__construct($repositoryReference, $token);
 
@@ -91,6 +98,7 @@ class GetSearches extends CommandWithRepositoryReferenceAndToken
         $this->user = $user;
         $this->excludeWithResults = $excludeWithResults;
         $this->excludeWithoutResults = $excludeWithoutResults;
+        $this->count = $count;
     }
 
     /**
@@ -147,5 +155,13 @@ class GetSearches extends CommandWithRepositoryReferenceAndToken
     public function withoutResultsAreExcluded(): bool
     {
         return $this->excludeWithoutResults;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCount(): ?string
+    {
+        return $this->count;
     }
 }

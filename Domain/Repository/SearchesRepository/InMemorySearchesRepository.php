@@ -81,7 +81,9 @@ class InMemorySearchesRepository implements SearchesRepository, TemporarySearche
         }
 
         $perDay = $filter->isPerDay();
+        $count = $filter->getCount();
         $searches = $perDay ? [] : 0;
+        $uniqueUsers = [];
 
         foreach ($this->searches as $search) {
             $whenFormatted = $search->getWhen()->format('Ymd');
@@ -93,15 +95,29 @@ class InMemorySearchesRepository implements SearchesRepository, TemporarySearche
             if ($perDay) {
                 if (!\array_key_exists($whenFormatted, $searches)) {
                     $searches[$whenFormatted] = 1;
+                    $uniqueUsers[$whenFormatted] = [
+                        $search->getUser() => true,
+                    ];
                 } else {
                     ++$searches[$whenFormatted];
+                    $uniqueUsers[$whenFormatted][$search->getUser()] = true;
                 }
             } else {
                 ++$searches;
+                $uniqueUsers[$search->getUser()] = true;
             }
         }
 
-        return resolve($searches);
+        $uniqueUsers = $perDay
+            ? \array_map(function (array $day) {
+                return \count($day);
+            }, $uniqueUsers)
+            : \count($uniqueUsers);
+
+        return resolve(SearchesFilter::UNIQUE_USERS === $count
+            ? $uniqueUsers
+            : $searches
+        );
     }
 
     /**

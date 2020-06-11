@@ -397,6 +397,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $platform
      * @param string|null   $itemId
      * @param string|null   $type
+     * @param string|null   $count
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -411,6 +412,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $platform = null,
         ?string $itemId = null,
         ?string $type = null,
+        ?string $count = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -451,6 +453,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $platform
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
+     * @param string|null   $count
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -465,6 +468,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $platform = null,
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
+        ?string $count = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null

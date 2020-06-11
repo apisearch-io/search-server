@@ -140,4 +140,22 @@ class SearchesFilterTest extends BaseUnitTest
 
         $this->assertFalse(SearchesFilter::create($repositoryReference)->isPerDay());
     }
+
+    /**
+     * Test count.
+     */
+    public function testCount()
+    {
+        $repositoryReference = RepositoryReference::createFromComposed('a_b');
+        $filter = SearchesFilter::create($repositoryReference)->count(SearchesFilter::UNIQUE_USERS);
+        $this->assertEquals(SearchesFilter::UNIQUE_USERS, $filter->getCount());
+
+        $filter = SearchesFilter::create($repositoryReference)->count(SearchesFilter::LINES);
+        $this->assertEquals(SearchesFilter::LINES, $filter->getCount());
+
+        $filter = SearchesFilter::create($repositoryReference)->count(null);
+        $this->assertEquals(SearchesFilter::LINES, $filter->getCount());
+
+        $this->assertEquals(SearchesFilter::LINES, SearchesFilter::create($repositoryReference)->getCount());
+    }
 }

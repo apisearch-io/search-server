@@ -205,7 +205,6 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $repository = $this->getEmptyRepository($loop);
         $repositoryReference = $this->getDefaultRepositoryReference();
         $user = 'user-1';
-        $itemUUID = '1~p';
         $this->addSearch($repository, $loop);
         $this->addSearch($repository, $loop);
         $this->addSearch($repository, $loop, $repositoryReference, $user, '', 0, new Origin('', '', Origin::PHONE));
@@ -326,6 +325,86 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test unique user id.
+     */
+    public function testUniqueUserId()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $repositoryReference = $this->getDefaultRepositoryReference();
+        $user2 = 'user-2';
+        $user3 = 'user-3';
+        $this->addSearch($repository, $loop);
+        $this->addSearch($repository, $loop, $repositoryReference, $user2, 'x', 0, new Origin('', '', Origin::TABLET));
+        $this->addSearch($repository, $loop, $repositoryReference, $user2);
+        $this->addSearch($repository, $loop);
+        $this->addSearch($repository, $loop);
+        $this->addSearch($repository, $loop);
+        $this->addSearch($repository, $loop, $repositoryReference, $user3, 'x', 0, new Origin('', '', Origin::TABLET));
+        $this->addSearch($repository, $loop, $repositoryReference, $user3);
+
+        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+
+        $searchesFilter = SearchesFilter::create($repositoryReference)->count(SearchesFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredSearches($searchesFilter);
+        $this->assertEquals(3, $this->await($interactions, $loop));
+
+        $searchesFilter = SearchesFilter::create($repositoryReference)
+            ->byPlatform(Origin::DESKTOP)
+            ->count(SearchesFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredSearches($searchesFilter);
+        $this->assertEquals(3, $this->await($interactions, $loop));
+
+        $searchesFilter = SearchesFilter::create($repositoryReference)
+            ->byPlatform(Origin::TABLET)
+            ->count(SearchesFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredSearches($searchesFilter);
+        $this->assertEquals(2, $this->await($interactions, $loop));
+
+        $searchesFilter = SearchesFilter::create($repositoryReference)
+            ->byPlatform(Origin::ROBOT)
+            ->count(SearchesFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredSearches($searchesFilter);
+        $this->assertEquals(0, $this->await($interactions, $loop));
+    }
+
+    /**
+     * Test per day.
+     */
+    public function testUniqueUserIdPerDay()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $repositoryReference = $this->getDefaultRepositoryReference();
+        $user2 = 'user-2';
+        $user3 = 'user-3';
+        $user4 = 'user-4';
+
+        $this->addSearchWhen($repository, $loop, self::DAY_31_12_2019, $user2);
+        $this->addSearchWhen($repository, $loop, self::DAY_31_12_2019, $user3);
+        $this->addSearchWhen($repository, $loop, self::DAY_31_12_2019);
+        $this->addSearchWhen($repository, $loop, self::DAY_1_1_2020);
+        $this->addSearchWhen($repository, $loop, self::DAY_1_1_2020);
+        $this->addSearchWhen($repository, $loop, self::DAY_1_1_2020, $user2);
+        $this->addSearchWhen($repository, $loop, self::DAY_1_1_2020, $user3);
+        $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user2);
+        $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020);
+        $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user2);
+        $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user3);
+        $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user4);
+
+        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+
+        $interactionFilter = SearchesFilter::create($repositoryReference)->perDay()->count(SearchesFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredSearches($interactionFilter);
+        $this->assertEquals([
+            self::DAY_31_12_2019 => 3,
+            self::DAY_1_1_2020 => 3,
+            self::DAY_15_1_2020 => 4,
+        ], $this->await($interactions, $loop));
+    }
+
+    /**
      * Test get top searches.
      */
     public function testGetTopInteractedItems()
@@ -433,15 +512,17 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
      * @param SearchesRepository $repository
      * @param LoopInterface      $loop
      * @param string             $when
+     * @param string             $userUUID
      */
     private function addSearchWhen(
         SearchesRepository $repository,
         LoopInterface $loop,
-        string $when
+        string $when,
+        string $userUUID = 'user-1'
     ) {
         $promise = $repository->registerSearch(
             $this->getDefaultRepositoryReference(),
-            'user-1',
+            $userUUID,
             '',
             0,
             Origin::createEmpty(),

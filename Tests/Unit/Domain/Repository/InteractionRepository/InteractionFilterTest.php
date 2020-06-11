@@ -131,4 +131,22 @@ class InteractionFilterTest extends BaseUnitTest
 
         $this->assertFalse(InteractionFilter::create($repositoryReference)->isPerDay());
     }
+
+    /**
+     * Test count.
+     */
+    public function testCount()
+    {
+        $repositoryReference = RepositoryReference::createFromComposed('a_b');
+        $filter = InteractionFilter::create($repositoryReference)->count(InteractionFilter::UNIQUE_USERS);
+        $this->assertEquals(InteractionFilter::UNIQUE_USERS, $filter->getCount());
+
+        $filter = InteractionFilter::create($repositoryReference)->count(InteractionFilter::LINES);
+        $this->assertEquals(InteractionFilter::LINES, $filter->getCount());
+
+        $filter = InteractionFilter::create($repositoryReference)->count(null);
+        $this->assertEquals(InteractionFilter::LINES, $filter->getCount());
+
+        $this->assertEquals(InteractionFilter::LINES, InteractionFilter::create($repositoryReference)->getCount());
+    }
 }

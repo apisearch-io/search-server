@@ -19,6 +19,7 @@ use Apisearch\Plugin\Admin\Domain\ImperativeEvents;
 use Apisearch\Server\Controller\ControllerWithEventBus;
 use Exception;
 use React\Promise\PromiseInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -29,25 +30,35 @@ class DispatchImperativeEventController extends ControllerWithEventBus
     /**
      * Send imperative event.
      *
-     * @param string $eventName
+     * @param Request $request
+     * @param string  $eventName
      *
      * @return PromiseInterface|Response
      */
-    public function __invoke(string $eventName)
-    {
+    public function __invoke(
+        Request $request,
+        string $eventName
+    ) {
+        $headers = [
+            'Access-Control-Allow-Origin' => $request
+                ->headers
+                ->get('origin', '*'),
+            'Vary' => 'Origin',
+        ];
+
         if (!\array_key_exists($eventName, ImperativeEvents::ALIASES)) {
-            return new Response('', Response::HTTP_NOT_FOUND);
+            return new Response('', Response::HTTP_NOT_FOUND, $headers);
         }
 
         $event = ImperativeEvents::ALIASES[$eventName];
 
         return $this
             ->dispatch(new $event())
-            ->then(function () {
-                return new Response('', Response::HTTP_NO_CONTENT);
+            ->then(function () use ($headers) {
+                return new Response('', Response::HTTP_NO_CONTENT, $headers);
             })
-            ->otherwise(function (Exception $_) {
-                return new Response('', Response::HTTP_NOT_FOUND);
+            ->otherwise(function (Exception $_) use ($headers) {
+                return new Response('', Response::HTTP_NOT_FOUND, $headers);
             });
     }
 }
