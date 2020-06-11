@@ -17,6 +17,7 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository\InteractionReposit
 
 use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\Origin;
+use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
 use DateTime;
 
 /**
@@ -131,10 +132,10 @@ trait InteractionRepositoryTest
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$index);
         $this->assertEquals(30, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$appId, self::$anotherIndex);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$anotherIndex);
         $this->assertEquals(3, $interactions);
     }
 
@@ -152,16 +153,16 @@ trait InteractionRepositoryTest
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$index);
         $this->assertEquals(30, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$anotherAppId);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId);
         $this->assertEquals(5, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$anotherAppId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId, self::$index);
         $this->assertEquals(3, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, self::$anotherAppId, self::$anotherIndex);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId, self::$anotherIndex);
         $this->assertEquals(2, $interactions);
     }
 
@@ -203,5 +204,25 @@ trait InteractionRepositoryTest
         $this->assertEquals([
             '3~it' => 2,
         ], $this->getTopClicks(null, null, null, null, null, self::$anotherAppId, self::$anotherIndex));
+    }
+
+    /**
+     * Test count unique users.
+     */
+    public function testCountUniqueUsers()
+    {
+        $interactions = $this->getInteractions(true, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertCount(1, $interactions);
+        $this->assertEquals(5, \reset($interactions));
+
+        $interactions = $this->getInteractions(true, null, null, null, origin::DESKTOP, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertCount(1, $interactions);
+        $this->assertEquals(4, \reset($interactions));
+
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertEquals(5, $interactions);
+
+        $interactions = $this->getInteractions(false, null, null, null, origin::DESKTOP, '3~it', null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $this->assertEquals(1, $interactions);
     }
 }

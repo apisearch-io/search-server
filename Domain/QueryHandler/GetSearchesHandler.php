@@ -56,6 +56,7 @@ class GetSearchesHandler
                     ->byPlatform($getSearches->getPlatform())
                     ->excludeWithResults($getSearches->withResultsAreExcluded())
                     ->excludeWithoutResults($getSearches->withoutResultsAreExcluded())
+                    ->count($getSearches->getCount())
             );
     }
 }

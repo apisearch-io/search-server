@@ -61,6 +61,11 @@ class GetInteractions extends CommandWithRepositoryReferenceAndToken
     private $type;
 
     /**
+     * @var string
+     */
+    private $count;
+
+    /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param DateTime|null       $from
@@ -70,6 +75,7 @@ class GetInteractions extends CommandWithRepositoryReferenceAndToken
      * @param string|null         $user
      * @param string|null         $itemId
      * @param string|null         $type
+     * @param string|null         $count
      */
     public function __construct(
         RepositoryReference $repositoryReference,
@@ -80,7 +86,8 @@ class GetInteractions extends CommandWithRepositoryReferenceAndToken
         ?string $platform,
         ?string $user,
         ?string $itemId,
-        ?string $type
+        ?string $type,
+        ?string $count
     ) {
         parent::__construct($repositoryReference, $token);
 
@@ -91,6 +98,7 @@ class GetInteractions extends CommandWithRepositoryReferenceAndToken
         $this->user = $user;
         $this->itemId = $itemId;
         $this->type = $type;
+        $this->count = $count;
     }
 
     /**
@@ -147,5 +155,13 @@ class GetInteractions extends CommandWithRepositoryReferenceAndToken
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCount(): ?string
+    {
+        return $this->count;
     }
 }

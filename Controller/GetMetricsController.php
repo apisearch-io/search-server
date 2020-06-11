@@ -21,6 +21,8 @@ use Apisearch\Server\Domain\Query\GetInteractions;
 use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
 use Apisearch\Server\Domain\Query\GetTopSearches;
+use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
+use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
 use function React\Promise\all;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -52,35 +54,67 @@ class GetMetricsController extends ControllerWithQueryBus
 
         return
             all([
+                // Clicks
                 $this->ask(new GetInteractions(
                     $repositoryReference, $token,
                     $from, $to,
                     true,
-                    $platform, $userId, null, InteractionType::CLICK
+                    $platform, $userId, null, InteractionType::CLICK,
+                    InteractionFilter::LINES
                 )),
+
+                // Top clicks
                 $this->ask(new GetTopInteractions(
                     $repositoryReference, $token,
                     $from, $to,
                     $platform, $userId, InteractionType::CLICK, $n
                 )),
+
+                // Unique users click
+                $this->ask(new GetInteractions(
+                    $repositoryReference, $token,
+                    $from, $to,
+                    true,
+                    $platform, $userId, null, InteractionType::CLICK,
+                    InteractionFilter::UNIQUE_USERS
+                )),
+
+                // Searches with results
                 $this->ask(new GetSearches(
                     $repositoryReference, $token,
                     $from, $to,
                     true,
-                    $platform, $userId, false, true
+                    $platform, $userId, false, true,
+                    SearchesFilter::LINES
                 )),
+
+                // Unique users searching
                 $this->ask(new GetSearches(
                     $repositoryReference, $token,
                     $from, $to,
                     true,
-                    $platform, $userId, true, false
+                    $platform, $userId, false, false,
+                    SearchesFilter::UNIQUE_USERS
                 )),
+
+                // Searches without results
+                $this->ask(new GetSearches(
+                    $repositoryReference, $token,
+                    $from, $to,
+                    true,
+                    $platform, $userId, true, false,
+                    SearchesFilter::LINES
+                )),
+
+                // Top searches with results
                 $this->ask(new GetTopSearches(
                     $repositoryReference, $token,
                     $from, $to,
                     $platform, $userId, false, true,
                     $n
                 )),
+
+                // Top searches without results
                 $this->ask(new GetTopSearches(
                     $repositoryReference, $token,
                     $from, $to,
@@ -90,9 +124,11 @@ class GetMetricsController extends ControllerWithQueryBus
             ])
             ->then(function (array $results) use ($request) {
                 list(
-                    $interactions,
+                    $clicks,
                     $topClicks,
+                    $uniqueUsersClick,
                     $searchesWithResults,
+                    $uniqueUsersSearches,
                     $searchesWithoutResults,
                     $topSearchesWithResults,
                     $topSearchesWithoutResults
@@ -100,10 +136,17 @@ class GetMetricsController extends ControllerWithQueryBus
 
                 return new JsonResponse(
                     [
-                        'interactions' => $interactions,
+                        'clicks' => $clicks,
+                        'total_clicks' => \array_sum($clicks),
                         'top_clicks' => $topClicks,
+                        'unique_users_clicks' => $uniqueUsersClick,
+                        'total_unique_users_clicks' => \array_sum($uniqueUsersClick),
                         'searches_with_results' => $searchesWithResults,
+                        'total_searches_with_results' => \array_sum($searchesWithResults),
                         'searches_without_results' => $searchesWithoutResults,
+                        'total_searches_without_results' => \array_sum($searchesWithoutResults),
+                        'unique_users_searching' => $uniqueUsersSearches,
+                        'total_unique_users_searching' => \array_sum($uniqueUsersSearches),
                         'top_searches_with_results' => $topSearchesWithResults,
                         'top_searches_without_results' => $topSearchesWithoutResults,
                     ],

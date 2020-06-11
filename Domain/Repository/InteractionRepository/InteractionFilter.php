@@ -25,6 +25,16 @@ use DateTime;
 final class InteractionFilter
 {
     /**
+     * @var string
+     */
+    const LINES = 'lines';
+
+    /**
+     * @var string
+     */
+    const UNIQUE_USERS = 'unique_users';
+
+    /**
      * @var RepositoryReference
      */
     private $repositoryReference;
@@ -64,6 +74,11 @@ final class InteractionFilter
      */
     private $type;
 
+    /**
+     * @var string|null
+     */
+    private $count;
+
     private function __construct()
     {
     }
@@ -78,6 +93,7 @@ final class InteractionFilter
         $filter = new self();
         $filter->repositoryReference = $repositoryReference;
         $filter->perDay = false;
+        $filter->count = self::LINES;
 
         return $filter;
     }
@@ -167,6 +183,18 @@ final class InteractionFilter
     }
 
     /**
+     * @var string|null
+     *
+     * @return self
+     */
+    public function count(?string $count): self
+    {
+        $this->count = $count;
+
+        return $this;
+    }
+
+    /**
      * @return RepositoryReference|null
      */
     public function getRepositoryReference(): ?RepositoryReference
@@ -228,5 +256,13 @@ final class InteractionFilter
     public function getType(): ?string
     {
         return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCount(): string
+    {
+        return $this->count ?? self::LINES;
     }
 }

@@ -47,8 +47,12 @@ class SearchRegister implements EventSubscriberInterface
          * @var QueryWasMade
          */
         $queryWasMade = $domainEventEnvelope->getDomainEvent();
+        $origin = $queryWasMade->getOrigin();
         $today = new \DateTime();
         $today->setTime(0, 0, 0);
+        if (empty($queryWasMade->getQueryText())) {
+            return;
+        }
 
         $this
             ->searchesRepository
@@ -56,10 +60,10 @@ class SearchRegister implements EventSubscriberInterface
                 $queryWasMade->getRepositoryReference(),
                 $queryWasMade->getUser()
                     ? $queryWasMade->getUser()->getId()
-                    : '',
+                    : $origin->getIp(),
                 $queryWasMade->getQueryText(),
                 \count($queryWasMade->getItemsUUID()),
-                $queryWasMade->getOrigin(),
+                $origin,
                 $today
             );
     }

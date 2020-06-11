@@ -81,7 +81,9 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
         }
 
         $perDay = $filter->isPerDay();
+        $count = $filter->getCount();
         $interactions = $perDay ? [] : 0;
+        $uniqueUsers = [];
 
         foreach ($this->interactions as $interaction) {
             $whenFormatted = $interaction->getWhen()->format('Ymd');
@@ -93,15 +95,29 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
             if ($perDay) {
                 if (!\array_key_exists($whenFormatted, $interactions)) {
                     $interactions[$whenFormatted] = 1;
+                    $uniqueUsers[$whenFormatted] = [
+                        $interaction->getUser() => true,
+                    ];
                 } else {
                     ++$interactions[$whenFormatted];
+                    $uniqueUsers[$whenFormatted][$interaction->getUser()] = true;
                 }
             } else {
                 ++$interactions;
+                $uniqueUsers[$interaction->getUser()] = true;
             }
         }
 
-        return resolve($interactions);
+        $uniqueUsers = $perDay
+            ? \array_map(function (array $day) {
+                return \count($day);
+            }, $uniqueUsers)
+            : \count($uniqueUsers);
+
+        return resolve(InteractionFilter::UNIQUE_USERS === $count
+            ? $uniqueUsers
+            : $interactions
+        );
     }
 
     /**

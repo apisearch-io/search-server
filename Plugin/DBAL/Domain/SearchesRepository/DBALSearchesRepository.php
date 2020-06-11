@@ -112,13 +112,21 @@ class DBALSearchesRepository implements SearchesRepository
             ->from($this->tableName, 's');
 
         $perDay = $filter->isPerDay();
-        if ($filter->isPerDay()) {
-            $queryBuilder
-                ->select('COUNT(*) as count, s.time')
-                ->groupBy('s.time');
-        } else {
-            $queryBuilder->select('COUNT(*) as count');
+        $fields = ['COUNT(*) as count'];
+        $groupBy = [];
+
+        if (SearchesFilter::UNIQUE_USERS === $filter->getCount()) {
+            $fields = ['COUNT(distinct s.user_uuid) as count'];
         }
+
+        if ($filter->isPerDay()) {
+            $fields[] = 's.time';
+            $groupBy[] = 's.time';
+        }
+
+        $queryBuilder
+            ->select(\implode(', ', $fields))
+            ->groupBy(\implode(', ', $groupBy));
 
         $parameters = [];
         $this->applyFilterToQueryBuilder($queryBuilder, $filter, $parameters);

@@ -52,11 +52,11 @@ class MetricsTest extends CurlFunctionalTest
     {
         $this->expectNotToPerformAssertions();
 
-        $this->query(Query::create('Alfaguarra')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::PHONE));
-        $this->query(Query::create('Alfaguarra')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::DESKTOP));
-        $this->query(Query::create('Stylestep')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::DESKTOP));
-        $this->query(Query::create('Alfaguarra'), null, null, null, [], new Origin('', '', Origin::TABLET));
-        $this->query(Query::create('Da Vinci Code')->byUser(new User('u2')), null, null, null, [], new Origin('', '', Origin::PHONE));
+        $this->query(Query::create('Alfaguarra')->byUser(new User('u1')), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::PHONE));
+        $this->query(Query::create('Alfaguarra')->byUser(new User('u1')), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::DESKTOP));
+        $this->query(Query::create('Stylestep')->byUser(new User('u1')), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::DESKTOP));
+        $this->query(Query::create('Alfaguarra'), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::TABLET));
+        $this->query(Query::create('Da Vinci Code')->byUser(new User('u2')), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::PHONE));
 
         $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE));
         $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
@@ -82,50 +82,38 @@ class MetricsTest extends CurlFunctionalTest
     public function testBasics()
     {
         $metrics = $this->getMetrics();
-        $interactions = $metrics['interactions'];
-        $timeKey = \key($interactions);
-
-        $this->assertEquals([
-            'interactions' => [
-                $timeKey => 12,
-            ],
-            'top_clicks' => [
-                '1~it' => 6,
-                '3~it' => 3,
-                '4~it' => 2,
-                '2~it' => 1,
-            ],
-            'searches_with_results' => [
-                $timeKey => 4,
-            ],
-            'searches_without_results' => [
-                $timeKey => 1,
-            ],
-            'top_searches_with_results' => [
-                'Alfaguarra' => 3,
-                'Stylestep' => 1,
-            ],
-            'top_searches_without_results' => [
-                'Da Vinci Code' => 1,
-            ],
-        ], $metrics);
+        $this->assertEquals(
+            $this->getAllMetricsArray($metrics),
+            $metrics
+        );
 
         $metrics = $this->getMetrics(1);
-        $interactions = $metrics['interactions'];
-        $timeKey = \key($interactions);
+        $clicks = $metrics['clicks'];
+        $timeKey = \key($clicks);
         $this->assertEquals([
-            'interactions' => [
+            'clicks' => [
                 $timeKey => 12,
             ],
+            'total_clicks' => 12,
             'top_clicks' => [
                 '1~it' => 6,
             ],
+            'unique_users_clicks' => [
+                $timeKey => 3,
+            ],
+            'total_unique_users_clicks' => 3,
             'searches_with_results' => [
                 $timeKey => 4,
             ],
+            'total_searches_with_results' => 4,
             'searches_without_results' => [
                 $timeKey => 1,
             ],
+            'total_searches_without_results' => 1,
+            'unique_users_searching' => [
+                $timeKey => 3,
+            ],
+            'total_unique_users_searching' => 3,
             'top_searches_with_results' => [
                 'Alfaguarra' => 3,
             ],
@@ -135,21 +123,32 @@ class MetricsTest extends CurlFunctionalTest
         ], $metrics);
 
         $metrics = $this->getMetrics(null, null, null, 'u1');
-        $interactions = $metrics['interactions'];
-        $timeKey = \key($interactions);
+        $clicks = $metrics['clicks'];
+        $timeKey = \key($clicks);
         $this->assertEquals([
-            'interactions' => [
+            'clicks' => [
                 $timeKey => 7,
             ],
+            'total_clicks' => 7,
             'top_clicks' => [
                 '1~it' => 3,
                 '3~it' => 2,
                 '4~it' => 2,
             ],
+            'unique_users_clicks' => [
+                $timeKey => 1,
+            ],
+            'total_unique_users_clicks' => 1,
             'searches_with_results' => [
                 $timeKey => 3,
             ],
+            'total_searches_with_results' => 3,
             'searches_without_results' => [],
+            'total_searches_without_results' => 0,
+            'unique_users_searching' => [
+                $timeKey => 1,
+            ],
+            'total_unique_users_searching' => 1,
             'top_searches_with_results' => [
                 'Alfaguarra' => 2,
                 'Stylestep' => 1,
@@ -158,23 +157,34 @@ class MetricsTest extends CurlFunctionalTest
         ], $metrics);
 
         $metrics = $this->getMetrics(null, null, null, null, Origin::MOBILE);
-        $interactions = $metrics['interactions'];
-        $timeKey = \key($interactions);
+        $clicks = $metrics['clicks'];
+        $timeKey = \key($clicks);
         $this->assertEquals([
-            'interactions' => [
+            'clicks' => [
                 $timeKey => 9,
             ],
+            'total_clicks' => 9,
             'top_clicks' => [
                 '1~it' => 6,
                 '3~it' => 2,
                 '4~it' => 1,
             ],
+            'unique_users_clicks' => [
+                $timeKey => 2,
+            ],
+            'total_unique_users_clicks' => 2,
             'searches_with_results' => [
                 $timeKey => 2,
             ],
+            'total_searches_with_results' => 2,
             'searches_without_results' => [
                 $timeKey => 1,
             ],
+            'total_searches_without_results' => 1,
+            'unique_users_searching' => [
+                $timeKey => 3,
+            ],
+            'total_unique_users_searching' => 3,
             'top_searches_with_results' => [
                 'Alfaguarra' => 2,
             ],
@@ -182,5 +192,110 @@ class MetricsTest extends CurlFunctionalTest
                 'Da Vinci Code' => 1,
             ],
         ], $metrics);
+
+        $metrics = $this->getMetrics(null, null, null, null, 'non-existing');
+        $this->assertEquals(
+            $this->getEmptyMetricsArray(),
+            $metrics
+        );
+
+        $metrics = $this->getMetrics(null, (new \DateTime())->modify('+1 day'));
+        $this->assertEquals(
+            $this->getEmptyMetricsArray(),
+            $metrics
+        );
+
+        $metrics = $this->getMetrics(null, null, (new \DateTime())->modify('-1 day'));
+        $this->assertEquals(
+            $this->getEmptyMetricsArray(),
+            $metrics
+        );
+
+        $metrics = $this->getMetrics(null, (new \DateTime())->modify('-1 day'));
+        $this->assertEquals(
+            $this->getAllMetricsArray($metrics),
+            $metrics
+        );
+
+        $metrics = $this->getMetrics(null, null, (new \DateTime())->modify('+1 day'));
+        $this->assertEquals(
+            $this->getAllMetricsArray($metrics),
+            $metrics
+        );
+
+        $metrics = $this->getMetrics(null, (new \DateTime())->modify('-1 day'), (new \DateTime())->modify('+1 day'));
+        $this->assertEquals(
+            $this->getAllMetricsArray($metrics),
+            $metrics
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getEmptyMetricsArray(): array
+    {
+        return [
+            'clicks' => [],
+            'total_clicks' => 0,
+            'top_clicks' => [],
+            'unique_users_clicks' => [],
+            'total_unique_users_clicks' => 0,
+            'searches_with_results' => [],
+            'total_searches_with_results' => 0,
+            'searches_without_results' => [],
+            'total_searches_without_results' => 0,
+            'unique_users_searching' => [],
+            'total_unique_users_searching' => 0,
+            'top_searches_with_results' => [],
+            'top_searches_without_results' => [],
+        ];
+    }
+
+    /**
+     * @param array $metrics
+     *
+     * @return array
+     */
+    private function getAllMetricsArray(array $metrics): array
+    {
+        $clicks = $metrics['clicks'];
+        $timeKey = \key($clicks);
+
+        return [
+            'clicks' => [
+                $timeKey => 12,
+            ],
+            'total_clicks' => 12,
+            'top_clicks' => [
+                '1~it' => 6,
+                '3~it' => 3,
+                '4~it' => 2,
+                '2~it' => 1,
+            ],
+            'unique_users_clicks' => [
+                $timeKey => 3,
+            ],
+            'total_unique_users_clicks' => 3,
+            'searches_with_results' => [
+                $timeKey => 4,
+            ],
+            'total_searches_with_results' => 4,
+            'searches_without_results' => [
+                $timeKey => 1,
+            ],
+            'total_searches_without_results' => 1,
+            'unique_users_searching' => [
+                $timeKey => 3,
+            ],
+            'total_unique_users_searching' => 3,
+            'top_searches_with_results' => [
+                'Alfaguarra' => 3,
+                'Stylestep' => 1,
+            ],
+            'top_searches_without_results' => [
+                'Da Vinci Code' => 1,
+            ],
+        ];
     }
 }

@@ -18,8 +18,8 @@ namespace Apisearch\Plugin\Admin\Domain;
 use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
 use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
+use Apisearch\Server\Domain\ImperativeEvent\LoadAllMetadata;
 use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
-use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
 use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
 
 /**
@@ -33,7 +33,7 @@ class ImperativeEvents
     const ALIASES = [
         'load_configs' => LoadConfigs::class,
         'load_tokens' => LoadTokens::class,
-        'load_metadata' => LoadMetadata::class,
+        'load_all_metadata' => LoadAllMetadata::class,
         'flush_usage_lines' => FlushUsageLines::class,
         'flush_interactions' => FlushInteractions::class,
         'flush_searches' => FlushSearches::class,

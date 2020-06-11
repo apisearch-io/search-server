@@ -61,6 +61,7 @@ class GetInteractionsHandler
                     ->byPlatform($getInteractions->getPlatform())
                     ->byItem($itemUUID)
                     ->byType($getInteractions->getType())
+                    ->count($getInteractions->getCount())
             );
     }
 }

@@ -112,13 +112,21 @@ class DBALInteractionRepository implements InteractionRepository
             ->from($this->tableName, 'i');
 
         $perDay = $filter->isPerDay();
-        if ($filter->isPerDay()) {
-            $queryBuilder
-                ->select('COUNT(*) as count, i.time')
-                ->groupBy('i.time');
-        } else {
-            $queryBuilder->select('COUNT(*) as count');
+        $fields = ['COUNT(*) as count'];
+        $groupBy = [];
+
+        if (InteractionFilter::UNIQUE_USERS === $filter->getCount()) {
+            $fields = ['COUNT(distinct i.user_uuid) as count'];
         }
+
+        if ($filter->isPerDay()) {
+            $fields[] = 'i.time';
+            $groupBy[] = 'i.time';
+        }
+
+        $queryBuilder
+            ->select(\implode(', ', $fields))
+            ->groupBy(\implode(', ', $groupBy));
 
         $parameters = [];
         $this->applyFilterToQueryBuilder($queryBuilder, $filter, $parameters);

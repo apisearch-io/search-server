@@ -643,6 +643,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $platform
      * @param string|null   $itemId
      * @param string|null   $type
+     * @param string|null   $count
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -657,6 +658,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $platform = null,
         ?string $itemId = null,
         ?string $type = null,
+        ?string $count = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -686,6 +688,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'platform' => $platform,
                 'item_id' => $itemId,
                 'type' => $type,
+                'count' => $count,
             ]
         );
         self::$lastResponse = $response;
@@ -750,6 +753,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $platform
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
+     * @param string|null   $count
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -764,6 +768,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $platform = null,
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
+        ?string $count = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -793,6 +798,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'platform' => $platform,
                 'exclude_with_results' => $excludeWithResults,
                 'exclude_without_results' => $excludeWithoutResults,
+                'count' => $count,
             ]
         );
         self::$lastResponse = $response;

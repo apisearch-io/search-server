@@ -1,0 +1,20 @@
+CREATE TABLE `search_lines` (
+  `user_uuid` varchar(25) NOT NULL,
+  `app_uuid` varchar(50) NOT NULL,
+  `index_uuid` varchar(50) NOT NULL,
+  `text` varchar(50) NOT NULL,
+  `nb_of_results` int(8) NOT NULL,
+  `with_results` tinyint(1) NOT NULL,
+  `ip` varchar(16) NOT NULL,
+  `host` varchar(50) NOT NULL,
+  `platform` varchar(10) NOT NULL,
+  `time` int(8) NOT NULL,
+  KEY `time_app` (`time`, `app_uuid`),
+  KEY `time_app_index` (`time`, `app_uuid`, `index_uuid`),
+  KEY `time_app_index_platform` (`time`, `app_uuid`, `index_uuid`, `platform`),
+  KEY `time_app_index_user` (`time`, `app_uuid`, `index_uuid`, `user_uuid`),
+  KEY `time_app_with_results` (`time`, `app_uuid`, `with_results`),
+  KEY `time_app_index_with_results` (`time`, `app_uuid`, `index_uuid`, `with_results`),
+  KEY `time_app_index_platform_with_results` (`time`, `app_uuid`, `index_uuid`, `platform`, `with_results`),
+  KEY `time_app_index_user_with_results` (`time`, `app_uuid`, `index_uuid`, `user_uuid`, `with_results`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

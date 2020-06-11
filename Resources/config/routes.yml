@@ -273,7 +273,7 @@ apisearch_v1_get_top_searches_all_indices:
 # Metrics
 #
 apisearch_v1_get_metrics:
-    path: /v1/{app_id}/metrics/{index_id}/top-searches
+    path: /v1/{app_id}/indices/{index_id}/metrics
     methods: ["GET"]
     controller: Apisearch\Server\Controller\GetMetricsController
 

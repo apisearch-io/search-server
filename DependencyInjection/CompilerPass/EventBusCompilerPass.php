@@ -21,7 +21,10 @@ use Apisearch\Server\Domain\Event\IndexWasDeleted;
 use Apisearch\Server\Domain\Event\TokensWereDeleted;
 use Apisearch\Server\Domain\Event\TokenWasDeleted;
 use Apisearch\Server\Domain\Event\TokenWasPut;
+use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
+use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
+use Apisearch\Server\Domain\ImperativeEvent\LoadAllMetadata;
 use Apisearch\Server\Domain\ImperativeEvent\LoadConfigs;
 use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
 use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
@@ -46,8 +49,11 @@ class EventBusCompilerPass implements CompilerPassInterface
         $distribution = Bus::DISTRIBUTION_INLINE;
         $events = [
             FlushUsageLines::class,
+            FlushInteractions::class,
+            FlushSearches::class,
             LoadConfigs::class,
             LoadMetadata::class,
+            LoadAllMetadata::class,
             LoadTokens::class,
 
             IndexWasConfigured::class,

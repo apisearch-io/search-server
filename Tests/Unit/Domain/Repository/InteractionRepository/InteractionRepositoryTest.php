@@ -397,6 +397,87 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test unique user id.
+     */
+    public function testUniqueUserId()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $repositoryReference = $this->getDefaultRepositoryReference();
+        $user2 = 'user-2';
+        $user3 = 'user-3';
+        $itemUUID = '2~p';
+        $this->addInteraction($repository, $loop);
+        $this->addInteraction($repository, $loop, $repositoryReference, $user2, $itemUUID);
+        $this->addInteraction($repository, $loop, $repositoryReference, $user2);
+        $this->addInteraction($repository, $loop);
+        $this->addInteraction($repository, $loop);
+        $this->addInteraction($repository, $loop);
+        $this->addInteraction($repository, $loop, $repositoryReference, $user3, $itemUUID);
+        $this->addInteraction($repository, $loop, $repositoryReference, $user3);
+
+        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+
+        $interactionFilter = InteractionFilter::create($repositoryReference)->count(InteractionFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredInteractions($interactionFilter);
+        $this->assertEquals(3, $this->await($interactions, $loop));
+
+        $interactionFilter = InteractionFilter::create($repositoryReference)
+            ->byItem(ItemUUID::createByComposedUUID('1~p'))
+            ->count(InteractionFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredInteractions($interactionFilter);
+        $this->assertEquals(3, $this->await($interactions, $loop));
+
+        $interactionFilter = InteractionFilter::create($repositoryReference)
+            ->byItem(ItemUUID::createByComposedUUID('2~p'))
+            ->count(InteractionFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredInteractions($interactionFilter);
+        $this->assertEquals(2, $this->await($interactions, $loop));
+
+        $interactionFilter = InteractionFilter::create($repositoryReference)
+            ->byItem(ItemUUID::createByComposedUUID('10~p'))
+            ->count(InteractionFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredInteractions($interactionFilter);
+        $this->assertEquals(0, $this->await($interactions, $loop));
+    }
+
+    /**
+     * Test per day.
+     */
+    public function testUniqueUserIdPerDay()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $repositoryReference = $this->getDefaultRepositoryReference();
+        $user2 = 'user-2';
+        $user3 = 'user-3';
+        $user4 = 'user-4';
+
+        $this->addInteractionWhen($repository, $loop, self::DAY_31_12_2019, $user2);
+        $this->addInteractionWhen($repository, $loop, self::DAY_31_12_2019, $user3);
+        $this->addInteractionWhen($repository, $loop, self::DAY_31_12_2019);
+        $this->addInteractionWhen($repository, $loop, self::DAY_1_1_2020);
+        $this->addInteractionWhen($repository, $loop, self::DAY_1_1_2020);
+        $this->addInteractionWhen($repository, $loop, self::DAY_1_1_2020, $user2);
+        $this->addInteractionWhen($repository, $loop, self::DAY_1_1_2020, $user3);
+        $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user2);
+        $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020);
+        $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user2);
+        $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user3);
+        $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user4);
+
+        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+
+        $interactionFilter = InteractionFilter::create($repositoryReference)->perDay()->count(InteractionFilter::UNIQUE_USERS);
+        $interactions = $repository->getRegisteredInteractions($interactionFilter);
+        $this->assertEquals([
+            self::DAY_31_12_2019 => 3,
+            self::DAY_1_1_2020 => 3,
+            self::DAY_15_1_2020 => 4,
+        ], $this->await($interactions, $loop));
+    }
+
+    /**
      * Test get top interacted items.
      */
     public function testGetTopInteractedItems()
@@ -455,15 +536,17 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      * @param InteractionRepository $repository
      * @param LoopInterface         $loop
      * @param string                $when
+     * @param string                $userUUID
      */
     private function addInteractionWhen(
         InteractionRepository $repository,
         LoopInterface $loop,
-        string $when
+        string $when,
+        string $userUUID = 'user-1'
     ) {
         $promise = $repository->registerInteraction(
             $this->getDefaultRepositoryReference(),
-            'user-1',
+            $userUUID,
             ItemUUID::createByComposedUUID('1~p'),
             Origin::createEmpty(),
             InteractionType::CLICK,
