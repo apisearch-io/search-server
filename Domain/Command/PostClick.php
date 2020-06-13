@@ -28,7 +28,7 @@ use Apisearch\Server\Domain\Model\Origin;
 class PostClick extends CommandWithRepositoryReferenceAndToken implements AppRequiredCommand
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $userUUID;
 
@@ -45,14 +45,14 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param string              $userUUID
+     * @param string|null              $userUUID
      * @param ItemUUID            $itemUUID
      * @param Origin              $origin
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        string $userUUID,
+        ?string $userUUID,
         ItemUUID $itemUUID,
         Origin $origin
     ) {
@@ -63,9 +63,9 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getUserUUID(): string
+    public function getUserUUID(): ?string
     {
         return $this->userUUID;
     }

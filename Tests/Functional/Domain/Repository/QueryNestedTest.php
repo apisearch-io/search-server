@@ -18,9 +18,9 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 use Apisearch\Query\Query;
 
 /**
- * Class SearchNestedTest.
+ * Class QueryNestedTest.
  */
-trait SearchNestedTest
+trait QueryNestedTest
 {
     /**
      * Test nested values filtering field.

@@ -603,7 +603,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param string $userId
+     * @param string|null $userId
      * @param string $itemId
      * @param Origin $origin
      * @param string $appId
@@ -611,7 +611,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param Token  $token
      */
     public function click(
-        string $userId,
+        ?string $userId,
         string $itemId,
         Origin $origin,
         string $appId = null,

@@ -21,11 +21,12 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
+use Apisearch\Repository\RepositoryReference;
 
 /**
- * Class SearchTest.
+ * Class QueryTest.
  */
-trait SearchTest
+trait QueryTest
 {
     /**
      * Test get match all.
@@ -439,6 +440,32 @@ trait SearchTest
         $this->assertNotEmpty($firstItem->getMetadata());
         $this->assertNotEmpty($firstItem->getIndexedMetadata());
         $this->assertNotEmpty($firstItem->getSearchableMetadata());
+    }
+
+    /**
+     * Test repository reference
+     */
+    public function testRepositoryReference()
+    {
+        $item = $this->query(Query::createMatchAll())->getFirstItem();
+        $this->assertEquals(
+            static::$appId,
+            $item->getAppUUID()->composeUUID()
+        );
+        $this->assertEquals(
+            static::$index,
+            $item->getIndexUUID()->composeUUID()
+        );
+
+        $item = $this->query(Query::createMatchAll(), self::$appId, '*')->getFirstItem();
+        $this->assertEquals(
+            static::$appId,
+            $item->getAppUUID()->composeUUID()
+        );
+        $this->assertEquals(
+            static::$index,
+            $item->getIndexUUID()->composeUUID()
+        );
     }
 
     /**

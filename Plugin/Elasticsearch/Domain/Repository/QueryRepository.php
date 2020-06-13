@@ -20,6 +20,7 @@ use Apisearch\Model\Item;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\QueryBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\ResultBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\ElasticaWrapper;
+use Apisearch\Plugin\Elasticsearch\Domain\Parser\IndexParser;
 use Apisearch\Plugin\Elasticsearch\Domain\Polyfill;
 use Apisearch\Plugin\Elasticsearch\Domain\Search;
 use Apisearch\Plugin\Elasticsearch\Domain\WithElasticaWrapper;
@@ -262,6 +263,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
          * @var ElasticaResult
          */
         foreach ($resultSet->getResults() as $elasticaResult) {
+
             $source = $elasticaResult->getSource();
 
             if (
@@ -285,6 +287,12 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                 }
 
                 $item->setHighlights($formedHighlights);
+            }
+
+            $indexInfo = IndexParser::parseIndexName($elasticaResult->getIndex());
+            if (!is_null($indexInfo)) {
+                $composed = $indexInfo['app_uuid'] .'_'.$indexInfo['index_uuid'];
+                $item->setRepositoryReference(RepositoryReference::createFromComposed($composed));
             }
 
             $result->addItem($item);

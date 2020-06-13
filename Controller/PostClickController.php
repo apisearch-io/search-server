@@ -36,25 +36,18 @@ class PostClickController extends ControllerWithCommandBus
     public function __invoke(Request $request): Response
     {
         $query = $request->query;
-        $userUUID = $query->get('user_id');
         $itemUUID = $request->get('item_id');
 
-        if (\is_null($userUUID)) {
-            return new Response(400);
-        }
-
-        $putClick = new PostClick(
+        $this->execute(new PostClick(
             RepositoryReference::create(
                 RequestAccessor::getAppUUIDFromRequest($request),
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $userUUID,
+            $query->get('user_id'),
             ItemUUID::createByComposedUUID($itemUUID),
             $this->createOriginByRequest($request)
-        );
-
-        $this->execute($putClick);
+        ));
 
         return new Response(200);
     }

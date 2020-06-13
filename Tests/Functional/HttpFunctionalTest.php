@@ -371,7 +371,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add interaction.
      *
-     * @param string $userId
+     * @param string|null $userId
      * @param string $itemId
      * @param Origin $origin
      * @param string $appId
@@ -379,7 +379,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param Token  $token
      */
     public function click(
-        string $userId,
+        ?string $userId,
         string $itemId,
         Origin $origin,
         string $appId = null,
