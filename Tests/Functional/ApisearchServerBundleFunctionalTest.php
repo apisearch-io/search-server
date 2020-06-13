@@ -760,7 +760,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     ): array;
 
     /**
-     * @param string $userId
+     * @param string|null $userId
      * @param string $itemId
      * @param Origin $origin
      * @param string $appId
@@ -768,7 +768,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param Token  $token
      */
     abstract public function click(
-        string $userId,
+        ?string $userId,
         string $itemId,
         Origin $origin,
         string $appId = null,

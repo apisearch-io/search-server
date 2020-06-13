@@ -27,7 +27,7 @@ trait AllSearchTests
     use IndexTest;
     // use UpdateItemsTest; => Complex Data fields have to be fixed
     use ScoreStrategyTest;
-    use SearchTest;
+    use QueryTest;
     // use SearchNestedTest; => Complex Data fields have to be fixed
     use ItemsDeletionByQueryTest;
     use IndexStatusTest;
