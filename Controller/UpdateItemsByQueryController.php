@@ -41,11 +41,7 @@ class UpdateItemsByQueryController extends ControllerWithCommandBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
-        $queryAsArray = RequestAccessor::extractRequestContentObject(
-            $request,
-            Http::QUERY_FIELD,
-            InvalidFormatException::queryFormatNotValid($request->getContent())
-        );
+        $queryAsArray = RequestAccessor::extractQuery($request);
 
         $changesAsArray = RequestAccessor::extractRequestContentObject(
             $request,

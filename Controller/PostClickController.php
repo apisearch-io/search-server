@@ -37,7 +37,7 @@ class PostClickController extends ControllerWithCommandBus
     {
         $query = $request->query;
         $itemUUID = $request->get('item_id');
-
+var_dump($query->all());
         $this->execute(new PostClick(
             RepositoryReference::create(
                 RequestAccessor::getAppUUIDFromRequest($request),
