@@ -122,6 +122,10 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
     {
         $query = null;
         $indices = [$request->get('index_id', '')];
+        $withQuery = $request->get('with_query', false);
+        if (!$withQuery) {
+            return IndexUUID::createById($indices[0]);
+        }
 
         try {
             $query = RequestAccessor::extractQuery($request);

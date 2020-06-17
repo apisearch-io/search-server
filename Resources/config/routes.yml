@@ -71,6 +71,8 @@ apisearch_v1_update_items_by_query:
     path: /v1/{app_id}/indices/{index_id}/items/update-by-query
     methods: ["PUT", "POST"]
     controller: Apisearch\Server\Controller\UpdateItemsByQueryController
+    defaults:
+        with_query: true
 
 apisearch_v1_delete_items:
     path: /v1/{app_id}/indices/{index_id}/items
@@ -81,6 +83,8 @@ apisearch_v1_delete_items_by_query:
     path: /v1/{app_id}/indices/{index_id}/items/by-query
     methods: ["DELETE"]
     controller: Apisearch\Server\Controller\DeleteItemsByQueryController
+    defaults:
+        with_query: true
 
 #
 # Usage API
@@ -149,6 +153,8 @@ apisearch_v1_query:
     path: /v1/{app_id}/indices/{index_id}
     methods: ["GET"]
     controller: Apisearch\Server\Controller\QueryController
+    defaults:
+        with_query: true
 
 apisearch_v1_query_all_indices:
     path: /v1/{app_id}
@@ -156,6 +162,7 @@ apisearch_v1_query_all_indices:
     controller: Apisearch\Server\Controller\QueryController
     defaults:
         index_id: "*"
+        with_query: true
 
 #
 # Query CORS API
