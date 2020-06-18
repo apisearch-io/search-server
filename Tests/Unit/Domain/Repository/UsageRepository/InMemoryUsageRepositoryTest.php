@@ -18,6 +18,7 @@ namespace Apisearch\Server\Tests\Unit\Domain\Repository\UsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 
 /**
  * Class InMemoryUsageRepositoryTest.
@@ -30,5 +31,20 @@ class InMemoryUsageRepositoryTest extends UsageRepositoryTest
     public function getEmptyRepository(LoopInterface $loop): UsageRepository
     {
         return new InMemoryUsageRepository();
+    }
+
+    /**
+     * Get number of rows.
+     *
+     * @param UsageRepository $repository
+     *
+     * @return PromiseInterface<int>
+     */
+    public function getNumberOfRows(UsageRepository $repository): PromiseInterface
+    {
+        /*
+         * @var InMemoryUsageRepository $repository
+         */
+        return $repository->getNumberOfRows();
     }
 }

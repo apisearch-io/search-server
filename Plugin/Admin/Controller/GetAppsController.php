@@ -35,7 +35,7 @@ class GetAppsController extends ControllerWithQueryBusAsGod
      *
      * @return PromiseInterface
      */
-    public function __invoke()
+    public function __invoke(): PromiseInterface
     {
         $appUUID = AppUUID::createById('*');
 

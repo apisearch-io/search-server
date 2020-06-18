@@ -26,3 +26,8 @@ apisearch_admin_get_usage_per_day:
     controller: Apisearch\Plugin\Admin\Controller\GetUsageController
     defaults:
         per_day: true
+
+apisearch_admin_optimize_usage_lines:
+    path: /usage/optimize
+    methods: ["PUT"]
+    controller: Apisearch\Plugin\Admin\Controller\OptimizeUsageLinesController

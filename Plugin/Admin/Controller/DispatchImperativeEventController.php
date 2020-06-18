@@ -38,7 +38,7 @@ class DispatchImperativeEventController extends ControllerWithEventBus
     public function __invoke(
         Request $request,
         string $eventName
-    ) {
+    ): PromiseInterface {
         $headers = [
             'Access-Control-Allow-Origin' => $request
                 ->headers

@@ -67,7 +67,7 @@ class InMemoryUsageRepository implements TemporaryUsageRepository, ResetableRepo
                 $n
             );
         } else {
-            $this->useLines[$useLineHash]->increaseBy(1);
+            $this->useLines[$useLineHash]->increaseBy($n);
         }
 
         return resolve();
@@ -144,6 +144,60 @@ class InMemoryUsageRepository implements TemporaryUsageRepository, ResetableRepo
         }
 
         return resolve($finalUses);
+    }
+
+    /**
+     * @param DateTime $from
+     * @param DateTime $to
+     *
+     * @return PromiseInterface
+     */
+    public function optimize(
+        DateTime $from,
+        DateTime $to
+    ): PromiseInterface {
+        $fromFormatted = \intval($from->format('Ymd'));
+        $toFormatted = \intval($to->format('Ymd'));
+        $optimizedLines = [];
+
+        \array_walk($this->useLines, function (UseLine $line, $key) use ($fromFormatted, $toFormatted, &$optimizedLines) {
+            $whenFormatted = \intval($line->getWhen()->format('Ymd'));
+
+            if (
+                $whenFormatted < $fromFormatted ||
+                $whenFormatted >= $toFormatted
+            ) {
+                return;
+            }
+
+            $useLineHash = \sprintf('%s_%s_%s_%d', $line->getEvent(), $line->getAppUUID(), $line->getIndexUUID(), $line->getWhen()->format('Ymd'));
+            $n = $line->getN();
+
+            if (!\array_key_exists($useLineHash, $optimizedLines)) {
+                $optimizedLines[$useLineHash] = $line;
+            } else {
+                $optimizedLines[$useLineHash]->increaseBy($n);
+            }
+
+            unset($this->useLines[$key]);
+        });
+
+        $this->useLines = \array_merge(
+            $this->useLines,
+            $optimizedLines
+        );
+
+        return resolve();
+    }
+
+    /**
+     * Get number of rows.
+     *
+     * @return PromiseInterface<int>
+     */
+    public function getNumberOfRows(): PromiseInterface
+    {
+        return resolve(\count($this->useLines));
     }
 
     /**

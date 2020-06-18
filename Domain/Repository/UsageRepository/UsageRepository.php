@@ -55,4 +55,17 @@ interface UsageRepository
         ?DateTime $to = null,
         bool $perDay = false
     ): PromiseInterface;
+
+    /**
+     * Optimize lines.
+     *
+     * @param DateTime $from
+     * @param DateTime $to
+     *
+     * @return PromiseInterface
+     */
+    public function optimize(
+        DateTime $from,
+        DateTime $to
+    ): PromiseInterface;
 }

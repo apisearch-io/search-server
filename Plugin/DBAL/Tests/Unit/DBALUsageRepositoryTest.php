@@ -23,7 +23,9 @@ use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Credentials;
 use Drift\DBAL\Driver\SQLite\SQLiteDriver;
+use Drift\DBAL\Result;
 use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DBALUsageRepositoryTest.
@@ -87,5 +89,31 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
         $connection->executeSchema($schema);
 
         return new DBALUsageRepository($connection, $tableName);
+    }
+
+    /**
+     * Get number of rows.
+     *
+     * @param UsageRepository $repository
+     *
+     * @return PromiseInterface<int>
+     */
+    public function getNumberOfRows(UsageRepository $repository): PromiseInterface
+    {
+        /**
+         * @var DBALUsageRepository
+         */
+        $connection = $repository->getConnection();
+        $tableName = $repository->getTableName();
+
+        return $connection
+            ->query($connection
+                ->createQueryBuilder()
+                ->select('count(*) as count')
+                ->from($tableName, 'u')
+            )
+            ->then(function (Result $result) {
+                return \intval($result->fetchFirstRow()['count']);
+            });
     }
 }

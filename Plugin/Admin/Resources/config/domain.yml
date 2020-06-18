@@ -15,3 +15,7 @@ services:
 
     Apisearch\Plugin\Admin\Domain\:
         resource: '../../Domain/'
+
+    Apisearch\Plugin\Admin\Domain\CommandHandler\:
+        resource: '../../Domain/CommandHandler/'
+        tags: ["command_handler"]
