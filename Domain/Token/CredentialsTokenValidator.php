@@ -36,6 +36,7 @@ class CredentialsTokenValidator implements TokenValidator
      * @param Token     $token
      * @param string    $referrer
      * @param string    $routeName
+     * @param string[]  $routeTags
      *
      * @return PromiseInterface<bool>
      */
@@ -44,7 +45,8 @@ class CredentialsTokenValidator implements TokenValidator
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         $indexUUIDAsStringArray = $this->indexUUIDArrayToStringArray([$indexUUID]);
         $tokenIndexUUIDAsStringArray = $this->indexUUIDArrayToStringArray($token->getIndices());
@@ -64,7 +66,11 @@ class CredentialsTokenValidator implements TokenValidator
             ) &&
             (
                 empty($token->getEndpoints()) ||
-                \in_array($routeName, $token->getEndpoints())
+                \in_array($routeName, $token->getEndpoints()) ||
+                !empty(\array_intersect(
+                    $token->getEndpoints(),
+                    $routeTags
+                ))
             )
         );
     }

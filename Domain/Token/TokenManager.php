@@ -66,6 +66,7 @@ class TokenManager
      * @param TokenUUID $tokenUUID
      * @param string    $referrer
      * @param string    $routeName
+     * @param string[]  $routeTags
      *
      * @return PromiseInterface<Token>
      */
@@ -74,18 +75,20 @@ class TokenManager
         IndexUUID $indexUUID,
         TokenUUID $tokenUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         return $this
             ->locateTokenByUUID($appUUID, $tokenUUID)
-            ->then(function ($token) use ($appUUID, $tokenUUID, $indexUUID, $referrer, $routeName) {
+            ->then(function ($token) use ($appUUID, $tokenUUID, $indexUUID, $referrer, $routeName, $routeTags) {
                 return $this
                     ->isTokenValid(
                         $token,
                         $appUUID,
                         $indexUUID,
                         $referrer,
-                        $routeName
+                        $routeName,
+                        $routeTags
                     )
                     ->then(function (bool $isValid) use ($tokenUUID, $token) {
                         if (!$isValid) {
@@ -144,6 +147,7 @@ class TokenManager
      * @param IndexUUID  $indexUUID
      * @param string     $referrer
      * @param string     $routeName
+     * @param string[]   $routeTags
      *
      * @return PromiseInterface<bool>
      */
@@ -152,7 +156,8 @@ class TokenManager
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         if (\is_null($token)) {
             return resolve(false);
@@ -165,7 +170,7 @@ class TokenManager
         $promise = resolve(true);
 
         foreach ($tokenValidators as $tokenValidator) {
-            $promise = $promise->then(function (bool $isValid) use ($token, $appUUID, $indexUUID, $referrer, $routeName, $tokenValidator) {
+            $promise = $promise->then(function (bool $isValid) use ($token, $appUUID, $indexUUID, $referrer, $routeName, $routeTags, $tokenValidator) {
                 if (!$isValid) {
                     return false;
                 }
@@ -175,7 +180,8 @@ class TokenManager
                     $appUUID,
                     $indexUUID,
                     $referrer,
-                    $routeName
+                    $routeName,
+                    $routeTags
                 );
             });
         }

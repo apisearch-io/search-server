@@ -744,7 +744,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param Token  $token
      */
     abstract public static function deleteTokens(
-        string $appId,
+        string $appId = null,
         Token $token = null
     );
 

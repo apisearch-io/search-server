@@ -503,7 +503,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             'v1_delete_token',
             [
                 'app_id' => $appId ?? static::$appId,
-                'token' => $tokenUUID->composeUUID(),
+                'token_id' => $tokenUUID->composeUUID(),
             ],
             $token
         );
@@ -542,7 +542,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param Token  $token
      */
     public static function deleteTokens(
-        string $appId,
+        string $appId = null,
         Token $token = null
     ) {
         self::$lastResponse = self::makeCurl(

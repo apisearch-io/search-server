@@ -23,13 +23,13 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetTokens;
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class TokenTest.
  */
-abstract class TokenTest extends HttpFunctionalTest
+abstract class TokenTest extends CurlFunctionalTest
 {
     /**
      * Is distributed token respository.
@@ -50,11 +50,12 @@ abstract class TokenTest extends HttpFunctionalTest
         ));
 
         $this->deleteToken(TokenUUID::createById('12345'));
-        $this->assertFalse($this->checkIndex(
+        $this->expectException(InvalidTokenException::class);
+        $this->checkIndex(
             null,
             null,
             new Token(TokenUUID::createById('12345'), AppUUID::createById(self::$appId))
-        ));
+        );
     }
 
     /**
@@ -113,6 +114,7 @@ abstract class TokenTest extends HttpFunctionalTest
             [['check_health']],
             [['v2_query']],
             [['v2_query', 'check_health']],
+            [['token_management']],
         ];
     }
 
@@ -138,6 +140,8 @@ abstract class TokenTest extends HttpFunctionalTest
             self::$index,
             $token
         );
+
+        $this->getTokens(self::$appId, $token);
     }
 
     /**
@@ -149,9 +153,19 @@ abstract class TokenTest extends HttpFunctionalTest
     {
         return [
             [[]],
-            [['v1_query']],
-            [['v1_query', 'v1_delete_items']],
-            [['v1_query', 'v1_delete_items', '']],
+            [['v1_query', 'v1_get_tokens']],
+            [['v1_query', 'v1_get_tokens', 'v1_delete_items']],
+            [['v1_query', 'v1_get_tokens', 'v1_delete_items', '']],
+
+            // By complete url
+            [['apisearch_v1_query', 'apisearch_v1_get_tokens']],
+
+            // By using tags
+            [['query', 'tokens']],
+            [['v1_query', 'tokens']],
+            [['query', 'v1_get_tokens']],
+            [['v1_query', 'v1_get_tokens', 'query', 'tokens']],
+            [['v1_query', 'v1_get_tokens', 'query', 'tokens', 'v1_delete_items', '']],
         ];
     }
 
@@ -209,6 +223,7 @@ abstract class TokenTest extends HttpFunctionalTest
      */
     public function testDeleteTokens()
     {
+        $this->resetScenario();
         $this->putToken(new Token(
             TokenUUID::createById('12345'),
             AppUUID::createById(self::$appId)

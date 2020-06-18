@@ -38,6 +38,7 @@ class SecondsValidTokenValidator implements TokenValidator
      * @param Token     $token
      * @param string    $referrer
      * @param string    $routeName
+     * @param string[]  $routeTags
      *
      * @return PromiseInterface<bool>
      */
@@ -46,7 +47,8 @@ class SecondsValidTokenValidator implements TokenValidator
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         $secondsValid = $token->getMetadataValue('seconds_valid', 0);
 
