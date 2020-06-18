@@ -66,6 +66,7 @@ class RequestsLimitTokenValidator implements TokenValidator
      * @param Token     $token
      * @param string    $referrer
      * @param string    $routeName
+     * @param string[]  $routeTags
      *
      * @return PromiseInterface<bool>
      */
@@ -74,7 +75,8 @@ class RequestsLimitTokenValidator implements TokenValidator
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         $requestsLimit = $token->getMetadataValue('requests_limit', []);
         $now = new DateTime('now', new DateTimeZone('UTC'));

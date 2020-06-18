@@ -28,6 +28,7 @@ use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class TokenCheckOverHTTP.
@@ -42,13 +43,22 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
     private $tokenManager;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * TokenValidationOverHTTP constructor.
      *
-     * @param TokenManager $tokenManager
+     * @param TokenManager    $tokenManager
+     * @param RouterInterface $router
      */
-    public function __construct(TokenManager $tokenManager)
-    {
+    public function __construct(
+        TokenManager $tokenManager,
+        RouterInterface $router
+    ) {
         $this->tokenManager = $tokenManager;
+        $this->router = $router;
     }
 
     /**
@@ -65,12 +75,20 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
             return resolve();
         }
 
+        $routeName = $request->get('_route');
+        $route = $this
+            ->router
+            ->getRouteCollection()
+            ->get($routeName);
+
+        $routeTags = \explode(',', ($route->getDefault('tags') ?? ''));
+        $routeTags[] = \str_replace('apisearch_', '', $routeName);
+
         return resolve()
-            ->then(function () use ($request) {
+            ->then(function () use ($request, $routeName, $routeTags) {
                 $tokenString = RequestHelper::getTokenStringFromRequest($request);
                 $referer = $request->headers->get('Referer', '');
                 $indices = $this->getIndices($request);
-                $route = \str_replace('apisearch_', '', $request->get('_route'));
 
                 return $this
                     ->tokenManager
@@ -79,7 +97,8 @@ class TokenCheckOverHTTP implements EventSubscriberInterface
                         $indices,
                         TokenUUID::createById($tokenString),
                         $referer,
-                        $route
+                        $routeName,
+                        $routeTags
                     );
             })
             ->then(function (Token $token) use ($request) {

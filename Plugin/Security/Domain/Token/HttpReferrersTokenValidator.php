@@ -40,6 +40,7 @@ class HttpReferrersTokenValidator implements TokenValidator
      * @param Token     $token
      * @param string    $referrer
      * @param string    $routeName
+     * @param string[]  $routeTags
      *
      * @return PromiseInterface<bool>
      */
@@ -48,7 +49,8 @@ class HttpReferrersTokenValidator implements TokenValidator
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         string $referrer,
-        string $routeName
+        string $routeName,
+        array $routeTags
     ): PromiseInterface {
         $httpReferrers = $token->getMetadataValue('http_referrers', []);
 
