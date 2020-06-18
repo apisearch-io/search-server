@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Controller;
 
-use Apisearch\Http\Http;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use React\Promise\PromiseInterface;
@@ -37,6 +36,7 @@ class QueryCORSController extends ControllerWithQueryBus
     public function __invoke(Request $request): PromiseInterface
     {
         $origin = $this->createOriginByRequest($request);
+        $allowedMethod = $request->get('allowed_method', Request::METHOD_GET);
 
         return $this
             ->ask(new GetCORSPermissions(
@@ -46,10 +46,10 @@ class QueryCORSController extends ControllerWithQueryBus
                 ),
                 $origin
             ))
-            ->then(function ($origin) {
+            ->then(function ($origin) use ($allowedMethod) {
                 return false === $origin
                     ? $this->createForbiddenResponse()
-                    : $this->createPermittedResponse($origin);
+                    : $this->createPermittedResponse($origin, $allowedMethod);
             });
     }
 
@@ -57,17 +57,21 @@ class QueryCORSController extends ControllerWithQueryBus
      * Create permitted response.
      *
      * @param string $origin
+     * @param string $allowedMethod
      *
      * @return Response
      */
-    private function createPermittedResponse(string $origin): Response
-    {
+    private function createPermittedResponse(
+        string $origin,
+        string $allowedMethod
+    ): Response {
         return new Response(null, 204, [
             'Access-Control-Allow-Origin' => $origin,
-            'Access-Control-Allow-Headers' => \implode([
-                Http::TOKEN_ID_HEADER,
+            'Access-Control-Allow-Headers' => \implode(', ', [
+                'Content-Encoding',
+                'Content-Type',
             ]),
-            'Access-Control-Allow-Methods' => 'GET',
+            'Access-Control-Allow-Methods' => $allowedMethod,
         ]);
     }
 

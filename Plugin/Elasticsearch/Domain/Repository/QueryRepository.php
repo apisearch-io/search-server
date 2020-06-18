@@ -263,7 +263,6 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
          * @var ElasticaResult
          */
         foreach ($resultSet->getResults() as $elasticaResult) {
-
             $source = $elasticaResult->getSource();
 
             if (
@@ -290,8 +289,8 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
             }
 
             $indexInfo = IndexParser::parseIndexName($elasticaResult->getIndex());
-            if (!is_null($indexInfo)) {
-                $composed = $indexInfo['app_uuid'] .'_'.$indexInfo['index_uuid'];
+            if (!\is_null($indexInfo)) {
+                $composed = $indexInfo['app_uuid'].'_'.$indexInfo['index_uuid'];
                 $item->setRepositoryReference(RepositoryReference::createFromComposed($composed));
             }
 

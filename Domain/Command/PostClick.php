@@ -45,7 +45,7 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param string|null              $userUUID
+     * @param string|null         $userUUID
      * @param ItemUUID            $itemUUID
      * @param Origin              $origin
      */

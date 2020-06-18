@@ -21,7 +21,6 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
-use Apisearch\Repository\RepositoryReference;
 
 /**
  * Class QueryTest.
@@ -443,7 +442,7 @@ trait QueryTest
     }
 
     /**
-     * Test repository reference
+     * Test repository reference.
      */
     public function testRepositoryReference()
     {
