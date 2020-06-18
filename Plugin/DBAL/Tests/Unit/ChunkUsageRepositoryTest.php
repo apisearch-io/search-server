@@ -16,12 +16,15 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Tests\Unit;
 
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
+use Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Apisearch\Server\Tests\Unit\Domain\Repository\UsageRepository\UsageRepositoryTest;
+use Drift\DBAL\Result;
 use function Clue\React\Block\await;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 
 /**
  * Class ChunkUsageRepositoryTest.
@@ -77,5 +80,31 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
         $this->assertEquals(79, $rows[3]['n']);
         $this->assertEquals(23, $rows[4]['n']);
         $this->assertEquals(77, $rows[5]['n']);
+    }
+
+    /**
+     * Get number of rows.
+     *
+     * @param UsageRepository $repository
+     *
+     * @return PromiseInterface<int>
+     */
+    public function getNumberOfRows(UsageRepository $repository): PromiseInterface
+    {
+        /**
+         * @var DBALUsageRepository
+         */
+        $connection = $repository->getConnection();
+        $tableName = $repository->getTableName();
+
+        return $connection
+            ->query($connection
+                ->createQueryBuilder()
+                ->select('count(*) as count')
+                ->from($tableName, 'u')
+            )
+            ->then(function (Result $result) {
+                return \intval($result->fetchFirstRow()['count']);
+            });
     }
 }

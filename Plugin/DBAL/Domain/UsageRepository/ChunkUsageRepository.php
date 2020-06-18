@@ -21,6 +21,7 @@ use Apisearch\Server\Domain\Repository\UsageRepository\TemporaryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Clue\React\Mq\Queue;
 use DateTime;
+use Drift\DBAL\Connection;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -66,6 +67,26 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
     }
 
     /**
+     * @return Connection
+     */
+    public function getConnection(): Connection
+    {
+        return $this
+            ->persistentUsageRepository
+            ->getConnection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this
+            ->persistentUsageRepository
+            ->getTableName();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function registerEvent(
@@ -103,6 +124,21 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
                 $to,
                 $perDay
             );
+    }
+
+    /**
+     * Optimize lines.
+     *
+     * @param DateTime $from
+     * @param DateTime $to
+     *
+     * @return PromiseInterface
+     */
+    public function optimize(DateTime $from, DateTime $to): PromiseInterface
+    {
+        return $this
+            ->persistentUsageRepository
+            ->optimize($from, $to);
     }
 
     /**

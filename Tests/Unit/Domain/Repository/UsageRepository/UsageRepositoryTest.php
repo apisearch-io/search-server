@@ -23,6 +23,7 @@ use function Clue\React\Block\await;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
+use React\Promise\PromiseInterface;
 
 /**
  * Class UsageRepositoryTest.
@@ -97,6 +98,15 @@ abstract class UsageRepositoryTest extends TestCase
     {
         return 0;
     }
+
+    /**
+     * Get number of rows.
+     *
+     * @param UsageRepository $repository
+     *
+     * @return PromiseInterface<int>
+     */
+    abstract public function getNumberOfRows(UsageRepository $repository): PromiseInterface;
 
     /**
      * Test.
@@ -244,6 +254,63 @@ abstract class UsageRepositoryTest extends TestCase
                 ), $loop)
             );
         }
+    }
+
+    /**
+     * Test optimize.
+     */
+    public function testOptimize()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $this->saveEvents($repository, $loop, $this->getEvents());
+        $this->saveEvents($repository, $loop, $this->getEvents());
+        $this->saveEvents($repository, $loop, $this->getEvents());
+        $this->saveEvents($repository, $loop, $this->getEvents());
+
+        await($repository->optimize(
+            \DateTime::createFromFormat('Ymd', \strval(static::DAY_MINUS_INF)),
+            \DateTime::createFromFormat('Ymd', \strval(static::DAY_INF))
+        ), $loop);
+        $this->assertEquals(23, await($this->getNumberOfRows($repository), $loop));
+        $this->assertEquals([
+            'q' => 1736,
+            'ii' => 2320,
+        ], await($repository->getRegisteredEvents(
+            RepositoryReference::createFromComposed('a1_i1'),
+            null,
+            \DateTime::createFromFormat('Ymd', \strval(static::DAY_31_12_2019))
+        ), $loop));
+
+        $this->assertEquals([
+            self::DAY_1_1_2020 => [
+                'q' => 252,
+            ],
+            self::DAY_15_1_2020 => [
+                'q' => 48,
+                'ii' => 1864,
+            ],
+            self::DAY_1_2_2020 => [
+                'q' => 316,
+                'ii' => 356,
+            ],
+            self::DAY_15_2_2020 => [
+                'q' => 308,
+            ],
+            self::DAY_1_3_2020 => [
+                'ii' => 12,
+            ],
+            self::DAY_1_5_2020 => [
+                'q' => 812,
+                'ii' => 88,
+            ],
+        ], await($repository->getRegisteredEvents(
+            RepositoryReference::createFromComposed('a1_i1'),
+            null,
+            \DateTime::createFromFormat('Ymd', \strval(static::DAY_31_12_2019)),
+            \DateTime::createFromFormat('Ymd', \strval(static::DAY_INF)),
+            true
+        ), $loop));
     }
 
     /**

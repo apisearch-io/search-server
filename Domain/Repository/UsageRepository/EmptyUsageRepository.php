@@ -66,6 +66,19 @@ class EmptyUsageRepository implements UsageRepository, TemporaryUsageRepository
     }
 
     /**
+     * Optimize lines.
+     *
+     * @param DateTime $from
+     * @param DateTime $to
+     *
+     * @return PromiseInterface
+     */
+    public function optimize(DateTime $from, DateTime $to): PromiseInterface
+    {
+        return resolve([]);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAndResetUseLines(): array

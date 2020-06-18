@@ -20,6 +20,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use DateTime;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
 use function React\Promise\resolve;
@@ -50,6 +51,22 @@ class DBALUsageRepository implements UsageRepository
     ) {
         $this->connection = $connection;
         $this->tableName = $usageLinesTable;
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this->tableName;
     }
 
     /**
@@ -93,7 +110,6 @@ class DBALUsageRepository implements UsageRepository
         }
 
         $queryBuilder = $this
-            ->connection
             ->createQueryBuilder()
             ->from($this->tableName, 'u')
             ->where('u.time >= ?')
@@ -148,6 +164,54 @@ class DBALUsageRepository implements UsageRepository
     }
 
     /**
+     * @param DateTime $from
+     * @param DateTime $to
+     *
+     * @return PromiseInterface
+     */
+    public function optimize(
+        DateTime $from,
+        DateTime $to
+    ): PromiseInterface {
+        return $this
+            ->connection
+            ->query($this
+                ->createQueryBuilder()
+                ->select('u.*, sum(n) as n')
+                ->from($this->tableName, 'u')
+                ->where('u.time >= ?')
+                ->andWhere('u.time < ?')
+                ->groupBy('u.event, u.app_uuid, u.index_uuid, u.time')
+                ->setParameters([
+                    $from->format('Ymd'),
+                    $to->format('Ymd'),
+                ])
+            )
+            ->then(function (Result $result) use ($from, $to) {
+                $optimizedRows = $result->fetchAllRows();
+
+                return $this
+                    ->connection
+                    ->query(
+                        $this
+                        ->createQueryBuilder()
+                        ->delete($this->tableName)
+                        ->where('time >= ?')
+                        ->andWhere('time < ?')
+                        ->setParameters([
+                            $from->format('Ymd'),
+                            $to->format('Ymd'),
+                        ])
+                    )
+                    ->then(function (Result $result) use ($optimizedRows) {
+                        foreach ($optimizedRows as $row) {
+                            $this->connection->insert($this->tableName, $row);
+                        }
+                    });
+            });
+    }
+
+    /**
      * Format results.
      *
      * @param array $rows
@@ -184,5 +248,17 @@ class DBALUsageRepository implements UsageRepository
         }
 
         return $indexedRows;
+    }
+
+    /**
+     * Create query builder.
+     *
+     * @return QueryBuilder
+     */
+    private function createQueryBuilder(): QueryBuilder
+    {
+        return $this
+            ->connection
+            ->createQueryBuilder();
     }
 }
