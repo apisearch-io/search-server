@@ -228,7 +228,7 @@ trait InteractionRepositoryTest
     }
 
     /**
-     * Test click without user
+     * Test click without user.
      */
     public function testClickWithoutUser()
     {

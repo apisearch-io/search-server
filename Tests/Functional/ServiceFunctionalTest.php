@@ -604,11 +604,11 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
 
     /**
      * @param string|null $userId
-     * @param string $itemId
-     * @param Origin $origin
-     * @param string $appId
-     * @param string $indexId
-     * @param Token  $token
+     * @param string      $itemId
+     * @param Origin      $origin
+     * @param string      $appId
+     * @param string      $indexId
+     * @param Token       $token
      */
     public function click(
         ?string $userId,

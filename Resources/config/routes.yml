@@ -187,6 +187,13 @@ apisearch_v1_post_click:
     methods: ["POST"]
     controller: Apisearch\Server\Controller\PostClickController
 
+apisearch_v1_post_click_preflight:
+    path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+    defaults:
+        allowed_method: POST
+
 apisearch_v1_get_interactions:
     path: /v1/{app_id}/indices/{index_id}/interactions
     methods: ["GET"]
@@ -288,6 +295,18 @@ apisearch_v1_get_metrics_all_indices:
     path: /v1/{app_id}/metrics
     methods: ["GET"]
     controller: Apisearch\Server\Controller\GetMetricsController
+    defaults:
+        index_id: "*"
+
+apisearch_v1_get_metrics_preflight:
+    path: /v1/{app_id}/indices/{index_id}/metrics
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
+
+apisearch_v1_get_metrics_all_indices_preflight:
+    path: /v1/{app_id}/metrics
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Controller\QueryCORSController
     defaults:
         index_id: "*"
 

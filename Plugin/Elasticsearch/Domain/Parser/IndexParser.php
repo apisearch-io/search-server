@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Elasticsearch\Domain\Parser;
 
 /**
- * Class IndexParser
+ * Class IndexParser.
  */
 class IndexParser
 {
@@ -25,13 +25,13 @@ class IndexParser
      *
      * @return array|null
      */
-    public static function parseIndexName(string $indexName) : ?array
+    public static function parseIndexName(string $indexName): ?array
     {
-        $regexToParse = "~apisearch_.+?_item_(?P<app_uuid>.+?)_(?P<index_uuid>.+)~";
+        $regexToParse = '~apisearch_.+?_item_(?P<app_uuid>.+?)_(?P<index_uuid>.+)~';
         \preg_match($regexToParse, $indexName, $match);
         if (
-            !array_key_exists('app_uuid', $match) ||
-            !array_key_exists('index_uuid', $match)
+            !\array_key_exists('app_uuid', $match) ||
+            !\array_key_exists('index_uuid', $match)
         ) {
             return null;
         }

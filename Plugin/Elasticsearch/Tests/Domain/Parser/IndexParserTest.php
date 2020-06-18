@@ -19,19 +19,19 @@ use Apisearch\Plugin\Elasticsearch\Domain\Parser\IndexParser;
 use Apisearch\Server\Tests\Unit\BaseUnitTest;
 
 /**
- * Class IndexParserTest
+ * Class IndexParserTest.
  */
 class IndexParserTest extends BaseUnitTest
 {
     /**
-     * Test parser
+     * Test parser.
      */
     public function testParser()
     {
         $this->assertEquals(
             [
                 'app_uuid' => '26178621test',
-                'index_uuid' => 'default'
+                'index_uuid' => 'default',
             ],
             IndexParser::parseIndexName('apisearch_478464003358_item_26178621test_default')
         );
