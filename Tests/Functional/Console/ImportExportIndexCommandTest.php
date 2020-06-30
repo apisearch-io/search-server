@@ -25,53 +25,53 @@ trait ImportExportIndexCommandTest
      */
     public function testIndexImportAndExport()
     {
-        $fileName = \tempnam('/tmp', 'test-apisearch');
-
         static::runCommand([
             'command' => 'apisearch-server:create-index',
             'app-id' => self::$appId,
             'index' => self::$index,
         ]);
 
-        $importOutput = static::runCommand([
+        static::runCommand([
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
-        $this->assertTrue(
-            \strpos($importOutput, 'Partial import of 28 items') >= 0
-        );
-
-        $exportOutput = static::runCommand([
+        \ob_start();
+        static::runCommand([
             'command' => 'apisearch-server:export-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => $fileName,
+            '--format' => 'source',
+            '--quiet' => true,
         ]);
+        $exportSourceOutput = \ob_get_contents();
+        \ob_end_clean();
 
         $this->assertEquals(
-            \file_get_contents(__DIR__.'/data.as'),
-            \file_get_contents($fileName)
+            \file_get_contents(__DIR__.'/data.source.as'),
+            $exportSourceOutput
         );
 
-        $this->assertTrue(
-            \strpos($exportOutput, 'Partial export of 28 items') >= 0
-        );
-
+        \ob_start();
         static::runCommand([
-            'command' => 'apisearch-server:delete-index',
+            'command' => 'apisearch-server:export-index',
             'app-id' => self::$appId,
             'index' => self::$index,
+            '--format' => 'standard',
+            '--quiet' => true,
         ]);
+        $exportStandardOutput = \ob_get_contents();
+        \ob_end_clean();
 
-        static::runCommand([
-            'command' => 'apisearch-server:delete-index',
-            'app-id' => self::$appId,
-            'index' => 'anotherindexforexport',
-        ]);
+        $this->assertNotEquals($exportSourceOutput, $exportStandardOutput);
 
-        @\unlink($fileName);
+        $this->assertEquals(
+            \file_get_contents(__DIR__.'/data.standard.as'),
+            $exportStandardOutput
+        );
+
+        static::resetScenario();
     }
 }

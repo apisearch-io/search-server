@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
+use Apisearch\Exception\ConnectionException;
 use Apisearch\Query\Query;
 use Apisearch\Server\Tests\Functional\InaccessibleHttpFunctionalTest;
 
@@ -25,11 +26,10 @@ class InaccessibleServerTest extends InaccessibleHttpFunctionalTest
 {
     /**
      * Test check health with different tokens.
-     *
-     * @expectedException \Apisearch\Exception\ConnectionException
      */
     public function testSimpleQuery(): void
     {
+        $this->expectException(ConnectionException::class);
         $this->query(Query::createMatchAll());
     }
 }

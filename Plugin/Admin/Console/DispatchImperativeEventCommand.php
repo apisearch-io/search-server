@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Console;
 
 use Apisearch\Plugin\Admin\Domain\ImperativeEvents;
-use Apisearch\Server\Console\CommandWithEventBusAndGodToken;
+use Apisearch\Server\Console\ApisearchServerCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,12 +24,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class SendImperativeEventCommand.
  */
-class DispatchImperativeEventCommand extends CommandWithEventBusAndGodToken
+class DispatchImperativeEventCommand extends ApisearchServerCommand
 {
     /**
      * @var string
      */
-    protected static $defaultName = 'apisearch-admin:dispatch-imperative-event';
+    protected static $defaultName = 'apisearch-server:dispatch-imperative-event';
 
     /**
      * Configures the current command.

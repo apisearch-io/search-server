@@ -33,8 +33,8 @@ class ServerMemoryControlTest extends CurlFunctionalTest
     {
         $this->loadMassiveIndexItems(10000);
         $actions = [
-            fn () => $this->exportIndex(true),
-            fn () => $this->exportIndex(false),
+            fn () => $this->exportIndex('source'),
+            fn () => $this->exportIndex('standard'),
             fn () => $this->checkIndex(),
             fn () => $this->checkHealth(),
             fn () => $this->checkHealth(),

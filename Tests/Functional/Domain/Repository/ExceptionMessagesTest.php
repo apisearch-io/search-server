@@ -44,5 +44,33 @@ trait ExceptionMessagesTest
         } catch (ResourceNotAvailableException $exception) {
             $this->assertContains('failed to parse', $exception->getMessage());
         }
+
+        try {
+            $this->indexItems([
+                Item::createFromArray([
+                    'uuid' => [
+                        'id' => '10',
+                        'type' => 'lol',
+                    ],
+                    'metadata' => [
+                        'field' => true,
+                    ],
+                ]),
+                Item::createFromArray([
+                    'uuid' => [
+                        'id' => '10',
+                        'type' => 'lol',
+                    ],
+                    'metadata' => [
+                        'field' => 'a_text_instead_of_a_bool',
+                    ],
+                ]),
+            ]);
+            $this->fail('An exception should be thrown');
+        } catch (ResourceNotAvailableException $exception) {
+            $this->assertContains('failed to parse', $exception->getMessage());
+        }
+
+        static::resetScenario();
     }
 }

@@ -145,10 +145,11 @@ class InMemoryRepository implements FullRepository, ResetableRepository
         return resolve()
             ->then(function () use ($repositoryReference, $indexUUID) {
                 $appUUID = $repositoryReference->getAppUUID();
-                $this->throwExceptionIfNonExistingIndex(
-                    $appUUID->composeUUID(),
-                    $indexUUID->composeUUID()
-                );
+                $appUUIDComposed = $appUUID->composeUUID();
+                $indexUUIDComposed = $indexUUID->composeUUID();
+                $this->throwExceptionIfNonExistingIndex($appUUIDComposed, $indexUUIDComposed);
+
+                $this->indices[$appUUIDComposed][$indexUUIDComposed]['items'] = [];
             });
     }
 
@@ -291,14 +292,12 @@ class InMemoryRepository implements FullRepository, ResetableRepository
     }
 
     /**
-     * Throw exception if index not exists.
-     *
      * @param string $appUUIDComposed
      * @param string $indexUUIDComposed
      *
      * @throws ResourceNotAvailableException
      */
-    private function throwExceptionIfNonExistingIndex(
+    protected function throwExceptionIfNonExistingIndex(
         string $appUUIDComposed,
         string $indexUUIDComposed
     ) {
@@ -312,8 +311,6 @@ class InMemoryRepository implements FullRepository, ResetableRepository
     }
 
     /**
-     * Set index.
-     *
      * @param AppUUID   $appUUID
      * @param IndexUUID $indexUUID
      * @param Config    $config

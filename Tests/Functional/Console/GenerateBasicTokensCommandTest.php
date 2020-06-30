@@ -31,7 +31,6 @@ trait GenerateBasicTokensCommandTest
      */
     public function testTokenCreation()
     {
-        $this->expectNotToPerformAssertions();
         static::runCommand([
             'command' => 'apisearch-server:create-index',
             'app-id' => self::$appId,
@@ -58,11 +57,7 @@ trait GenerateBasicTokensCommandTest
         $this->query(Query::createMatchAll(), null, null, $adminToken);
         $this->query(Query::createMatchAll(), null, null, $queryToken);
 
-        try {
-            $this->query(Query::createMatchAll(), null, null, $interactionsToken);
-            $this->fail('Query endpoint should not be accessible with an interactions token');
-        } catch (InvalidTokenException $e) {
-            // Silent pass
-        }
+        $this->expectException(InvalidTokenException::class);
+        $this->query(Query::createMatchAll(), null, null, $interactionsToken);
     }
 }

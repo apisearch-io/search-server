@@ -479,6 +479,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Export index.
      *
+     * @param string $format
      * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
@@ -487,11 +488,29 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @return Item[]
      */
     abstract public function exportIndex(
+        string $format,
         bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null
     ): array;
+
+    /**
+     * Import index.
+     *
+     * @param string $feed
+     * @param bool   $detached
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     */
+    abstract public function importIndex(
+        string $feed,
+        bool $detached = false,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
 
     /**
      * Delete using the bus.
@@ -987,5 +1006,22 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             $this->get('drift.event_bus.test')->dispatch($event)
         );
         static::usleep(10000);
+    }
+
+    /**
+     * Create import file.
+     *
+     * @param int $n
+     */
+    public function createImportFile(int $n)
+    {
+        @\unlink("/tmp/dump.$n.apisearch");
+        $data = 'uid|type|title|link|image|categories|attributes'.PHP_EOL;
+        $row = 'album|Julie & Carol at Lincoln Center|http://www.allmusic.com/album/julie-carol-at-lincoln-center-mw0000270036|http://cdn-s3.allmusic.com/release-covers/500/0001/149/0001149773.jpg|id##MA0000004432~~name##Stage & Screen~~slug##MA0000004432 && id##MA0000011877~~name##Vocal~~slug##MA0000011877|[in]rating=3 %% [in]year=1989 %% [i]auther=id##julie-andrews-mn0000314113~~name##Julie Andrews~~slug##julie-andrews-mn0000314113~~img##http://cps-static.rovicorp.com/3/JPG_400/MI0001/400/MI0001400285.jpg?partner=allrovi.com'.PHP_EOL;
+        for ($i = 0; $i < $n; ++$i) {
+            $data .= 'mw0000'.$i.'|'.$row;
+        }
+
+        \file_put_contents("/tmp/dump.$n.apisearch", $data);
     }
 }

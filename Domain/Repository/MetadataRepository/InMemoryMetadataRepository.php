@@ -28,7 +28,7 @@ class InMemoryMetadataRepository extends MetadataRepository implements Resetable
     /**
      * @var array
      */
-    private $storedMetadata = [];
+    protected $storedMetadata = [];
 
     /**
      * @param RepositoryReference $repositoryReference

@@ -77,6 +77,13 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                 'Query parameters',
                 []
+            )
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Output format. Can be "list" or "json"',
+                'list'
             );
     }
 
@@ -92,6 +99,25 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
         $parameters = $input->getOption('parameter');
+        $format = $input->getOption('format');
+
+        if ('json' === $format) {
+            $result = $this->askAndWait(new Query(
+                $objects['repository_reference'],
+                $objects['token'],
+                ModelQuery::create(
+                    $input->getArgument('query'),
+                    (int) $input->getOption('page'),
+                    (int) $input->getOption('size')
+                ),
+                Origin::createEmpty(),
+                $parameters
+            ));
+
+            echo \json_encode($result->toArray());
+
+            return 0;
+        }
 
         BaseQueryCommand::makeQueryAndPrintResults(
             $input,
@@ -106,6 +132,8 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
                 ));
             }
         );
+
+        return 0;
     }
 
     /**

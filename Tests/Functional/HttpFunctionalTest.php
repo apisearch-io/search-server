@@ -84,6 +84,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param string $format
      * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
@@ -92,11 +93,31 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        string $format,
         bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
         Token $token = null
     ): array {
+        $this->markTestSkipped('Method not allowed. Skipping');
+    }
+
+    /**
+     * Import index.
+     *
+     * @param string $feed
+     * @param bool   $detached
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     */
+    public function importIndex(
+        string $feed,
+        bool $detached = false,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
         $this->markTestSkipped('Method not allowed. Skipping');
     }
 

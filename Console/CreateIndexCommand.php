@@ -26,6 +26,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class CreateIndexCommand.
@@ -49,18 +50,21 @@ class CreateIndexCommand extends CommandWithCommandBusAndGodToken
      *
      * @param InlineCommandBus $commandBus
      * @param LoopInterface    $loop
+     * @param KernelInterface  $kernel
      * @param string           $godToken
      * @param SynonymReader    $synonymReader
      */
     public function __construct(
         InlineCommandBus $commandBus,
         LoopInterface $loop,
+        KernelInterface $kernel,
         string $godToken,
         SynonymReader $synonymReader
     ) {
         parent::__construct(
             $commandBus,
             $loop,
+            $kernel,
             $godToken
         );
 

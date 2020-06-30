@@ -22,6 +22,8 @@ trait QueryCommandTest
 {
     /**
      * Test query.
+     *
+     * @group lele
      */
     public function testQuery()
     {
@@ -37,7 +39,7 @@ trait QueryCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
         $content = static::runCommand([
@@ -46,64 +48,68 @@ trait QueryCommandTest
             'index' => self::$index,
         ]);
 
-        $this->assertTrue(
-            false !== \strpos($content, '* / 1 / 10')
-        );
-
-        $this->assertTrue(
-            false !== \strpos($content, ' 28')
-        );
-
-        $this->assertTrue(
-            false !== \strpos($content, 'siege_vol_1_1~book')
-        );
+        $this->assertContains('* / 1 / 10', $content);
+        $this->assertContains('[Number of hits] 750', $content);
+        $this->assertContains('mw0002400465~album - 15th Anniversary Collection', $content);
+        $this->assertContains('mw0002138578~album - Kelopuu: Pohjolan Molli', $content);
 
         $content2 = static::runCommand([
             'command' => 'apisearch-server:query',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'query' => 'Robert Grayson',
+            'query' => 'Into',
         ]);
 
-        $this->assertTrue(
-            false !== \strpos($content2, 'Robert Grayson / 1 / 10')
-        );
-
-        $this->assertTrue(
-            false !== \strpos($content2, ' 4')
-        );
-
-        $this->assertfalse(
-            \strpos($content2, 'siege_vol_1_1~book')
-        );
-
-        $this->assertTrue(
-            false !== \strpos($content2, 'marvel_boy:_the_uranian_vol_1_3~book')
-        );
+        $this->assertContains('Into / 1 / 10', $content2);
+        $this->assertContains('[Number of hits] 7', $content2);
+        $this->assertContains('Into a Real Thing', $content2);
+        $this->assertContains('Riding the Light Into the Birds Eye', $content2);
 
         $content3 = static::runCommand([
             'command' => 'apisearch-server:query',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'query' => 'Robert Grayson',
+            'query' => 'Into',
             '--page' => 1,
             '--size' => 2,
         ]);
 
-        $this->assertTrue(
-            false !== \strpos($content3, 'Robert Grayson / 1 / 2')
-        );
+        $this->assertContains('Into / 1 / 2', $content3);
+        $this->assertContains('[Number of hits] 7', $content3);
+        $this->assertContains('Into Your Ears', $content3);
+        $this->assertNotContains('Into a Real Thing', $content3);
 
-        $this->assertTrue(
-            false !== \strpos($content3, ' 4')
-        );
+        $content3 = static::runCommand([
+            'command' => 'apisearch-server:query',
+            'app-id' => self::$appId,
+            'index' => self::$index,
+            'query' => 'Into',
+            '--page' => 2,
+            '--size' => 2,
+            '--format' => 'lines',
+        ]);
 
-        $this->assertfalse(
-            \strpos($content3, 'siege_vol_1_1~book')
-        );
+        $this->assertContains('Into / 2 / 2', $content3);
+        $this->assertContains('[Number of hits] 7', $content3);
+        $this->assertNotContains('Into Your Ears', $content3);
+        $this->assertContains('Into a Real Thing', $content3);
 
-        $this->assertTrue(
-            false !== \strpos($content3, 'marvel_boy:_the_uranian_vol_1_1~book')
-        );
+        \ob_start();
+        static::runCommand([
+            'command' => 'apisearch-server:query',
+            'app-id' => self::$appId,
+            'index' => self::$index,
+            'query' => 'Into',
+            '--page' => 3,
+            '--size' => 2,
+            '--format' => 'json',
+            '--quiet' => true,
+        ]);
+        $content4 = \ob_get_contents();
+        \ob_end_clean();
+
+        $result4 = \json_decode($content4, true);
+        $this->assertEquals(7, $result4['total_hits']);
+        $this->assertCount(2, $result4['items']);
     }
 }

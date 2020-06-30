@@ -15,8 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Console;
 
-use Apisearch\Command\ImportIndexCommand as BaseImportIndexCommand;
-use Apisearch\Server\Domain\Command\IndexItems;
+use Apisearch\Server\Domain\Command\ImportIndex;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -49,9 +48,9 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
                 'Index name'
             )
             ->addArgument(
-                'file',
+                'source',
                 InputArgument::REQUIRED,
-                'File'
+                'Source feed. Can be a local file or an HTTP resource'
             );
     }
 
@@ -66,19 +65,14 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $file = $input->getArgument('file');
 
-        return BaseImportIndexCommand::importFromFile(
-            $file,
-            $output,
-            function (array $items, bool $lastIteration) use ($objects) {
-                $this->executeAndWait(new IndexItems(
-                    $objects['repository_reference'],
-                    $objects['token'],
-                    $items
-                ));
-            }
-        );
+        $this->executeAndWait(new ImportIndex(
+            $objects['repository_reference'],
+            $this->createGodToken($objects['app_uuid']),
+            $input->getArgument('source')
+        ));
+
+        return 0;
     }
 
     /**
@@ -103,6 +97,6 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return \sprintf('Imported %d items into index', $result);
+        return 'Index imported from file.';
     }
 }

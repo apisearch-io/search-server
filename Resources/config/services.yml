@@ -9,6 +9,15 @@ services:
             int $numberOfResultsLimitation: "%apisearch_server.limitations_number_of_results%"
             array $enabledPlugins: "%apisearch_server.enabled_plugins%"
 
+    #
+    # Aux services
+    #
+    React\HttpClient\Client:
+    Clue\React\Buzz\Browser:
+
+    #
+    # Services
+    #
     Apisearch\Server\Controller\:
         resource: '../../Controller'
         tags: ["controller.service_arguments"]
@@ -42,6 +51,7 @@ services:
     # Repositories
     #
     Apisearch\Server\Domain\Repository\InMemoryRepository:
+    Apisearch\Server\Domain\Repository\NoItemsInMemoryRepository:
     Apisearch\Server\Domain\Repository\AppRepository\IndexRepository:
         alias: Apisearch\Server\Domain\Repository\InMemoryRepository
 
@@ -73,8 +83,11 @@ services:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository
 
     Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository:
+    Apisearch\Server\Domain\Repository\MetadataRepository\DiskMetadataRepository:
+        arguments:
+            - "%apisearch_server.metadata_disk_repository_path%"
     Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository:
-        alias: Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository
+        alias: Apisearch\Server\Domain\Repository\MetadataRepository\DiskMetadataRepository
 
     Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository:
     Apisearch\Server\Domain\Repository\InteractionRepository\TemporaryInteractionRepository:
@@ -109,6 +122,23 @@ services:
     #
     Apisearch\Server\Domain\Formatter\:
         resource: '../../Domain/Formatter/'
+
+    #
+    # Resources
+    #
+    Apisearch\Server\Domain\Resource\:
+        resource: '../../Domain/Resource/'
+
+
+    #
+    # Format
+    #
+    Apisearch\Server\Domain\Format\StandardFormatTransformer:
+    Apisearch\Server\Domain\Format\SourceFormatTransformer:
+    Apisearch\Server\Domain\Format\FormatTransformers:
+        calls:
+            - [addFormatTransformer, ['@Apisearch\Server\Domain\Format\StandardFormatTransformer']]
+            - [addFormatTransformer, ['@Apisearch\Server\Domain\Format\SourceFormatTransformer']]
 
     #
     # Plugin

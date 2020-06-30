@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware\ComplexFields;
 
+use Apisearch\Model\Item;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Query\Query;
@@ -38,7 +39,9 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
          */
         $query = $command->getQuery();
         $repositoryReference = $command->getRepositoryReference();
-        $complexFields = $this->metadataRepository->get($repositoryReference, static::COMPLEX_FIELDS_METADATA);
+        $complexFields = $this
+            ->metadataRepository
+            ->get($repositoryReference, static::COMPLEX_FIELDS_METADATA);
 
         if (empty($complexFields)) {
             return $next($command);
@@ -50,23 +53,10 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
         return $next($command)
             ->then(function (Result $result) use ($complexFields) {
-                foreach ($result->getItems() as $item) {
-                    $metadata = $item->getMetadata();
-                    $indexedMetadata = $item->getIndexedMetadata();
-
-                    foreach ($complexFields as $complexField) {
-                        if (\array_key_exists($complexField, $metadata)) {
-                            $indexedMetadata[$complexField] = \json_decode($metadata[$complexField], true);
-                            unset($metadata[$complexField]);
-                        }
-
-                        unset($indexedMetadata[$complexField.'_id']);
-                        unset($indexedMetadata[$complexField.'_data']);
-                    }
-
-                    $item->setMetadata($metadata);
-                    $item->setIndexedMetadata($indexedMetadata);
-                }
+                $items = $result->getItems();
+                \array_walk($items, function (Item $item) use ($complexFields) {
+                    $this->exportComplexFieldsItem($item, $complexFields);
+                });
 
                 return $result;
             });

@@ -37,6 +37,7 @@ use React\Promise\PromiseInterface;
 use React\Stream\DuplexStreamInterface;
 use React\Stream\ThroughStream;
 use React\Stream\TransformerStream;
+use React\Stream\Util;
 
 /**
  * Class QueryRepository.
@@ -135,9 +136,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                     });
 
                 $sourceStream->pipe($elasticaTransformer);
-                $elasticaTransformer->on('close', function () use ($sourceStream) {
-                    $sourceStream->close();
-                });
+                Util::forwardEvents($elasticaTransformer, $sourceStream, ['close']);
             });
 
         return resolve($stream);

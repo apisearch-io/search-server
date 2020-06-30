@@ -39,7 +39,7 @@ trait ConfigureIndexCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
         $this->assertEquals(
@@ -52,12 +52,12 @@ trait ConfigureIndexCommandTest
             'app-id' => self::$appId,
             'index' => self::$index,
             '--synonym' => [
-                'robert, efervescencio',
+                'Beethoven, efervescencio',
             ],
         ]);
 
         $this->assertEquals(
-            2,
+            1,
             $this->query(Query::create('efervescencio'))->getTotalHits()
         );
 
@@ -65,7 +65,7 @@ trait ConfigureIndexCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
         $this->assertTrue(
@@ -96,7 +96,7 @@ trait ConfigureIndexCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
         $this->assertEquals(
@@ -112,7 +112,7 @@ trait ConfigureIndexCommandTest
         ]);
 
         $this->assertEquals(
-            2,
+            1,
             $this->query(Query::create('efervescencio'))->getTotalHits()
         );
 
@@ -120,7 +120,7 @@ trait ConfigureIndexCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'file' => __DIR__.'/data.as',
+            'source' => 'file://'.__DIR__.'/data.source.as',
         ]);
 
         $this->assertTrue(

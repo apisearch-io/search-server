@@ -18,6 +18,7 @@ namespace Apisearch\Server\Console;
 use Clue\React\Block;
 use Drift\CommandBus\Bus\QueryBus;
 use React\EventLoop\LoopInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class CommandWithQueryBusAndGodToken.
@@ -34,16 +35,18 @@ abstract class CommandWithQueryBusAndGodToken extends ApisearchServerCommand
     /**
      * Controller constructor.
      *
-     * @param QueryBus      $queryBus
-     * @param LoopInterface $loop
-     * @param string        $godToken
+     * @param QueryBus        $queryBus
+     * @param LoopInterface   $loop
+     * @param KernelInterface $kernel
+     * @param string          $godToken
      */
     public function __construct(
         QueryBus $queryBus,
         LoopInterface $loop,
+        KernelInterface $kernel,
         string $godToken
     ) {
-        parent::__construct($loop, $godToken);
+        parent::__construct($loop, $kernel, $godToken);
 
         $this->queryBus = $queryBus;
     }

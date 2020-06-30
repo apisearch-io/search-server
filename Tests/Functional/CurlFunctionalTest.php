@@ -152,6 +152,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param string $format
      * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
@@ -160,6 +161,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        string $format,
         bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
@@ -172,7 +174,9 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'index_id' => $index ?? static::$index,
             ],
             $token,
-            [],
+            [
+                'format' => $format,
+            ],
             $closeImmediately
         );
 
@@ -180,14 +184,43 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             return [];
         }
 
-        $rows = \explode(PHP_EOL, $content['body']['message']);
+        $rows = \explode("\n", $content['body']['message']);
         $rows = \array_filter($rows, function ($row) {
             return !empty($row);
         });
 
-        return \array_map(function (string $row) {
-            return Item::createFromArray(\json_decode($row, true));
-        }, $rows);
+        return $rows;
+    }
+
+    /**
+     * Import index.
+     *
+     * @param string $feed
+     * @param bool   $detached
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     */
+    public function importIndex(
+        string $feed,
+        bool $detached = false,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        self::$lastResponse = $this->makeCurl(
+            'v1_import_index',
+            [
+                'app_id' => $appId ?? static::$appId,
+                'index_id' => $index ?? static::$index,
+            ],
+            $token,
+            [],
+            [
+                'feed' => $feed,
+                'detached' => $detached,
+            ]
+        );
     }
 
     /**
@@ -1111,7 +1144,9 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             return [];
         }
 
+        \ob_flush();
         $contents = \stream_get_contents($stream);
+        \ob_flush();
 
         \fclose($stream);
         $headers = $http_response_header;

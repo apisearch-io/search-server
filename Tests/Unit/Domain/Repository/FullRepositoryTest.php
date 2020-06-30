@@ -456,6 +456,21 @@ abstract class FullRepositoryTest extends BaseUnitTest
     }
 
     /**
+     * Test reset index.
+     */
+    public function testResetIndex()
+    {
+        $repository = $this->getFullRepository();
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+        $this->await($repository->resetIndex($repositoryReference, $repositoryReference->getIndexUUID()));
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()));
+        $this->assertEquals(0, $result->getTotalHits());
+    }
+
+    /**
      * Create RepositoryReference.
      *
      * @param string|null $appId

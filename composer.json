@@ -36,7 +36,7 @@
     "react/mysql": "^0.5.0",
     "clue/buzz-react": "^2",
     "clue/mq-react": "^1",
-    "clue/ndjson-react": "^1",
+    "clue/reactphp-csv": "*",
 
     "mmoreram/base-bundle": "^2.0.0",
     "mmoreram/symfony-bundle-dependencies": "^2.0.0",
