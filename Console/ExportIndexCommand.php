@@ -15,12 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Console;
 
-use Apisearch\Command\ExportIndexCommand as BaseExportIndexCommand;
-use Apisearch\Query\Query as QueryModel;
-use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Domain\Query\Query;
+use Apisearch\Server\Domain\Query\ExportIndex;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -39,7 +37,7 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
     protected function configure()
     {
         $this
-            ->setDescription('Export your index items in a portable file')
+            ->setDescription('Export your index items')
             ->addArgument(
                 'app-id',
                 InputArgument::REQUIRED,
@@ -50,10 +48,12 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
                 InputArgument::REQUIRED,
                 'Index name'
             )
-            ->addArgument(
-                'file',
-                InputArgument::REQUIRED,
-                'File'
+            ->addOption(
+                'format',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Exportation format. Available values: source, standard',
+                'source'
             );
     }
 
@@ -68,20 +68,24 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
         $objects = $this->getAppIndexToken($input, $output);
-        $file = $input->getArgument('file');
 
-        return BaseExportIndexCommand::exportToFile(
-            $file,
-            $output,
-            function (QueryModel $query) use ($objects) {
-                return $this->askAndWait(new Query(
-                    $objects['repository_reference'],
-                    $objects['token'],
-                    $query,
-                    Origin::createEmpty()
-                ));
-            }
-        );
+        $stream = $this->askAndWait(new ExportIndex(
+            $objects['repository_reference'],
+            $this->createGodToken($objects['app_uuid']),
+            $input->getOption('format')
+        ));
+
+        $stream->on('data', function (string $data) {
+            echo $data;
+        });
+
+        $stream->on('end', function () {
+            $this->loop->stop();
+        });
+
+        $this->loop->run();
+
+        return 0;
     }
 
     /**
@@ -106,6 +110,6 @@ class ExportIndexCommand extends CommandWithQueryBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return \sprintf('Exported %d items from index', $result);
+        return \sprintf('Exported items');
     }
 }

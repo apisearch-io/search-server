@@ -21,9 +21,12 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
+use Clue\React\Block;
+use Drift\HttpKernel\AsyncKernel;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class ApisearchServerCommand.
@@ -32,32 +35,56 @@ abstract class ApisearchServerCommand extends ApisearchFormattedCommand
 {
     /**
      * @var LoopInterface
-     *
-     * Event loop
      */
     protected $loop;
 
     /**
+     * @var AsyncKernel
+     */
+    private $kernel;
+
+    /**
      * @var string
-     *
-     * God token
      */
     protected $godToken;
 
     /**
      * Controller constructor.
      *
-     * @param LoopInterface $loop
-     * @param string        $godToken
+     * @param LoopInterface   $loop
+     * @param KernelInterface $kernel
+     * @param string          $godToken
      */
     public function __construct(
         LoopInterface $loop,
+        KernelInterface $kernel,
         string $godToken
     ) {
         parent::__construct();
 
         $this->loop = $loop;
+        $this->kernel = $kernel;
         $this->godToken = $godToken;
+    }
+
+    /**
+     * Executes the current command.
+     *
+     * This method is not abstract because you can use this class
+     * as a concrete class. In this case, instead of defining the
+     * execute() method, you set the code to execute by passing
+     * a Closure to the setCode() method.
+     *
+     * @return int|null null or 0 if everything went fine, or an error code
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        Block\await($this
+            ->kernel
+            ->preload(), $this->loop
+        );
+
+        return parent::execute($input, $output);
     }
 
     /**

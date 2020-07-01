@@ -53,6 +53,7 @@ trait AllSearchTests
     use ExportTest;
     use ExceptionMessagesTest;
     use FieldTypesTest;
+    use ImportTest;
 
     /**
      * Assert IDS sequence.

@@ -24,7 +24,6 @@ use Elastica\Request;
 use Elastica\Response;
 use Elasticsearch\Endpoints\AbstractEndpoint;
 use function RingCentral\Psr7\stream_for;
-use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use RingCentral\Psr7\Request as PSR7Request;
 use RingCentral\Psr7\Response as PSR7Response;
@@ -35,23 +34,26 @@ use RingCentral\Psr7\Response as PSR7Response;
 class AsyncClient implements AsyncRequestAccessor
 {
     /**
+     * @var Browser
+     */
+    private $browser;
+
+    /**
      * @var string
-     *
-     * Elasticsearch endpoint
      */
     private $elasticsearchEndpoint;
 
     /**
      * AsyncClient constructor.
      *
-     * @param LoopInterface $eventLoop
-     * @param string        $elasticsearchEndpoint
+     * @param string  $elasticsearchEndpoint
+     * @param Browser $browser
      */
     public function __construct(
-        LoopInterface $eventLoop,
+        Browser $browser,
         string $elasticsearchEndpoint
     ) {
-        $this->httpClient = new Browser($eventLoop);
+        $this->browser = $browser;
         $this->elasticsearchEndpoint = $elasticsearchEndpoint;
     }
 
@@ -100,7 +102,7 @@ class AsyncClient implements AsyncRequestAccessor
         $request = $request->withHeader('Content-Length', \strlen($data));
 
         return $this
-            ->httpClient
+            ->browser
             ->send($request)
             ->then(function (PSR7Response $response) {
                 return new Response(
@@ -201,26 +203,20 @@ class AsyncClient implements AsyncRequestAccessor
             return '';
         }
 
-        $block = \reset($data['items']);
+        foreach ($data['items'] as $item) {
+            $action = \reset($item);
+            if (
+                !\is_array($action) ||
+                !\array_key_exists('error', $action) ||
+                !\is_array($action['error']) ||
+                !\array_key_exists('reason', $action['error'])
+            ) {
+                continue;
+            }
 
-        if (
-            !\is_array($block) ||
-            0 === \count($block)
-        ) {
-            return '';
+            return \strval($action['error']['reason']);
         }
 
-        $error = \reset($block);
-
-        if (
-            !\is_array($error) ||
-            !\array_key_exists('error', $error) ||
-            !\is_array($error['error']) ||
-            !\array_key_exists('reason', $error['error'])
-        ) {
-            return '';
-        }
-
-        return \strval($error['error']['reason']);
+        return 'Unknown error';
     }
 }

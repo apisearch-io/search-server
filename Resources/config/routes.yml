@@ -79,7 +79,14 @@ apisearch_v1_export_index:
     methods: ["GET"]
     controller: Apisearch\Server\Controller\ExportIndexController
     defaults:
-        tags: indices
+        tags: indices, catalog
+
+apisearch_v1_import_index:
+    path: /v1/{app_id}/indices/{index_id}/import
+    methods: ["PUT"]
+    controller: Apisearch\Server\Controller\ImportIndexController
+    defaults:
+        tags: indices, catalog
 
 #
 # Items API

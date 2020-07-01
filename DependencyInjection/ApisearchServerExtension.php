@@ -99,6 +99,11 @@ class ApisearchServerExtension extends BaseExtension
              * Limitations
              */
             'apisearch_server.limitations_number_of_results' => $config['limitations']['number_of_results'],
+
+            /*
+             * Disk Repositories
+             */
+            'apisearch_server.metadata_disk_repository_path' => $config['repositories']['metadata_disk_path'],
         ];
     }
 

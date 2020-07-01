@@ -48,6 +48,24 @@ class CleanCommandsCompilerPass implements CompilerPassInterface
     {
         $container->removeDefinition('console.command.assets_install');
 
+        $container->removeDefinition('console.command.cache_clear');
+        $container->removeDefinition('console.command.cache_pool_clear');
+        $container->removeDefinition('console.command.cache_pool_delete');
+        $container->removeDefinition('console.command.cache_pool_list');
+        $container->removeDefinition('console.command.cache_pool_prune');
+        $container->removeDefinition('console.command.cache_warmup');
+
+        $container->removeDefinition('console.command.secrets_decrypt_to_local');
+        $container->removeDefinition('console.command.secrets_encrypt_from_local');
+        $container->removeDefinition('console.command.secrets_generate_key');
+        $container->removeDefinition('console.command.secrets_list');
+        $container->removeDefinition('console.command.secrets_remove');
+        $container->removeDefinition('console.command.secrets_set');
+
+        $container->removeDefinition('console.command.xliff_lint');
+        $container->removeDefinition('console.command.yaml_lint');
+        $container->removeDefinition('console.command.container_lint');
+
         if (!$this->kernel->isDebug()) {
             $container->removeDefinition('console.command.config_dump_reference');
             $container->removeDefinition('console.command.container_debug');
@@ -56,9 +74,6 @@ class CleanCommandsCompilerPass implements CompilerPassInterface
             $container->removeDefinition('console.command.config_debug');
             $container->removeDefinition('console.command.router_debug');
             $container->removeDefinition('console.command.router_match');
-            $container->removeDefinition('console.command.xliff_lint');
-            $container->removeDefinition('console.command.yaml_lint');
-            $container->removeDefinition('tactician.command.debug');
         }
     }
 }

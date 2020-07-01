@@ -65,6 +65,7 @@ class AsyncScroll extends AsyncAdapter
         int $chunkSize = 100
     ): ReadableStreamInterface {
         $stream = new ThroughStream();
+
         wait_for_stream_listeners($stream, $this->loop, 1, 1)
             ->then(function (WritableStreamInterface $stream) use ($indexName, $chunkSize) {
                 $builder = new DefaultBuilder();

@@ -18,8 +18,10 @@ namespace Apisearch\Server\Domain\QueryHandler;
 use Apisearch\Server\Domain\Event\IndexWasExported;
 use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
+use Apisearch\Server\Exception\FormatterException;
 use React\Promise\PromiseInterface;
 use React\Stream\DuplexStreamInterface;
+use React\Stream\ReadableStreamInterface;
 
 /**
  * Class ExportIndexHandler.
@@ -30,17 +32,19 @@ class ExportIndexHandler extends WithRepositoryAndEventPublisher
      * @param ExportIndex $exportIndex
      *
      * @return PromiseInterface<DuplexStreamInterface>
+     *
+     * @throws FormatterException
      */
     public function handle(ExportIndex $exportIndex): PromiseInterface
     {
-        $repositoryReference = $exportIndex->getRepositoryReference();
         $from = \microtime(true);
+        $repositoryReference = $exportIndex->getRepositoryReference();
 
         return $this
             ->repository
             ->exportIndex($repositoryReference)
-            ->then(function ($stream) use ($repositoryReference, $from) {
-                $stream->on('end', function () use ($repositoryReference, $from) {
+            ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $from) {
+                $stream->on('close', function () use ($repositoryReference, $from) {
                     $this
                         ->eventBus
                         ->dispatch(

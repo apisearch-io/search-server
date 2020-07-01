@@ -17,17 +17,9 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\ExportIndex;
-use Apisearch\Server\Domain\Stream\ItemToArrayTransformerStream;
-use Clue\React\NDJson\Encoder as NDJsonEncoder;
-use Drift\CommandBus\Bus\QueryBus;
-use function Drift\React\wait_for_stream_listeners;
-use React\EventLoop\LoopInterface;
 use React\Http\Response;
 use React\Promise\PromiseInterface;
 use React\Stream\ReadableStreamInterface;
-use React\Stream\ThroughStream;
-use React\Stream\Util;
-use React\Stream\WritableStreamInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -35,25 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ExportIndexController extends ControllerWithQueryBus
 {
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
-
-    /**
-     * Controller constructor.
-     *
-     * @param QueryBus      $queryBus
-     * @param LoopInterface $loop
-     */
-    public function __construct(
-        QueryBus $queryBus,
-        LoopInterface $loop
-    ) {
-        parent::__construct($queryBus);
-        $this->loop = $loop;
-    }
-
     /**
      * Get tokens.
      *
@@ -64,28 +37,21 @@ class ExportIndexController extends ControllerWithQueryBus
     public function __invoke(Request $request): PromiseInterface
     {
         $indexUUID = RequestAccessor::getIndexUUIDFromRequest($request);
-        $repositoryReference = RepositoryReference::create(
-            RequestAccessor::getAppUUIDFromRequest($request),
-            $indexUUID
-        );
+        $format = $request->query->get('format', 'standard');
 
         return $this
-            ->ask(new ExportIndex($repositoryReference))
+            ->ask(new ExportIndex(
+                RepositoryReference::create(
+                    RequestAccessor::getAppUUIDFromRequest($request),
+                    $indexUUID
+                ),
+                RequestAccessor::getTokenFromRequest($request),
+                $format
+            ))
             ->then(function (ReadableStreamInterface $stream) {
-                $responseStream = new ThroughStream();
-
-                wait_for_stream_listeners($responseStream, $this->loop, 1, 1)
-                    ->then(function (WritableStreamInterface $responseStream) use ($stream) {
-                        $encoder = new NDJsonEncoder($responseStream);
-                        $itemToArrayTransformer = new ItemToArrayTransformerStream($encoder);
-
-                        $stream->pipe($itemToArrayTransformer);
-                        Util::forwardEvents($itemToArrayTransformer, $stream, ['close']);
-                    });
-
                 return new Response(200, [
                     'Content-Type' => 'text/plain',
-                ], $responseStream);
+                ], $stream);
             });
     }
 }

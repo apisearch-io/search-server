@@ -36,6 +36,7 @@ use Apisearch\Server\Domain\Command\DeleteItems;
 use Apisearch\Server\Domain\Command\DeleteItemsByQuery;
 use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
+use Apisearch\Server\Domain\Command\ImportIndex;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Command\PostClick;
 use Apisearch\Server\Domain\Command\PutToken;
@@ -131,6 +132,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
+     * @param string $format
      * @param bool   $closeImmediately
      * @param string $appId
      * @param string $index
@@ -139,6 +141,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @return Item[]
      */
     public function exportIndex(
+        string $format,
         bool $closeImmediately = false,
         string $appId = null,
         string $index = null,
@@ -150,20 +153,57 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             RepositoryReference::create(
                 $appUUID,
                 IndexUUID::createById($index ?? self::$index)
-            )
+            ),
+            $token ??
+                new Token(
+                    TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                    $appUUID
+                ),
+            $format
         ));
 
         $deferred = new Deferred();
-        $items = [];
-        $stream->on('data', function (Item $item) use (&$items) {
-            $items[] = $item;
+        $rows = [];
+        $stream->on('data', function (string $row) use (&$rows) {
+            $rows[] = $row;
         });
 
-        $stream->on('end', function () use (&$items, $deferred) {
-            $deferred->resolve($items);
+        $stream->on('end', function () use (&$rows, $deferred) {
+            $deferred->resolve($rows);
         });
 
         return $this->await($deferred->promise());
+    }
+
+    /**
+     * Import index.
+     *
+     * @param string $feed
+     * @param bool   $detached
+     * @param string $appId
+     * @param string $index
+     * @param Token  $token
+     */
+    public function importIndex(
+        string $feed,
+        bool $detached = false,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $appUUID = AppUUID::createById($appId ?? self::$appId);
+        self::executeCommand(new ImportIndex(
+            RepositoryReference::create(
+                $appUUID,
+                IndexUUID::createById($index ?? self::$index)
+            ),
+            $token ??
+                new Token(
+                    TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                    $appUUID
+                ),
+            $feed
+        ));
     }
 
     /**

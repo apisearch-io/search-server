@@ -24,7 +24,7 @@ abstract class SearchConsoleTest extends CommandTest
 use ConfigureIndexCommandTest;
 use CreateDeleteIndexCommandTest;
 use GenerateBasicTokensCommandTest;
-use ImportExportIndexCommandTest;
 use QueryCommandTest;
+use ImportExportIndexCommandTest;
 
 }

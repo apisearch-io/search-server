@@ -28,7 +28,18 @@ trait ExportTest
      */
     public function testIndexExport()
     {
-        $this->assertCount(5, $this->exportIndex());
+        $data = $this->exportIndex('source');
+        $this->assertCount(6, $data);
+        $this->assertNotContains('category_data', $data[1]);
+        $this->assertNotContains('category_id', $data[1]);
+    }
+
+    /**
+     * Test item export.
+     */
+    public function testIndexExportStandardFormat()
+    {
+        $this->assertCount(6, $this->exportIndex('standard'));
     }
 
     /**
@@ -37,7 +48,7 @@ trait ExportTest
     public function testIndexExportAppNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->exportIndex(false, static::$anotherInexistentAppId);
+        $this->exportIndex('', false, static::$anotherInexistentAppId);
     }
 
     /**
@@ -46,7 +57,7 @@ trait ExportTest
     public function testIndexExportIndexNotFound()
     {
         $this->expectException(\Exception::class);
-        $this->exportIndex(false, static::$appId, static::$yetAnotherIndex);
+        $this->exportIndex('', false, static::$appId, static::$yetAnotherIndex);
     }
 
     /**
@@ -74,8 +85,8 @@ trait ExportTest
         }
 
         static::indexItems($items);
-        $this->assertCount(1005, $this->exportIndex());
+        $this->assertCount(1006, $this->exportIndex('source'));
         static::deleteItems($itemsUUID);
-        $this->assertCount(5, $this->exportIndex());
+        $this->assertCount(6, $this->exportIndex('source'));
     }
 }
