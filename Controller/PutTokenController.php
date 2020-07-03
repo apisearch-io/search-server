@@ -43,6 +43,7 @@ class PutTokenController extends ControllerWithCommandBus
             InvalidFormatException::tokenFormatNotValid($request->getContent())
         );
 
+        $newTokenAsArray['app_uuid'] = ['id' => $request->get('app_id')];
         $newTokenAsArray['uuid'] = ['id' => $request->get('token_id')];
 
         return $this
@@ -54,7 +55,7 @@ class PutTokenController extends ControllerWithCommandBus
                 Token::createFromArray($newTokenAsArray)
             ))
             ->then(function () {
-                return new JsonResponse('Token added', 200);
+                return new JsonResponse('Token put', 200);
             });
     }
 }

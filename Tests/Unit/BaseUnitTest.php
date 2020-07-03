@@ -15,10 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Unit;
 
-use Exception;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 use function Drift\React\sleep as async_sleep;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;

@@ -512,7 +512,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         self::$lastResponse = self::makeCurl(
             'v1_put_token',
             [
-                'app_id' => $appId ?? static::$appId,
+                'app_id' => $newToken->getAppUUID()->getId() ?? static::$appId,
                 'token_id' => $newToken->getTokenUUID()->composeUUID(),
             ],
             $token,

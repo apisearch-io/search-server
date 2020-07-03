@@ -18,8 +18,8 @@ namespace Apisearch\Server\Domain\Repository\SearchesRepository;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\Origin;
 use DateTime;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class EmptySearchesRepository.

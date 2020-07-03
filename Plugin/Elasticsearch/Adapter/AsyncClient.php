@@ -23,10 +23,10 @@ use Elastica\Exception\ClientException;
 use Elastica\Request;
 use Elastica\Response;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use function RingCentral\Psr7\stream_for;
 use React\Promise\PromiseInterface;
 use RingCentral\Psr7\Request as PSR7Request;
 use RingCentral\Psr7\Response as PSR7Response;
+use function RingCentral\Psr7\stream_for;
 
 /**
  * Class AsyncClient.

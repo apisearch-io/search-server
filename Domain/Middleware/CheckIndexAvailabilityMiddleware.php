@@ -20,8 +20,8 @@ use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
 use Drift\CommandBus\Middleware\DiscriminableMiddleware;
-use function React\Promise\reject;
 use React\Promise\PromiseInterface;
+use function React\Promise\reject;
 
 /**
  * Class CheckIndexAvailabilityMiddleware.

@@ -17,8 +17,8 @@ namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Http\Http;
 use Apisearch\Model\Token;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;

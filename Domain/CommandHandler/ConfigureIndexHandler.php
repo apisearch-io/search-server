@@ -19,8 +19,8 @@ use Apisearch\Server\Domain\Command\ConfigureIndex;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\WithConfigRepositoryAppRepositoryAndEventPublisher;
 use function React\Promise\all;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class ConfigureIndexHandler.

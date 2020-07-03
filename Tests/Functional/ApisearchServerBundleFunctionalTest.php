@@ -350,9 +350,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
         static::$lastServer = static::runServer(
             __DIR__.'/../../vendor/bin',
-            static::HTTP_TEST_SERVICE_PORT, [
+            static::HTTP_TEST_SERVICE_PORT, static::quietServer() ? [
                 '--quiet',
-            ]
+            ] : []
         );
         \sleep(2);
     }
@@ -396,6 +396,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     protected static function needsServer(): bool
     {
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected static function quietServer(): bool
+    {
+        return true;
     }
 
     /**

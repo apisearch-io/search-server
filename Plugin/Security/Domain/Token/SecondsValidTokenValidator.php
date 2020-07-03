@@ -20,8 +20,8 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Server\Domain\Token\TokenValidator;
 use Carbon\Carbon;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class SecondsValidTokenValidator.

@@ -91,16 +91,17 @@ class IndexComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
         });
 
         $complexFields = \array_keys($complexFields);
+        $mergedComplexFields = \array_merge($currentComplexFields, $complexFields);
+        $mergedComplexFields = \array_unique($mergedComplexFields);
+        $mergedComplexFields = \array_values($mergedComplexFields);
 
-        if ($currentComplexFields === $complexFields) {
+        if ($currentComplexFields === $mergedComplexFields) {
             return $next($command);
         }
 
-        $complexFields = \array_merge($currentComplexFields, $complexFields);
-
         return $this
             ->metadataRepository
-            ->set($repositoryReference, static::COMPLEX_FIELDS_METADATA, $complexFields)
+            ->set($repositoryReference, static::COMPLEX_FIELDS_METADATA, $mergedComplexFields)
             ->then(function () use ($repositoryReference) {
                 return $this
                     ->eventBus

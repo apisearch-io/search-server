@@ -1,9 +1,3 @@
-use-sort:
-    group:
-        - _main
-    group-type: each
-    sort-type: alph
-    sort-direction: asc
 strict: true
 header: |
     /*

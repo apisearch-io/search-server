@@ -6,7 +6,7 @@ apisearch_v1_put_token:
     methods: ["PUT"]
     controller: Apisearch\Server\Controller\PutTokenController
     defaults:
-        tags: token
+        tags: tokens
 
 apisearch_v1_delete_token:
     path: /v1/{app_id}/tokens/{token_id}

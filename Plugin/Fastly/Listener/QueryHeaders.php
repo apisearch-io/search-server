@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Fastly\Listener;
 
 use Apisearch\Http\Http;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 

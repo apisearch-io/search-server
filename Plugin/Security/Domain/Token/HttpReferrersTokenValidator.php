@@ -20,8 +20,8 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Plugin\Security\Domain\OriginMatcherTrait;
 use Apisearch\Server\Domain\Token\TokenValidator;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class HttpReferrersTokenValidator.

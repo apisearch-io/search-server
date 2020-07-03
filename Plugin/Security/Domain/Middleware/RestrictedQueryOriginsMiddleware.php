@@ -19,8 +19,8 @@ use Apisearch\Exception\ForbiddenException;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\Query;
 use Closure;
-use function React\Promise\reject;
 use React\Promise\PromiseInterface;
+use function React\Promise\reject;
 
 /**
  * Class RestrictedQueryOriginsMiddleware.

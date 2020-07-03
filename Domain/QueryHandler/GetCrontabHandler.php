@@ -17,8 +17,8 @@ namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Model\CrontabLine;
 use Apisearch\Server\Domain\Query\GetCrontab;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class GetCrontabHandler.

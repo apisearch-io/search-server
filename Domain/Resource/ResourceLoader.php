@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Resource;
 
 use Apisearch\Exception\InvalidFormatException;
-use function React\Promise\reject;
 use React\Filesystem\Filesystem;
 use React\HttpClient\Client as HTTPClient;
 use React\HttpClient\Response as HTTPResponse;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
+use function React\Promise\reject;
 use React\Stream\ReadableStreamInterface;
 
 /**

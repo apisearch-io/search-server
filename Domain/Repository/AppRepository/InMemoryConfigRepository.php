@@ -17,8 +17,8 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 
 use Apisearch\Config\Config;
 use Apisearch\Repository\RepositoryReference;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class InMemoryConfigRepository.

@@ -29,8 +29,8 @@ use Elastica\Document as ElasticaDocument;
 use Elastica\Query as ElasticaQuery;
 use Elastica\Script\Script;
 use Elasticsearch\Endpoints\UpdateByQuery;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class ItemRepository.
