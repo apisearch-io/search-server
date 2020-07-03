@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Query\Ping;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class PingHandler.

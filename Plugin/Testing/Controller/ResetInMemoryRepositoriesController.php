@@ -20,8 +20,8 @@ use Apisearch\Server\Domain\Repository\InMemoryRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository;
 use Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
-use function React\Promise\all;
 use React\Http\Response;
+use function React\Promise\all;
 use React\Promise\PromiseInterface;
 
 /**

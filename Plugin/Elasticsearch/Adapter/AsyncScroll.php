@@ -16,13 +16,13 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Elasticsearch\Adapter;
 
 use Apisearch\Plugin\Elasticsearch\Endpoint\DeleteScroll;
+use function Drift\React\wait_for_stream_listeners;
 use Elastica\Exception\InvalidException;
 use Elastica\Query;
 use Elastica\Response;
 use Elastica\ResultSet\DefaultBuilder;
 use Elasticsearch\Endpoints\Scroll;
 use Elasticsearch\Endpoints\Search;
-use function Drift\React\wait_for_stream_listeners;
 use React\EventLoop\LoopInterface;
 use React\Stream\ReadableStreamInterface;
 use React\Stream\ThroughStream;

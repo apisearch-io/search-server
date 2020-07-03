@@ -27,9 +27,9 @@ use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
 use function Drift\React\wait_for_stream_listeners;
-use function React\Promise\resolve;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use React\Stream\DuplexStreamInterface;
 use React\Stream\ThroughStream;
 

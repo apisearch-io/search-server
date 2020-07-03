@@ -16,9 +16,9 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Exception\InvalidTokenException;
+use React\Promise\PromiseInterface;
 use function React\Promise\reject;
 use function React\Promise\resolve;
-use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
@@ -72,7 +72,7 @@ class AdminFirewall implements EventSubscriberInterface
             'ping' === $request->get('firewall') &&
             $tokenString !== $this->pingToken
         ) {
-            return reject(new InvalidTokenException('Admin permissions required'));
+            return reject(new InvalidTokenException('Ping permissions required'));
         }
 
         return resolve();

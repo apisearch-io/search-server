@@ -26,8 +26,8 @@ use Apisearch\Server\Domain\ImperativeEvent\LoadTokens;
 use Apisearch\Server\Domain\Token\TokenLocator;
 use Apisearch\Server\Domain\Token\TokenProvider;
 use Drift\HttpKernel\AsyncKernelEvents;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

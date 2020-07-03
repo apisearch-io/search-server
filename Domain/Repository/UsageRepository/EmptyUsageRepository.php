@@ -17,8 +17,8 @@ namespace Apisearch\Server\Domain\Repository\UsageRepository;
 
 use Apisearch\Repository\RepositoryReference;
 use DateTime;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class EmptyUsageRepository.

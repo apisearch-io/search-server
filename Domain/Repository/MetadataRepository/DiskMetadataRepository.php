@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Repository\MetadataRepository;
 
 use Apisearch\Repository\RepositoryReference;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class DiskMetadataRepository.

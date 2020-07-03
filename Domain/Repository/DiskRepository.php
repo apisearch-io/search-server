@@ -20,9 +20,9 @@ use Apisearch\Model\Changes;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
-use function React\Promise\resolve;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use React\Stream\DuplexStreamInterface;
 
 /**

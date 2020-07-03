@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Model\Token;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;

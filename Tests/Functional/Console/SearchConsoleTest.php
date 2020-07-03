@@ -20,11 +20,9 @@ namespace Apisearch\Server\Tests\Functional\Console;
  */
 abstract class SearchConsoleTest extends CommandTest
 {
-
-use ConfigureIndexCommandTest;
-use CreateDeleteIndexCommandTest;
-use GenerateBasicTokensCommandTest;
-use QueryCommandTest;
-use ImportExportIndexCommandTest;
-
+    use ConfigureIndexCommandTest;
+    use CreateDeleteIndexCommandTest;
+    use GenerateBasicTokensCommandTest;
+    use QueryCommandTest;
+    use ImportExportIndexCommandTest;
 }

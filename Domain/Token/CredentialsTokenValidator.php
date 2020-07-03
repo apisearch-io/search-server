@@ -18,8 +18,8 @@ namespace Apisearch\Server\Domain\Token;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class CredentialsTokenValidator.

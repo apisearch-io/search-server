@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\QueryMapper\Listener;
 
 use Apisearch\Plugin\QueryMapper\Domain\QueryMapperLoader;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**

@@ -17,9 +17,9 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\ImportIndex;
-use function React\Promise\resolve;
 use React\Http\Response;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

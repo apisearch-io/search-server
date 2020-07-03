@@ -50,7 +50,7 @@ class AddTokenCommand extends CommandWithCommandBusAndGodToken
                 'uuid',
                 InputArgument::OPTIONAL,
                 'Token UUID. If none defined, a new one will be generated',
-                Uuid::uuid4()->toString()
+                '{{ random generated UUID }}'
             )
             ->addOption(
                 'index',
@@ -92,8 +92,12 @@ class AddTokenCommand extends CommandWithCommandBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
+        if ('{{ random generated UUID }}' === $input->getArgument('uuid')) {
+            $input->setArgument('uuid', Uuid::uuid4()->toString());
+        }
+
         $objects = $this->getAppTokenAndIndices($input, $output);
-        $endpoints = $this->getEndpoints($input);
+        $endpoints = $input->getOption('endpoint');
 
         $this->executeAndWait(new PutToken(
             $objects['repository_reference'],
@@ -131,6 +135,6 @@ class AddTokenCommand extends CommandWithCommandBusAndGodToken
         InputInterface $input,
         $result
     ): string {
-        return 'Token added properly';
+        return 'Token put properly';
     }
 }

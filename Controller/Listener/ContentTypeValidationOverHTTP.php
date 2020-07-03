@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller\Listener;
 
 use Apisearch\Exception\UnsupportedContentTypeException;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

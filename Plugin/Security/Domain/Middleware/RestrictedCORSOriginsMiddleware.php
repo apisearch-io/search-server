@@ -18,8 +18,8 @@ namespace Apisearch\Plugin\Security\Domain\Middleware;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Closure;
-use function React\Promise\resolve;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class RestrictedQueryOriginsMiddleware.
