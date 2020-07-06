@@ -60,6 +60,7 @@ class PostClickHandler
                 $putClick->getRepositoryReference(),
                 $userUUID,
                 $putClick->getItemUUID(),
+                $putClick->getPosition(),
                 $origin,
                 InteractionType::CLICK,
                 new DateTime()

@@ -171,6 +171,7 @@ trait DBALFunctionalTestTrait
                         $table->addColumn('app_uuid', 'string', ['length' => 50]);
                         $table->addColumn('index_uuid', 'string', ['length' => 50]);
                         $table->addColumn('item_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('position', 'integer', ['length' => 4]);
                         $table->addColumn('ip', 'string', ['length' => 16]);
                         $table->addColumn('host', 'string', ['length' => 50]);
                         $table->addColumn('platform', 'string', ['length' => 25]);

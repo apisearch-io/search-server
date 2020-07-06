@@ -525,7 +525,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
     /**
      * @return RepositoryReference
      */
-    private function getDefaultRepositoryReference(): RepositoryReference
+    protected function getDefaultRepositoryReference(): RepositoryReference
     {
         return RepositoryReference::createFromComposed('a_b');
     }
@@ -548,6 +548,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
             $this->getDefaultRepositoryReference(),
             $userUUID,
             ItemUUID::createByComposedUUID('1~p'),
+            10,
             Origin::createEmpty(),
             InteractionType::CLICK,
             \DateTime::createFromFormat('Ymd', $when)
@@ -565,7 +566,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      * @param Origin|null              $origin
      * @param string                   $type
      */
-    private function addInteraction(
+    protected function addInteraction(
         InteractionRepository $repository,
         LoopInterface $loop,
         RepositoryReference $repositoryReference = null,
@@ -578,6 +579,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
             $repositoryReference ?? $this->getDefaultRepositoryReference(),
             $userUUID,
             ItemUUID::createByComposedUUID($itemUUID),
+            10,
             $origin ?? new Origin('h1', 'ip1', Origin::DESKTOP),
             $type,
             $when ?? new DateTime()

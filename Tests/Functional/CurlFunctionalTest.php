@@ -633,6 +633,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      *
      * @param string|null $userId
      * @param string      $itemId
+     * @param int         $position
      * @param Origin      $origin
      * @param string      $appId
      * @param string      $indexId
@@ -641,6 +642,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     public function click(
         ?string $userId,
         string $itemId,
+        int $position,
         Origin $origin,
         string $appId = null,
         string $indexId = null,
@@ -659,6 +661,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
             [],
             [
                 'user_id' => $userId,
+                'position' => $position,
             ],
             [
                 'Origin:'.$origin->getHost(),

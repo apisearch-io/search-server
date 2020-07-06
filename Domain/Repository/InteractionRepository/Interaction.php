@@ -43,6 +43,11 @@ final class Interaction
     private $itemUUID;
 
     /**
+     * @var int
+     */
+    private $position;
+
+    /**
      * @var string
      */
     private $ip;
@@ -72,6 +77,7 @@ final class Interaction
      * @param string   $appUUID
      * @param string   $indexUUID
      * @param string   $itemUUID
+     * @param int      $position
      * @param string   $ip
      * @param string   $host
      * @param string   $platform
@@ -83,6 +89,7 @@ final class Interaction
         string $appUUID,
         string $indexUUID,
         string $itemUUID,
+        int $position,
         string $ip,
         string $host,
         string $platform,
@@ -93,6 +100,7 @@ final class Interaction
         $this->appUUID = $appUUID;
         $this->indexUUID = $indexUUID;
         $this->itemUUID = $itemUUID;
+        $this->position = $position;
         $this->ip = $ip;
         $this->host = $host;
         $this->platform = $platform;
@@ -130,6 +138,14 @@ final class Interaction
     public function getItemUUID(): string
     {
         return $this->itemUUID;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 
     /**
