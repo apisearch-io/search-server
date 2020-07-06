@@ -46,6 +46,7 @@ class PostClickController extends ControllerWithCommandBus
             RequestAccessor::getTokenFromRequest($request),
             $query->get('user_id'),
             ItemUUID::createByComposedUUID($itemUUID),
+            \intval($query->get('position', 0)),
             $this->createOriginByRequest($request)
         ));
 

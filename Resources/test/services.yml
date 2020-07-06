@@ -11,3 +11,7 @@ services:
     apisearch_server.metadata_repository_test:
         alias: Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository
         public: true
+
+    apisearch_server.interaction_repository_test:
+        alias: Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository
+        public: true

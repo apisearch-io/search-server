@@ -3,6 +3,7 @@ CREATE TABLE `interactions` (
     `app_uuid` varchar(50) NOT NULL,
     `index_uuid` varchar(50) NOT NULL,
     `item_uuid` varchar(50) NOT NULL,
+    `position` integer(4) NOT NULL,
     `ip` varchar(16) NOT NULL,
     `host` varchar(50) NOT NULL,
     `platform` varchar(10) NOT NULL,

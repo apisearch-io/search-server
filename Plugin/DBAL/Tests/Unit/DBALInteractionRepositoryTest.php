@@ -23,6 +23,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Credentials;
 use Drift\DBAL\Driver\SQLite\SQLiteDriver;
+use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 
 /**
@@ -80,6 +81,7 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
         $table->addColumn('app_uuid', 'string', ['length' => 50]);
         $table->addColumn('index_uuid', 'string', ['length' => 50]);
         $table->addColumn('item_uuid', 'string', ['length' => 50]);
+        $table->addColumn('position', 'integer', ['length' => 4]);
         $table->addColumn('ip', 'string', ['length' => 16]);
         $table->addColumn('host', 'string', ['length' => 50]);
         $table->addColumn('platform', 'string', ['length' => 25]);
@@ -98,5 +100,19 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
         $connection->executeSchema($schema);
 
         return new DBALInteractionRepository($connection, $tableName);
+    }
+
+    /**
+     * Test that position is saved in DBAL.
+     */
+    public function testPositionIsSaved()
+    {
+        $loop = Factory::create();
+        $connection = $this->createConnection($loop);
+        $repository = $this->createEmptyRepository($connection);
+        $this->addInteraction($repository, $loop);
+        $interactions = $this->await($connection->findBy('interactions'), $loop);
+
+        $this->assertEquals(10, $interactions[0]['position']);
     }
 }

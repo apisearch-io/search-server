@@ -73,6 +73,7 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
      * @param RepositoryReference $repositoryReference
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
+     * @param int                 $position
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -83,6 +84,7 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
         RepositoryReference $repositoryReference,
         string $userUUID,
         ItemUUID $itemUUID,
+        int $position,
         Origin $origin,
         string $type,
         DateTime $when
@@ -93,6 +95,7 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
                 $repositoryReference,
                 $userUUID,
                 $itemUUID,
+                $position,
                 $origin,
                 $type,
                 $when
@@ -146,6 +149,7 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
                         RepositoryReference::createFromComposed("{$interaction->getAppUUID()}_{$interaction->getIndexUUID()}"),
                         $interaction->getUser(),
                         ItemUUID::createByComposedUUID($interaction->getItemUUID()),
+                        $interaction->getPosition(),
                         new Origin(
                             $interaction->getHost(),
                             $interaction->getIp(),

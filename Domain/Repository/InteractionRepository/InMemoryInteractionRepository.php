@@ -27,7 +27,7 @@ use function React\Promise\resolve;
 /**
  * Class InMemoryInteractionRepository.
  */
-class InMemoryInteractionRepository implements TemporaryInteractionRepository, ResetableRepository
+class InMemoryInteractionRepository implements TemporaryInteractionRepository, TestableInteractionRepository, ResetableRepository
 {
     /**
      * @var Interaction[]
@@ -38,6 +38,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
      * @param RepositoryReference $repositoryReference
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
+     * @param int                 $position
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -48,6 +49,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
         RepositoryReference $repositoryReference,
         string $userUUID,
         ItemUUID $itemUUID,
+        int $position,
         Origin $origin,
         string $type,
         DateTime $when
@@ -57,6 +59,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
             $repositoryReference->getAppUUID()->composeUUID(),
             $repositoryReference->getIndexUUID()->composeUUID(),
             $itemUUID->composeUUID(),
+            $position,
             $origin->getIp(),
             $origin->getHost(),
             $origin->getPlatform(),
@@ -247,6 +250,14 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, R
         $this->reset();
 
         return $interactions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInteractions(): array
+    {
+        return $this->interactions;
     }
 
     /**

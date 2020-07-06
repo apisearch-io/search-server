@@ -38,6 +38,11 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     private $itemUUID;
 
     /**
+     * @var int
+     */
+    private $position;
+
+    /**
      * @var Origin
      */
     private $origin;
@@ -47,6 +52,7 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
      * @param Token               $token
      * @param string|null         $userUUID
      * @param ItemUUID            $itemUUID
+     * @param int                 $position
      * @param Origin              $origin
      */
     public function __construct(
@@ -54,11 +60,13 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
         Token $token,
         ?string $userUUID,
         ItemUUID $itemUUID,
+        int $position,
         Origin $origin
     ) {
         parent::__construct($repositoryReference, $token);
         $this->userUUID = $userUUID;
         $this->itemUUID = $itemUUID;
+        $this->position = $position;
         $this->origin = $origin;
     }
 
@@ -76,6 +84,14 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     public function getItemUUID(): ItemUUID
     {
         return $this->itemUUID;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition(): int
+    {
+        return $this->position;
     }
 
     /**

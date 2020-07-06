@@ -30,6 +30,7 @@ interface InteractionRepository
      * @param RepositoryReference $repositoryReference
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
+     * @param int                 $position
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -40,6 +41,7 @@ interface InteractionRepository
         RepositoryReference $repositoryReference,
         string $userUUID,
         ItemUUID $itemUUID,
+        int $position,
         Origin $origin,
         string $type,
         DateTime $when

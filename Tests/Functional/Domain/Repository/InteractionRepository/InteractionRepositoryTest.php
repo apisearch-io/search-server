@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
+use Apisearch\Server\Domain\Repository\InteractionRepository\TestableInteractionRepository;
 use DateTime;
 
 /**
@@ -32,36 +33,36 @@ trait InteractionRepositoryTest
     public function testLoadClicks()
     {
         $this->expectNotToPerformAssertions();
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.1', origin::PHONE));
-        $this->click('u1', '4~it', new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '3~it', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '4~it', new Origin('a.com', '0.0.0.1', origin::TABLET));
-        $this->click('u5', '2~it', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u5', '2~it', new Origin('d.com', '0.0.0.1', origin::PHONE));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('b.com', '0.0.0.0', origin::DESKTOP));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u3', '1~it', new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', new Origin('b.com', '0.0.0.1', origin::TABLET));
-        $this->click('u2', '1~it', new Origin('d.com', '0.0.0.0', origin::DESKTOP));
-        $this->click('u1', '1~it', new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u2', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '2~it', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '1~it', new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u4', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '2~it', new Origin('a.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u3', '3~it', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '2~it', new Origin('a.com', '0.0.0.0', origin::TABLET));
-        $this->click('u2', '2~it', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '3~it', 1, new Origin('d.com', '0.0.0.0', Origin::PHONE));
+        $this->click('u1', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.1', origin::PHONE));
+        $this->click('u1', '4~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '3~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '4~it', 1, new Origin('a.com', '0.0.0.1', origin::TABLET));
+        $this->click('u5', '2~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u5', '2~it', 1, new Origin('d.com', '0.0.0.1', origin::PHONE));
+        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('b.com', '0.0.0.0', origin::DESKTOP));
+        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u3', '1~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, new Origin('b.com', '0.0.0.1', origin::TABLET));
+        $this->click('u2', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::DESKTOP));
+        $this->click('u1', '1~it', 1, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u2', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '2~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '1~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u4', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '2~it', 2, new Origin('a.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u3', '3~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '2~it', 2, new Origin('a.com', '0.0.0.0', origin::TABLET));
+        $this->click('u2', '2~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
     }
 
     /**
@@ -126,9 +127,9 @@ trait InteractionRepositoryTest
      */
     public function testFilterByIndex()
     {
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
 
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
@@ -145,11 +146,11 @@ trait InteractionRepositoryTest
      */
     public function testFilterByApp()
     {
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '2~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '2~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
 
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
@@ -232,19 +233,38 @@ trait InteractionRepositoryTest
      */
     public function testClickWithoutUser()
     {
-        $this->click(null, '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE));
+        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE));
         $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertEquals(6, $interactions);
 
-        $this->click(null, '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE));
+        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE));
         $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertEquals(6, $interactions);
 
-        $this->click(null, '3~it', new Origin('d.com', '0.0.0.1', Origin::PHONE));
+        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.1', Origin::PHONE));
         $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertEquals(7, $interactions);
 
         $this->expectException(InvalidFormatException::class);
-        $this->click(null, '3~it', new Origin('d.com', '', Origin::PHONE));
+        $this->click(null, '3~it', 2, new Origin('d.com', '', Origin::PHONE));
+    }
+
+    /**
+     * Test interaction.
+     */
+    public function testPosition()
+    {
+        $interactionRepository = $this->get('apisearch_server.interaction_repository_test');
+        if (
+            !$interactionRepository instanceof TestableInteractionRepository ||
+            !$this instanceof ServiceInteractionRepositoryTest
+        ) {
+            $this->markTestSkipped('Repository not accessible');
+        }
+
+        $interactions = $interactionRepository->getInteractions();
+
+        $this->assertEquals(1, $interactions[0]->getPosition());
+        $this->assertEquals(2, $interactions[3]->getPosition());
     }
 }

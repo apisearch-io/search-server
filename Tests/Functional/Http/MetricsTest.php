@@ -58,18 +58,18 @@ class MetricsTest extends CurlFunctionalTest
         $this->query(Query::create('Alfaguarra'), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::TABLET));
         $this->query(Query::create('Da Vinci Code')->byUser(new User('u2')), null, null, null, [], new Origin('localhost', '0.0.0.0', Origin::PHONE));
 
-        $this->click('u1', '3~it', new Origin('d.com', '0.0.0.0', Origin::PHONE));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.1', origin::PHONE));
-        $this->click('u1', '4~it', new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u1', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '3~it', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '4~it', new Origin('a.com', '0.0.0.1', origin::TABLET));
-        $this->click('u1', '3~it', new Origin('a.com', '0.0.0.1', origin::TABLET));
+        $this->click('u1', '3~it', 1, new Origin('d.com', '0.0.0.0', Origin::PHONE));
+        $this->click('u1', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('d.com', '0.0.0.1', origin::PHONE));
+        $this->click('u1', '4~it', 1, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u1', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '3~it', 1, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '4~it', 1, new Origin('a.com', '0.0.0.1', origin::TABLET));
+        $this->click('u1', '3~it', 1, new Origin('a.com', '0.0.0.1', origin::TABLET));
 
         self::usleep(100000);
         $this->dispatchImperative(new FlushSearches());

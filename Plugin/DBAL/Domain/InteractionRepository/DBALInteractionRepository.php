@@ -60,6 +60,7 @@ class DBALInteractionRepository implements InteractionRepository
      * @param RepositoryReference $repositoryReference
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
+     * @param int                 $position
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -70,6 +71,7 @@ class DBALInteractionRepository implements InteractionRepository
         RepositoryReference $repositoryReference,
         string $userUUID,
         ItemUUID $itemUUID,
+        int $position,
         Origin $origin,
         string $type,
         DateTime $when
@@ -85,6 +87,7 @@ class DBALInteractionRepository implements InteractionRepository
                 'app_uuid' => $appUUID instanceof AppUUID ? $appUUID->composeUUID() : null,
                 'index_uuid' => $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null,
                 'item_uuid' => $itemUUID->composeUUID(),
+                'position' => $position,
                 'ip' => $origin->getIp(),
                 'host' => $origin->getHost(),
                 'platform' => $origin->getPlatform(),
