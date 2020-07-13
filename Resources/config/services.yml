@@ -13,7 +13,7 @@ services:
     # Aux services
     #
     React\HttpClient\Client:
-    Clue\React\Buzz\Browser:
+    React\Http\Browser:
 
     #
     # Services

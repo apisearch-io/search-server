@@ -70,16 +70,13 @@ trait ExportTest
         for ($i = 0; $i < 1000; ++$i) {
             $itemsUUID[] = ItemUUID::createFromArray([
                 'id' => $i,
-                'type' => 'type1',
+                'type' => 't1',
             ]);
 
             $items[] = Item::createFromArray([
                 'uuid' => [
                     'id' => $i,
-                    'type' => 'type1',
-                ],
-                'metadata' => [
-                    'title' => 'value',
+                    'type' => 't1',
                 ],
             ]);
         }
