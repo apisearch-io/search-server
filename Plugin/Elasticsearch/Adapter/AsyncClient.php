@@ -18,13 +18,12 @@ namespace Apisearch\Plugin\Elasticsearch\Adapter;
 use Apisearch\Exception\ConnectionException;
 use Apisearch\Plugin\Elasticsearch\Domain\AsyncRequestAccessor;
 use Apisearch\Server\Exception\ResponseException;
-use Clue\React\Buzz\Browser;
 use Elastica\Exception\ClientException;
 use Elastica\Request;
 use Elastica\Response;
 use Elasticsearch\Endpoints\AbstractEndpoint;
+use React\Http\Browser;
 use React\Promise\PromiseInterface;
-use RingCentral\Psr7\Request as PSR7Request;
 use RingCentral\Psr7\Response as PSR7Response;
 use function RingCentral\Psr7\stream_for;
 
@@ -96,21 +95,24 @@ class AsyncClient implements AsyncRequestAccessor
             $fullPath = "http://$fullPath";
         }
 
-        $request = new PSR7Request($method, $fullPath);
-        $request = $request->withBody(stream_for($data));
-        $request = $request->withHeader('Content-Type', $contentType);
-        $request = $request->withHeader('Content-Length', \strlen($data));
-
         return $this
             ->browser
-            ->send($request)
+            ->request(
+                $method,
+                $fullPath,
+                [
+                    'Content-Type' => $contentType,
+                    'Content-Length' => \strlen($data),
+                ],
+                stream_for($data)
+            )
             ->then(function (PSR7Response $response) {
                 return new Response(
                     (string) ($response->getBody()),
                     $response->getStatusCode()
                 );
             })
-            ->otherwise(function (\Throwable $exception) use ($path, $request) {
+            ->otherwise(function (\Throwable $exception) use ($path) {
                 throw new ResponseException(
                     $exception->getMessage(),
                     $exception->getCode()

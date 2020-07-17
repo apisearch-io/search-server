@@ -17,7 +17,7 @@ namespace Apisearch\Plugin\Admin\Controller;
 
 use Apisearch\Plugin\Admin\Domain\Command\OptimizeUsageLines;
 use DateTime;
-use React\Http\Response;
+use React\Http\Message\Response;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\Request;
 

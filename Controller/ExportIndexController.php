@@ -17,7 +17,7 @@ namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\ExportIndex;
-use React\Http\Response;
+use React\Http\Message\Response;
 use React\Promise\PromiseInterface;
 use React\Stream\ReadableStreamInterface;
 use Symfony\Component\HttpFoundation\Request;

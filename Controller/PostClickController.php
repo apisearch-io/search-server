@@ -18,7 +18,7 @@ namespace Apisearch\Server\Controller;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\PostClick;
-use React\Http\Response;
+use React\Http\Message\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
