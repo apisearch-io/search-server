@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Console;
 
-use Apisearch\Server\Domain\Command\ImportIndex;
+use Apisearch\Server\Domain\Command\ImportIndexByFeed;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -66,7 +66,7 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
     {
         $objects = $this->getAppIndexToken($input, $output);
 
-        $this->executeAndWait(new ImportIndex(
+        $this->executeAndWait(new ImportIndexByFeed(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
             $input->getArgument('source')

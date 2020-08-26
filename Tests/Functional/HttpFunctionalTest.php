@@ -103,7 +103,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Import index.
+     * Import index by feed.
      *
      * @param string $feed
      * @param bool   $detached
@@ -111,7 +111,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $index
      * @param Token  $token
      */
-    public function importIndex(
+    public function importIndexByFeed(
         string $feed,
         bool $detached = false,
         string $appId = null,

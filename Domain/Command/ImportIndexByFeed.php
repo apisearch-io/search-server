@@ -22,7 +22,7 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 /**
  * Class ImportIndex.
  */
-class ImportIndex extends CommandWithRepositoryReferenceAndToken
+class ImportIndexByFeed extends CommandWithRepositoryReferenceAndToken
 {
     /**
      * @var string

@@ -16,7 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Controller;
 
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\ImportIndex;
+use Apisearch\Server\Domain\Command\ImportIndexByFeed;
 use React\Http\Message\Response;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ImportIndexController.
  */
-class ImportIndexController extends ControllerWithCommandBus
+class ImportIndexByFeedController extends ControllerWithCommandBus
 {
     /**
      * @param Request $request
@@ -36,11 +36,11 @@ class ImportIndexController extends ControllerWithCommandBus
     {
         $query = $request->query;
         $feed = $query->get('feed');
-        $detached = $query->get('detached');
+        $detached = $query->get('detached', false);
 
         $promise = $this
             ->commandBus
-            ->execute(new ImportIndex(
+            ->execute(new ImportIndexByFeed(
                 RepositoryReference::create(
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
@@ -52,7 +52,7 @@ class ImportIndexController extends ControllerWithCommandBus
         return $detached
             ? resolve(new Response(202))
             : $promise->then(function () {
-                return new Response(202);
+                return new Response(200);
             });
     }
 }

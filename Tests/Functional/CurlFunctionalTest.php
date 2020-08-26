@@ -193,7 +193,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Import index.
+     * Import index by feed.
      *
      * @param string $feed
      * @param bool   $detached
@@ -201,7 +201,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $index
      * @param Token  $token
      */
-    public function importIndex(
+    public function importIndexByFeed(
         string $feed,
         bool $detached = false,
         string $appId = null,
@@ -209,7 +209,7 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
         Token $token = null
     ) {
         self::$lastResponse = $this->makeCurl(
-            'v1_import_index',
+            'v1_import_index_by_feed',
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $index ?? static::$index,

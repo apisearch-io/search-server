@@ -327,7 +327,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         static::createIndex(self::$anotherAppId);
         static::deleteTokens(self::$anotherAppId);
 
-        static::indexTestingItems();
+        if (static::needsInitialItemsIndexation()) {
+            static::indexTestingItems();
+        }
     }
 
     /**
@@ -396,6 +398,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     protected static function needsServer(): bool
     {
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    protected static function needsInitialItemsIndexation(): bool
+    {
+        return true;
     }
 
     /**
@@ -504,7 +514,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     ): array;
 
     /**
-     * Import index.
+     * Import index by feed.
      *
      * @param string $feed
      * @param bool   $detached
@@ -512,7 +522,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string $index
      * @param Token  $token
      */
-    abstract public function importIndex(
+    abstract public function importIndexByFeed(
         string $feed,
         bool $detached = false,
         string $appId = null,
