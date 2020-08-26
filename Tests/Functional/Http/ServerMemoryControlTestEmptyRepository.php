@@ -60,7 +60,7 @@ class ServerMemoryControlTestEmptyRepository extends CurlFunctionalTest
     {
         $this->resetIndex();
         $this->createImportFile(10000);
-        $this->importIndex('file:///tmp/dump.5000.apisearch', true);
+        $this->importIndexByFeed('file:///tmp/dump.5000.apisearch', true);
         $lastMemory = 0;
         $numberOfGrows = 0;
         $numberOfIterations = 0;

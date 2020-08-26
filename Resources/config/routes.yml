@@ -7,6 +7,7 @@ apisearch_v1_put_token:
     controller: Apisearch\Server\Controller\PutTokenController
     defaults:
         tags: tokens
+        json: true
 
 apisearch_v1_delete_token:
     path: /v1/{app_id}/tokens/{token_id}
@@ -21,6 +22,7 @@ apisearch_v1_get_tokens:
     controller: Apisearch\Server\Controller\GetTokensController
     defaults:
         tags: tokens
+        json: true
 
 apisearch_v1_delete_tokens:
     path: /v1/{app_id}/tokens
@@ -28,6 +30,7 @@ apisearch_v1_delete_tokens:
     controller: Apisearch\Server\Controller\DeleteTokensController
     defaults:
         tags: tokens
+        json: true
 
 #
 # Index API
@@ -45,6 +48,7 @@ apisearch_v1_create_index:
     controller: Apisearch\Server\Controller\CreateIndexController
     defaults:
         tags: indices
+        json: true
 
 apisearch_v1_delete_index:
     path: /v1/{app_id}/indices/{index_id}
@@ -66,6 +70,7 @@ apisearch_v1_configure_index:
     controller: Apisearch\Server\Controller\ConfigureIndexController
     defaults:
         tags: indices
+        json: true
 
 apisearch_v1_check_index:
     path: /v1/{app_id}/indices/{index_id}
@@ -81,10 +86,17 @@ apisearch_v1_export_index:
     defaults:
         tags: indices, catalog
 
-apisearch_v1_import_index:
-    path: /v1/{app_id}/indices/{index_id}/import
+apisearch_v1_import_index_by_feed:
+    path: /v1/{app_id}/indices/{index_id}/import/by-feed
     methods: ["PUT"]
-    controller: Apisearch\Server\Controller\ImportIndexController
+    controller: Apisearch\Server\Controller\ImportIndexByFeedController
+    defaults:
+        tags: indices, catalog
+
+apisearch_v1_import_index_by_stream:
+    path: /v1/{app_id}/indices/{index_id}/import/by-stream
+    methods: ["PUT"]
+    controller: Apisearch\Server\Controller\ImportIndexByStreamController
     defaults:
         tags: indices, catalog
 
@@ -97,6 +109,7 @@ apisearch_v1_put_items:
     controller: Apisearch\Server\Controller\IndexItemsController
     defaults:
         tags: catalog
+        json: true
 
 apisearch_v1_update_items_by_query:
     path: /v1/{app_id}/indices/{index_id}/items/update-by-query
@@ -105,6 +118,7 @@ apisearch_v1_update_items_by_query:
     defaults:
         with_query: true
         tags: catalog
+        json: true
 
 apisearch_v1_delete_items:
     path: /v1/{app_id}/indices/{index_id}/items
@@ -112,6 +126,7 @@ apisearch_v1_delete_items:
     controller: Apisearch\Server\Controller\DeleteItemsController
     defaults:
         tags: catalog
+        json: true
 
 apisearch_v1_delete_items_by_query:
     path: /v1/{app_id}/indices/{index_id}/items/by-query
@@ -120,6 +135,7 @@ apisearch_v1_delete_items_by_query:
     defaults:
         with_query: true
         tags: catalog
+        json: true
 
 #
 # Usage API
@@ -230,6 +246,7 @@ apisearch_v1_post_click:
     defaults:
         per_day: true
         tags: interactions, click, metrics
+        json: true
 
 apisearch_v1_post_click_preflight:
     path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click

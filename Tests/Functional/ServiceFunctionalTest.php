@@ -36,7 +36,7 @@ use Apisearch\Server\Domain\Command\DeleteItems;
 use Apisearch\Server\Domain\Command\DeleteItemsByQuery;
 use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
-use Apisearch\Server\Domain\Command\ImportIndex;
+use Apisearch\Server\Domain\Command\ImportIndexByFeed;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Command\PostClick;
 use Apisearch\Server\Domain\Command\PutToken;
@@ -176,7 +176,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Import index.
+     * Import index by feed.
      *
      * @param string $feed
      * @param bool   $detached
@@ -184,7 +184,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string $index
      * @param Token  $token
      */
-    public function importIndex(
+    public function importIndexByFeed(
         string $feed,
         bool $detached = false,
         string $appId = null,
@@ -192,7 +192,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         Token $token = null
     ) {
         $appUUID = AppUUID::createById($appId ?? self::$appId);
-        self::executeCommand(new ImportIndex(
+        self::executeCommand(new ImportIndexByFeed(
             RepositoryReference::create(
                 $appUUID,
                 IndexUUID::createById($index ?? self::$index)

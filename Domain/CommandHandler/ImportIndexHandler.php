@@ -18,12 +18,11 @@ namespace Apisearch\Server\Domain\CommandHandler;
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\ImportIndex;
 use Apisearch\Server\Domain\Command\IndexItems;
+use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\Format\FormatTransformer;
 use Apisearch\Server\Domain\Format\FormatTransformers;
 use Apisearch\Server\Domain\Repository\Repository\Repository;
-use Apisearch\Server\Domain\Resource\ResourceLoader;
 use Clue\React\Csv\Decoder;
 use Drift\CommandBus\Bus\CommandBus;
 use React\EventLoop\LoopInterface;
@@ -35,7 +34,7 @@ use React\Stream\ReadableStreamInterface;
 /**
  * Class ImportIndexHandler.
  */
-class ImportIndexHandler
+abstract class ImportIndexHandler
 {
     /**
      * @var CommandBus
@@ -53,86 +52,77 @@ class ImportIndexHandler
     private $formatTransformers;
 
     /**
-     * @var ResourceLoader
-     */
-    private $resourceLoader;
-
-    /**
      * @var LoopInterface
      */
-    private $loop;
+    protected $loop;
 
     /**
      * @param CommandBus         $commandBus
      * @param Repository         $repository
      * @param FormatTransformers $formatTransformers
-     * @param ResourceLoader     $resourceLoader
      * @param LoopInterface      $loop
      */
     public function __construct(
         CommandBus $commandBus,
         Repository $repository,
         FormatTransformers $formatTransformers,
-        ResourceLoader $resourceLoader,
         LoopInterface $loop
     ) {
         $this->commandBus = $commandBus;
         $this->repository = $repository;
         $this->formatTransformers = $formatTransformers;
-        $this->resourceLoader = $resourceLoader;
         $this->loop = $loop;
     }
 
     /**
-     * @param ImportIndex $importIndex
+     * @param CommandWithRepositoryReferenceAndToken $command
      *
      * @return PromiseInterface
      */
-    public function handle(ImportIndex $importIndex): PromiseInterface
+    public function handleByCommand(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
     {
-        $repositoryReference = $importIndex->getRepositoryReference();
-        $token = $importIndex->getToken();
-        $feed = $importIndex->getFeed();
+        $repositoryReference = $command->getRepositoryReference();
+        $token = $command->getToken();
+        $deferred = new Deferred();
 
-        return $this
+        $this
             ->commandBus
             ->execute(new IndexItems($repositoryReference, $token, []))
-            ->then(function () use ($repositoryReference, $token, $feed) {
-                $deferred = new Deferred();
+            ->then(function () use ($command) {
+                return $this->getStreamByCommand($command);
+            })
+            ->otherwise(function (\Throwable $throwable) use ($deferred) {
+                $deferred->reject($throwable);
+            })
+            ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $token, $deferred) {
+                $stream = new Decoder(
+                    $stream,
+                    FormatTransformer::getLineSeparator()
+                );
 
                 $this
                     ->loop
-                    ->futureTick(function () use ($repositoryReference, $token, $feed, $deferred) {
+                    ->futureTick(function () use ($repositoryReference, $token, $stream, $deferred) {
                         return $this
-                            ->resourceLoader
-                            ->getByPath($feed)
-                            ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $token, $deferred) {
-                                $stream = new Decoder(
-                                    $stream,
-                                    FormatTransformer::getLineSeparator()
-                                );
-
-                                $this
-                                    ->loop
-                                    ->futureTick(function () use ($repositoryReference, $token, $stream, $deferred) {
-                                        return $this
-                                            ->importFromStream($repositoryReference, $token, $stream)
-                                            ->then(function () use ($deferred) {
-                                                $deferred->resolve();
-                                            })
-                                            ->otherwise(function (\Throwable $throwable) use ($deferred) {
-                                                $deferred->reject($throwable);
-                                            });
-                                    });
+                            ->importFromStream($repositoryReference, $token, $stream)
+                            ->then(function () use ($deferred) {
+                                $deferred->resolve();
                             })
                             ->otherwise(function (\Throwable $throwable) use ($deferred) {
                                 $deferred->reject($throwable);
                             });
                     });
-
-                return $deferred->promise();
             });
+
+        return $deferred->promise();
     }
+
+    /**
+     * @param CommandWithRepositoryReferenceAndToken $command
+     *
+     * @return PromiseInterface
+     */
+    abstract protected function getStreamByCommand(CommandWithRepositoryReferenceAndToken $command): PromiseInterface;
 
     /**
      * @param RepositoryReference     $repositoryReference
@@ -145,14 +135,14 @@ class ImportIndexHandler
         ReadableStreamInterface $stream
     ): PromiseInterface {
         $deferred = new Deferred();
-        $callsDeferreds = [];
+        $callsDeferred = [];
         $firstRow = true;
         $numberOfRows = null;
         $firstRowArray = [];
         $formatTransformer = null;
         $items = [];
 
-        $stream->on('data', function ($data) use ($repositoryReference, $token, &$items, &$firstRow, &$firstRowArray, &$numberOfRows, &$formatTransformer, $deferred, $stream, &$callsDeferreds) {
+        $stream->on('data', function ($data) use ($repositoryReference, $token, &$items, &$firstRow, &$firstRowArray, &$numberOfRows, &$formatTransformer, $deferred, $stream, &$callsDeferred) {
             if (!\is_array($data)) {
                 return;
             }
@@ -187,7 +177,7 @@ class ImportIndexHandler
 
                 if (\count($items) >= 500) {
                     $newDeferred = new Deferred();
-                    $callsDeferreds[] = $newDeferred->promise();
+                    $callsDeferred[] = $newDeferred->promise();
                     $this
                         ->loop
                         ->futureTick(function () use ($repositoryReference, $token, $items, $newDeferred) {
@@ -205,15 +195,15 @@ class ImportIndexHandler
             }
         });
 
-        $stream->on('close', function () use ($repositoryReference, $token, $deferred, &$items, &$callsDeferreds) {
+        $stream->on('close', function () use ($repositoryReference, $token, $deferred, &$items, &$callsDeferred) {
             $this
                 ->loop
-                ->futureTick(function () use ($repositoryReference, $token, $items, $deferred, &$callsDeferreds) {
+                ->futureTick(function () use ($repositoryReference, $token, $items, $deferred, &$callsDeferred) {
                     return $this
                         ->commandBus
                         ->execute(new IndexItems($repositoryReference, $token, $items))
-                        ->then(function () use (&$callsDeferreds) {
-                            return all($callsDeferreds);
+                        ->then(function () use (&$callsDeferred) {
+                            return all($callsDeferred);
                         })
                         ->always(function () use ($deferred) {
                             $deferred->resolve();

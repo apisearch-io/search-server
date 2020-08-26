@@ -28,7 +28,7 @@ trait ImportTest
     public function testImport()
     {
         $this->createImportFile(300);
-        $this->importIndex('file:///tmp/dump.300.apisearch');
+        $this->importIndexByFeed('file:///tmp/dump.300.apisearch');
         $result = $this->query(Query::createMatchAll());
         $this->assertEquals(305, $result->getTotalHits());
         $result = $this->query(Query::createMatchAll()->filterBy('year', 'year', ['1989']));

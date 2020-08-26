@@ -43,7 +43,10 @@ class ContentTypeValidationOverHTTP implements EventSubscriberInterface
                 if (!\in_array($request->getMethod(), [
                     Request::METHOD_GET,
                     Request::METHOD_HEAD,
-                ]) && ('json' !== $request->getContentType())
+                    Request::METHOD_OPTIONS,
+                ])
+                    && $request->attributes->has('json')
+                    && ('json' !== $request->getContentType())
                     && !empty($request->getContent())
                 ) {
                     throw UnsupportedContentTypeException::createUnsupportedContentTypeException();
