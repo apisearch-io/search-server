@@ -13,10 +13,6 @@ jobs:
             -   image: circleci/php:7.4.4-cli
             -   image: rabbitmq:3-alpine
             -   image: redis:4-alpine
-            -   image: mysql:5
-                environment:
-                    MYSQL_ROOT_PASSWORD: root
-                    MYSQL_DATABASE: apisearch
             -   image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
                 name: apisearch.elasticsearch.6.1
                 environment:
