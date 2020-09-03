@@ -24,12 +24,12 @@
         <env name="REDIS_HOST" value="127.0.0.1" force="true" />
         <env name="LOGSTASH_REDIS_HOST" value="127.0.0.1" force="true" />
 
-        <env name="DBAL_DRIVER" value="mysql" force="true" />
-        <env name="DBAL_HOST" value="127.0.0.1" force="true" />
-        <env name="DBAL_PORT" value="3306" force="true" />
+        <env name="DBAL_DRIVER" value="sqlite" force="true" />
+        <env name="DBAL_HOST" value=" " force="true" />
+        <env name="DBAL_PORT" value=" " force="true" />
         <env name="DBAL_USER" value="root" force="true" />
         <env name="DBAL_PASSWORD" value="root" force="true" />
-        <env name="DBAL_DBNAME" value="apisearch" force="true" />
+        <env name="DBAL_DBNAME" value="/tmp/apisearch.dbal.test" force="true" />
         <env name="DBAL_TOKENS_TABLE" value="tokens" force="true" />
         <env name="DBAL_INDEX_CONFIGS_TABLE" value="index_config" force="true" />
         <env name="DBAL_USAGE_LINES_TABLE" value="usage_lines" force="true" />
