@@ -39,15 +39,14 @@ class DBALConfigRepository extends ConfigRepository
     /**
      * TokenRedisRepository constructor.
      *
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $configsTable
-     * @param bool       $enabled
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $configsTable
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->table = $configsTable;
     }
 

@@ -20,6 +20,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Controller\ControllerWithQueryBusAsGod;
 use Apisearch\Server\Domain\Query\GetTokens;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

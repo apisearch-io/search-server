@@ -37,7 +37,7 @@ class DBALTokenRepositoryTest extends TokenTest
      */
     protected function setUp()
     {
-        $mainConnection = $this->get('dbal.main_connection');
+        $mainConnection = $this->get('dbal.dbal_plugin_connection');
         $promise = $mainConnection->truncateTable(static::getParameterStatic('apisearch_plugin.dbal.tokens_table'));
 
         static::await($promise);

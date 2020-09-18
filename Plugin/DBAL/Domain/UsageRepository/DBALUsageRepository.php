@@ -42,14 +42,14 @@ class DBALUsageRepository implements UsageRepository
     private $tableName;
 
     /**
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $usageLinesTable
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $usageLinesTable
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->tableName = $usageLinesTable;
     }
 

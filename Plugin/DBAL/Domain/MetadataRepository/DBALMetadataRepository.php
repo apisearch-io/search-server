@@ -38,14 +38,14 @@ class DBALMetadataRepository extends MetadataRepository
     /**
      * TokenRedisRepository constructor.
      *
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $metadataTable
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $metadataTable
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->table = $metadataTable;
     }
 

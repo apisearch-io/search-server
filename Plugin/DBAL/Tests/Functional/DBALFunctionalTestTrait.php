@@ -88,7 +88,7 @@ trait DBALFunctionalTestTrait
      */
     public static function resetScenario()
     {
-        $mainConnection = static::getStatic('dbal.main_connection');
+        $mainConnection = static::getStatic('dbal.dbal_plugin_connection');
         $tokensTableName = static::getParameterStatic('apisearch_plugin.dbal.tokens_table');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
         $usageTableName = static::getParameterStatic('apisearch_plugin.dbal.usage_lines_table');

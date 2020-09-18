@@ -45,14 +45,14 @@ class DBALInteractionRepository implements InteractionRepository
     private $tableName;
 
     /**
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $interactionsTable
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $interactionsTable
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->tableName = $interactionsTable;
     }
 

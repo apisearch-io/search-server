@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Controller;
 
 use Apisearch\Plugin\Admin\Domain\Command\OptimizeUsageLines;
+use Apisearch\Server\Controller\ControllerWithCommandBusAsGod;
 use DateTime;
 use React\Http\Message\Response;
 use React\Promise\PromiseInterface;

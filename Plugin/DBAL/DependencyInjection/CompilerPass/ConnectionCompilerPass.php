@@ -30,7 +30,7 @@ class ConnectionCompilerPass extends DBALConnectionCompilerPass
     {
         $this->createConnection(
             $container,
-            'main',
+            'dbal_plugin',
             $container->getParameter('apisearch_plugin.dbal.configuration')
         );
     }

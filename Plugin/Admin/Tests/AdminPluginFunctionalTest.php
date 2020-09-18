@@ -34,6 +34,7 @@ abstract class AdminPluginFunctionalTest extends CurlFunctionalTest
      */
     protected static function decorateBundles(array $bundles): array
     {
+        parent::decorateBundles($bundles);
         $bundles[] = AdminPluginBundle::class;
 
         return $bundles;

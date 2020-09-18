@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\Admin\Controller;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Controller\ControllerWithQueryBusAsGod;
 use Apisearch\Server\Controller\RequestAccessor;
 use Apisearch\Server\Domain\Query\GetUsage;
 use DateTime;

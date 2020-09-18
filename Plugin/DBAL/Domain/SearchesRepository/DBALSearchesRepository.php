@@ -44,14 +44,14 @@ class DBALSearchesRepository implements SearchesRepository
     private $tableName;
 
     /**
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $searchesTable
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $searchesTable
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->tableName = $searchesTable;
     }
 
