@@ -341,6 +341,14 @@ trait QueryTest
             $this->query(Query::createMatchAll()->setMinScore(1.0))->getItems()
         );
 
+        /**
+         * Min score should only apply when has an active search
+         */
+        $this->assertCount(
+            5,
+            $this->query(Query::createMatchAll()->setMinScore(2.0))->getItems()
+        );
+
         $this->assertCount(
             4,
             $this->query(Query::create('a')->setMinScore(Query::NO_MIN_SCORE))->getItems()
