@@ -139,6 +139,8 @@ abstract class MetadataRepository implements EventSubscriberInterface
     /**
      * Get all metadata from repository reference.
      *
+     * @param RepositoryReference $repositoryReference
+     *
      * @return array
      */
     public function all(RepositoryReference $repositoryReference): array

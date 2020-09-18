@@ -36,14 +36,19 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
      */
     public function getEmptyRepository(LoopInterface $loop): UsageRepository
     {
-        return new ChunkUsageRepository(
+        $repository = new ChunkUsageRepository(
             new InMemoryUsageRepository(),
             DBALUsageRepositoryTest::createEmptyRepository(
                 DBALUsageRepositoryTest::createConnection($loop)
             ),
-            $loop,
-            1
+            $loop
         );
+
+        $loop->addPeriodicTimer(1, function () use ($repository) {
+            $repository->flushLines();
+        });
+
+        return $repository;
     }
 
     /**
@@ -66,9 +71,12 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
         $repository = new ChunkUsageRepository(
             new InMemoryUsageRepository(),
             DBALUsageRepositoryTest::createEmptyRepository($connection),
-            $loop,
-            1
+            $loop
         );
+
+        $loop->addPeriodicTimer(1, function () use ($repository) {
+            $repository->flushLines();
+        });
 
         $this->setUpEnvironment($repository, $loop);
 

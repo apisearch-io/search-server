@@ -13,15 +13,14 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\Admin\Controller;
+namespace Apisearch\Server\Controller;
 
-use Apisearch\Server\Controller\ControllerWithCommandBus;
-use Drift\CommandBus\Bus\CommandBus;
+use Drift\CommandBus\Bus\QueryBus;
 
 /**
- * Class ControllerWithCommandBusAsGod.
+ * Class ControllerWithQueryBusAsGod.
  */
-abstract class ControllerWithCommandBusAsGod extends ControllerWithCommandBus
+abstract class ControllerWithQueryBusAsGod extends ControllerWithQueryBus
 {
     /**
      * @var string
@@ -29,14 +28,14 @@ abstract class ControllerWithCommandBusAsGod extends ControllerWithCommandBus
     protected $godToken;
 
     /**
-     * @param CommandBus $commandBus
-     * @param string     $godToken
+     * @param QueryBus $queryBus
+     * @param string   $godToken
      */
     public function __construct(
-        CommandBus $commandBus,
+        QueryBus $queryBus,
         string $godToken
     ) {
-        parent::__construct($commandBus);
+        parent::__construct($queryBus);
         $this->godToken = $godToken;
     }
 }

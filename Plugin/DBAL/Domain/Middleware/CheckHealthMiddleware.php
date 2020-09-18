@@ -31,11 +31,11 @@ class CheckHealthMiddleware implements PluginMiddleware
     protected $connection;
 
     /**
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $dbalPluginConnection)
     {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
     }
 
     /**

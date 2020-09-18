@@ -45,18 +45,16 @@ class DBALTokenRepository extends TokenRepository
     private $locatorEnabled;
 
     /**
-     * TokenRedisRepository constructor.
-     *
-     * @param Connection $connection
+     * @param Connection $dbalPluginConnection
      * @param string     $tokensTable
      * @param bool       $locatorEnabled
      */
     public function __construct(
-        Connection $connection,
+        Connection $dbalPluginConnection,
         string $tokensTable,
         bool $locatorEnabled
     ) {
-        $this->connection = $connection;
+        $this->connection = $dbalPluginConnection;
         $this->table = $tokensTable;
         $this->locatorEnabled = $locatorEnabled;
     }

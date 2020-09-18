@@ -1,0 +1,10 @@
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.dockerignre export-ignore
+/.circleci export-ignore
+/Tests export-ignore
+/phpunit.xml export-ignore
+/docker-compose export-ignore
+/.php_cs export-ignore
+/.formatter.yml export-ignore
+/.editorconfig export-ignore
