@@ -73,7 +73,7 @@ class QueryBuilder
 
         $mainQuery->setQuery($boolQuery);
         $minScore = $query->getMinScore();
-        if ($minScore > 0) {
+        if ($minScore > 0 && !empty($query->getQueryText())) {
             $mainQuery->setMinScore($minScore);
         }
 

@@ -4,7 +4,6 @@ services:
 
     elasticsearch:
         image: "docker.elastic.co/elasticsearch/elasticsearch:7.6.0"
-        networks: [apisearch]
         ports:
             - "9200:9200"
         environment:
@@ -14,7 +13,6 @@ services:
 
     elasticsearch_legacy:
         image: "docker.elastic.co/elasticsearch/elasticsearch:6.1.4"
-        networks: [apisearch]
         ports:
             - "9201:9200"
         environment:
@@ -24,7 +22,6 @@ services:
 
     amqp:
         image: "rabbitmq:3-management"
-        networks: [apisearch]
         ports:
             - "5672:5672"
             - "15672:15672"
@@ -37,12 +34,8 @@ services:
 
     mysql:
         image: mysql:5
-        networks: [apisearch]
         ports:
             - "3306:3306"
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: apisearch
-
-networks:
-    apisearch:
