@@ -10,7 +10,7 @@ technologies. The project provides an *in crescendo* set of language
 integration libraries for her users, as well as some third party projects 
 integration bundles, plugins, or javascript widgets.
 
-**Step 1** - Start Eleasticsearch
+**Step 1** - Start Eleasticsearch docker container
 
 ```
 docker run -d \
@@ -18,29 +18,27 @@ docker run -d \
     -e "ES_JAVA_OPTS=-Xms256m -Xmx256m" \
     -e "discovery.type=single-node" \
     -e "action.auto_create_index=-apisearch*,+*" \
-    docker.elastic.co/elasticsearch/elasticsearch:6.6.0
+    docker.elastic.co/elasticsearch/elasticsearch:7.9.1
 ```
 
-**Step 2** - Start Apisearch Server
+**Step 2** - Start an Apisearch Server docker container
 
 ```
-docker pull apisearchio/search-server &&
+docker pull apisearchio/search-server:latest
 docker run -d \
     --network host \
     -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
-    -e "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34" \
     -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
+    -e "APISEARCH_ENABLED_PLUGINS=elasticsearch" \
     -e "ELASTICSEARCH_HOST=localhost" \
-    -e "ELASTICSEARCH_PORT=9200" \
-    apisearchio/search-server:latest \
-    sh /server-pm-entrypoint.sh
+    apisearchio/search-server:latest
 ```
 
-**Step 3** - Check health of the Server
+**Step 3** - Check the Server health
 
 ```
-curl "http://localhost:8200/health" \
-    -H "Apisearch-Token-Id: 6326d504-0a5f-f1ae-7344-8e70b75fcde9"
+curl "http://localhost:8000/health" \
+    -H "Apisearch-Token-Id: 0e4d75ba-c640-44c1-a745-06ee51db4e93"
 ```
 
 Some first steps for you!
@@ -59,6 +57,6 @@ Take a tour using these links.
 - [View a demo](http://apisearch.io)
 - [Join us on slack](https://apisearch.slack.com) - or [Get an invitation](https://apisearch-slack.herokuapp.com/)
 - [Twitter](https://twitter.com/apisearch_io)
-- [Youtube Channel](https://www.youtube.com/channel/UCD9H_POyre6Wvahg-zaLzsA)
 
-And remember to star the project! The more stars, the more far we'll arrive.
+...and remember give us a star on Github! The more stars we have, the further
+we'll arrive.
