@@ -500,4 +500,27 @@ trait QueryTest
         $this->assertCount(2, $result->getItems());
         $this->deleteIndex(self::$appId, self::$anotherIndex);
     }
+
+    /**
+     * We test that, when applying some language in an index, we apply stopwords while indexing (analyzing) but
+     * we don't do that when searching.
+     *
+     * - Item 1 indexes both "Algas" and "a", but because "a" is a stopword in Spanish, only Algas is really indexed
+     * - Item 2 indexes "a", but as is a stopwork, don't really indexes nothing
+     *
+     * - When searching for "a", we get the first item, because "Algas", after tokanization, we have an A.
+     */
+    public function testQueryWithLanguage()
+    {
+        $this->deleteIndex();
+        $this->createIndex(self::$appId, self::$index, self::getGodToken(), new Config('es'));
+        $this->indexItems([
+            Item::create(ItemUUID::createByComposedUUID('123~type1'), [], [], ['description' => 'Algas a la fuerza']),
+            Item::create(ItemUUID::createByComposedUUID('123~type2'), [], [], ['description' => 'a']),
+        ]);
+
+        $result = $this->query(Query::create('a'));
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('type1', $result->getFirstItem()->getType());
+    }
 }

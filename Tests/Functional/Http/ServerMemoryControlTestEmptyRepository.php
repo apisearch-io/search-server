@@ -53,8 +53,6 @@ class ServerMemoryControlTestEmptyRepository extends CurlFunctionalTest
 
     /**
      * Test import exhaustive.
-     *
-     * @group lele
      */
     public function testImportExhaustive()
     {

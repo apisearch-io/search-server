@@ -22,8 +22,6 @@ trait QueryCommandTest
 {
     /**
      * Test query.
-     *
-     * @group lele
      */
     public function testQuery()
     {
