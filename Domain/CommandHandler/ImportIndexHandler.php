@@ -184,8 +184,11 @@ abstract class ImportIndexHandler
                             return $this
                                 ->commandBus
                                 ->execute(new IndexItems($repositoryReference, $token, $items))
-                                ->always(function () use ($newDeferred) {
+                                ->then(function () use ($newDeferred) {
                                     $newDeferred->resolve();
+                                })
+                                ->otherwise(function(\Throwable $throwable) use ($newDeferred){
+                                    $newDeferred->reject($throwable->getMessage());
                                 });
                         });
                     $items = [];
@@ -205,8 +208,11 @@ abstract class ImportIndexHandler
                         ->then(function () use (&$callsDeferred) {
                             return all($callsDeferred);
                         })
-                        ->always(function () use ($deferred) {
+                        ->then(function () use ($deferred) {
                             $deferred->resolve();
+                        })
+                        ->otherwise(function(\Throwable $throwable) use ($deferred){
+                            $deferred->reject($throwable->getMessage());
                         });
                 });
         });
