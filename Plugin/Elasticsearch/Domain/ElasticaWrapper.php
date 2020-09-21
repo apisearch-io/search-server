@@ -41,13 +41,13 @@ use Elasticsearch\Endpoints\Cat\Aliases;
 use Elasticsearch\Endpoints\Cat\Indices;
 use Elasticsearch\Endpoints\Cluster\Health;
 use Elasticsearch\Endpoints\DeleteByQuery;
-use Elasticsearch\Endpoints\Indices\Alias\Delete as DeleteAlias;
-use Elasticsearch\Endpoints\Indices\Aliases\Update as UpdateAlias;
 use Elasticsearch\Endpoints\Indices\Create as CreateIndex;
 use Elasticsearch\Endpoints\Indices\Delete as DeleteIndex;
+use Elasticsearch\Endpoints\Indices\DeleteAlias;
 use Elasticsearch\Endpoints\Indices\GetMapping;
 use Elasticsearch\Endpoints\Indices\PutMapping;
 use Elasticsearch\Endpoints\Indices\Refresh;
+use Elasticsearch\Endpoints\Indices\UpdateAliases;
 use Elasticsearch\Endpoints\Reindex;
 use Elasticsearch\Serializers\ArrayToJSONSerializer;
 use React\EventLoop\LoopInterface;
@@ -674,7 +674,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
                 'alias' => $name,
             ],
         ], ]];
-        $endpoint = new UpdateAlias();
+        $endpoint = new UpdateAliases();
         $endpoint->setBody($data);
 
         return $this
