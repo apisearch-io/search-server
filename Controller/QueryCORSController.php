@@ -35,7 +35,7 @@ class QueryCORSController extends ControllerWithQueryBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
-        $origin = $this->createOriginByRequest($request);
+        $originObject = $this->createOriginByRequest($request);
         $allowedMethod = $request->get('allowed_method', Request::METHOD_GET);
 
         return $this
@@ -44,7 +44,7 @@ class QueryCORSController extends ControllerWithQueryBus
                     RequestAccessor::getAppUUIDFromRequest($request),
                     RequestAccessor::getIndexUUIDFromRequest($request)
                 ),
-                $origin
+                $originObject
             ))
             ->then(function ($origin) use ($allowedMethod) {
                 return false === $origin
@@ -66,7 +66,9 @@ class QueryCORSController extends ControllerWithQueryBus
         string $allowedMethod
     ): Response {
         return new Response(null, 204, [
-            'Access-Control-Allow-Origin' => $origin,
+            'Access-Control-Allow-Origin' => 'null' === $origin
+                ? '*'
+                : $origin,
             'Access-Control-Allow-Headers' => \implode(', ', [
                 'Content-Encoding',
                 'Content-Type',

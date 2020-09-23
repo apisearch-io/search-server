@@ -265,6 +265,14 @@ class ElasticaWrapper implements AsyncRequestAccessor
     public function getIndexMapping(Config $config): array
     {
         $mapping = [];
+        $mapping['date_detection'] = true;
+        $mapping['dynamic_date_formats'] = [
+            'strict_date_optional_time',
+            'strict_date_hour',
+            'strict_date_hour_minute',
+            'strict_date_hour_minute_second',
+        ];
+
         $mapping['dynamic_templates'] = [
             [
                 'dynamic_metadata_as_keywords' => [

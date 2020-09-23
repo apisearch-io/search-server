@@ -75,7 +75,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'link' => 'l1',
                         'image' => '',
                         'brand' => 'b1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                         'structure1' => ['1', '2', '3'],
                         'ampersand' => 'One & Two && Three',
                         'chars' => 'One % Two %% | Three',
@@ -125,7 +125,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'stock' => 100,
                         'on_offer' => true,
                         's_field1' => 'sv1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                         'an_array' => [
                             'val1',
                             'val2',
@@ -134,6 +134,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                             [
                                 'val' => 1,
                                 'price' => 2,
+                                'char' => 'ã',
                             ],
                         ],
                         'a_multi_complex_array' => [
@@ -155,13 +156,13 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'another_extra_description' => 'aed1',
                         'brand' => 'b1',
                         's_field1' => 'sv1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                     ],
                     'exact_matching_metadata' => [
                         '123',
                         'rf1',
                         'arf1',
-                        'sv2',
+                        'sv2ã',
                     ],
                     'suggest' => [
                         'sug1',
@@ -181,7 +182,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'link' => 'l1',
                         'image' => '',
                         'brand' => 'b1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                         'structure1' => ['1', '2', '3'],
                         'ampersand' => 'One & Two && Three',
                         'chars' => 'One % Two %% | Three',
@@ -219,7 +220,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'stock' => 100,
                         'on_offer' => true,
                         's_field1' => 'sv1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                         'an_array' => [
                             'val1',
                             'val2',
@@ -228,6 +229,7 @@ abstract class FormatTransformerTest extends BaseUnitTest
                             [
                                 'val' => 1,
                                 'price' => 2,
+                                'char' => 'ã',
                             ],
                         ],
                         'a_multi_complex_array' => [
@@ -249,13 +251,13 @@ abstract class FormatTransformerTest extends BaseUnitTest
                         'another_extra_description' => 'aed1',
                         'brand' => 'b1',
                         's_field1' => 'sv1',
-                        's_field2' => 'sv2',
+                        's_field2' => 'sv2ã',
                     ],
                     'exact_matching_metadata' => [
                         '123',
                         'rf1',
                         'arf1',
-                        'sv2',
+                        'sv2ã',
                     ],
                     'suggest' => [
                         'sug1',

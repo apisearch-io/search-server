@@ -187,7 +187,7 @@ abstract class ImportIndexHandler
                                 ->then(function () use ($newDeferred) {
                                     $newDeferred->resolve();
                                 })
-                                ->otherwise(function(\Throwable $throwable) use ($newDeferred){
+                                ->otherwise(function (\Throwable $throwable) use ($newDeferred) {
                                     $newDeferred->reject($throwable->getMessage());
                                 });
                         });
@@ -211,7 +211,7 @@ abstract class ImportIndexHandler
                         ->then(function () use ($deferred) {
                             $deferred->resolve();
                         })
-                        ->otherwise(function(\Throwable $throwable) use ($deferred){
+                        ->otherwise(function (\Throwable $throwable) use ($deferred) {
                             $deferred->reject($throwable->getMessage());
                         });
                 });

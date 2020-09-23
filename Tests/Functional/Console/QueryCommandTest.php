@@ -37,7 +37,7 @@ trait QueryCommandTest
             'command' => 'apisearch-server:import-index',
             'app-id' => self::$appId,
             'index' => self::$index,
-            'source' => 'file://'.__DIR__.'/data.source.as',
+            'source' => 'file://'.__DIR__.'/data.source.full.as',
         ]);
 
         $content = static::runCommand([

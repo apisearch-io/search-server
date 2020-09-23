@@ -59,7 +59,7 @@ abstract class RestrictedOriginsMiddleware
         $host = $origin->getHost();
 
         if (
-            empty($origin) &&
+            empty($host) &&
             empty($ip)
         ) {
             return $next($command);

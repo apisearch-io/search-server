@@ -37,6 +37,7 @@ class PostClickController extends ControllerWithCommandBus
     {
         $query = $request->query;
         $itemUUID = $request->get('item_id');
+        $host = $this->createOriginByRequest($request)->getHost();
 
         $this->execute(new PostClick(
             RepositoryReference::create(
@@ -50,6 +51,10 @@ class PostClickController extends ControllerWithCommandBus
             $this->createOriginByRequest($request)
         ));
 
-        return new Response(200);
+        return new Response(204, [
+            'Access-Control-Allow-Origin' => 'null' === $host
+                ? '*'
+                : $host,
+        ]);
     }
 }
