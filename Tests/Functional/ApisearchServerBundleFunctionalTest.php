@@ -350,7 +350,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             static::$lastServer = null;
         }
 
-        $serverPath = is_dir(__DIR__.'/../../vendor/bin')
+        $serverPath = \is_dir(__DIR__.'/../../vendor/bin')
             ? __DIR__.'/../../vendor/bin'
             : __DIR__.'/../../../../bin';
 

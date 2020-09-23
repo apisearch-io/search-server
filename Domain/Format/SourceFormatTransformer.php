@@ -84,11 +84,11 @@ class SourceFormatTransformer extends FormatTransformer
     {
         return \implode(static::getLineSeparator(), [
             $this->escapeSpecialChars($item->getUUID()->composeUUID()),
-            \json_encode($this->escapeSpecialChars($this->formatValue($item->getMetadata())), JSON_UNESCAPED_SLASHES),
-            \json_encode($this->escapeSpecialChars($this->formatValue($item->getIndexedMetadata())), JSON_UNESCAPED_SLASHES),
-            \json_encode($this->escapeSpecialChars($this->formatValue($item->getSearchableMetadata())), JSON_UNESCAPED_SLASHES),
-            \json_encode($this->escapeSpecialChars($item->getExactMatchingMetadata()), JSON_UNESCAPED_SLASHES),
-            \json_encode($this->escapeSpecialChars($item->getSuggest()), JSON_UNESCAPED_SLASHES),
+            \json_encode($this->escapeSpecialChars($this->formatValue($item->getMetadata())), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            \json_encode($this->escapeSpecialChars($this->formatValue($item->getIndexedMetadata())), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            \json_encode($this->escapeSpecialChars($this->formatValue($item->getSearchableMetadata())), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            \json_encode($this->escapeSpecialChars($item->getExactMatchingMetadata()), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+            \json_encode($this->escapeSpecialChars($item->getSuggest()), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             ($item->getCoordinate() instanceof Coordinate
                 ? \json_encode($item->getCoordinate()->toArray())
                 : null),

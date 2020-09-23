@@ -229,7 +229,7 @@ class StandardFormatTransformer extends FormatTransformer
 
             if (\is_array($value)) {
                 $fieldModifiers .= 'j';
-                $value = \json_encode($value);
+                $value = \json_encode($value, JSON_UNESCAPED_UNICODE);
             }
 
             if (\array_key_exists($field, $attributes)) {

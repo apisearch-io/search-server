@@ -54,6 +54,9 @@ items:
                 - {id: 1, category: 1, rank: 10}
                 - {id: 2, category: 1, rank: 8}
                 - {id: 3, category: 2, rank: 13}
+            comic:
+                - { id: "t%27challa_(earth-616)", name: "Challa" }
+                - { id: "t'chollo_(earth-616)", name: "Chollo" }
         searchable_metadata:
             editorial: "Alfaguarra"
             specific: "Stylestep"

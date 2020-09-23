@@ -243,13 +243,15 @@ trait AggregationsTest
 
     /**
      * Aggregate by date.
+     *
+     * @group lol
      */
     public function testDateRangeAggregations()
     {
         $this->assertCount(
             1,
             $this->query(Query::createMatchAll()
-                ->FilterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
+                ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
                 ->aggregateByDateRange('created_at', 'created_at', ['2020-03-03..2020-04-04'], Filter::AT_LEAST_ONE)
             )->getAggregation('created_at')
         );
@@ -257,7 +259,7 @@ trait AggregationsTest
         $this->assertCount(
             2,
             $this->query(Query::createMatchAll()
-                ->FilterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
+                ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
                 ->aggregateByDateRange('created_at', 'created_at', ['2020-02-02..2020-03-03', '2020-03-03..2020-04-04'], Filter::AT_LEAST_ONE)
             )->getAggregation('created_at')
         );
