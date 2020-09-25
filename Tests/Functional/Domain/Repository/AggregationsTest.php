@@ -243,8 +243,6 @@ trait AggregationsTest
 
     /**
      * Aggregate by date.
-     *
-     * @group lol
      */
     public function testDateRangeAggregations()
     {
@@ -353,5 +351,38 @@ trait AggregationsTest
             ->getAggregations();
 
         $this->assertCount(2, $aggregations->getAggregation('stores')->getCounters());
+    }
+
+    /**
+     * Test aggregation types
+     */
+    public function testAggregationTypes()
+    {
+        $aggregations = $this
+            ->query(
+                Query::createMatchAll()
+                    ->aggregateBy(
+                        'field_boolean',
+                        'field_boolean',
+                        Filter::AT_LEAST_ONE,
+                    )
+            )
+            ->getAggregations();
+
+        $this->assertEquals("true", $aggregations->getAggregation('field_boolean')->getCounters()["true"]->getValues()['id']);
+        $this->assertEquals(1, $aggregations->getAggregation('field_boolean')->getCounters()["true"]->getN());
+
+        $result = $this->query(
+            Query::createMatchAll()
+                ->filterBy(
+                    'field_boolean',
+                    'field_boolean',
+                    [
+                        "true"
+                    ]
+                )
+        );
+
+        $this->assertCount(1, $result->getItems());
     }
 }

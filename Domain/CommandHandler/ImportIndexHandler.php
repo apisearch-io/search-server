@@ -143,6 +143,7 @@ abstract class ImportIndexHandler
         $items = [];
 
         $stream->on('data', function ($data) use ($repositoryReference, $token, &$items, &$firstRow, &$firstRowArray, &$numberOfRows, &$formatTransformer, $deferred, $stream, &$callsDeferred) {
+
             if (!\is_array($data)) {
                 return;
             }
@@ -199,6 +200,10 @@ abstract class ImportIndexHandler
         });
 
         $stream->on('close', function () use ($repositoryReference, $token, $deferred, &$items, &$callsDeferred) {
+            if (empty($items)) {
+                return;
+            }
+
             $this
                 ->loop
                 ->futureTick(function () use ($repositoryReference, $token, $items, $deferred, &$callsDeferred) {
