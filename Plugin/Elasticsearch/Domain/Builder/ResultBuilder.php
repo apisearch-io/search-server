@@ -64,13 +64,14 @@ class ResultBuilder
             }
 
             foreach ($buckets as $key => $bucket) {
-                $usedKey = $bucket['key'] ?? $key;
+                $usedKey = $bucket['key_as_string'] ?? $bucket['key'] ?? $key;
+                $usedKey = \strval($usedKey);
                 if (
                     empty($queryAggregation->getSubgroup()) ||
                     \in_array($usedKey, $queryAggregation->getSubgroup())
                 ) {
                     $aggregation->addCounter(
-                        (string) $usedKey,
+                        $usedKey,
                         (int) $bucket['doc_count']
                     );
                 }
