@@ -354,7 +354,7 @@ trait AggregationsTest
     }
 
     /**
-     * Test aggregation types
+     * Test aggregation types.
      */
     public function testAggregationTypes()
     {
@@ -369,8 +369,8 @@ trait AggregationsTest
             )
             ->getAggregations();
 
-        $this->assertEquals("true", $aggregations->getAggregation('field_boolean')->getCounters()["true"]->getValues()['id']);
-        $this->assertEquals(1, $aggregations->getAggregation('field_boolean')->getCounters()["true"]->getN());
+        $this->assertEquals('true', $aggregations->getAggregation('field_boolean')->getCounters()['true']->getValues()['id']);
+        $this->assertEquals(1, $aggregations->getAggregation('field_boolean')->getCounters()['true']->getN());
 
         $result = $this->query(
             Query::createMatchAll()
@@ -378,7 +378,7 @@ trait AggregationsTest
                     'field_boolean',
                     'field_boolean',
                     [
-                        "true"
+                        'true',
                     ]
                 )
         );

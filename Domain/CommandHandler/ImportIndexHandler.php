@@ -143,7 +143,6 @@ abstract class ImportIndexHandler
         $items = [];
 
         $stream->on('data', function ($data) use ($repositoryReference, $token, &$items, &$firstRow, &$firstRowArray, &$numberOfRows, &$formatTransformer, $deferred, $stream, &$callsDeferred) {
-
             if (!\is_array($data)) {
                 return;
             }
