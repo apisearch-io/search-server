@@ -978,22 +978,6 @@ abstract class CurlFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Configure environment.
-     */
-    public static function configureEnvironment()
-    {
-        // Pass
-    }
-
-    /**
-     * Clean environment.
-     */
-    public static function cleanEnvironment()
-    {
-        // Pass
-    }
-
-    /**
      * Make a curl execution.
      *
      * @param string       $routeName

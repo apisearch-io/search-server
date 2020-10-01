@@ -944,16 +944,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     abstract public function checkHealth(Token $token = null): array;
 
     /**
-     * Configure environment.
-     */
-    abstract public static function configureEnvironment();
-
-    /**
-     * Clean environment.
-     */
-    abstract public static function cleanEnvironment();
-
-    /**
      * Create token by id and app_id.
      *
      * @param string $tokenId

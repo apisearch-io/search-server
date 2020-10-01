@@ -27,8 +27,6 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query as QueryModel;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
-use Apisearch\Server\Domain\Command\CleanEnvironment;
-use Apisearch\Server\Domain\Command\ConfigureEnvironment;
 use Apisearch\Server\Domain\Command\ConfigureIndex;
 use Apisearch\Server\Domain\Command\CreateIndex;
 use Apisearch\Server\Domain\Command\DeleteIndex;
@@ -885,22 +883,6 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     public function checkHealth(Token $token = null): array
     {
         return self::askQuery(new CheckHealth());
-    }
-
-    /**
-     * Configure environment.
-     */
-    public static function configureEnvironment()
-    {
-        self::executeCommand(new ConfigureEnvironment());
-    }
-
-    /**
-     * Clean environment.
-     */
-    public static function cleanEnvironment()
-    {
-        self::executeCommand(new CleanEnvironment());
     }
 
     /**
