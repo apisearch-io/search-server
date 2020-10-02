@@ -48,6 +48,7 @@ trait ComplexFieldsTest
         );
 
         $this->indexItems([$item]);
+
         $result = $this->query(Query::createMatchAll()->filterBy('complex_field', 'complex_field', [1], Filter::MUST_ALL, true));
         $this->assertCount(1, $result->getItems());
         $firstItem = $result->getFirstItem();
@@ -91,6 +92,20 @@ trait ComplexFieldsTest
         $this->assertFalse(\array_key_exists('indexed_metadata.complex_field_2_id', $fields));
         $this->assertFalse(\array_key_exists('indexed_metadata.complex_field_2_data', $fields));
         $this->assertFalse(\array_key_exists('metadata.complex_field_2', $fields));
+
+        /**
+         * Requiring all metadata.
+         */
+        $result = $this->query(Query::createMatchAll()
+            ->filterBy('complex_field_2', 'complex_field_2', ['A'], Filter::MUST_ALL, true)
+            ->setFields(['metadata.*', 'indexed_metadata.complex_field_2'])
+        );
+
+        $firstItem = $result->getFirstItem();
+        $this->assertFalse(\array_key_exists('complex_field_2_id', $firstItem->getIndexedMetadata()));
+        $this->assertFalse(\array_key_exists('complex_field_2_data', $firstItem->getIndexedMetadata()));
+        $this->assertFalse(\array_key_exists('complex_field_2', $firstItem->getMetadata()));
+        $this->assertTrue(\array_key_exists('complex_field_2', $firstItem->getIndexedMetadata()));
 
         static::resetScenario();
     }
