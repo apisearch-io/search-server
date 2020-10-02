@@ -81,22 +81,28 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
     private function checkComplexFieldsInFields(QueryModel $query, $complexFields)
     {
         $fields = $query->getFields();
+
+        /**
+         * Let's check if we require all metadata fields.
+         */
+        $key = \array_search('metadata.*', $fields);
         $fixedFields = [];
+        if (false !== $key) {
+            unset($fields[$key]);
+            $fixedFields = \array_diff(
+                $complexFields,
+                \array_map(function (string $element) {
+                    return \str_replace('indexed_metadata.', '', $element);
+                }, $fields)
+            );
+            $fixedFields = \array_map(function (string $element) {
+                return "!metadata.$element";
+            }, $fixedFields);
+            \array_unshift($fixedFields, 'metadata.*');
+        }
 
         foreach ($fields as $field) {
             $excludes = false;
-
-            if ('metadata.*' === $field) {
-                $fixedFields[] = $field;
-                $fixedFields = \array_merge(
-                    $fixedFields,
-                    \array_map(function (string $field) {
-                        return '!metadata.'.$field;
-                    }, $complexFields)
-                );
-
-                continue;
-            }
 
             if (0 === \strpos($field, '!')) {
                 $excludes = true;
