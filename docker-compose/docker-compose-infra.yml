@@ -28,7 +28,6 @@ services:
 
     redis:
         image: "redis:alpine"
-        networks: [apisearch]
         ports:
             - "6379:6379"
 

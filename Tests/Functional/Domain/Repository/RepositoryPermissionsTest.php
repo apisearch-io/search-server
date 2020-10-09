@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
+use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
@@ -27,11 +28,11 @@ trait RepositoryPermissionsTest
     /**
      * Test events requests without permissions.
      *
-     * @expectedException \Apisearch\Exception\ResourceNotAvailableException
      * @dataProvider dataBadPermissions
      */
     public function testBadPermissions($appId, $index, $method, $data = null)
     {
+        $this->expectException(ResourceNotAvailableException::class);
         if (\is_null($data)) {
             $this->$method(
                 $appId,

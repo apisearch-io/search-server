@@ -18,24 +18,37 @@ namespace Apisearch\Plugin\DBAL\Domain\Middleware;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Drift\DBAL\Connection;
+use Drift\DBAL\Result;
 use React\Promise\PromiseInterface;
+use function React\Promise\all;
 
 /**
  * Class CheckHealthMiddleware.
  */
 class CheckHealthMiddleware implements PluginMiddleware
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    private $connection;
+    private string $interactionsTable;
+    private string $usageLinesTable;
+    private string $searchLinesTable;
 
     /**
      * @param Connection $dbalPluginConnection
+     * @param string $interactionsTable
+     * @param string $usageLinesTable
+     * @param string $searchLinesTable
      */
-    public function __construct(Connection $dbalPluginConnection)
+    public function __construct(
+        Connection $dbalPluginConnection,
+        string $interactionsTable,
+        string $usageLinesTable,
+        string $searchesTable
+    )
     {
         $this->connection = $dbalPluginConnection;
+        $this->interactionsTable = $interactionsTable;
+        $this->usageLinesTable = $usageLinesTable;
+        $this->searchLinesTable = $searchesTable;
     }
 
     /**
@@ -59,7 +72,20 @@ class CheckHealthMiddleware implements PluginMiddleware
                             $data['status']['dbal'] = $isHealth;
                             $data['healthy'] = $data['healthy'] && $isHealth;
 
-                            return $data;
+                            return all([
+                                $this->getInteractionRows(),
+                                $this->getUsageLinesRows(),
+                                $this->getSearchLinesRows(),
+                            ])
+                                ->then(function(array $results) use ($data) {
+                                    $data['info']['dbal'] = [
+                                        'interactions' => $results[0],
+                                        'usage_lines' => $results[1],
+                                        'search_lines' => $results[2],
+                                    ];
+
+                                    return $data;
+                                });
                         });
                 });
     }
@@ -76,6 +102,60 @@ class CheckHealthMiddleware implements PluginMiddleware
             ->queryBySQL('SELECT ?', ['.'])
             ->then(function () {
                 return true;
+            })
+            ->otherwise(function (\Exception $e) {
+                return false;
+            });
+    }
+
+    /**
+     * Get interaction rows
+     *
+     * @return PromiseInterface<int>
+     */
+    private function getInteractionRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from ' . $this->interactionsTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return false;
+            });
+    }
+
+    /**
+     * Get usage lines rows
+     *
+     * @return PromiseInterface<int>
+     */
+    private function getUsageLinesRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from ' . $this->usageLinesTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return false;
+            });
+    }
+
+    /**
+     * Get search lines rows
+     *
+     * @return PromiseInterface<int>
+     */
+    private function getSearchLinesRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from ' . $this->searchLinesTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
             })
             ->otherwise(function (\Exception $e) {
                 return false;

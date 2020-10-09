@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Exception;
 
+use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Exception\TransportableException;
 
 /**
  * Class ResourceNotAvailableException.
@@ -27,11 +29,11 @@ class ParsedResourceNotAvailableException
      *
      * @param string $message
      *
-     * @return ResourceNotAvailableException
+     * @return TransportableException
      */
-    public static function parsedIndexNotAvailable(string $message): ResourceNotAvailableException
+    public static function parsedIndexNotAvailable(string $message): TransportableException
     {
-        return ResourceNotAvailableException::indexNotAvailable(self::transformToHumanFormat($message));
+        return self::transformToHumanFormat($message);
     }
 
     /**
@@ -39,36 +41,44 @@ class ParsedResourceNotAvailableException
      *
      * @param string $message
      *
-     * @return string
+     * @return TransportableException
      */
-    private static function transformToHumanFormat(string $message): string
+    private static function transformToHumanFormat(string $message): TransportableException
     {
         if (1 === \preg_match(
             '#/apisearch_\d*?_item_(?P<index_name>.*?)?/item/(?P<id>.*?)~(?P<type>.*?)caused failed to parse (field)?\s*\[(?P<group>\w*?)\.(?P<field>\w*?)\]#i',
             $message,
             $match)) {
-            return \sprintf('Error while indexing item [id: %s, type: %s]. Field %s in %s is malformed',
+
+            return new InvalidFormatException(\sprintf('Error while indexing item [id: %s, type: %s]. Field %s in %s is malformed',
                 $match['id'],
                 $match['type'],
                 $match['field'],
                 $match['group']
-            );
+            ));
+        }
+
+        if (false !== \strpos(
+                $message,
+                'failed to parse')
+        ) {
+            return new InvalidFormatException($message);
         }
 
         if (1 === \preg_match(
             '#apisearch_item_(?P<index_name>.*?)?/item/.*caused no such index#i',
             $message,
             $match)) {
-            return $match['index_name'];
+            return ResourceNotAvailableException::indexNotAvailable($match['index_name']);
         }
 
         if (1 === \preg_match(
             '#no such index \[.*apisearch_item_(?P<index_name>.*?)\]#i',
             $message,
             $match)) {
-            return $match['index_name'];
+            return ResourceNotAvailableException::indexNotAvailable($match['index_name']);
         }
 
-        return $message;
+        return ResourceNotAvailableException::indexNotAvailable($message);
     }
 }

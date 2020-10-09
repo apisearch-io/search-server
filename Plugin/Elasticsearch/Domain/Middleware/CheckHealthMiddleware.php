@@ -60,9 +60,15 @@ class CheckHealthMiddleware implements PluginMiddleware
                     return $this
                         ->elasticaWrapper
                         ->getClusterStatus()
-                        ->then(function (string $elasticsearchStatus) use ($data) {
-                            $data['status']['elasticsearch'] = $elasticsearchStatus;
-                            $data['healthy'] = $data['healthy'] && \in_array(\strtolower($elasticsearchStatus), [
+                        ->then(function (array $elasticsearchData) use ($data) {
+
+                            $numberOfIndices = count($elasticsearchData['indices']);
+                            unset($elasticsearchData['indices']);
+                            $elasticsearchData['number_of_indices'] = $numberOfIndices;
+
+                            $data['status']['elasticsearch'] = $elasticsearchData['status'];
+                            $data['info']['elasticsearch'] = $elasticsearchData;
+                            $data['healthy'] = $data['healthy'] && \in_array(\strtolower($elasticsearchData['status']), [
                                     'yellow',
                                     'green',
                                 ]);

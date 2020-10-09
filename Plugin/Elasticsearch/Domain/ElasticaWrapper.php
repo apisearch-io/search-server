@@ -19,6 +19,7 @@ use Apisearch\Config\Config;
 use Apisearch\Config\Synonym;
 use Apisearch\Exception\ResourceExistsException;
 use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Exception\TransportableException;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\Index as ApisearchIndex;
 use Apisearch\Model\IndexUUID;
@@ -149,9 +150,9 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @param string $message
      *
-     * @return ResourceNotAvailableException
+     * @return TransportableException
      */
-    public function getIndexNotAvailableException(string $message): ResourceNotAvailableException
+    public function getIndexNotAvailableException(string $message): TransportableException
     {
         return ParsedResourceNotAvailableException::parsedIndexNotAvailable($message);
     }
@@ -594,9 +595,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @return PromiseInterface
      *
-     * @throws ResourceNotAvailableException
-     *
-     * @SYNC
+     * @throws TransportableException
      */
     public function deleteIndex(RepositoryReference $repositoryReference): PromiseInterface
     {
@@ -631,7 +630,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @return PromiseInterface
      *
-     * @throws ResourceNotAvailableException
+     * @throws TransportableException
      */
     public function deleteIndexByName(string $indexName): PromiseInterface
     {
@@ -952,7 +951,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @return PromiseInterface
      *
-     * @throws ResourceNotAvailableException
+     * @throws TransportableException
      */
     public function deleteDocumentsByIds(
         RepositoryReference $repositoryReference,
@@ -984,7 +983,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
      * @param bool                $refresh
      *
      * @return PromiseInterface
-     * @return ResourceNotAvailableException
      */
     public function deleteDocumentsByQuery(
         RepositoryReference $repositoryReference,
@@ -1024,7 +1022,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         return $this
             ->requestAsyncEndpoint($endpoint)
             ->then(function (Response $response) {
-                return $response->getData()['status'];
+                return $response->getData();
             });
     }
 
