@@ -51,7 +51,6 @@ trait AllSearchTests
     use MultiqueryTest;
     use IndicesTest;
     use ExportTest;
-    use ExceptionMessagesTest;
     use FieldTypesTest;
     use ImportTest;
 

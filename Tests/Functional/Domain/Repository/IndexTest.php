@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
+use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
@@ -75,5 +76,56 @@ trait IndexTest
         $this->indexItems([]);
 
         $this->assertEquals(5, $this->query(Query::createMatchAll())->getTotalItems());
+    }
+
+    /**
+     * Test wrong field exception.
+     */
+    public function testWrongFieldException()
+    {
+        try {
+            $this->indexItems([
+                Item::createFromArray([
+                    'uuid' => [
+                        'id' => '10',
+                        'type' => 'lol',
+                    ],
+                    'metadata' => [
+                        'field' => 'a_text_instead_of_a_bool',
+                    ],
+                ]),
+            ]);
+            $this->fail('An exception should be thrown');
+        } catch (InvalidFormatException $exception) {
+            $this->assertContains('failed to parse', $exception->getMessage());
+        }
+
+        try {
+            $this->indexItems([
+                Item::createFromArray([
+                    'uuid' => [
+                        'id' => '10',
+                        'type' => 'lol',
+                    ],
+                    'metadata' => [
+                        'field' => true,
+                    ],
+                ]),
+                Item::createFromArray([
+                    'uuid' => [
+                        'id' => '10',
+                        'type' => 'lol',
+                    ],
+                    'metadata' => [
+                        'field' => 'a_text_instead_of_a_bool',
+                    ],
+                ]),
+            ]);
+            $this->fail('An exception should be thrown');
+        } catch (InvalidFormatException $exception) {
+            $this->assertContains('failed to parse', $exception->getMessage());
+        }
+
+        static::resetScenario();
     }
 }

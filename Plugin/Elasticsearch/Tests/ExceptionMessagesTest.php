@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elasticsearch\Tests;
 
-use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Item;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
@@ -44,7 +44,7 @@ class ExceptionMessagesTest extends ServiceFunctionalTest
                 ]),
             ]);
             $this->fail('An exception should be thrown');
-        } catch (ResourceNotAvailableException $exception) {
+        } catch (InvalidFormatException $exception) {
             $this->assertContains('failed to parse field', $exception->getMessage());
         }
     }

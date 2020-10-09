@@ -27,14 +27,10 @@ final class TokenQueryMiddleware implements DiscriminableMiddleware
 {
     /**
      * @var int
-     *
-     * Number of results limitation
      */
     private $numberOfResultsLimitation;
 
     /**
-     * TokenQueryMiddleware constructor.
-     *
      * @param int $numberOfResultsLimitation
      */
     public function __construct(int $numberOfResultsLimitation)

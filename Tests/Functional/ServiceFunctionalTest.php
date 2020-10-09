@@ -75,6 +75,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param Token      $token
      * @param array      $parameters
      * @param Origin     $origin
+     * @param array      $headers
      *
      * @return Result
      */
@@ -84,7 +85,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         string $index = null,
         Token $token = null,
         array $parameters = [],
-        Origin $origin = null
+        Origin $origin = null,
+        array $headers = []
     ): Result {
         $appUUID = AppUUID::createById($appId ?? self::$appId);
 

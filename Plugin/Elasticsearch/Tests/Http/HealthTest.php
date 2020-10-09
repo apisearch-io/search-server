@@ -48,6 +48,8 @@ class HealthTest extends HttpFunctionalTest
                 );
 
                 $this->assertNotEmpty($content['info']['plugins']['elasticsearch']);
+                $this->assertNotEmpty($content['info']['elasticsearch']);
+                $this->assertEquals(3, $content['info']['elasticsearch']['number_of_indices']);
             });
 
         $this->await($promise);

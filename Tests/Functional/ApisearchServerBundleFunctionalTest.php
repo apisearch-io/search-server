@@ -471,6 +471,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param Token      $token
      * @param array      $parameters
      * @param Origin     $origin
+     * @param array      $headers
      *
      * @return Result
      */
@@ -480,7 +481,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         string $index = null,
         Token $token = null,
         array $parameters = [],
-        Origin $origin = null
+        Origin $origin = null,
+        array $headers = []
     ): Result;
 
     /**
