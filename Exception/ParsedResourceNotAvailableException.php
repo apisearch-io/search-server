@@ -49,7 +49,6 @@ class ParsedResourceNotAvailableException
             '#/apisearch_\d*?_item_(?P<index_name>.*?)?/item/(?P<id>.*?)~(?P<type>.*?)caused failed to parse (field)?\s*\[(?P<group>\w*?)\.(?P<field>\w*?)\]#i',
             $message,
             $match)) {
-
             return new InvalidFormatException(\sprintf('Error while indexing item [id: %s, type: %s]. Field %s in %s is malformed',
                 $match['id'],
                 $match['type'],

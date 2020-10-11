@@ -49,7 +49,7 @@ class HealthTest extends ServiceFunctionalTest
         $this->assertEquals([
             'interactions' => 3,
             'usage_lines' => 6,
-            'search_lines' => 1
+            'search_lines' => 1,
         ], $response['info']['dbal']);
 
         $this->click('555', 'product~1', 1, Origin::createEmpty());
@@ -65,7 +65,7 @@ class HealthTest extends ServiceFunctionalTest
         $this->assertEquals([
             'interactions' => 4,
             'usage_lines' => 7,
-            'search_lines' => 3
+            'search_lines' => 3,
         ], $response['info']['dbal']);
     }
 }

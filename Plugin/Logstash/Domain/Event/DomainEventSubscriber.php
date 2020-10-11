@@ -152,21 +152,21 @@ class DomainEventSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ItemsWereIndexed::class => ['handle', 0],
-            ItemsWereUpdated::class => ['handle', 0],
-            ItemsWereDeleted::class => ['handle', 0],
+            ItemsWereIndexed::class => 'handle',
+            ItemsWereUpdated::class => 'handle',
+            ItemsWereDeleted::class => 'handle',
 
-            QueryWasMade::class => ['handle', 0],
+            QueryWasMade::class => 'handle',
 
-            IndexWasConfigured::class => ['handle', 0],
-            IndexWasCreated::class => ['handle', 0],
-            IndexWasDeleted::class => ['handle', 0],
+            IndexWasConfigured::class => 'handle',
+            IndexWasCreated::class => 'handle',
+            IndexWasDeleted::class => 'handle',
 
-            TokenWasPut::class => ['handle', 0],
-            TokenWasDeleted::class => ['handle', 0],
-            TokensWereDeleted::class => ['handle', 0],
+            TokenWasPut::class => 'handle',
+            TokenWasDeleted::class => 'handle',
+            TokensWereDeleted::class => 'handle',
 
-            ExceptionWasCached::class => ['handle', 0],
+            ExceptionWasCached::class => 'handle',
         ];
     }
 }

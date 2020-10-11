@@ -61,8 +61,7 @@ class CheckHealthMiddleware implements PluginMiddleware
                         ->elasticaWrapper
                         ->getClusterStatus()
                         ->then(function (array $elasticsearchData) use ($data) {
-
-                            $numberOfIndices = count($elasticsearchData['indices']);
+                            $numberOfIndices = \count($elasticsearchData['indices']);
                             unset($elasticsearchData['indices']);
                             $elasticsearchData['number_of_indices'] = $numberOfIndices;
 

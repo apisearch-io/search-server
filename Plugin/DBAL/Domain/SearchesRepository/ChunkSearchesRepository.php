@@ -18,12 +18,12 @@ namespace Apisearch\Plugin\DBAL\Domain\SearchesRepository;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Domain\Repository\SearchesRepository\Search;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\TemporarySearchesRepository;
 use Clue\React\Mq\Queue;
 use DateTime;
+use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -161,9 +161,8 @@ class ChunkSearchesRepository implements SearchesRepository, EventSubscriberInte
     public static function getSubscribedEvents()
     {
         return [
-            FlushSearches::class => [
-                ['flush', 0],
-            ],
+            FlushSearches::class => 'flush',
+            AsyncKernelEvents::SHUTDOWN => 'flush',
         ];
     }
 }
