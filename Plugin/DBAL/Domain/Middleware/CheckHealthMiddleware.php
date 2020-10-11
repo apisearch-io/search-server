@@ -19,8 +19,8 @@ use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
-use React\Promise\PromiseInterface;
 use function React\Promise\all;
+use React\Promise\PromiseInterface;
 
 /**
  * Class CheckHealthMiddleware.
@@ -34,17 +34,16 @@ class CheckHealthMiddleware implements PluginMiddleware
 
     /**
      * @param Connection $dbalPluginConnection
-     * @param string $interactionsTable
-     * @param string $usageLinesTable
-     * @param string $searchLinesTable
+     * @param string     $interactionsTable
+     * @param string     $usageLinesTable
+     * @param string     $searchLinesTable
      */
     public function __construct(
         Connection $dbalPluginConnection,
         string $interactionsTable,
         string $usageLinesTable,
         string $searchesTable
-    )
-    {
+    ) {
         $this->connection = $dbalPluginConnection;
         $this->interactionsTable = $interactionsTable;
         $this->usageLinesTable = $usageLinesTable;
@@ -77,7 +76,7 @@ class CheckHealthMiddleware implements PluginMiddleware
                                 $this->getUsageLinesRows(),
                                 $this->getSearchLinesRows(),
                             ])
-                                ->then(function(array $results) use ($data) {
+                                ->then(function (array $results) use ($data) {
                                     $data['info']['dbal'] = [
                                         'interactions' => $results[0],
                                         'usage_lines' => $results[1],
@@ -109,7 +108,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     }
 
     /**
-     * Get interaction rows
+     * Get interaction rows.
      *
      * @return PromiseInterface<int>
      */
@@ -117,7 +116,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     {
         return $this
             ->connection
-            ->queryBySQL('SELECT count(*) as count from ' . $this->interactionsTable)
+            ->queryBySQL('SELECT count(*) as count from '.$this->interactionsTable)
             ->then(function (Result $result) {
                 return $result->fetchFirstRow()['count'];
             })
@@ -127,7 +126,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     }
 
     /**
-     * Get usage lines rows
+     * Get usage lines rows.
      *
      * @return PromiseInterface<int>
      */
@@ -135,7 +134,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     {
         return $this
             ->connection
-            ->queryBySQL('SELECT count(*) as count from ' . $this->usageLinesTable)
+            ->queryBySQL('SELECT count(*) as count from '.$this->usageLinesTable)
             ->then(function (Result $result) {
                 return $result->fetchFirstRow()['count'];
             })
@@ -145,7 +144,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     }
 
     /**
-     * Get search lines rows
+     * Get search lines rows.
      *
      * @return PromiseInterface<int>
      */
@@ -153,7 +152,7 @@ class CheckHealthMiddleware implements PluginMiddleware
     {
         return $this
             ->connection
-            ->queryBySQL('SELECT count(*) as count from ' . $this->searchLinesTable)
+            ->queryBySQL('SELECT count(*) as count from '.$this->searchLinesTable)
             ->then(function (Result $result) {
                 return $result->fetchFirstRow()['count'];
             })

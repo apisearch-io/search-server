@@ -19,12 +19,12 @@ use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Domain\Repository\InteractionRepository\Interaction;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\TemporaryInteractionRepository;
 use Clue\React\Mq\Queue;
 use DateTime;
+use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -168,9 +168,8 @@ class ChunkInteractionRepository implements InteractionRepository, EventSubscrib
     public static function getSubscribedEvents()
     {
         return [
-            FlushInteractions::class => [
-                ['flush', 0],
-            ],
+            FlushInteractions::class => 'flush',
+            AsyncKernelEvents::SHUTDOWN => 'flush',
         ];
     }
 }

@@ -23,6 +23,7 @@ use Clue\React\Mq\Queue;
 use DateTime;
 use Drift\DBAL\Connection;
 use Drift\EventBus\Bus\Bus as EventBus;
+use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -169,9 +170,8 @@ class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FlushUsageLines::class => [
-                ['flushLines', 0],
-            ],
+            FlushUsageLines::class => 'flushLines',
+            AsyncKernelEvents::SHUTDOWN => 'flushLines',
         ];
     }
 }

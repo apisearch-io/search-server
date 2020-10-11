@@ -21,8 +21,8 @@
     "symfony/event-dispatcher" : "^5.0",
     "symfony/dotenv" : "^5.0",
 
-    "drift/http-kernel": "0.1.12",
-    "drift/server": "0.1.14",
+    "drift/http-kernel": "0.1.13",
+    "drift/server": "0.1.16",
     "drift/react-functions": "0.1.*, >=0.1.1",
     "drift/react-streams": "0.1.*",
     "drift/command-bus-bundle": "0.1.*, >=0.1.7",

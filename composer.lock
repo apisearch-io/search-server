@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7f7df20d8897bd654017c0342b7be87",
+    "content-hash": "ce6a46a04faddbdde5817f453705ea07",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -1461,16 +1461,16 @@
         },
         {
             "name": "drift/http-kernel",
-            "version": "0.1.12",
+            "version": "0.1.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/http-kernel.git",
-                "reference": "eba0af6fbf1fafa3d8a195b8c781955b4afb6879"
+                "reference": "afe03c4b2d803b25f95119e4ecab98d7c14681d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/http-kernel/zipball/eba0af6fbf1fafa3d8a195b8c781955b4afb6879",
-                "reference": "eba0af6fbf1fafa3d8a195b8c781955b4afb6879",
+                "url": "https://api.github.com/repos/driftphp/http-kernel/zipball/afe03c4b2d803b25f95119e4ecab98d7c14681d9",
+                "reference": "afe03c4b2d803b25f95119e4ecab98d7c14681d9",
                 "shasum": ""
             },
             "require": {
@@ -1510,7 +1510,7 @@
                 }
             ],
             "description": "Http Kernel component for Drift, based on Symfony Http Kernel component",
-            "time": "2020-09-04T15:22:31+00:00"
+            "time": "2020-10-10T14:58:10+00:00"
         },
         {
             "name": "drift/preload-bundle",
@@ -1709,23 +1709,23 @@
         },
         {
             "name": "drift/server",
-            "version": "0.1.14",
+            "version": "0.1.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/server.git",
-                "reference": "16fc5f7de4f1c56c242f386bc51a7ec683591493"
+                "reference": "c36d51be73afd36bc9c6d7bd1070ce1676a698b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/server/zipball/16fc5f7de4f1c56c242f386bc51a7ec683591493",
-                "reference": "16fc5f7de4f1c56c242f386bc51a7ec683591493",
+                "url": "https://api.github.com/repos/driftphp/server/zipball/c36d51be73afd36bc9c6d7bd1070ce1676a698b3",
+                "reference": "c36d51be73afd36bc9c6d7bd1070ce1676a698b3",
                 "shasum": ""
             },
             "require": {
                 "clue/zlib-react": "^0.2.2",
                 "drift/console-bridge": "0.1.*",
                 "drift/event-loop-utils": "0.1.*",
-                "drift/http-kernel": "0.1.*, >=0.1.3",
+                "drift/http-kernel": "0.1.*, >=0.1.13",
                 "ext-pcntl": "*",
                 "php": ">=7.3",
                 "react/event-loop": "^1.0",
@@ -1766,7 +1766,7 @@
                 }
             ],
             "description": "ReactPHP based server for DriftPHP",
-            "time": "2020-08-26T16:12:59+00:00"
+            "time": "2020-10-10T15:56:52+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",

@@ -97,9 +97,7 @@ class QueryHeaders implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            ResponseEvent::class => [
-                ['addSurrogateKeys', 0],
-            ],
+            ResponseEvent::class => 'addSurrogateKeys',
         ];
     }
 }
