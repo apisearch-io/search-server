@@ -20,3 +20,15 @@ framework:
 
 apisearch:
     load_commands: false
+
+#
+# Preload Bundle configuration
+#
+preload:
+    services:
+        "amqp.event_bus_channel": ~
+        "amqp.command_bus_channel": ~
+    presets:
+        - "@symfony"
+        - "@drift"
+        - "@react"
