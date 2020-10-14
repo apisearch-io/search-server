@@ -33,8 +33,67 @@ trait SuggestTest
                 ->disableAggregations()
         );
 
-        $this->assertSame(
+        $this->assertArraysEquals(
+            ['Barcelona', 'barce'],
+            $results->getSuggests()
+        );
+    }
+
+    /**
+     * Test basic suggest same text.
+     */
+    public function testSuggestSameThanQuery()
+    {
+        $results = $this->query(
+            Query::create('Barce')
+                ->enableSuggestions()
+                ->disableAggregations()
+        );
+
+        $this->assertArraysEquals(
             ['Barcelona'],
+            $results->getSuggests()
+        );
+    }
+
+    /**
+     * Test basic suggest same text.
+     */
+    public function testNumberOfSuggestions()
+    {
+        $results = $this->query(
+            Query::create('ba')
+                ->enableSuggestions()
+                ->disableAggregations()
+                ->setMetadataValue('number_of_suggestions', 2)
+        );
+
+        $this->assertArraysEquals(
+            ['Badalona', 'bar'],
+            $results->getSuggests()
+        );
+
+        $results = $this->query(
+            Query::create('ba')
+                ->enableSuggestions()
+                ->disableAggregations()
+                ->setMetadataValue('number_of_suggestions', 3)
+        );
+
+        $this->assertArraysEquals(
+            ['Badalona', 'bar', 'barce'],
+            $results->getSuggests()
+        );
+
+        $results = $this->query(
+            Query::create('bar')
+                ->enableSuggestions()
+                ->disableAggregations()
+                ->setMetadataValue('number_of_suggestions', 2)
+        );
+
+        $this->assertArraysEquals(
+            ['Barcelona', 'barce'],
             $results->getSuggests()
         );
     }

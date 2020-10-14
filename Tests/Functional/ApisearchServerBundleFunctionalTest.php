@@ -31,6 +31,7 @@ use Apisearch\Server\ApisearchPluginsBundle;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Exception\ErrorException;
+use Apisearch\Server\Tests\PHPUnitModifierTrait;
 use DateTime;
 use Drift\CommandBus\CommandBusBundle;
 use Drift\EventBus\EventBusBundle;
@@ -57,6 +58,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTest
 {
+    use PHPUnitModifierTrait;
+
     /**
      * @var string
      *
