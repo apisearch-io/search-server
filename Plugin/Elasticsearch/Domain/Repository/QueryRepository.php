@@ -314,10 +314,24 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
          * Build suggests
          */
         $suggests = $resultSet->getSuggests();
+
         if (isset($suggests['completion']) && $query->areSuggestionsEnabled()) {
-            foreach ($suggests['completion'][0]['options'] as $suggest) {
-                $result->addSuggest($suggest['text']);
-            }
+            $suggestions = $suggests['completion'][0]['options'];
+            $queryText = \trim(\strtolower($query->getQueryText()));
+            $suggestions = \array_map(function (array $suggestion) use ($queryText) {
+                $suggestionText = \trim($suggestion['text']);
+                $suggestionTextLower = \strtolower($suggestionText);
+
+                return $queryText == $suggestionTextLower
+                    ? false
+                    : $suggestionText;
+            }, $suggestions);
+            $suggestions = \array_filter($suggestions);
+
+            $suggestions = \array_slice($suggestions, 0, $query->getMetadata()['number_of_suggestions']);
+            \array_walk($suggestions, function ($suggestion) use ($result) {
+                $result->addSuggestion($suggestion);
+            });
         }
 
         return $result;

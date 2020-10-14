@@ -99,6 +99,7 @@ class ApisearchServerExtension extends BaseExtension
              * Limitations
              */
             'apisearch_server.limitations_number_of_results' => Env::get('APISEARCH_NUMBER_OF_RESULTS_LIMITATION', $config['limitations']['number_of_results']),
+            'apisearch_server.default_number_of_suggestions' => Env::get('APISEARCH_NUMBER_OF_SUGGESTIONS_DEFAULT', $config['defaults']['number_of_suggestions']),
 
             /*
              * Disk Repositories

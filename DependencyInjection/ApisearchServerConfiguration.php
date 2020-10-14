@@ -59,6 +59,14 @@ class ApisearchServerConfiguration extends BaseConfiguration
                             ->defaultValue(100)
                         ->end()
                     ->end()
+                ->end()
+                ->arrayNode('defaults')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('number_of_suggestions')
+                            ->defaultValue(10)
+                        ->end()
+                    ->end()
                 ->end();
     }
 }

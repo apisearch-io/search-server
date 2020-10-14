@@ -173,6 +173,7 @@ items:
             - engonga
         suggest:
             - Engonga
+            - bar
 
     4_bike:
         uuid:
@@ -216,6 +217,7 @@ items:
             title: álamo
         suggest:
             - Eleuterio
+            - barce
 
     5_gum:
         uuid:

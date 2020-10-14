@@ -13,6 +13,7 @@ command_bus:
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
             - Apisearch\Server\Domain\Middleware\CheckIndexAvailabilityMiddleware
             - Apisearch\Server\Domain\Middleware\TokenQueryMiddleware
+            - Apisearch\Server\Domain\Middleware\DefaultQueryValuesMiddleware
             - Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware
             - Apisearch\Server\Domain\Middleware\ItemToLineExportMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\QueryComplexFieldsMiddleware

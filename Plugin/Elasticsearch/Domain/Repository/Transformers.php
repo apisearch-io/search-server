@@ -77,6 +77,8 @@ trait Transformers
                 'suggest'
             );
             $completitionText->setText($query->getQueryText());
+            $size = $query->getMetadata()['number_of_suggestions'] + 1;
+            $completitionText->setSize($size);
 
             $mainQuery->setSuggest(
                 new Suggest($completitionText)
