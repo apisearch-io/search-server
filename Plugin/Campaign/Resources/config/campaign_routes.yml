@@ -1,0 +1,24 @@
+put_campaign:
+    path: /{app_id}/index/{index_id}/campaigns/{campaign_id}
+    controller: Apisearch\Plugin\Campaign\Controller\PutCampaignController
+    methods: [PUT]
+
+get_campaign:
+    path: /{app_id}/index/{index_id}/campaigns/{campaign_id}
+    controller: Apisearch\Plugin\Campaign\Controller\GetCampaignController
+    methods: [GET]
+
+get_campaigns:
+    path: /{app_id}/index/{index_id}/campaigns
+    controller: Apisearch\Plugin\Campaign\Controller\GetCampaignsController
+    methods: [GET]
+
+delete_campaign:
+    path: /{app_id}/index/{index_id}/campaigns/{campaign_id}
+    controller: Apisearch\Plugin\Campaign\Controller\DeleteCampaignController
+    methods: [DELETE]
+
+delete_campaigns:
+    path: /{app_id}/index/{index_id}/campaigns
+    controller: Apisearch\Plugin\Campaign\Controller\DeleteCampaignsController
+    methods: [DELETE]

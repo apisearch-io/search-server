@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Domain\MetadataRepository;
 
+use Apisearch\Model\HttpTransportable;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Drift\DBAL\Connection;
@@ -61,6 +62,13 @@ class DBALMetadataRepository extends MetadataRepository
         string $key,
         $value
     ): PromiseInterface {
+        $isObject = ($value instanceof HttpTransportable);
+        $objectNamespace = null;
+        if ($isObject) {
+            $objectNamespace = \get_class($value);
+            $value = $value->toArray();
+        }
+
         return $this
             ->connection
             ->upsert($this->table, [
@@ -68,6 +76,7 @@ class DBALMetadataRepository extends MetadataRepository
                 '`key`' => $key,
             ], [
                 'val' => \json_encode($value),
+                'factory' => $objectNamespace,
             ]);
     }
 
@@ -102,7 +111,7 @@ class DBALMetadataRepository extends MetadataRepository
             ->then(function (array $rows) {
                 $formattedRows = [];
                 foreach ($rows as $row) {
-                    $formattedRows[$row['key']] = \json_decode($row['val'], true);
+                    $formattedRows[$row['key']] = $this->unserializeRow($row);
                 }
 
                 return $formattedRows;
@@ -124,10 +133,25 @@ class DBALMetadataRepository extends MetadataRepository
                         $formattedMetadata[$row['repository_reference_uuid']] = [];
                     }
 
-                    $formattedMetadata[$row['repository_reference_uuid']][$row['key']] = \json_decode($row['val'], true);
+                    $formattedMetadata[$row['repository_reference_uuid']][$row['key']] = $this->unserializeRow($row);
                 }
 
                 return $formattedMetadata;
             });
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return mixed
+     */
+    private function unserializeRow(array $row)
+    {
+        $factory = $row['factory'] ?? null;
+        $value = \json_decode($row['val'], true);
+
+        return \is_null($factory)
+            ? $value
+            : $factory::createFromArray($value);
     }
 }

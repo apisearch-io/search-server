@@ -62,16 +62,30 @@ class QueryBuilder
             false
         );
 
-        $this->addFilters(
+        $boolQuery = $this->addAdditionalBoostings(
             $query,
-            $boolQuery,
-            $query->getUniverseFilters(),
-            $query->getSearchableFields(),
-            null,
-            false
+            $boolQuery
         );
 
+        $universeFilters = $query->getUniverseFilters();
+        if (!empty($universeFilters)) {
+            $universeQuery = new ElasticaQuery\BoolQuery();
+
+            $this->addFilters(
+                $query,
+                $universeQuery,
+                $universeFilters,
+                $query->getSearchableFields(),
+                null,
+                false
+            );
+
+            $universeQuery->addMust($boolQuery);
+            $boolQuery = $universeQuery;
+        }
+
         $mainQuery->setQuery($boolQuery);
+
         $minScore = $query->getMinScore();
         if ($minScore > 0 && !empty($query->getQueryText())) {
             $mainQuery->setMinScore($minScore);
@@ -206,11 +220,36 @@ class QueryBuilder
             return;
         }
 
+        $this->addFieldOrRangeFilter(
+            $boolQuery,
+            $filter,
+            $onlyAddDefinedTermFilter,
+            $takeInAccountDefinedTermFilter
+        );
+    }
+
+    /**
+     * Add filters to a Query.
+     *
+     * @param ElasticaQuery\BoolQuery $boolQuery
+     * @param Filter                  $filter
+     * @param bool                    $onlyAddDefinedTermFilter
+     * @param bool                    $takeInAccountDefinedTermFilter
+     * @param bool                    $imperativeFilter
+     */
+    private function addFieldOrRangeFilter(
+        ElasticaQuery\BoolQuery $boolQuery,
+        Filter $filter,
+        bool $onlyAddDefinedTermFilter,
+        bool $takeInAccountDefinedTermFilter,
+        bool $imperativeFilter = false
+    ) {
         $boolQuery->addFilter(
             $this->createQueryFilterByApplicationType(
                 $filter,
                 $onlyAddDefinedTermFilter,
-                $takeInAccountDefinedTermFilter
+                $takeInAccountDefinedTermFilter,
+                $imperativeFilter
             )
         );
     }
@@ -329,7 +368,6 @@ class QueryBuilder
                     $value,
                     $checkNested
                 );
-                break;
 
             case Filter::TYPE_RANGE:
             case Filter::TYPE_DATE_RANGE:
@@ -337,8 +375,9 @@ class QueryBuilder
                     $filter,
                     $value
                 );
-                break;
         }
+
+        return null;
     }
 
     /**
@@ -735,12 +774,20 @@ class QueryBuilder
         ElasticaQuery\AbstractQuery $elasticaQuery
     ): ElasticaQuery\AbstractQuery {
         $scoreStrategies = $query->getScoreStrategies();
+
         if (
             !($scoreStrategies instanceof ScoreStrategies) ||
             empty($scoreStrategies->getScoreStrategies())
         ) {
             return $elasticaQuery;
         }
+
+        /**
+         * @var ScoreStrategy[]
+         */
+        $scoreStrategiesArray = \array_filter($scoreStrategies->getScoreStrategies(), function (ScoreStrategy $scoreStrategy) {
+            return $scoreStrategy->getConfigurationValue('match_main_query') ?? true;
+        });
 
         $newQuery = new ElasticaQuery\FunctionScore();
         $boolQuery = new ElasticaQuery\BoolQuery();
@@ -752,7 +799,7 @@ class QueryBuilder
         /*
          * @var ScoreStrategy
          */
-        foreach ($scoreStrategies->getScoreStrategies() as $scoreStrategy) {
+        foreach ($scoreStrategiesArray as $scoreStrategy) {
             $filter = $scoreStrategy->getFilter() instanceof Filter
                 ? $this->createQueryFilterByApplicationType(
                     $scoreStrategy->getFilter(),
@@ -804,6 +851,14 @@ class QueryBuilder
                         $filter
                     );
                     break;
+
+                case ScoreStrategy::WEIGHT:
+                    $this->addWeightScoreStrategy(
+                        $scoreStrategy,
+                        $newQuery,
+                        $filter
+                    );
+                    break;
             }
         }
 
@@ -826,6 +881,24 @@ class QueryBuilder
             new Script($scoreStrategy->getConfigurationValue('function')),
             $filter,
             $scoreStrategy->getWeight()
+        );
+    }
+
+    /**
+     * Create score strategy by using a weight function.
+     *
+     * @param ScoreStrategy                    $scoreStrategy
+     * @param ElasticaQuery\FunctionScore      $functionScore
+     * @param ElasticaQuery\AbstractQuery|null $filter
+     */
+    private function addWeightScoreStrategy(
+        ScoreStrategy $scoreStrategy,
+        ElasticaQuery\FunctionScore $functionScore,
+        ?ElasticaQuery\AbstractQuery $filter
+    ) {
+        $functionScore->addWeightFunction(
+            $scoreStrategy->getWeight(),
+            $filter
         );
     }
 
@@ -992,5 +1065,58 @@ class QueryBuilder
         $mainQuery->setSort($sortByElements);
 
         return $mainQuery;
+    }
+
+    /**
+     * Add parallel filters.
+     *
+     * @param Query                   $query
+     * @param ElasticaQuery\BoolQuery $boolQuery
+     *
+     * @return ElasticaQuery\BoolQuery
+     */
+    private function addAdditionalBoostings(
+        Query $query,
+        ElasticaQuery\BoolQuery $boolQuery
+    ) {
+        $scoreStrategies = $query->getScoreStrategies();
+
+        if (
+            !($scoreStrategies instanceof ScoreStrategies) ||
+            empty($scoreStrategies->getScoreStrategies())
+        ) {
+            return $boolQuery;
+        }
+
+        /**
+         * @var ScoreStrategy[]
+         */
+        $scoreStrategiesArray = \array_filter($scoreStrategies->getScoreStrategies(), function (ScoreStrategy $scoreStrategy) {
+            return !($scoreStrategy->getConfigurationValue('match_main_query') ?? true);
+        });
+
+        if (empty($scoreStrategiesArray)) {
+            return $boolQuery;
+        }
+
+        $parentBoolQuery = new ElasticaQuery\BoolQuery();
+        $parentBoolQuery->addShould($boolQuery);
+        foreach ($scoreStrategiesArray as $scoreStrategy) {
+            $constantQuery = new ElasticaQuery\ConstantScore();
+            $functionQuery = new ElasticaQuery\BoolQuery();
+            $constantQuery->setBoost($scoreStrategy->getWeight());
+            $constantQuery->setFilter($functionQuery);
+
+            $this->addFieldOrRangeFilter(
+                $functionQuery,
+                $scoreStrategy->getFilter(),
+                false,
+                false
+            );
+
+            $parentBoolQuery->addShould($constantQuery);
+        }
+
+        return $parentBoolQuery;
     }
 }

@@ -113,6 +113,8 @@ items:
             boosting:
                 - "boosting"
                 - "anotherboosting"
+        suggest:
+            - barce
 
     3_book:
         uuid:

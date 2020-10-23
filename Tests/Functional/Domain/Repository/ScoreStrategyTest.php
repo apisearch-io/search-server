@@ -348,4 +348,98 @@ trait ScoreStrategyTest
             $firstResultScore > 290
         );
     }
+
+    /**
+     * Testing score strategies to boost external filters, outside from the
+     * query scope, but inside the filtered universe.
+     */
+    public function testNonQueryScoreStrategies()
+    {
+        $result = $this->query(
+            Query::create('Hernando')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            2,
+                            Filter::create('stories', ['3'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            true
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['3', '!5', '!1', '!4', '!2']
+        );
+
+        $result = $this->query(
+            Query::create('Hernando boosting')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            2,
+                            Filter::create('stores', ['three'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            true
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '{3', '1', '2}', '!4']
+        );
+
+        $result = $this->query(
+            Query::create('Hernando')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            2,
+                            Filter::create('stores', ['three'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            false
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '3', '!1', '!2', '!4']
+        );
+
+        $result = $this->query(
+            Query::create('barcelona')
+                ->filterBy('color', 'color', ['red'])
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            1,
+                            Filter::create('relevance', ['40..60'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                            false
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '{1', '4}', '!2', '!3']
+        );
+
+        $result = $this->query(
+            Query::create('barcelona')
+                ->filterUniverseBy('color', ['red'])
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            1,
+                            Filter::create('relevance', ['40..60'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                            false
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '!1', '!4', '!2', '!3']
+        );
+    }
 }
