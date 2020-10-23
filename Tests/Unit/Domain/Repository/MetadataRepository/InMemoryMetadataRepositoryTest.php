@@ -17,6 +17,7 @@ namespace Apisearch\Server\Tests\Unit\Domain\Repository\MetadataRepository;
 
 use Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
+use React\EventLoop\LoopInterface;
 
 /**
  * Class InMemoryMetadataRepositoryTest.
@@ -24,9 +25,11 @@ use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 class InMemoryMetadataRepositoryTest extends MetadataRepositoryTest
 {
     /**
+     * @param LoopInterface $loop
+     *
      * @return MetadataRepository
      */
-    public function buildEmptyRepository(): MetadataRepository
+    public function buildEmptyRepository(LoopInterface $loop): MetadataRepository
     {
         return new InMemoryMetadataRepository();
     }

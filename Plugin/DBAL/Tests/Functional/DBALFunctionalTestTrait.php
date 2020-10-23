@@ -160,6 +160,7 @@ trait DBALFunctionalTestTrait
                         $table->addColumn('repository_reference_uuid', 'string', ['length' => 255]);
                         $table->addColumn('`key`', 'string', ['length' => 15]);
                         $table->addColumn('val', 'text');
+                        $table->addColumn('factory', 'string', ['length' => 128, 'default' => null, 'notnull' => false]);
 
                         return $connection->executeSchema($schema);
                     })($mainConnection, $metadataTableName),

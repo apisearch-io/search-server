@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server;
 
 use Apisearch\Plugin\Admin\AdminPluginBundle;
+use Apisearch\Plugin\Campaign\CampaignPluginBundle;
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
 use Apisearch\Plugin\Elasticsearch\ElasticsearchPluginBundle;
 use Apisearch\Plugin\Fastly\FastlyPluginBundle;
@@ -84,6 +85,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
             'query_mapper' => QueryMapperPluginBundle::class,
             'testing' => TestingPluginBundle::class,
             'fastly' => FastlyPluginBundle::class,
+            'campaigns' => CampaignPluginBundle::class,
         ];
 
         $combined = \array_combine(

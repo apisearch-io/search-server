@@ -59,6 +59,7 @@ use Symfony\Component\Yaml\Yaml;
 abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTest
 {
     use PHPUnitModifierTrait;
+    use ResultAssertionsTrait;
 
     /**
      * @var string
@@ -964,20 +965,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             TokenUUID::createById($tokenId),
             AppUUID::createById($appId)
         );
-    }
-
-    /**
-     * Print item results with score.
-     *
-     * @param Result $result
-     */
-    protected function printItemResultsWithScore(Result $result)
-    {
-        echo PHP_EOL;
-        foreach ($result->getItems() as $item) {
-            echo \sprintf('[ %s ] - %f', $item->composeUUID(), $item->getScore()).PHP_EOL;
-        }
-        echo PHP_EOL;
     }
 
     /**

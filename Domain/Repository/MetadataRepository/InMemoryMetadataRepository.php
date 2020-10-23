@@ -43,6 +43,7 @@ class InMemoryMetadataRepository extends MetadataRepository implements Resetable
         $value
     ): PromiseInterface {
         $composedRepositoryReference = $repositoryReference->compose();
+
         if (!\array_key_exists($composedRepositoryReference, $this->storedMetadata)) {
             $this->storedMetadata[$composedRepositoryReference] = [];
         }
