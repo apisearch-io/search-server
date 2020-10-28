@@ -31,22 +31,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Class ChunkSearchesRepository.
  */
-class ChunkSearchesRepository implements SearchesRepository, EventSubscriberInterface
+final class ChunkSearchesRepository implements SearchesRepository, EventSubscriberInterface
 {
-    /**
-     * @var TemporarySearchesRepository
-     */
-    private $temporarySearchesRepository;
-
-    /**
-     * @var DBALSearchesRepository
-     */
-    private $persistentSearchesRepository;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private TemporarySearchesRepository $temporarySearchesRepository;
+    private DBALSearchesRepository $persistentSearchesRepository;
+    private LoopInterface $loop;
 
     /**
      * @param TemporarySearchesRepository $temporarySearchesRepository

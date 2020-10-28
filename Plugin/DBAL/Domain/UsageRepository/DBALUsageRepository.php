@@ -29,17 +29,10 @@ use function React\Promise\resolve;
 /**
  * Class DBALUsageRepositoryTest.
  */
-class DBALUsageRepository implements UsageRepository
+final class DBALUsageRepository implements UsageRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $tableName;
+    private Connection $connection;
+    private string $tableName;
 
     /**
      * @param Connection $dbalPluginConnection

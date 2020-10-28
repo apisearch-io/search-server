@@ -12,6 +12,7 @@
   "require": {
     "php": ">=7.4",
     "ext-json": "*",
+    "ext-openssl": "*",
 
     "symfony/framework-bundle": "^5.0",
     "symfony/http-kernel": "^5.0",
@@ -63,5 +64,20 @@
       "Apisearch\\Server\\": "",
       "Apisearch\\Plugin\\": "Plugin/"
     }
+  },
+
+  "scripts": {
+    "test-domain": [
+      "php vendor/bin/phpunit --testsuite=domain"
+    ],
+    "test-elasticsearch": [
+      "php vendor/bin/phpunit Plugin/Elasticsearch/Tests/ServiceRepositoryTest.php"
+    ],
+    "test-dbal": [
+      "php vendor/bin/phpunit Plugin/DBAL/"
+    ],
+    "test-plugins": [
+      "php vendor/bin/phpunit --testsuite=domain"
+    ]
   }
 }

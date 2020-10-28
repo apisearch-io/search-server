@@ -25,7 +25,7 @@ use React\Promise\PromiseInterface;
 /**
  * Class CheckHealthMiddleware.
  */
-class CheckHealthMiddleware implements PluginMiddleware
+final class CheckHealthMiddleware implements PluginMiddleware
 {
     private $connection;
     private string $interactionsTable;

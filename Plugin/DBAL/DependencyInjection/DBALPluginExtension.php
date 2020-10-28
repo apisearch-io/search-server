@@ -86,8 +86,14 @@ class DBALPluginExtension extends BaseExtension
      */
     protected function getConfigFiles(array $config): array
     {
+        $encryptIsEnabled = \boolval(Env::get(
+            'DBAL_ENCRYPT_ENABLED',
+            $config['encrypt']['enabled'] ?? false
+        ));
+
         return [
             'domain',
+            ['openssl_encrypter', $encryptIsEnabled],
         ];
     }
 
@@ -106,25 +112,91 @@ class DBALPluginExtension extends BaseExtension
      */
     protected function getParametrizationValues(array $config): array
     {
+        $encryptIsEnabled = \boolval(Env::get(
+            'DBAL_ENCRYPT_ENABLED',
+            $config['encrypt']['enabled'] ?? false
+        ));
+
         return [
             'apisearch_plugin.dbal.configuration' => [
-                'driver' => Env::get('DBAL_DRIVER', $config['driver'] ?? null, true),
-                'host' => Env::get('DBAL_HOST', $config['host'] ?? null, true),
-                'port' => Env::get('DBAL_PORT', $config['port'] ?? null, true),
-                'user' => Env::get('DBAL_USER', $config['user'] ?? null, true),
-                'password' => Env::get('DBAL_PASSWORD', $config['password'] ?? null, true),
-                'dbname' => Env::get('DBAL_DBNAME', $config['dbname'] ?? null, true),
+                'driver' => Env::get(
+                    'DBAL_DRIVER',
+                    $config['driver'] ?? null,
+                    true
+                ),
+                'host' => Env::get(
+                    'DBAL_HOST',
+                    $config['host'] ?? null,
+                    true
+                ),
+                'port' => Env::get(
+                    'DBAL_PORT',
+                    $config['port'] ?? null,
+                    true),
+                'user' => Env::get(
+                    'DBAL_USER',
+                    $config['user'] ?? null,
+                    true),
+                'password' => Env::get(
+                    'DBAL_PASSWORD',
+                    $config['password'] ?? null,
+                    true),
+                'dbname' => Env::get(
+                    'DBAL_DBNAME',
+                    $config['dbname'] ?? null,
+                    true),
             ],
 
-            'apisearch_plugin.dbal.index_configs_table' => Env::get('DBAL_INDEX_CONFIGS_TABLE', $config['index_configs_table'] ?? null, true),
-            'apisearch_plugin.dbal.tokens_table' => Env::get('DBAL_TOKENS_TABLE', $config['tokens_table'] ?? null, true),
-            'apisearch_plugin.dbal.usage_lines_table' => Env::get('DBAL_USAGE_LINES_TABLE', $config['usage_lines_table'] ?? null, true),
-            'apisearch_plugin.dbal.metadata_table' => Env::get('DBAL_METADATA_TABLE', $config['metadata_table'] ?? null, true),
-            'apisearch_plugin.dbal.interactions_table' => Env::get('DBAL_INTERACTIONS_TABLE', $config['interaction_table'] ?? null, true),
-            'apisearch_plugin.dbal.searches_table' => Env::get('DBAL_SEARCHES_TABLE', $config['searches_table'] ?? null, true),
+            'apisearch_plugin.dbal.index_configs_table' => Env::get(
+                'DBAL_INDEX_CONFIGS_TABLE',
+                $config['index_configs_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.tokens_table' => Env::get(
+                'DBAL_TOKENS_TABLE',
+                $config['tokens_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.usage_lines_table' => Env::get(
+                'DBAL_USAGE_LINES_TABLE',
+                $config['usage_lines_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.metadata_table' => Env::get(
+                'DBAL_METADATA_TABLE',
+                $config['metadata_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.interactions_table' => Env::get(
+                'DBAL_INTERACTIONS_TABLE',
+                $config['interaction_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.searches_table' => Env::get(
+                'DBAL_SEARCHES_TABLE',
+                $config['searches_table'] ?? null,
+                true
+            ),
 
-            'apisearch_plugin.dbal.loop_push_interval' => \intval(Env::get('DBAL_LOOP_PUSH_INTERVAL', $config['loop_push_interval'])),
+            'apisearch_plugin.dbal.encrypt_private_key' => Env::get(
+                'DBAL_ENCRYPT_PRIVATE_KEY',
+                $config['encrypt']['private_key'] ?? null,
+                $encryptIsEnabled
+            ),
+            'apisearch_plugin.dbal.encrypt_method' => Env::get(
+                'DBAL_ENCRYPT_METHOD',
+                $config['encrypt']['method']
+            ),
+            'apisearch_plugin.dbal.encrypt_iv' => Env::get(
+                'DBAL_ENCRYPT_IV',
+                $config['encrypt']['iv'] ?? null,
+                $encryptIsEnabled
+            ),
 
+            'apisearch_plugin.dbal.loop_push_interval' => \intval(Env::get(
+                'DBAL_LOOP_PUSH_INTERVAL',
+                $config['loop_push_interval']
+            )),
             'apisearch_plugin.dbal.locator_enabled' => $config['locator_enabled'],
         ];
     }

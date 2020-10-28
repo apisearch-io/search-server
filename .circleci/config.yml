@@ -49,6 +49,7 @@ jobs:
             -   run:
                     name: Load dev dependencies
                     command: |
+                        sudo composer selfupdate
                         composer install -n --no-suggest
 
             -   run:

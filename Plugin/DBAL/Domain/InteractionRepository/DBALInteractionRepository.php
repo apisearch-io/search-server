@@ -32,17 +32,10 @@ use function React\Promise\resolve;
 /**
  * Class DBALInteractionRepository.
  */
-class DBALInteractionRepository implements InteractionRepository
+final class DBALInteractionRepository implements InteractionRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $tableName;
+    private Connection $connection;
+    private string $tableName;
 
     /**
      * @param Connection $dbalPluginConnection

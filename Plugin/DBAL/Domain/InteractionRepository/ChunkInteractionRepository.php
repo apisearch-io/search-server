@@ -32,22 +32,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Class ChunkInteractionRepository.
  */
-class ChunkInteractionRepository implements InteractionRepository, EventSubscriberInterface
+final class ChunkInteractionRepository implements InteractionRepository, EventSubscriberInterface
 {
-    /**
-     * @var TemporaryInteractionRepository
-     */
-    private $temporaryInteractionRepository;
-
-    /**
-     * @var DBALInteractionRepository
-     */
-    private $persistentInteractionRepository;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private TemporaryInteractionRepository $temporaryInteractionRepository;
+    private DBALInteractionRepository $persistentInteractionRepository;
+    private LoopInterface $loop;
 
     /**
      * @param TemporaryInteractionRepository $temporaryInteractionRepository

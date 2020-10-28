@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Domain\MetadataRepository;
 
 use Apisearch\Model\HttpTransportable;
+use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Drift\DBAL\Connection;
@@ -24,29 +25,24 @@ use React\Promise\PromiseInterface;
 /**
  * Class DBALMetadataRepository.
  */
-class DBALMetadataRepository extends MetadataRepository
+final class DBALMetadataRepository extends MetadataRepository
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    private Connection $connection;
+    private Encrypter $encrypter;
+    private string $table;
 
     /**
-     * @var string
-     */
-    private $table;
-
-    /**
-     * TokenRedisRepository constructor.
-     *
-     * @param Connection $dbalPluginConnection
+     * @param Connection $connection
+     * @param Encrypter  $encrypter
      * @param string     $metadataTable
      */
     public function __construct(
-        Connection $dbalPluginConnection,
+        Connection $connection,
+        Encrypter $encrypter,
         string $metadataTable
     ) {
-        $this->connection = $dbalPluginConnection;
+        $this->connection = $connection;
+        $this->encrypter = $encrypter;
         $this->table = $metadataTable;
     }
 
@@ -75,7 +71,7 @@ class DBALMetadataRepository extends MetadataRepository
                 'repository_reference_uuid' => $repositoryReference->compose(),
                 '`key`' => $key,
             ], [
-                'val' => \json_encode($value),
+                'val' => $this->encrypter->encrypt(\json_encode($value)),
                 'factory' => $objectNamespace,
             ]);
     }
@@ -148,7 +144,7 @@ class DBALMetadataRepository extends MetadataRepository
     private function unserializeRow(array $row)
     {
         $factory = $row['factory'] ?? null;
-        $value = \json_decode($row['val'], true);
+        $value = \json_decode($this->encrypter->decrypt($row['val']), true);
 
         return \is_null($factory)
             ? $value

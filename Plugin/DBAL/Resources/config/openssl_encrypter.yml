@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $encryptPrivateKey: "%apisearch_plugin.dbal.encrypt_private_key%"
+            string $encryptMethod: "%apisearch_plugin.dbal.encrypt_method%"
+            string $encryptIV: "%apisearch_plugin.dbal.encrypt_iv%"
+
+    Apisearch\Plugin\DBAL\Domain\Encrypter\OpenSSLEncrypter:
+    Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter:
+        alias: Apisearch\Plugin\DBAL\Domain\Encrypter\OpenSSLEncrypter

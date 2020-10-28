@@ -31,17 +31,10 @@ use function React\Promise\resolve;
 /**
  * Class DBALSearchesRepository.
  */
-class DBALSearchesRepository implements SearchesRepository
+final class DBALSearchesRepository implements SearchesRepository
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $tableName;
+    private Connection $connection;
+    private string $tableName;
 
     /**
      * @param Connection $dbalPluginConnection

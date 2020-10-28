@@ -19,6 +19,7 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
 use Drift\DBAL\Connection;
@@ -27,34 +28,27 @@ use React\Promise\PromiseInterface;
 /**
  * Class DBALTokenRepository.
  */
-class DBALTokenRepository extends TokenRepository
+final class DBALTokenRepository extends TokenRepository
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    private Connection $connection;
+    private Encrypter $encrypter;
+    private string $table;
+    private bool $locatorEnabled;
 
     /**
-     * @var string
-     */
-    private $table;
-
-    /**
-     * @var bool
-     */
-    private $locatorEnabled;
-
-    /**
-     * @param Connection $dbalPluginConnection
+     * @param Connection $connection
+     * @param Encrypter  $encrypter
      * @param string     $tokensTable
      * @param bool       $locatorEnabled
      */
     public function __construct(
-        Connection $dbalPluginConnection,
+        Connection $connection,
+        Encrypter $encrypter,
         string $tokensTable,
         bool $locatorEnabled
     ) {
-        $this->connection = $dbalPluginConnection;
+        $this->connection = $connection;
+        $this->encrypter = $encrypter;
         $this->table = $tokensTable;
         $this->locatorEnabled = $locatorEnabled;
     }
@@ -79,12 +73,12 @@ class DBALTokenRepository extends TokenRepository
             ->connection
             ->upsert(
                 $this->table,
-                ['token_uuid' => $tokenUUIDComposed],
+                ['token_uuid' => $this->encrypter->encrypt($tokenUUIDComposed)],
                 [
                     'app_uuid' => $repositoryReference->getAppUUID()->composeUUID(),
-                    'content' => \json_encode($this->tokenContentToArray(
+                    'content' => $this->encrypter->encrypt(\json_encode($this->tokenContentToArray(
                         $token
-                    )),
+                    ))),
                 ]
             );
     }
@@ -105,7 +99,7 @@ class DBALTokenRepository extends TokenRepository
             ->connection
             ->delete($this->table, [
                 'app_uuid' => $repositoryReference->getAppUUID()->composeUUID(),
-                'token_uuid' => $tokenUUID->composeUUID(),
+                'token_uuid' => $this->encrypter->encrypt($tokenUUID->composeUUID()),
             ]);
     }
 
@@ -136,9 +130,9 @@ class DBALTokenRepository extends TokenRepository
             ->then(function ($results) {
                 return \array_map(function ($result) {
                     return $this->getTokenFromContentArray(
-                        TokenUUID::createById($result['token_uuid']),
+                        TokenUUID::createById($this->encrypter->decrypt($result['token_uuid'])),
                         AppUUID::createById($result['app_uuid']),
-                        \json_decode($result['content'], true)
+                        \json_decode($this->encrypter->decrypt($result['content']), true)
                     );
                 }, $results);
             });
