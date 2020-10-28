@@ -15,12 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Tests\Unit;
 
+use Apisearch\Plugin\DBAL\Domain\AppRepository\DBALConfigRepository;
 use Apisearch\Plugin\DBAL\Domain\Encrypter\EmptyEncrypter;
-use Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository;
-use Apisearch\Plugin\DBAL\Domain\MetadataRepository\DBALMetadataRepository;
-use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
-use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
-use Apisearch\Server\Tests\Unit\Domain\Repository\MetadataRepository\MetadataRepositoryTest;
+use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
+use Apisearch\Server\Tests\Unit\Domain\Repository\AppRepository\ConfigRepositoryTest;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
@@ -29,16 +27,16 @@ use Drift\DBAL\Driver\SQLite\SQLiteDriver;
 use React\EventLoop\LoopInterface;
 
 /**
- * Class DBALMetadataRepositoryTest.
+ * Class DBALConfigRepositoryTest.
  */
-class DBALMetadataRepositoryTest extends MetadataRepositoryTest
+class DBALConfigRepositoryTest extends ConfigRepositoryTest
 {
     /**
      * @param LoopInterface $loop
      *
-     * @return InteractionRepository
+     * @return ConfigRepository
      */
-    public function buildEmptyRepository(LoopInterface $loop): MetadataRepository
+    public function buildEmptyRepository(LoopInterface $loop): ConfigRepository
     {
         return static::createEmptyRepository(
             static::createConnection($loop)
@@ -68,24 +66,20 @@ class DBALMetadataRepositoryTest extends MetadataRepositoryTest
     }
 
     /**
-     * Create new EmptyRepository.
-     *
      * @param Connection $connection
      *
-     * @return DBALInteractionRepository
+     * @return DBALConfigRepository
      */
-    public static function createEmptyRepository(Connection $connection): DBALMetadataRepository
+    public static function createEmptyRepository(Connection $connection): ConfigRepository
     {
-        $tableName = 'metadata';
+        $tableName = 'config';
         $schema = new Schema();
         $table = $schema->createTable($tableName);
         $table->addColumn('repository_reference_uuid', 'string', ['length' => 255]);
-        $table->addColumn('`key`', 'string', ['length' => 15]);
-        $table->addColumn('val', 'text');
-        $table->addColumn('factory', 'string', ['length' => 128, 'default' => null, 'notnull' => false]);
+        $table->addColumn('content', 'text');
 
         $connection->executeSchema($schema);
 
-        return new DBALMetadataRepository($connection, new EmptyEncrypter(), $tableName);
+        return new DBALConfigRepository($connection, new EmptyEncrypter(), $tableName);
     }
 }

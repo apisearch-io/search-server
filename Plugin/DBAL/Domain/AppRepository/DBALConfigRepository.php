@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Domain\AppRepository;
 
 use Apisearch\Config\Config;
+use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
 use Drift\DBAL\Connection;
@@ -24,29 +25,26 @@ use React\Promise\PromiseInterface;
 /**
  * Class DBALConfigRepository.
  */
-class DBALConfigRepository extends ConfigRepository
+final class DBALConfigRepository extends ConfigRepository
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    /**
-     * @var string
-     */
-    private $table;
+    private Connection $connection;
+    private Encrypter $encrypter;
+    private string $table;
 
     /**
      * TokenRedisRepository constructor.
      *
      * @param Connection $dbalPluginConnection
+     * @param Encrypter  $encrypter
      * @param string     $configsTable
      */
     public function __construct(
         Connection $dbalPluginConnection,
+        Encrypter $encrypter,
         string $configsTable
     ) {
         $this->connection = $dbalPluginConnection;
+        $this->encrypter = $encrypter;
         $this->table = $configsTable;
     }
 
@@ -63,7 +61,7 @@ class DBALConfigRepository extends ConfigRepository
                 $this->table,
                 ['repository_reference_uuid' => $repositoryReference->compose()],
                 [
-                    'content' => \json_encode($config->toArray()),
+                    'content' => $this->encrypter->encrypt(\json_encode($config->toArray())),
                 ]
             );
     }
@@ -92,10 +90,9 @@ class DBALConfigRepository extends ConfigRepository
                 $resultsWithKey = [];
                 foreach ($results as $result) {
                     try {
-                        $content = \json_decode(
-                            $result['content'],
-                            true
-                        );
+                        $content = \json_decode($this->encrypter->decrypt(
+                            $result['content']
+                        ), true);
                     } catch (\Exception $exception) {
                         $content = [];
                     }

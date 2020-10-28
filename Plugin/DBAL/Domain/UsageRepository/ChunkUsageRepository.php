@@ -31,22 +31,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Class ChunkUsageRepository.
  */
-class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
+final class ChunkUsageRepository implements UsageRepository, EventSubscriberInterface
 {
-    /**
-     * @var TemporaryUsageRepository
-     */
-    private $temporaryUsageRepository;
-
-    /**
-     * @var DBALUsageRepository
-     */
-    private $persistentUsageRepository;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private TemporaryUsageRepository $temporaryUsageRepository;
+    private DBALUsageRepository $persistentUsageRepository;
+    private LoopInterface $loop;
 
     /**
      * @param TemporaryUsageRepository $temporaryUsageRepository

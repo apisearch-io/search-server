@@ -34,7 +34,7 @@ abstract class ConfigRepository implements EventSubscriberInterface
     /**
      * @var array
      */
-    private $configs;
+    private $configs = [];
 
     /**
      * Put config.
