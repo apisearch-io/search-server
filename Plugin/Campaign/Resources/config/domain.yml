@@ -3,8 +3,8 @@ services:
         autowire: true
         autoconfigure: true
 
-    Apisearch\Plugin\Campaign\Controller\:
-        resource: '../../Controller'
+    Apisearch\Plugin\Campaign\Http\:
+        resource: '../../Http/*Controller.php'
         tags: [ "controller.service_arguments" ]
 
     Apisearch\Plugin\Campaign\Domain\CommandHandler\:

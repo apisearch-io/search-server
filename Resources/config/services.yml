@@ -17,16 +17,22 @@ services:
     React\Http\Browser:
 
     #
-    # Services
+    # Infrastructure
     #
-    Apisearch\Server\Controller\:
-        resource: '../../Controller'
-        tags: ["controller.service_arguments"]
+    Apisearch\Server\Http\:
+        resource: '../../Http/*Controller.php'
+        tags: [ "controller.service_arguments" ]
+
+    Apisearch\Server\Http\Listener\:
+        resource: '../../Http/Listener/'
 
     Apisearch\Server\Console\:
         resource: '../../Console/'
-        tags: ["console.command"]
+        tags: [ "console.command" ]
 
+    #
+    # Domain
+    #
     Apisearch\Server\Domain\CommandHandler\:
         resource: '../../Domain/CommandHandler/'
         tags: ["command_handler"]
@@ -35,15 +41,9 @@ services:
         resource: '../../Domain/QueryHandler/'
         tags: ["query_handler"]
 
-    #
-    # Domain Middlewares
-    #
     Apisearch\Server\Domain\Middleware\:
         resource: '../../Domain/Middleware/'
 
-    #
-    # Event listeners
-    #
     Apisearch\Server\Domain\Listener\:
         resource: '../../Domain/Listener/'
 

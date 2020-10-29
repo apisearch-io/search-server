@@ -5,8 +5,8 @@ services:
         bind:
             string $godToken: "%apisearch_server.god_token%"
 
-    Apisearch\Plugin\Admin\Controller\:
-        resource: '../../Controller/'
+    Apisearch\Plugin\Admin\Http\:
+        resource: '../../Http/*Controller.php'
         tags: ["controller.service_arguments"]
 
     Apisearch\Plugin\Admin\Console\:

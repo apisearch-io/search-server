@@ -42,7 +42,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?Token $token = null
     ) {
         self::$lastResponse = $this->makeCurl(
-            'v1_put_campaign',
+            'v1_campaigns_put_campaign',
             [
                 'campaign_id' => $campaign->getUid()->composeUID(),
                 'app_id' => $appId ?? static::$appId,
@@ -64,7 +64,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?Token $token = null
     ) {
         self::$lastResponse = $this->makeCurl(
-            'v1_delete_campaigns',
+            'v1_campaigns_delete_campaigns',
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $indexId ?? static::$index,
@@ -86,7 +86,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?Token $token = null
     ) {
         self::$lastResponse = $this->makeCurl(
-            'v1_delete_campaign',
+            'v1_campaigns_delete_campaign',
             [
                 'campaign_id' => $campaignUID->composeUID(),
                 'app_id' => $appId ?? static::$appId,
@@ -109,7 +109,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?Token $token = null
     ): Campaigns {
         self::$lastResponse = $this->makeCurl(
-            'v1_get_campaigns',
+            'v1_campaigns_get_campaigns',
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $indexId ?? static::$index,
