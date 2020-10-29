@@ -22,6 +22,7 @@ use Apisearch\Model\Changes;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
+use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\FullRepository;
@@ -149,7 +150,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
         $this->expectException(ResourceNotAvailableException::class);
-        $this->await($repository->deleteItems($repositoryReference, $this->createItems()));
+        $this->await($repository->deleteItems($repositoryReference, [$this->createItemUUID()]));
     }
 
     /**
@@ -208,6 +209,31 @@ abstract class FullRepositoryTest extends BaseUnitTest
         $result = $this->await($repository->query($repositoryReference, Query::createByUUID(new ItemUUID('item1', 'type'))));
         $this->assertEquals(1, $result->getTotalHits());
         $this->assertEquals('item1', $result->getFirstItem()->getId());
+    }
+
+    /**
+     * Test query filter by universal filter.
+     */
+    public function testQueryFilterByUniversalFilter()
+    {
+        $repository = $this->getFullRepository();
+        $repositoryReference = $this->createRepositoryReference();
+        $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
+        $this->await($repository->addItems($repositoryReference, $this->createItems()));
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()->filterUniverseBy('indexed_metadata.filter', ['item1'])));
+        $this->assertEquals(1, $result->getTotalHits());
+        $this->assertEquals('item1', $result->getFirstItem()->getId());
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()->filterUniverseBy('indexed_metadata.filter', ['item2'])));
+        $this->assertEquals(1, $result->getTotalHits());
+        $this->assertEquals('item2', $result->getFirstItem()->getId());
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()->filterUniverseBy('indexed_metadata.filter', ['item1', 'item2'], Filter::MUST_ALL)));
+        $this->assertEquals(0, $result->getTotalHits());
+
+        $result = $this->await($repository->query($repositoryReference, Query::createMatchAll()->filterUniverseBy('indexed_metadata.filter', ['item1', 'item2'], Filter::AT_LEAST_ONE)));
+        $this->assertEquals(2, $result->getTotalHits());
     }
 
     /**
@@ -352,6 +378,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
             'searchable_metadata.s1' => 'string',
             'searchable_metadata.s2' => 'long',
             'searchable_metadata.s_field' => 'string',
+            'indexed_metadata.filter' => 'string',
         ], $indices[0]->getFields());
     }
 
@@ -534,7 +561,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
      * @param string $item1Id
      * @param string $item2Id
      *
-     * @return Item
+     * @return Item[]
      */
     private function createItems(
         string $item1Id = 'item1',
@@ -561,7 +588,9 @@ abstract class FullRepositoryTest extends BaseUnitTest
                 'field' => true,
                 'another_field' => false,
             ],
-            [],
+            [
+                'filter' => $itemId,
+            ],
             [
                 's_field' => $itemId,
             ]

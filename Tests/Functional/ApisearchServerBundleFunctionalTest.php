@@ -469,23 +469,23 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Query using the bus.
      *
-     * @param QueryModel $query
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
-     * @param array      $parameters
-     * @param Origin     $origin
-     * @param array      $headers
+     * @param QueryModel  $query
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     * @param array       $parameters
+     * @param Origin|null $origin
+     * @param array       $headers
      *
      * @return Result
      */
     abstract public function query(
         QueryModel $query,
-        string $appId = null,
-        string $index = null,
-        Token $token = null,
+        ?string $appId = null,
+        ?string $index = null,
+        ?Token $token = null,
         array $parameters = [],
-        Origin $origin = null,
+        ?Origin $origin = null,
         array $headers = []
     ): Result;
 

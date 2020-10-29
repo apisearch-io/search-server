@@ -81,7 +81,8 @@ final class TokenCheckOverHTTP implements EventSubscriberInterface
             ->getRouteCollection()
             ->get($routeName);
 
-        $routeTags = \explode(',', ($route->getDefault('tags') ?? ''));
+        $routeTags = $route->getDefault('tags') ?? [];
+        $routeTags = \is_array($routeTags) ? $routeTags : [];
         $routeTags[] = \str_replace('apisearch_', '', $routeName);
 
         return resolve()

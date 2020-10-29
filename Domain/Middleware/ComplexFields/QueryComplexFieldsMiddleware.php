@@ -106,7 +106,7 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
             if (0 === \strpos($field, '!')) {
                 $excludes = true;
-                $field = \substr($field, 1, -1);
+                $field = \substr($field, 1);
             }
 
             $fieldParts = \explode('.', $field, 2);
@@ -116,7 +116,7 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
             $fixedFields[] = \in_array($fieldName, $complexFields)
                 ? ($excludes ? '!' : '').'metadata.'.$fieldName
-                : $field;
+                : ($excludes ? '!' : '').$field;
         }
 
         $query->setFields($fixedFields);
@@ -139,6 +139,18 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
                     $filter->getValues(),
                     $filter->getApplicationType(),
                     false
+                );
+            }
+        }
+
+        foreach ($query->getUniverseFilters() as $filterName => $filter) {
+            $field = \substr($filter->getField(), 17);
+            if (\in_array($field, $complexFields)) {
+                $query->filterUniverseBy($field, []);
+                $query->filterUniverseBy(
+                    $field.'_id',
+                    $filter->getValues(),
+                    $filter->getApplicationType()
                 );
             }
         }

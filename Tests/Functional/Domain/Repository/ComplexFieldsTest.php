@@ -32,7 +32,10 @@ trait ComplexFieldsTest
     {
         $item = Item::create(
             ItemUUID::createByComposedUUID('6~item'),
-            [],
+            [
+                'string_value' => 'string1',
+                'another_value' => 'string2',
+            ],
             [
                 'complex_field' => [
                     ['id' => 1, 'name' => 'name1'],
@@ -58,7 +61,7 @@ trait ComplexFieldsTest
 
         $result = $this->query(Query::createMatchAll()
             ->filterBy('complex_field_2', 'complex_field_2', ['A'], Filter::MUST_ALL, true)
-            ->setFields(['indexed_metadata.complex_field_2'])
+            ->setFields(['indexed_metadata.complex_field_2', 'metadata.string_value'])
         );
 
         $firstItem = $result->getFirstItem();
@@ -76,6 +79,7 @@ trait ComplexFieldsTest
         $this->assertEquals(1, $complexField2AggregationACounter->getN());
 
         $this->assertFalse(\array_key_exists('complex_field_2', $firstItem->getMetadata()));
+        $this->assertFalse(\array_key_exists('field', $firstItem->getMetadata()));
         $this->assertEquals('/lol', $firstItem->getIndexedMetadata()['complex_field_2']['slug']);
 
         $result = $this->query(Query::createMatchAll()
@@ -106,6 +110,27 @@ trait ComplexFieldsTest
         $this->assertFalse(\array_key_exists('complex_field_2_data', $firstItem->getIndexedMetadata()));
         $this->assertFalse(\array_key_exists('complex_field_2', $firstItem->getMetadata()));
         $this->assertTrue(\array_key_exists('complex_field_2', $firstItem->getIndexedMetadata()));
+
+        /**
+         * Testing universe filters.
+         */
+        $result = $this->query(Query::createMatchAll()->filterUniverseBy('complex_field', [1], Filter::MUST_ALL));
+        $this->assertCount(1, $result->getItems());
+        $firstItem = $result->getFirstItem();
+        $this->assertFalse(\array_key_exists('complex_field_id', $firstItem->getIndexedMetadata()));
+        $this->assertFalse(\array_key_exists('complex_field_data', $firstItem->getIndexedMetadata()));
+
+        /**
+         * Test exclude field.
+         */
+        $result = $this->query(Query::createMatchAll()
+            ->filterBy('complex_field_2', 'complex_field_2', ['A'], Filter::MUST_ALL, true)
+            ->setFields(['metadata.*', '!metadata.string_value']));
+
+        $firstItem = $result->getFirstItem();
+
+        $this->assertTrue(\array_key_exists('another_value', $firstItem->getMetadata()));
+        $this->assertFalse(\array_key_exists('string_value', $firstItem->getMetadata()));
 
         static::resetScenario();
     }

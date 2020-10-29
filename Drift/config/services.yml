@@ -1,5 +1,6 @@
 imports:
     - { resource: "@ApisearchServerBundle/Resources/config/command_bus.yml"}
+    - { resource: '../../.deploy/*.{yml,yaml}' }
 
 parameters:
     kernel.secret: nsdjkfhdsupoifjñksd
