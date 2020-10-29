@@ -1,4 +1,4 @@
 apisearch_campaign:
     resource: 'campaign_routes.yml'
-    prefix: v1/
-    name_prefix: apisearch_v1_
+    prefix: /v1
+    name_prefix: apisearch_v1_campaigns_

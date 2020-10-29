@@ -1,5 +1,6 @@
 apisearch_admin:
     resource: 'admin_routes.yml'
     prefix: /admin
+    name_prefix: apisearch_admin_
     defaults:
         firewall: admin

@@ -3,6 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    Apisearch\Plugin\Testing\Controller\:
-        resource: '../../Controller/'
+    Apisearch\Plugin\Testing\Http\:
+        resource: '../../Http/*Controller.php'
         tags: ["controller.service_arguments"]

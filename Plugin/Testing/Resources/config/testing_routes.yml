@@ -1,4 +1,4 @@
 apisearch_testing_reset_inmemory_repositories:
     path: /reset-inmemory-repositories
     methods: ["GET"]
-    controller: Apisearch\Plugin\Testing\Controller\ResetInMemoryRepositoriesController
+    controller: Apisearch\Plugin\Testing\Http\ResetInMemoryRepositoriesController

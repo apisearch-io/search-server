@@ -1,33 +1,33 @@
-apisearch_admin_dispatch_imperative_event:
+dispatch_imperative_event:
     path: /dispatch-imperative-event/{eventName}
     methods: ["POST"]
-    controller: Apisearch\Plugin\Admin\Controller\DispatchImperativeEventController
+    controller: Apisearch\Plugin\Admin\Http\DispatchImperativeEventController
 
-apisearch_admin_get_apps:
+get_apps:
     path: /apps
     methods: ["GET"]
-    controller: Apisearch\Plugin\Admin\Controller\GetAppsController
+    controller: Apisearch\Plugin\Admin\Http\GetAppsController
 
-apisearch_admin_get_tokens:
+get_tokens:
     path: /tokens
     methods: ["GET"]
-    controller: Apisearch\Plugin\Admin\Controller\GetTokensController
+    controller: Apisearch\Plugin\Admin\Http\GetTokensController
 
-apisearch_admin_get_usage:
+get_usage:
     path: /usage
     methods: ["GET"]
-    controller: Apisearch\Plugin\Admin\Controller\GetUsageController
+    controller: Apisearch\Plugin\Admin\Http\GetUsageController
     defaults:
         per_day: false
 
-apisearch_admin_get_usage_per_day:
+get_usage_per_day:
     path: /usage/per-day
     methods: ["GET"]
-    controller: Apisearch\Plugin\Admin\Controller\GetUsageController
+    controller: Apisearch\Plugin\Admin\Http\GetUsageController
     defaults:
         per_day: true
 
-apisearch_admin_optimize_usage_lines:
+optimize_usage_lines:
     path: /usage/optimize
     methods: ["PUT"]
-    controller: Apisearch\Plugin\Admin\Controller\OptimizeUsageLinesController
+    controller: Apisearch\Plugin\Admin\Http\OptimizeUsageLinesController
