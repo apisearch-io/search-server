@@ -72,6 +72,7 @@ final class QueryCORSController extends ControllerWithQueryBus
             'Access-Control-Allow-Headers' => \implode(', ', [
                 'Content-Encoding',
                 'Content-Type',
+                'Authorization',
             ]),
             'Access-Control-Allow-Methods' => $allowedMethod,
         ]);

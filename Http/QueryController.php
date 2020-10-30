@@ -43,6 +43,14 @@ final class QueryController extends ControllerWithQueryBus
         $requestQuery = $request->query;
         $queryModel = RequestAccessor::extractQuery($request);
         $origin = $this->createOriginByRequest($request);
+        $parameters = \array_merge(
+            $request->attributes->all(),
+            \array_filter($requestQuery->all(), function (string $key) {
+                return !\in_array($key, [
+                    Http::TOKEN_FIELD,
+                ]);
+            }, ARRAY_FILTER_USE_KEY)
+        );
 
         return $this
             ->ask(new Query(
@@ -53,11 +61,7 @@ final class QueryController extends ControllerWithQueryBus
                 RequestAccessor::getTokenFromRequest($request),
                 $queryModel,
                 $origin,
-                \array_filter($requestQuery->all(), function (string $key) {
-                    return !\in_array($key, [
-                        Http::TOKEN_FIELD,
-                    ]);
-                }, ARRAY_FILTER_USE_KEY)
+                $parameters
             ))
             ->then(function (Result $result) use ($requestQuery, $request) {
                 /*

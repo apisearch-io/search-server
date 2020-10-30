@@ -23,6 +23,7 @@ use Apisearch\Model\Changes;
 use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
+use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
@@ -379,8 +380,20 @@ class InMemoryRepository implements FullRepository, ResetableRepository
 
         if (!\is_null($query->getFilter('_id'))) {
             $filteredItems = $query->getFilter('_id')->getValues();
-            $items = \array_filter($items, function ($item) use ($filteredItems) {
+            $items = \array_filter($items, function (Item $item) use ($filteredItems) {
                 return \in_array($item->composeUUID(), $filteredItems);
+            });
+        }
+
+        foreach ($query->getUniverseFilters() as $universeFilter) {
+            $items = \array_filter($items, function (Item $item) use ($universeFilter) {
+                $fieldValues = $item->getIndexedMetadata()[\str_replace('indexed_metadata.', '', $universeFilter->getField())];
+                $fieldValues = \is_array($fieldValues) ? $fieldValues : [$fieldValues];
+                $expectedValues = $universeFilter->getValues();
+
+                return Filter::MUST_ALL === $universeFilter->getApplicationType()
+                    ? \count(\array_intersect($expectedValues, $fieldValues)) === \count($expectedValues)
+                    : \count(\array_intersect($expectedValues, $fieldValues)) > 0;
             });
         }
 

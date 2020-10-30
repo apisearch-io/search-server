@@ -1,0 +1,21 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $privateKey: "%apisearch_plugin.jwt.private_key%"
+            array $allowedAlgorithms: "%apisearch_plugin.jwt.allowed_algorithms%"
+            int $ttl: "%apisearch_plugin.jwt.ttl%"
+            array $endpoints: "%apisearch_plugin.jwt.endpoints%"
+            array $filters: "%apisearch_plugin.jwt.filters%"
+
+    Apisearch\Plugin\JWT\Domain\:
+        resource: '../../Domain/'
+
+    Apisearch\Plugin\JWT\Domain\Middleware\:
+        resource: '../../Domain/Middleware/'
+        tags: [ "apisearch_plugin.middleware" ]
+
+    Apisearch\Plugin\JWT\Listener\:
+        resource: '../../Listener/'

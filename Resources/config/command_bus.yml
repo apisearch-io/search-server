@@ -3,9 +3,9 @@ command_bus:
         middlewares:
             - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
+            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
             - Apisearch\Server\Domain\Middleware\ComplexFields\IndexComplexFieldsMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\ResetOrDeleteIndexComplexFieldsMiddleware
-            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
 
     query_bus:
         middlewares:
@@ -16,8 +16,8 @@ command_bus:
             - Apisearch\Server\Domain\Middleware\DefaultQueryValuesMiddleware
             - Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware
             - Apisearch\Server\Domain\Middleware\ItemToLineExportMiddleware
+            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
             - Apisearch\Server\Domain\Middleware\ComplexFields\QueryComplexFieldsMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\GetIndicesComplexFieldsMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\ExportComplexFieldsMiddleware
             - Apisearch\Server\Domain\Middleware\GetIndicesMetadataMiddleware
-            - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector

@@ -20,6 +20,7 @@ use Apisearch\Plugin\Campaign\CampaignPluginBundle;
 use Apisearch\Plugin\DBAL\DBALPluginBundle;
 use Apisearch\Plugin\Elasticsearch\ElasticsearchPluginBundle;
 use Apisearch\Plugin\Fastly\FastlyPluginBundle;
+use Apisearch\Plugin\JWT\JWTPluginBundle;
 use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Plugin\QueryMapper\QueryMapperPluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
@@ -86,6 +87,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
             'testing' => TestingPluginBundle::class,
             'fastly' => FastlyPluginBundle::class,
             'campaigns' => CampaignPluginBundle::class,
+            'jwt' => JWTPluginBundle::class,
         ];
 
         $combined = \array_combine(

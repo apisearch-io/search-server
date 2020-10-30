@@ -42,14 +42,15 @@
     "mmoreram/base-bundle": "^2.0",
     "mmoreram/symfony-bundle-dependencies": "^2.0",
 
-    "apisearch-io/php-client": "dev-master as 0.1.33",
+    "apisearch-io/php-client": "0.1.*, >=0.1.33",
     "apisearch-io/apisearch-bundle": "0.1.*, >=0.1.16",
 
     "ruflin/elastica": "^7.0",
     "elasticsearch/elasticsearch": "^7.9",
     "nesbot/carbon": "^2.0",
     "ramsey/uuid": "^3.7",
-    "jenssegers/agent": "^2.6"
+    "jenssegers/agent": "^2.6",
+    "firebase/php-jwt": "v5.2"
   },
 
   "require-dev": {
