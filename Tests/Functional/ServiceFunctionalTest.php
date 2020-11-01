@@ -36,7 +36,7 @@ use Apisearch\Server\Domain\Command\DeleteToken;
 use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Command\ImportIndexByFeed;
 use Apisearch\Server\Domain\Command\IndexItems;
-use Apisearch\Server\Domain\Command\PostClick;
+use Apisearch\Server\Domain\Command\PostInteraction;
 use Apisearch\Server\Domain\Command\PutToken;
 use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
@@ -102,6 +102,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     ),
                 $query,
                 $origin ?? Origin::createEmpty(),
+                $query->getUser() ? $query->getUser()->getId() : null,
                 $parameters
             ));
     }
@@ -663,7 +664,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         $appId = $appId ?? self::$appId;
         $indexId = $indexId ?? self::$index;
 
-        self::executeCommand(new PostClick(
+        self::executeCommand(new PostInteraction(
             RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
             $token ??
             new Token(
@@ -673,7 +674,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $userId,
             ItemUUID::createByComposedUUID($itemId),
             $position,
-            $origin
+            $origin,
+            InteractionType::CLICK
         ));
 
         $this->dispatchImperative(new FlushInteractions());

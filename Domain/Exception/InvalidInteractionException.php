@@ -13,19 +13,19 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Exception;
+namespace Apisearch\Server\Domain\Exception;
 
 use Apisearch\Exception\InvalidFormatException;
 
 /**
- * Class InvalidClickException.
+ * Class InvalidInteractionException.
  */
-class InvalidClickException extends InvalidFormatException
+class InvalidInteractionException extends InvalidFormatException
 {
     /**
      * Create exception.
      */
-    public static function create(): InvalidClickException
+    public static function create(): InvalidInteractionException
     {
         return new self('Invalid click. You should pass a valid user_id or a valid IP instead');
     }

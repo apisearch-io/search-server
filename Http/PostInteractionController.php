@@ -17,38 +17,56 @@ namespace Apisearch\Server\Http;
 
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\PostClick;
+use Apisearch\Server\Domain\Command\PostInteraction;
+use Apisearch\Server\Domain\Exception\InvalidInteractionException;
+use Apisearch\Server\Domain\Model\InteractionType;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use React\Http\Message\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class PutClickController.
+ * Class PostInteractionController.
  */
-final class PostClickController extends ControllerWithCommandBus
+final class PostInteractionController extends ControllerWithCommandBus
 {
     /**
      * Add an interaction.
      *
-     * @param Request $request
+     * @param Request     $request
+     * @param string      $interaction
+     * @param UserEncrypt $userEncrypt
      *
      * @return Response
      */
-    public function __invoke(Request $request): Response
-    {
+    public function __invoke(
+        Request $request,
+        string $interaction,
+        UserEncrypt $userEncrypt
+    ): Response {
         $query = $request->query;
         $itemUUID = $request->get('item_id');
         $host = $this->createOriginByRequest($request)->getHost();
+        $origin = $this->createOriginByRequest($request);
+        $user = $userEncrypt->getUUIDByInput($query->get('user_id'));
 
-        $this->execute(new PostClick(
+        if (
+            \is_null($user) ||
+            !InteractionType::isValid($interaction)
+        ) {
+            throw InvalidInteractionException::create();
+        }
+
+        $this->execute(new PostInteraction(
             RepositoryReference::create(
                 RequestAccessor::getAppUUIDFromRequest($request),
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $query->get('user_id'),
+            $userEncrypt->getUUIDByInput($query->get('user_id')),
             ItemUUID::createByComposedUUID($itemUUID),
             \intval($query->get('position', 0)),
-            $this->createOriginByRequest($request)
+            $origin,
+            $interaction
         ));
 
         return new Response(204, [

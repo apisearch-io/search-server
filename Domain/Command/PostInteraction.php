@@ -23,57 +23,47 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\Model\Origin;
 
 /**
- * Class PostClick.
+ * Class PostInteraction.
  */
-class PostClick extends CommandWithRepositoryReferenceAndToken implements AppRequiredCommand
+class PostInteraction extends CommandWithRepositoryReferenceAndToken implements AppRequiredCommand
 {
-    /**
-     * @var string|null
-     */
-    private $userUUID;
-
-    /**
-     * @var ItemUUID
-     */
-    private $itemUUID;
-
-    /**
-     * @var int
-     */
-    private $position;
-
-    /**
-     * @var Origin
-     */
-    private $origin;
+    private string $userUUID;
+    private ItemUUID $itemUUID;
+    private int $position;
+    private Origin $origin;
+    private string $interactionType;
 
     /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param string|null         $userUUID
+     * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
      * @param Origin              $origin
+     * @param string              $interactionType
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        ?string $userUUID,
+        string $userUUID,
         ItemUUID $itemUUID,
         int $position,
-        Origin $origin
+        Origin $origin,
+        string $interactionType
     ) {
         parent::__construct($repositoryReference, $token);
         $this->userUUID = $userUUID;
         $this->itemUUID = $itemUUID;
         $this->position = $position;
         $this->origin = $origin;
+        $this->interactionType = $interactionType;
+        $this->interactionType = $interactionType;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getUserUUID(): ?string
+    public function getUserUUID(): string
     {
         return $this->userUUID;
     }
@@ -100,5 +90,13 @@ class PostClick extends CommandWithRepositoryReferenceAndToken implements AppReq
     public function getOrigin(): Origin
     {
         return $this->origin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInteractionType(): string
+    {
+        return $this->interactionType;
     }
 }

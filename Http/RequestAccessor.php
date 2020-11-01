@@ -89,12 +89,8 @@ final class RequestAccessor
      */
     public static function extractQuery(Request $request): Query
     {
-        $queryInQuery = $request
-            ->query
-            ->get(Http::QUERY_FIELD);
-
-        if ($queryInQuery instanceof Query) {
-            return $queryInQuery;
+        if ($request->attributes->has(Http::QUERY_FIELD)) {
+            return $request->attributes->get(Http::QUERY_FIELD);
         }
 
         $queryAsArray = self::extractRequestContentObject(
@@ -109,18 +105,20 @@ final class RequestAccessor
          * CDNs by using Cache headers
          */
         if ([] === $queryAsArray) {
-            $possibleQuery = $request->query->get(Http::QUERY_FIELD);
+            $possibleQuery = $request->query->all(Http::QUERY_FIELD);
             if (\is_string($possibleQuery)) {
                 $queryAsArray = self::decodeQuery($possibleQuery);
             }
         }
 
-        $queryModel = Query::createFromArray($queryAsArray);
-        $request
-            ->query
-            ->set(Http::QUERY_FIELD, $queryModel);
+        if (empty($queryAsArray)) {
+            $queryAsArray = [];
+        }
 
-        return $queryModel;
+        $query = Query::createFromArray($queryAsArray);
+        $request->attributes->set(Http::QUERY_FIELD, $query);
+
+        return $query;
     }
 
     /**
@@ -141,6 +139,17 @@ final class RequestAccessor
     }
 
     /**
+     * @param Request $request
+     * @param Query   $query
+     */
+    public static function setQuery(
+        Request $request,
+        Query $query
+    ): void {
+        $request->attributes->set(Http::QUERY_FIELD, $query);
+    }
+
+    /**
      * Get token uuid from request.
      *
      * @param Request $request
@@ -149,9 +158,7 @@ final class RequestAccessor
      */
     public static function getTokenFromRequest(Request $request): ? Token
     {
-        return $request
-            ->query
-            ->get(Http::TOKEN_FIELD);
+        return $request->attributes->get(Http::TOKEN_FIELD);
     }
 
     /**

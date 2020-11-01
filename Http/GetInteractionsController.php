@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Http;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetInteractions;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,12 +28,15 @@ use Symfony\Component\HttpFoundation\Request;
 final class GetInteractionsController extends ControllerWithQueryBus
 {
     /**
-     * @param Request $request
+     * @param Request     $request
+     * @param UserEncrypt $userEncrypt
      *
      * @return PromiseInterface
      */
-    public function __invoke(Request $request): PromiseInterface
-    {
+    public function __invoke(
+        Request $request,
+        UserEncrypt $userEncrypt
+    ): PromiseInterface {
         $query = $request->query;
         $perDay = $request->attributes->get('per_day', false);
         list($from, $to) = $this->getDateRangeFromRequest($request);
@@ -48,7 +52,7 @@ final class GetInteractionsController extends ControllerWithQueryBus
                 $to,
                 $perDay,
                 $query->get('platform', null),
-                $query->get('user_id', null),
+                $userEncrypt->getUUIDByInput($query->get('user_id')),
                 $query->get('item_id', null),
                 $query->get('type', null),
                 $query->get('count', null),

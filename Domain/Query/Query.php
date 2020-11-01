@@ -27,26 +27,17 @@ use Apisearch\Server\Domain\Model\Origin;
  */
 class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequiredCommand
 {
-    /**
-     * @var QueryModel
-     */
-    private $query;
-
-    /**
-     * @var array
-     */
-    private $parameters = [];
-
-    /**
-     * @var Origin
-     */
-    private $origin;
+    private QueryModel $query;
+    private Origin $origin;
+    private ?string $userId;
+    private array $parameters;
 
     /**
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param QueryModel          $query
      * @param Origin              $origin
+     * @param string|null         $userId
      * @param array               $parameters
      */
     public function __construct(
@@ -54,6 +45,7 @@ class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequi
         Token $token,
         QueryModel $query,
         Origin $origin,
+        ?string $userId,
         array $parameters = []
     ) {
         parent::__construct(
@@ -63,6 +55,7 @@ class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequi
 
         $this->query = $query;
         $this->origin = $origin;
+        $this->userId = $userId;
         $this->parameters = $parameters;
     }
 
@@ -75,18 +68,26 @@ class Query extends CommandWithRepositoryReferenceAndToken implements IndexRequi
     }
 
     /**
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
      * @return Origin
      */
     public function getOrigin(): Origin
     {
         return $this->origin;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUserId(): ?string
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
     }
 }

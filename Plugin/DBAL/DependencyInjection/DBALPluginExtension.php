@@ -193,7 +193,7 @@ class DBALPluginExtension extends BaseExtension
                 $encryptIsEnabled
             ),
 
-            'apisearch_plugin.dbal.loop_push_interval' => \intval(Env::get(
+            'apisearch_plugin.dbal.loop_push_interval' => \floatval(Env::get(
                 'DBAL_LOOP_PUSH_INTERVAL',
                 $config['loop_push_interval']
             )),

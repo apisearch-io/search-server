@@ -16,9 +16,9 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\QueryHandler;
 
 use Apisearch\Server\Domain\Event\IndexWasExported;
+use Apisearch\Server\Domain\Exception\FormatterException;
 use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
-use Apisearch\Server\Exception\FormatterException;
 use React\Promise\PromiseInterface;
 use React\Stream\DuplexStreamInterface;
 use React\Stream\ReadableStreamInterface;

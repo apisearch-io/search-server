@@ -66,7 +66,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
         return 0;
     }
@@ -79,7 +79,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
         $repositoryReference = $this->getDefaultRepositoryReference();
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $this->assertEmpty($this->await($repository->getRegisteredSearches(SearchesFilter::create($repositoryReference)), $loop));
     }
@@ -98,7 +98,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop);
         $this->addSearch($repository, $loop);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
         $interactions = $repository->getRegisteredSearches(SearchesFilter::create($repositoryReference));
         $this->assertEquals(5, $this->await($interactions, $loop));
     }
@@ -119,7 +119,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop, RepositoryReference::createFromComposed('a_N'));
         $this->addSearch($repository, $loop, RepositoryReference::createFromComposed('a_M'));
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactions = $repository->getRegisteredSearches(SearchesFilter::create($repositoryReference));
         $this->assertEquals(2, $this->await($interactions, $loop));
@@ -169,7 +169,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop, $repositoryReference, 'user-2');
         $this->addSearch($repository, $loop, $repositoryReference, 'user-10');
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = SearchesFilter::create($repositoryReference)->byUser('user-1');
         $interactions = $repository->getRegisteredSearches($interactionFilter);
@@ -213,7 +213,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop);
         $this->addSearch($repository, $loop);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = SearchesFilter::create($repositoryReference)->byPlatform(Origin::DESKTOP);
         $interactions = $repository->getRegisteredSearches($interactionFilter);
@@ -254,7 +254,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020);
         $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = SearchesFilter::create($repositoryReference)->perDay();
         $interactions = $repository->getRegisteredSearches($interactionFilter);
@@ -343,7 +343,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop, $repositoryReference, $user3, 'x', 0, new Origin('', '', Origin::TABLET));
         $this->addSearch($repository, $loop, $repositoryReference, $user3);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $searchesFilter = SearchesFilter::create($repositoryReference)->count(SearchesFilter::UNIQUE_USERS);
         $interactions = $repository->getRegisteredSearches($searchesFilter);
@@ -393,7 +393,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user3);
         $this->addSearchWhen($repository, $loop, self::DAY_15_1_2020, $user4);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = SearchesFilter::create($repositoryReference)->perDay()->count(SearchesFilter::UNIQUE_USERS);
         $interactions = $repository->getRegisteredSearches($interactionFilter);
@@ -425,7 +425,7 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         $this->addSearch($repository, $loop, $repositoryReference, $user2, 'Lol', 0);
         $this->addSearch($repository, $loop, $repositoryReference, $user2, 'Engonga', 0);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
         $list = $repository->getTopSearches(SearchesFilter::create($repositoryReference), 10);
         $this->assertEquals([
             'Hola' => 4,

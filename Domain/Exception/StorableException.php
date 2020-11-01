@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Exception;
+namespace Apisearch\Server\Domain\Exception;
 
 /**
  * Class StorableException.

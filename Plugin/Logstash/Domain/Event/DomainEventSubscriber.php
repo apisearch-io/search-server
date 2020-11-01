@@ -38,35 +38,12 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class DomainEventSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var Client
-     */
-    private $redisClient;
-
-    /**
-     * @var TimeFormatBuilder
-     */
-    private $timeFormatBuilder;
-
-    /**
-     * @var string
-     */
-    private $key;
-
-    /**
-     * @var string
-     */
-    private $service;
-
-    /**
-     * @var string
-     */
-    private $environment;
-
-    /**
-     * @var string
-     */
-    private $kernelUID;
+    private Client $redisClient;
+    private TimeFormatBuilder $timeFormatBuilder;
+    private string $key;
+    private string $service;
+    private string $environment;
+    private string $kernelUID;
 
     /**
      * RedisMetadataRepository constructor.

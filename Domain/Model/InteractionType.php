@@ -20,8 +20,22 @@ namespace Apisearch\Server\Domain\Model;
  */
 class InteractionType
 {
-    /**
-     * @var string
-     */
     const CLICK = 'cli';
+    const BUY = 'buy';
+    const FAVOURITE = 'fav';
+    const TYPES = [
+        self::CLICK,
+        self::BUY,
+        self::FAVOURITE,
+    ];
+
+    /**
+     * @param string $interactionType
+     *
+     * @return bool
+     */
+    public static function isValid(string $interactionType): bool
+    {
+        return \in_array($interactionType, self::TYPES);
+    }
 }

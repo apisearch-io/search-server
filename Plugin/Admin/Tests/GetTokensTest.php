@@ -29,7 +29,7 @@ class GetTokensTest extends AdminPluginFunctionalTest
         $this->putToken($this->createTokenByIdAndAppId('token2', static::$appId));
         $this->putToken($this->createTokenByIdAndAppId('token3', static::$anotherAppId));
         $this->putToken($this->createTokenByIdAndAppId('token4', 'yet-another-app'));
-        $response = self::makeCurl('admin_get_tokens');
+        $response = $this->request('admin_get_tokens');
         $apps = $response['body'];
 
         $this->assertCount(3, $apps);

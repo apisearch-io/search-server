@@ -21,7 +21,6 @@ use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Event\QueryWasMade;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\Server\Domain\WithRepositoryAndEventPublisher;
-use Apisearch\Server\Exception\ExternalResourceException;
 use Ramsey\Uuid\Uuid;
 use React\Promise\PromiseInterface;
 
@@ -58,7 +57,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                             \array_map(function (Item $item) {
                                 return $item->getUUID();
                             }, $result->getItems()),
-                            $searchQuery->getUser(),
+                            $query->getUserId(),
                             \json_encode($query->getQuery()->toArray()),
                             $query->getOrigin(),
                             $query->getParameters(),
@@ -66,12 +65,6 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                         ))
                             ->withRepositoryReference($repositoryReference)
                     )
-                    ->otherwise(function (ExternalResourceException $exception) {
-                        // We should ignore external resources exceptions, as they are
-                        // commonly related to connections. These exceptions should be
-                        // transparent when making queries in order to always provide the
-                        // best response time.
-                    })
                     ->then(function () use ($result) {
                         return $result;
                     });

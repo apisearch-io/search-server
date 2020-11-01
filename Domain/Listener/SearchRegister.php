@@ -25,10 +25,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class SearchRegister implements EventSubscriberInterface
 {
-    /**
-     * @var SearchesRepository
-     */
-    private $searchesRepository;
+    private SearchesRepository $searchesRepository;
 
     /**
      * @param SearchesRepository $searchesRepository
@@ -47,6 +44,11 @@ class SearchRegister implements EventSubscriberInterface
          * @var QueryWasMade
          */
         $queryWasMade = $domainEventEnvelope->getDomainEvent();
+        $userId = $queryWasMade->getUserId();
+        if (\is_null($userId)) {
+            return;
+        }
+
         $origin = $queryWasMade->getOrigin();
         $today = new \DateTime();
         $today->setTime(0, 0, 0);
@@ -58,9 +60,7 @@ class SearchRegister implements EventSubscriberInterface
             ->searchesRepository
             ->registerSearch(
                 $queryWasMade->getRepositoryReference(),
-                $queryWasMade->getUser()
-                    ? $queryWasMade->getUser()->getId()
-                    : $origin->getIp(),
+                $userId,
                 $queryWasMade->getQueryText(),
                 \count($queryWasMade->getItemsUUID()),
                 $origin,

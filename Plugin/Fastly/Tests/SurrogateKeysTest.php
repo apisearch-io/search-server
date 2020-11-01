@@ -28,7 +28,7 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
     public function testSurrogateKeysOnQuery()
     {
         $this->query(Query::createMatchAll());
-        $surrogateKey = static::$lastResponse['headers']['surrogate-key'];
+        $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
 
         $this->assertEquals(\sprintf('%s %s %s',
             'token-'.self::$godToken,
@@ -37,7 +37,7 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
         ), $surrogateKey);
 
         $this->query(Query::createMatchAll(), static::$appId, '');
-        $surrogateKey = static::$lastResponse['headers']['surrogate-key'];
+        $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
 
         $this->assertEquals(\sprintf('%s %s %s',
             'token-'.self::$godToken,
@@ -46,7 +46,7 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
         ), $surrogateKey);
 
         $this->query(Query::createMatchAll(), static::$appId, '*');
-        $surrogateKey = static::$lastResponse['headers']['surrogate-key'];
+        $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
 
         $this->assertEquals(\sprintf('%s %s %s',
             'token-'.self::$godToken,
@@ -55,7 +55,7 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
         ), $surrogateKey);
 
         $this->query(Query::createMatchAll(), static::$appId, static::$index.','.static::$anotherIndex);
-        $surrogateKey = static::$lastResponse['headers']['surrogate-key'];
+        $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
 
         $this->assertEquals(\sprintf('%s %s %s %s',
             'token-'.self::$godToken,
@@ -65,7 +65,7 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
         ), $surrogateKey);
 
         $this->query(Query::createMatchAll(), static::$appId, static::$index.','.static::$anotherIndex.','.static::$yetAnotherIndex);
-        $surrogateKey = static::$lastResponse['headers']['surrogate-key'];
+        $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
 
         $this->assertEquals(\sprintf('%s %s %s %s %s',
             'token-'.self::$godToken,

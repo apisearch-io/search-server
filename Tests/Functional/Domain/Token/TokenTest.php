@@ -23,13 +23,13 @@ use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetTokens;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Class TokenTest.
  */
-abstract class TokenTest extends CurlFunctionalTest
+abstract class TokenTest extends HttpFunctionalTest
 {
     /**
      * Is distributed token respository.
@@ -383,7 +383,7 @@ abstract class TokenTest extends CurlFunctionalTest
             'apisearch-server:print-tokens',
             $appUUID->composeUUID(),
         ]);
-        \sleep(2);
+        \sleep(1);
         $this->assertContains('multiservice-token', $process->getOutput());
     }
 

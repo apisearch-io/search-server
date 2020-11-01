@@ -17,6 +17,7 @@ namespace Apisearch\Server\Http;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\InteractionType;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,12 +29,15 @@ use Symfony\Component\HttpFoundation\Request;
 final class GetTopInteractionsController extends ControllerWithQueryBus
 {
     /**
-     * @param Request $request
+     * @param Request     $request
+     * @param UserEncrypt $userEncrypt
      *
      * @return PromiseInterface
      */
-    public function __invoke(Request $request): PromiseInterface
-    {
+    public function __invoke(
+        Request $request,
+        UserEncrypt $userEncrypt
+    ): PromiseInterface {
         $query = $request->query;
         list($from, $to) = $this->getDateRangeFromRequest($request);
 
@@ -47,7 +51,7 @@ final class GetTopInteractionsController extends ControllerWithQueryBus
                 $from,
                 $to,
                 $query->get('platform', null),
-                $query->get('user_id', null),
+                $userEncrypt->getUUIDByInput($query->get('user_id')),
                 $query->get('type', InteractionType::CLICK),
                 \intval($query->get('n', 10))
             ))

@@ -37,7 +37,7 @@ class ChunkSearchesRepositoryTest extends SearchesRepositoryTest
                 DBALSearchesRepositoryTest::createConnection($loop)
             ),
             $loop,
-            1
+            .05
         );
     }
 
@@ -46,8 +46,8 @@ class ChunkSearchesRepositoryTest extends SearchesRepositoryTest
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
-        return 2;
+        return 100000;
     }
 }

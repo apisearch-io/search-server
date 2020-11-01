@@ -25,7 +25,7 @@ class DBALConfigRepositoryTest extends ConfigRepositoryTest
     use DBALFunctionalTestTrait;
 
     /**
-     * Is distributed config respository.
+     * Is distributed config repository.
      *
      * @return bool
      */

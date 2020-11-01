@@ -10,7 +10,7 @@ services:
             string $interactionsTable: "%apisearch_plugin.dbal.interactions_table%"
             string $searchesTable: "%apisearch_plugin.dbal.searches_table%"
             bool $locatorEnabled: "%apisearch_plugin.dbal.locator_enabled%"
-            int $loopPushInterval: "%apisearch_plugin.dbal.loop_push_interval%"
+            float $loopPushInterval: "%apisearch_plugin.dbal.loop_push_interval%"
 
             $persistentUsageRepository: '@Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository'
 

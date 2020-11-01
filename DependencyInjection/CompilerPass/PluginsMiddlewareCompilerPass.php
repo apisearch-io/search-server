@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection\CompilerPass;
 
-use Apisearch\DependencyInjection\CompilerPass\TagCompilerPass;
 use Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector;
 
 /**

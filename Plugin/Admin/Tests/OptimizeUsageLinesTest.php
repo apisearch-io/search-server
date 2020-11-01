@@ -36,13 +36,13 @@ class OptimizeUsageLinesTest extends AdminPluginFunctionalTest
 
         $this->queryNTimes(static::$appId, 10);
         $this->queryNTimes(static::$anotherAppId, 20);
-        self::makeCurl('admin_optimize_usage_lines', [], null, [], [
+        $this->request('admin_optimize_usage_lines', [], null, [], [
             'from' => (new DateTime())->modify('-1 day')->format('Ymd'),
             'to' => (new DateTime())->modify('+1 day')->format('Ymd'),
         ]);
 
         $today = \intval((new \DateTime())->format('Ymd'));
-        $response = self::makeCurl('admin_get_usage', [], null, [], [
+        $response = $this->request('admin_get_usage', [], null, [], [
             'from' => $today - 1,
             'to' => $today + 1,
         ]);
@@ -65,7 +65,7 @@ class OptimizeUsageLinesTest extends AdminPluginFunctionalTest
     public function testBadRequests($from, $to)
     {
         $this->expectException(InvalidFormatException::class);
-        self::makeCurl('admin_optimize_usage_lines', [], null, [], [
+        $this->request('admin_optimize_usage_lines', [], null, [], [
             'from' => $from,
             'to' => $to,
         ]);

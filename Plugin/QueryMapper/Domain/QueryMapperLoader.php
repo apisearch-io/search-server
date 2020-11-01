@@ -15,8 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\QueryMapper\Domain;
 
-use Apisearch\Http\Http;
-use Apisearch\Model\Token;
+use Apisearch\Server\Http\RequestAccessor;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -24,12 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class QueryMapperLoader
 {
-    /**
-     * @var QueryMappers
-     *
-     * Query mappers
-     */
-    private $queryMappers;
+    private QueryMappers $queryMappers;
 
     /**
      * Load query mappers.
@@ -65,11 +59,7 @@ class QueryMapperLoader
     public function fulfillRequestWithQueryAndCredentials(Request $request)
     {
         $requestQuery = $request->query;
-        $token = $requestQuery->get(Http::TOKEN_FIELD);
-
-        if (!$token instanceof Token) {
-            return;
-        }
+        $token = RequestAccessor::getTokenFromRequest($request);
 
         $queryMapper = $this
             ->queryMappers
@@ -81,8 +71,6 @@ class QueryMapperLoader
 
         $repositoryReference = $queryMapper->getRepositoryReference();
         $requestQuery->set('index_id', $repositoryReference->getIndexUUID()->composeUUID());
-        $requestQuery->set(Http::QUERY_FIELD, \json_encode(
-            $queryMapper->buildQueryByRequest($request)->toArray()
-        ));
+        RequestAccessor::setQuery($request, $queryMapper->buildQueryByRequest($request));
     }
 }

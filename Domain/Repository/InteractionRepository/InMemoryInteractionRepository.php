@@ -32,7 +32,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, T
     /**
      * @var Interaction[]
      */
-    private $interactions = [];
+    private array $interactions = [];
 
     /**
      * @param RepositoryReference $repositoryReference

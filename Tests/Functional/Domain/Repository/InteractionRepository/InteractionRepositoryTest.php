@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository\InteractionRepository;
 
-use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
@@ -226,27 +225,6 @@ trait InteractionRepositoryTest
 
         $interactions = $this->getInteractions(false, null, null, null, origin::DESKTOP, '3~it', null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
         $this->assertEquals(1, $interactions);
-    }
-
-    /**
-     * Test click without user.
-     */
-    public function testClickWithoutUser()
-    {
-        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE));
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
-        $this->assertEquals(6, $interactions);
-
-        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE));
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
-        $this->assertEquals(6, $interactions);
-
-        $this->click(null, '3~it', 2, new Origin('d.com', '0.0.0.1', Origin::PHONE));
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
-        $this->assertEquals(7, $interactions);
-
-        $this->expectException(InvalidFormatException::class);
-        $this->click(null, '3~it', 2, new Origin('d.com', '', Origin::PHONE));
     }
 
     /**

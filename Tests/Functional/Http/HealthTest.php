@@ -16,15 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Http;
 
 use Apisearch\Exception\TransportableException;
-use Apisearch\Model\AppUUID;
-use Apisearch\Model\Token;
-use Apisearch\Model\TokenUUID;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class HealthTest.
  */
-class HealthTest extends CurlFunctionalTest
+class HealthTest extends HttpFunctionalTest
 {
     /**
      * Test check health with different tokens.
@@ -39,14 +36,7 @@ class HealthTest extends CurlFunctionalTest
         int $responseCode
     ) {
         try {
-            $result = static::makeCurl(
-                'check_health',
-                [],
-                new Token(
-                    TokenUUID::createById($token),
-                    AppUUID::createById(self::$appId)
-                )
-            );
+            $result = $this->checkHealth($this->createTokenByIdAndAppId($token, self::$appId));
         } catch (TransportableException $exception) {
             $this->assertEquals(
                 $responseCode,
@@ -56,15 +46,7 @@ class HealthTest extends CurlFunctionalTest
             return;
         }
 
-        $this->assertEquals(
-            $responseCode,
-            $result['code']
-        );
-
-        if (200 === $responseCode) {
-            $content = $result['body'];
-            $this->assertTrue($content['healthy']);
-        }
+        $this->assertTrue($result['healthy']);
     }
 
     /**

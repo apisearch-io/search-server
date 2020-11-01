@@ -13,13 +13,16 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Exception;
+namespace Apisearch\Plugin\Elasticsearch\Tests;
 
-use Exception;
+use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\Domain\Repository\StreamTests;
 
 /**
- * Class ResponseException.
+ * Class StreamRepositoryTest.
  */
-class ResponseException extends Exception
+class StreamRepositoryTest extends CurlFunctionalTest
 {
+    use ElasticFunctionalTestTrait;
+    use StreamTests;
 }

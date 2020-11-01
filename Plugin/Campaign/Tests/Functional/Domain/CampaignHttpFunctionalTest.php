@@ -19,12 +19,12 @@ use Apisearch\Model\Token;
 use Apisearch\Plugin\Campaign\Domain\Model\Campaign;
 use Apisearch\Plugin\Campaign\Domain\Model\Campaigns;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignUID;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * Class CampaignCurlFunctionalTest.
+ * Class CampaignHttpFunctionalTest.
  */
-class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignMethodsTest
+class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignMethodsTest
 {
     use CampaignFunctionalTest;
     use CampaignScenariosTest;
@@ -41,7 +41,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        self::$lastResponse = $this->makeCurl(
+        $result = $this->request(
             'v1_campaigns_put_campaign',
             [
                 'campaign_id' => $campaign->getUid()->composeUID(),
@@ -63,7 +63,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        self::$lastResponse = $this->makeCurl(
+        $result = $this->request(
             'v1_campaigns_delete_campaigns',
             [
                 'app_id' => $appId ?? static::$appId,
@@ -85,7 +85,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        self::$lastResponse = $this->makeCurl(
+        $result = $this->request(
             'v1_campaigns_delete_campaign',
             [
                 'campaign_id' => $campaignUID->composeUID(),
@@ -108,7 +108,7 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ): Campaigns {
-        self::$lastResponse = $this->makeCurl(
+        $result = $this->request(
             'v1_campaigns_get_campaigns',
             [
                 'app_id' => $appId ?? static::$appId,
@@ -117,6 +117,6 @@ class CampaignCurlFunctionalTest extends CurlFunctionalTest implements CampaignM
             $token
         );
 
-        return Campaigns::createFromArray(self::$lastResponse['body']);
+        return Campaigns::createFromArray($result['body']);
     }
 }

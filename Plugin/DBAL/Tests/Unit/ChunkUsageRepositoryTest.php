@@ -44,7 +44,7 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
             $loop
         );
 
-        $loop->addPeriodicTimer(1, function () use ($repository) {
+        $loop->addPeriodicTimer(.05, function () use ($repository) {
             $repository->flushLines();
         });
 
@@ -56,9 +56,9 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
-        return 2;
+        return 100000;
     }
 
     /**
@@ -74,7 +74,7 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
             $loop
         );
 
-        $loop->addPeriodicTimer(1, function () use ($repository) {
+        $loop->addPeriodicTimer(.05, function () use ($repository) {
             $repository->flushLines();
         });
 

@@ -49,7 +49,7 @@ class ShutdownSearchesRepositoryTest extends ServiceFunctionalTest
         self::usleep(100000);
 
         $searches = $this->getSearches(false);
-        $this->assertEquals(3, $searches);
+        $this->assertEquals(1, $searches);
     }
 
     /**

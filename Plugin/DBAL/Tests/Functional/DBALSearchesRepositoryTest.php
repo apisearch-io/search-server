@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
-use Apisearch\Server\Tests\Functional\Domain\Repository\SearchesRepository\ServiceSearchesRepositoryTest;
+use Apisearch\Server\Tests\Functional\Domain\Repository\SearchesRepository\HttpSearchesRepositoryTest;
 
 /**
  * Class DBALInteractionRepositoryTest.
  */
-class DBALSearchesRepositoryTest extends ServiceSearchesRepositoryTest
+class DBALSearchesRepositoryTest extends HttpSearchesRepositoryTest
 {
     use DBALFunctionalTestTrait;
 }

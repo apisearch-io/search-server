@@ -111,6 +111,7 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
                     (int) $input->getOption('size')
                 ),
                 Origin::createEmpty(),
+                null,
                 $parameters
             ));
 
@@ -128,6 +129,7 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
                     $objects['token'],
                     $query,
                     Origin::createEmpty(),
+                    null,
                     $parameters
                 ));
             }

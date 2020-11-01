@@ -25,10 +25,7 @@ use Drift\CommandBus\Middleware\DiscriminableMiddleware;
  */
 final class TokenQueryMiddleware implements DiscriminableMiddleware
 {
-    /**
-     * @var int
-     */
-    private $numberOfResultsLimitation;
+    private int $numberOfResultsLimitation;
 
     /**
      * @param int $numberOfResultsLimitation
@@ -86,6 +83,7 @@ final class TokenQueryMiddleware implements DiscriminableMiddleware
             $token,
             QueryModel::createFromArray($queryAsArray),
             $query->getOrigin(),
+            $query->getUserId(),
             $query->getParameters()
         );
 

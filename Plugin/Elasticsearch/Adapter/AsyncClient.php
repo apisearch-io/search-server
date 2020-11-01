@@ -17,7 +17,7 @@ namespace Apisearch\Plugin\Elasticsearch\Adapter;
 
 use Apisearch\Exception\ConnectionException;
 use Apisearch\Plugin\Elasticsearch\Domain\AsyncRequestAccessor;
-use Apisearch\Server\Exception\ResponseException;
+use Apisearch\Server\Domain\Exception\ResponseException;
 use Elastica\Exception\ClientException;
 use Elastica\Request;
 use Elastica\Response;

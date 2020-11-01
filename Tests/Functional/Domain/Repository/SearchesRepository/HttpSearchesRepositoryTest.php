@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository\SearchesRepository;
 
-use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * Class ServiceInteractionRepositoryTest.
+ * Class HttpSearchesRepositoryTest.
  */
-class ServiceSearchesRepositoryTest extends ServiceFunctionalTest
+class HttpSearchesRepositoryTest extends HttpFunctionalTest
 {
     use SearchesRepositoryTest;
 }

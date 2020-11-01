@@ -32,6 +32,7 @@ class ServerMemoryControlTest extends CurlFunctionalTest
     public function testMassiveUsage()
     {
         $this->loadMassiveIndexItems(10000);
+
         $actions = [
             fn () => $this->exportIndex('source'),
             fn () => $this->exportIndex('standard'),
@@ -58,7 +59,7 @@ class ServerMemoryControlTest extends CurlFunctionalTest
             } catch (\Exception $e) {
                 // Pass through
             }
-        }, 1000, 800);
+        }, 200, 150);
     }
 
     /**

@@ -15,10 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\QueryMapper\Listener;
 
-use Apisearch\Http\Http;
 use Apisearch\Model\Token;
 use Apisearch\Plugin\QueryMapper\Domain\ResultMapperLoader;
 use Apisearch\Result\Result;
+use Apisearch\Server\Http\RequestAccessor;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,12 +30,7 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
  */
 class CheckMappedResult
 {
-    /**
-     * @var ResultMapperLoader
-     *
-     * Result mapper loader
-     */
-    private $resultMapperLoader;
+    private ResultMapperLoader $resultMapperLoader;
 
     /**
      * CheckMappingQueries constructor.
@@ -60,6 +55,7 @@ class CheckMappedResult
             resolve()
             ->then(function () use ($event) {
                 $request = $event->getRequest();
+                $requestAttributes = $request->attributes;
                 $httpResponse = $event->getResponse();
                 $route = $request->get('_route');
 
@@ -69,8 +65,8 @@ class CheckMappedResult
                         'apisearch_v1_query',
                         'apisearch_v1_query_all_indices',
                     ]) ||
-                    !$request->query->get(Http::TOKEN_FIELD) instanceof Token ||
-                    !$request->get('result') instanceof Result
+                    !(RequestAccessor::getTokenFromRequest($request) instanceof Token) ||
+                    !$requestAttributes->get('result') instanceof Result
                 ) {
                     return;
                 }
@@ -78,8 +74,8 @@ class CheckMappedResult
                 $response = $this
                     ->resultMapperLoader
                     ->getArrayFromResult(
-                        $request->query->get(Http::TOKEN_FIELD)->getTokenUUID(),
-                        $request->get('result')
+                        RequestAccessor::getTokenFromRequest($request)->getTokenUUID(),
+                        $requestAttributes->get('result')
                     );
 
                 if (\is_array($response)) {

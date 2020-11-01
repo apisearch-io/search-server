@@ -20,6 +20,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use function Clue\React\Block\await;
+use function Drift\React\usleep as async_usleep;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
@@ -94,7 +95,7 @@ abstract class UsageRepositoryTest extends TestCase
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
         return 0;
     }
@@ -402,9 +403,9 @@ abstract class UsageRepositoryTest extends TestCase
             }
         }
 
-        $seconds = $this->secondsSleepingBeforeQuery();
-        if ($seconds > 0) {
-            await(\Drift\React\sleep($seconds, $loop), $loop);
-        }
+        await(
+            async_usleep($this->microsecondsSleepingBeforeQuery(), $loop),
+            $loop
+        );
     }
 }

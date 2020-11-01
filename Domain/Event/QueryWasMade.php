@@ -16,7 +16,6 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Event;
 
 use Apisearch\Model\ItemUUID;
-use Apisearch\Model\User;
 use Apisearch\Server\Domain\Model\Origin;
 
 /**
@@ -24,65 +23,32 @@ use Apisearch\Server\Domain\Model\Origin;
  */
 final class QueryWasMade extends DomainEvent
 {
-    /**
-     * @var string
-     */
-    private $queryText;
-
-    /**
-     * @var int
-     */
-    private $size;
-
-    /**
-     * @var ItemUUID[]
-     */
-    private $itemsUUID;
-
-    /**
-     * @var User|null
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $parameters = [];
-
-    /**
-     * @var Origin
-     */
-    private $origin;
-
-    /**
-     * @var string
-     *
-     * Query serialized
-     */
-    private $querySerialized;
-
-    /**
-     * @var int
-     */
-    private $cost;
+    private string $queryText;
+    private int $size;
+    private array $itemsUUID;
+    private ?string $userId;
+    private array $parameters;
+    private Origin $origin;
+    private string $querySerialized;
+    private int $cost;
 
     /**
      * QueryWasMade constructor.
      *
-     * @param string     $queryText
-     * @param int        $size
-     * @param ItemUUID[] $itemsUUID
-     * @param User|null  $user
-     * @param string     $querySerialized
-     * @param array      $parameters
-     * @param Origin     $origin
-     * @param int        $cost
+     * @param string      $queryText
+     * @param int         $size
+     * @param ItemUUID[]  $itemsUUID
+     * @param string|null $userId
+     * @param string      $querySerialized
+     * @param array       $parameters
+     * @param Origin      $origin
+     * @param int         $cost
      */
     public function __construct(
         string $queryText,
         int $size,
         array $itemsUUID,
-        ? User $user,
+        ? string $userId,
         string $querySerialized,
         Origin $origin,
         array $parameters = [],
@@ -92,7 +58,7 @@ final class QueryWasMade extends DomainEvent
         $this->queryText = $queryText;
         $this->size = $size;
         $this->itemsUUID = $itemsUUID;
-        $this->user = $user;
+        $this->userId = $userId;
         $this->querySerialized = $querySerialized;
         $this->parameters = $parameters;
         $this->origin = $origin;
@@ -124,11 +90,11 @@ final class QueryWasMade extends DomainEvent
     }
 
     /**
-     * @return User|null
+     * @return string|null
      */
-    public function getUser(): ?User
+    public function getUserId(): ?string
     {
-        return $this->user;
+        return $this->userId;
     }
 
     /**
@@ -183,9 +149,7 @@ final class QueryWasMade extends DomainEvent
                 }, $this->itemsUUID)
             ),
             'result_length' => \count($this->itemsUUID),
-            'user' => ($this->user instanceof User)
-                ? $this->user->toArray()
-                : null,
+            'user_id' => $this->userId,
             'query_serialized' => $this->querySerialized,
             'cost' => $this->cost,
         ];

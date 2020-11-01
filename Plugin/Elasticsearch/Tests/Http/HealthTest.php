@@ -15,10 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elasticsearch\Tests\Http;
 
-use Apisearch\Http\Http;
 use Apisearch\Plugin\Elasticsearch\Tests\ElasticFunctionalTestTrait;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class HealthCheckTest.
@@ -32,26 +30,16 @@ class HealthTest extends HttpFunctionalTest
      */
     public function testCheckHealth()
     {
-        $request = new Request();
-        $request->setMethod('GET');
-        $request->server->set('REQUEST_URI', '/health');
-        $request->headers->set(Http::TOKEN_ID_HEADER, self::$godToken);
-        $promise = static::$kernel
-            ->handleAsync($request)
-            ->then(function ($response) {
-                $content = \json_decode($response->getContent(), true);
-                $this->assertTrue(
-                    \in_array(
-                        $content['status']['elasticsearch'],
-                        ['green', 'yellow']
-                    )
-                );
+        $response = $this->checkHealth();
+        $this->assertTrue(
+            \in_array(
+                $response['status']['elasticsearch'],
+                ['green', 'yellow']
+            )
+        );
 
-                $this->assertNotEmpty($content['info']['plugins']['elasticsearch']);
-                $this->assertNotEmpty($content['info']['elasticsearch']);
-                $this->assertEquals(3, $content['info']['elasticsearch']['number_of_indices']);
-            });
-
-        $this->await($promise);
+        $this->assertNotEmpty($response['info']['plugins']['elasticsearch']);
+        $this->assertNotEmpty($response['info']['elasticsearch']);
+        $this->assertEquals(3, $response['info']['elasticsearch']['number_of_indices']);
     }
 }

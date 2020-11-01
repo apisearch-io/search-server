@@ -18,6 +18,7 @@ namespace Apisearch\Server\Tests\Unit;
 use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
 use function Drift\React\sleep as async_sleep;
+use function Drift\React\usleep as async_usleep;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use React\EventLoop\Factory;
@@ -73,6 +74,20 @@ abstract class BaseUnitTest extends TestCase
     ) {
         $this->await(
             async_sleep($seconds, $loop),
+            $loop
+        );
+    }
+
+    /**
+     * @param int           $microseconds
+     * @param LoopInterface $loop
+     */
+    protected function usleep(
+        int $microseconds,
+        LoopInterface $loop
+    ) {
+        $this->await(
+            async_usleep($microseconds, $loop),
             $loop
         );
     }
