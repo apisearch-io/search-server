@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Http;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetTopSearches;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,12 +28,15 @@ use Symfony\Component\HttpFoundation\Request;
 final class GetTopSearchesController extends ControllerWithQueryBus
 {
     /**
-     * @param Request $request
+     * @param Request     $request
+     * @param UserEncrypt $userEncrypt
      *
      * @return PromiseInterface
      */
-    public function __invoke(Request $request): PromiseInterface
-    {
+    public function __invoke(
+        Request $request,
+        UserEncrypt $userEncrypt
+    ): PromiseInterface {
         $query = $request->query;
         list($from, $to) = $this->getDateRangeFromRequest($request);
 
@@ -46,7 +50,7 @@ final class GetTopSearchesController extends ControllerWithQueryBus
                 $from,
                 $to,
                 $query->get('platform', null),
-                $query->get('user_id', null),
+                $userEncrypt->getUUIDByInput($query->get('user_id')),
                 \boolval($query->get('exclude_with_results', false)),
                 \boolval($query->get('exclude_without_results', false)),
                 \intval($query->get('n', 10))

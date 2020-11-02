@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Event;
 
-use Apisearch\Server\Exception\StorableException;
+use Apisearch\Server\Domain\Exception\StorableException;
 
 /**
  * Class ExceptionWasCached.

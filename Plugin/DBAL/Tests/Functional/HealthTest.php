@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
+use Apisearch\Model\User;
 use Apisearch\Query\Query;
 use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
 use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
@@ -37,9 +38,9 @@ class HealthTest extends ServiceFunctionalTest
         $this->click('123', 'product~1', 1, Origin::createEmpty());
         $this->click('123', 'product~1', 1, Origin::createEmpty());
         $this->click('456', 'product~1', 1, Origin::createEmpty());
-        $this->query(Query::create('hola'));
-        $this->query(Query::createMatchAll());
-        $this->query(Query::createMatchAll());
+        $this->query(Query::create('hola')->byUser(new User('1')));
+        $this->query(Query::createMatchAll()->byUser(new User('1')));
+        $this->query(Query::createMatchAll()->byUser(new User('1')));
         $this->dispatchImperative(new FlushInteractions());
         $this->dispatchImperative(new FlushUsageLines());
         $this->dispatchImperative(new FlushSearches());
@@ -53,9 +54,9 @@ class HealthTest extends ServiceFunctionalTest
         ], $response['info']['dbal']);
 
         $this->click('555', 'product~1', 1, Origin::createEmpty());
-        $this->query(Query::create('engonga'));
-        $this->query(Query::create('lol'));
-        $this->query(Query::createMatchAll());
+        $this->query(Query::create('engonga')->byUser(new User('1')));
+        $this->query(Query::create('lol')->byUser(new User('1')));
+        $this->query(Query::createMatchAll()->byUser(new User('1')));
         $this->dispatchImperative(new FlushInteractions());
         $this->dispatchImperative(new FlushUsageLines());
         $this->dispatchImperative(new FlushSearches());

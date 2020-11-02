@@ -64,7 +64,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
         ], self::PRIVATE_KEY, self::ALGORITHM);
 
         $result = $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
 
         $this->assertResults($result, ['{1', '2', '3', '4}', '!5']);
@@ -81,7 +81,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
         ], self::PRIVATE_KEY, self::ALGORITHM);
 
         $result = $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
 
         $this->assertResults($result, ['{1', '2', '3}', '!4', '!5']);
@@ -98,7 +98,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
         ], self::PRIVATE_KEY, self::ALGORITHM);
 
         $result = $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
 
         $this->assertResults($result, ['{1', '2', '3', '4', '5}']);
@@ -115,7 +115,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
         ], self::PRIVATE_KEY, self::ALGORITHM);
 
         $result = $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
 
         $this->assertResults($result, ['{1', '2', '3', '4}', '!5']);
@@ -126,7 +126,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
         ], self::PRIVATE_KEY, self::ALGORITHM);
 
         $result = $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
 
         $this->assertResults($result, ['{1', '2', '3}', '!4', '!5']);
@@ -167,7 +167,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
         $this->expectException(ForbiddenException::class);
         $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
     }
 
@@ -183,7 +183,7 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
         $this->expectException(ForbiddenException::class);
         $this->query($query, null, null, null, [], null, [
-            "Authorization: Bearer $jwtPayload",
+            'Authorization' => "Bearer $jwtPayload",
         ]);
     }
 }

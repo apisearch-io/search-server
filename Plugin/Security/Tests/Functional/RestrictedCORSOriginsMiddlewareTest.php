@@ -18,12 +18,12 @@ namespace Apisearch\Plugin\Security\Tests\Functional;
 use Apisearch\Config\Config;
 use Apisearch\Exception\ForbiddenException;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class CORSFunctionalTest.
  */
-class RestrictedCORSOriginsMiddlewareTest extends CurlFunctionalTest
+class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 

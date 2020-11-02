@@ -34,12 +34,12 @@ class GetUsageTest extends AdminPluginFunctionalTest
 
         $this->queryNTimes(static::$appId, 10);
         $this->queryNTimes(static::$anotherAppId, 20);
-        self::makeCurl('admin_dispatch_imperative_event', [
+        $this->request('admin_dispatch_imperative_event', [
             'eventName' => 'flush_usage_lines',
         ]);
 
         $today = \intval((new \DateTime())->format('Ymd'));
-        $response = self::makeCurl('admin_get_usage', [], null, [], [
+        $response = $this->request('admin_get_usage', [], null, [], [
             'from' => $today - 1,
             'to' => $today + 1,
         ]);

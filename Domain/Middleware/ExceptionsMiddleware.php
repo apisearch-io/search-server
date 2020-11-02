@@ -17,7 +17,7 @@ namespace Apisearch\Server\Domain\Middleware;
 
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
-use Apisearch\Server\Exception\StorableException;
+use Apisearch\Server\Domain\Exception\StorableException;
 use Drift\EventBus\Bus\EventBus;
 use Throwable;
 

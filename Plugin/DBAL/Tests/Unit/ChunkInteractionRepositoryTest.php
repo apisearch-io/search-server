@@ -37,7 +37,7 @@ class ChunkInteractionRepositoryTest extends InteractionRepositoryTest
                 DBALInteractionRepositoryTest::createConnection($loop)
             ),
             $loop,
-            1
+            .05
         );
     }
 
@@ -46,8 +46,8 @@ class ChunkInteractionRepositoryTest extends InteractionRepositoryTest
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
-        return 2;
+        return 100000;
     }
 }

@@ -13,13 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Exception;
+namespace Apisearch\Server\Domain\Exception;
 
 use Exception;
 
 /**
- * Class ErrorException.
+ * Class ResponseException.
  */
-class ErrorException extends Exception
+class ResponseException extends Exception
 {
 }

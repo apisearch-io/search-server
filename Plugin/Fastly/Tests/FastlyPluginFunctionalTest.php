@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Fastly\Tests;
 
 use Apisearch\Plugin\Fastly\FastlyPluginBundle;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class FastlyPluginFunctionalTest.
  */
-abstract class FastlyPluginFunctionalTest extends CurlFunctionalTest
+abstract class FastlyPluginFunctionalTest extends HttpFunctionalTest
 {
     /**
      * Decorate bundles.

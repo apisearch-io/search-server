@@ -68,7 +68,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      *
      * @return int
      */
-    public function secondsSleepingBeforeQuery(): int
+    public function microsecondsSleepingBeforeQuery(): int
     {
         return 0;
     }
@@ -81,7 +81,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
         $repositoryReference = $this->getDefaultRepositoryReference();
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $this->assertEmpty($this->await($repository->getRegisteredInteractions(InteractionFilter::create($repositoryReference)), $loop));
     }
@@ -100,7 +100,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop);
         $this->addInteraction($repository, $loop);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
         $interactions = $repository->getRegisteredInteractions(InteractionFilter::create($repositoryReference));
         $this->assertEquals(5, $this->await($interactions, $loop));
     }
@@ -121,7 +121,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop, RepositoryReference::createFromComposed('a_N'));
         $this->addInteraction($repository, $loop, RepositoryReference::createFromComposed('a_M'));
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactions = $repository->getRegisteredInteractions(InteractionFilter::create($repositoryReference));
         $this->assertEquals(2, $this->await($interactions, $loop));
@@ -171,7 +171,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop, $repositoryReference, 'user-2');
         $this->addInteraction($repository, $loop, $repositoryReference, 'user-10');
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->byUser('user-1');
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -218,7 +218,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop);
         $this->addInteraction($repository, $loop, $repositoryReference, $user, '3~p');
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->byItem(ItemUUID::createByComposedUUID('1~p'));
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -251,7 +251,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop);
         $this->addInteraction($repository, $loop);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->byPlatform(Origin::DESKTOP);
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -293,7 +293,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop, $repositoryReference, $user, $itemUUID, Origin::createEmpty(), 'another');
         $this->addInteraction($repository, $loop, $repositoryReference, $user, $itemUUID, Origin::createEmpty(), 'another');
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->byType(InteractionType::CLICK);
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -326,7 +326,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020);
         $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->perDay();
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -416,7 +416,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop, $repositoryReference, $user3, $itemUUID);
         $this->addInteraction($repository, $loop, $repositoryReference, $user3);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->count(InteractionFilter::UNIQUE_USERS);
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -466,7 +466,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user3);
         $this->addInteractionWhen($repository, $loop, self::DAY_15_1_2020, $user4);
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
 
         $interactionFilter = InteractionFilter::create($repositoryReference)->perDay()->count(InteractionFilter::UNIQUE_USERS);
         $interactions = $repository->getRegisteredInteractions($interactionFilter);
@@ -500,7 +500,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p');
         $this->addInteraction($repository, $loop, $repositoryReference, $user2, '1~p');
 
-        $this->sleep($this->secondsSleepingBeforeQuery(), $loop);
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
         $list = $repository->getTopInteractedItems(InteractionFilter::create($repositoryReference), 10);
         $this->assertEquals([
             '1~p' => 5,

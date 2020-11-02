@@ -22,50 +22,16 @@ use Jenssegers\Agent\Agent;
  */
 final class Origin
 {
-    /**
-     * @var string
-     */
     const TABLET = 'tablet';
-
-    /**
-     * @var string
-     */
     const PHONE = 'phone';
-
-    /**
-     * @var string
-     */
     const MOBILE = 'mobile';
-
-    /**
-     * @var string
-     */
     const DESKTOP = 'desktop';
-
-    /**
-     * @var string
-     */
     const ROBOT = 'robot';
-
-    /**
-     * @var string
-     */
     const OTHERS = '';
 
-    /**
-     * @var string
-     */
-    private $host;
-
-    /**
-     * @var string
-     */
-    private $ip;
-
-    /**
-     * @var string
-     */
-    private $platform;
+    private string $host;
+    private string $ip;
+    private string $platform;
 
     /**
      * @param string $host

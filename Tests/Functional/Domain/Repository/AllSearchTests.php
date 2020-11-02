@@ -48,7 +48,5 @@ trait AllSearchTests
     use TokenQueriesTest;
     use MultiqueryTest;
     use IndicesTest;
-    use ExportTest;
     use FieldTypesTest;
-    use ImportTest;
 }

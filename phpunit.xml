@@ -14,13 +14,13 @@
         <env name="APISEARCH_GOD_TOKEN" value="0e4d75ba-c640-44c1-a745-06ee51db4e93" force="true" />
         <env name="APISEARCH_READONLY_TOKEN" value="410806ed-f2c2-8d22-96ea-7fb68026df34" force="true" />
         <env name="APISEARCH_PING_TOKEN" value="6326d504-0a5f-f1ae-7344-8e70b75fcde9" force="true" />
+        <env name="APISEARCH_PING_TOKEN" value="6326d504-0a5f-f1ae-7344-8e70b75fcde9" force="true" />
 
         <env name="APISEARCH_ASYNC_EVENTS_ENABLED" value="0" force="true" />
 
         <env name="ELASTICSEARCH_HOST" value="127.0.0.1" force="true" />
         <env name="ELASTICSEARCH_REFRESH_ON_WRITE" value="true" force="true" />
 
-        <env name="AMQP_HOST" value="127.0.0.1" force="true" />
         <env name="REDIS_HOST" value="127.0.0.1" force="true" />
         <env name="LOGSTASH_REDIS_HOST" value="127.0.0.1" force="true" />
 
@@ -43,20 +43,18 @@
     </php>
 
     <testsuites>
-        <testsuite name="domain">
-            <directory>Tests/</directory>
-        </testsuite>
-
-        <testsuite name="plugins">
-            <directory>Plugin/</directory>
-        </testsuite>
-
-        <testsuite name="local">
+        <testsuite name="without-infrastructure">
             <directory>Tests/</directory>
             <directory>Plugin/</directory>
-            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch61Test.php</exclude>
-            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch68Test.php</exclude>
-            <exclude>Plugin/Elasticsearch/Tests/Elasticsearch70Test.php</exclude>
+            <exclude>Plugin/Elasticsearch/</exclude>
+            <exclude>Plugin/Logstash</exclude>
+            <exclude>Plugin/Security</exclude>
+        </testsuite>
+
+        <testsuite name="with-infrastructure">
+            <directory>Plugin/Elasticsearch/</directory>
+            <directory>Plugin/Logstash</directory>
+            <directory>Plugin/Security</directory>
         </testsuite>
     </testsuites>
 </phpunit>

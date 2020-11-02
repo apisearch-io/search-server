@@ -47,6 +47,8 @@ services:
     Apisearch\Server\Domain\Listener\:
         resource: '../../Domain/Listener/'
 
+    Apisearch\Server\Domain\Model\UserEncrypt:
+
 
     #
     # Repositories

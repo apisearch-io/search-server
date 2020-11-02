@@ -242,14 +242,27 @@ apisearch_v1_query_all_indices_preflight:
 apisearch_v1_post_click:
     path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click
     methods: ["POST"]
-    controller: Apisearch\Server\Http\PostClickController
+    controller: Apisearch\Server\Http\PostInteractionController
     defaults:
-        per_day: true
-        tags: [interactions, click, metrics]
-        json: true
+        interaction: cli
+        tags: [interactions, metrics]
 
 apisearch_v1_post_click_preflight:
     path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Http\QueryCORSController
+    defaults:
+        allowed_method: POST
+
+apisearch_v1_post_interaction:
+    path: /v1/{app_id}/indices/{index_id}/items/{item_id}/interaction/{interaction}
+    methods: ["POST"]
+    controller: Apisearch\Server\Http\PostInteractionController
+    defaults:
+        tags: [interactions, metrics]
+
+apisearch_v1_post_interaction_preflight:
+    path: /v1/{app_id}/indices/{index_id}/items/{item_id}/interaction/{interaction}
     methods: ["OPTIONS"]
     controller: Apisearch\Server\Http\QueryCORSController
     defaults:

@@ -13,10 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Exception;
+namespace Apisearch\Server\Domain\Exception;
 
 use Exception;
 
-class FormatterException extends Exception
+/**
+ * Class ErrorException.
+ */
+class ErrorException extends Exception
 {
 }

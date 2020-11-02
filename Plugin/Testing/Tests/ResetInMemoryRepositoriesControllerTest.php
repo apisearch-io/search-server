@@ -32,7 +32,7 @@ class ResetInMemoryRepositoriesControllerTest extends TestingPluginFunctionalTes
         $this->assertCount(4, $this->getTokens());
         $this->assertNotEmpty($this->getUsage());
 
-        static::makeCurl('testing_reset_inmemory_repositories');
+        $this->request('testing_reset_inmemory_repositories');
         $this->assertCount(0, $this->getIndices());
         $this->assertCount(3, $this->getTokens());
         $this->assertEmpty($this->getUsage());

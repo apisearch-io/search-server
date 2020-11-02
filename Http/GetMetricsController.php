@@ -17,6 +17,7 @@ namespace Apisearch\Server\Http;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\InteractionType;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetInteractions;
 use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
@@ -34,12 +35,15 @@ use Symfony\Component\HttpFoundation\Request;
 final class GetMetricsController extends ControllerWithQueryBus
 {
     /**
-     * @param Request $request
+     * @param Request     $request
+     * @param UserEncrypt $userEncrypt
      *
      * @return PromiseInterface
      */
-    public function __invoke(Request $request): PromiseInterface
-    {
+    public function __invoke(
+        Request $request,
+        UserEncrypt $userEncrypt
+    ): PromiseInterface {
         $query = $request->query;
 
         $repositoryReference = RepositoryReference::create(
@@ -49,7 +53,7 @@ final class GetMetricsController extends ControllerWithQueryBus
         $token = RequestAccessor::getTokenFromRequest($request);
         list($from, $to) = $this->getDateRangeFromRequest($request);
         $platform = $query->get('platform', null);
-        $userId = $query->get('user_id', null);
+        $userId = $userEncrypt->getUUIDByInput($query->get('user_id'));
         $n = \intval($query->get('n', 10));
 
         return

@@ -15,22 +15,17 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\CommandHandler;
 
-use Apisearch\Server\Domain\Command\PostClick;
-use Apisearch\Server\Domain\Model\InteractionType;
+use Apisearch\Server\Domain\Command\PostInteraction;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
-use Apisearch\Server\Exception\InvalidClickException;
 use DateTime;
 use React\Promise\PromiseInterface;
 
 /**
- * Class PostClickHandler.
+ * Class PostInteractionHandler.
  */
-class PostClickHandler
+class PostInteractionHandler
 {
-    /**
-     * @var InteractionRepository
-     */
-    private $interactionRepository;
+    private InteractionRepository $interactionRepository;
 
     /**
      * @param InteractionRepository $interactionRepository
@@ -41,28 +36,21 @@ class PostClickHandler
     }
 
     /**
-     * @param PostClick $putClick
+     * @param PostInteraction $putInteraction
      *
      * @return PromiseInterface
      */
-    public function handle(PostClick $putClick): PromiseInterface
+    public function handle(PostInteraction $putInteraction): PromiseInterface
     {
-        $origin = $putClick->getOrigin();
-        $userUUID = $putClick->getUserUUID() ?? $origin->getIp();
-
-        if (empty($userUUID)) {
-            throw InvalidClickException::create();
-        }
-
         return $this
             ->interactionRepository
             ->registerInteraction(
-                $putClick->getRepositoryReference(),
-                $userUUID,
-                $putClick->getItemUUID(),
-                $putClick->getPosition(),
-                $origin,
-                InteractionType::CLICK,
+                $putInteraction->getRepositoryReference(),
+                $putInteraction->getUserUUID(),
+                $putInteraction->getItemUUID(),
+                $putInteraction->getPosition(),
+                $putInteraction->getOrigin(),
+                $putInteraction->getInteractionType(),
                 new DateTime()
             );
     }

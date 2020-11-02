@@ -15,12 +15,12 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository\UsageRepository;
 
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * Class CurlUsageRepositoryTest.
+ * Class HttpUsageRepositoryTest.
  */
-class CurlUsageRepositoryTest extends CurlFunctionalTest
+class HttpUsageRepositoryTest extends HttpFunctionalTest
 {
     use UsageRepositoryTest;
 }

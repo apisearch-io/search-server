@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Fastly\Listener;
 
-use Apisearch\Http\Http;
+use Apisearch\Server\Http\RequestAccessor;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -61,10 +61,9 @@ class QueryHeaders implements EventSubscriberInterface
         bool $allIndices
     ): void {
         $request = $event->getRequest();
-        $requestQuery = $request->query;
         $requestAttributes = $request->attributes;
 
-        $token = $requestQuery->get(Http::TOKEN_FIELD);
+        $token = RequestAccessor::getTokenFromRequest($request);
         $appUUID = $requestAttributes->get('app_id');
         $indexUUID = $requestAttributes->get('index_id');
         if (empty($indexUUID) || '*' === $indexUUID) {

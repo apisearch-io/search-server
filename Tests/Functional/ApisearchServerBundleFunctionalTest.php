@@ -29,8 +29,8 @@ use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\ApisearchPluginsBundle;
 use Apisearch\Server\ApisearchServerBundle;
+use Apisearch\Server\Domain\Exception\ErrorException;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Exception\ErrorException;
 use Apisearch\Server\Tests\PHPUnitModifierTrait;
 use DateTime;
 use Drift\CommandBus\CommandBusBundle;
@@ -61,12 +61,17 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     use PHPUnitModifierTrait;
     use ResultAssertionsTrait;
 
-    /**
-     * @var string
-     *
-     * External server port
-     */
     const HTTP_TEST_SERVICE_PORT = '8888';
+    public static string $godToken;
+    public static string $readonlyToken;
+    public static string $pingToken;
+    public static string $appId = '26178621test';
+    public static string $index = 'default';
+    public static string $anotherAppId = '26178621testanother';
+    public static string $anotherInexistentAppId = '26178621testnotexists';
+    public static string $anotherIndex = 'anotherindex';
+    public static string $yetAnotherIndex = 'yetanotherindex';
+    protected static ?Process $lastServer = null;
 
     /**
      * Get container service.
@@ -130,7 +135,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
             EventBusBundle::class,
         ];
 
-        $composedIndex = self::$index.','.self::$anotherIndex;
         $configuration = [
             'imports' => $imports,
             'parameters' => [
@@ -149,38 +153,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
                 'god_token' => self::$godToken,
                 'ping_token' => self::$pingToken,
                 'readonly_token' => self::$readonlyToken,
-            ],
-            'apisearch' => [
-                'repositories' => [
-                    'search_http' => [
-                        'adapter' => 'http_test',
-                        'endpoint' => '~',
-                        'app_id' => self::$appId,
-                        'token' => '~',
-                        'test' => true,
-                        'indices' => [
-                            self::$index => self::$index,
-                            self::$anotherIndex => self::$anotherIndex,
-                            $composedIndex => $composedIndex,
-                            '*' => '*',
-                            self::$yetAnotherIndex => self::$yetAnotherIndex,
-                        ],
-                    ],
-                    'search_inaccessible' => [
-                        'adapter' => 'http',
-                        'endpoint' => 'http://127.0.0.1:9999',
-                        'app_id' => self::$appId,
-                        'token' => self::$godToken,
-                        'test' => true,
-                        'indices' => [
-                            self::$index => self::$index,
-                            self::$anotherIndex => self::$anotherIndex,
-                            $composedIndex => $composedIndex,
-                            '*' => '*',
-                            self::$yetAnotherIndex => self::$yetAnotherIndex,
-                        ],
-                    ],
-                ],
             ],
         ];
 
@@ -229,74 +201,6 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     {
         return $routes;
     }
-
-    /**
-     * @var string
-     *
-     * God token
-     */
-    public static $godToken;
-
-    /**
-     * @var string
-     *
-     * Readonly token
-     */
-    public static $readonlyToken;
-
-    /**
-     * @var string
-     *
-     * Ping token
-     */
-    public static $pingToken;
-
-    /**
-     * @var string
-     *
-     * App id
-     */
-    public static $appId = '26178621test';
-
-    /**
-     * @var string
-     *
-     * App id
-     */
-    public static $index = 'default';
-
-    /**
-     * @var string
-     *
-     * Another App id
-     */
-    public static $anotherAppId = '26178621testanother';
-
-    /**
-     * @var string
-     *
-     * Another not created App id
-     */
-    public static $anotherInexistentAppId = '26178621testnotexists';
-
-    /**
-     * @var string
-     *
-     * Another index
-     */
-    public static $anotherIndex = 'anotherindex';
-
-    /**
-     * @var string
-     *
-     * Yet another index
-     */
-    public static $yetAnotherIndex = 'yetanotherindex';
-
-    /**
-     * @var Process
-     */
-    protected static $lastServer;
 
     /**
      * Sets up the fixture, for example, open a network connection.
@@ -959,11 +863,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      */
     protected function createTokenByIdAndAppId(
         string $tokenId,
-        string $appId
+        string $appId = null
     ): Token {
         return new Token(
             TokenUUID::createById($tokenId),
-            AppUUID::createById($appId)
+            AppUUID::createById($appId ?? self::$appId)
         );
     }
 

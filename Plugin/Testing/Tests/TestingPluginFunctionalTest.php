@@ -18,12 +18,12 @@ namespace Apisearch\Plugin\Testing\Tests;
 use Apisearch\Plugin\Testing\TestingPluginBundle;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class TestingPluginFunctionalTest.
  */
-abstract class TestingPluginFunctionalTest extends CurlFunctionalTest
+abstract class TestingPluginFunctionalTest extends HttpFunctionalTest
 {
     /**
      * Decorate bundles.

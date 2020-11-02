@@ -48,6 +48,8 @@ trait SearchesRepositoryTest
 
     /**
      * Load searches.
+     *
+     * @group lol
      */
     public function testLoadSearches()
     {
@@ -87,6 +89,8 @@ trait SearchesRepositoryTest
 
     /**
      * Test basic.
+     *
+     * @group lol
      */
     public function testBasic()
     {
@@ -117,7 +121,8 @@ trait SearchesRepositoryTest
         $this->assertEquals(9, $this->getSearches(false, null, null, 'u1'));
         $this->assertEquals(4, $this->getSearches(false, null, null, 'u2'));
         $this->assertEquals(15, $this->getSearches(false, null, null, '0.0.0.0'));
-        $this->assertEquals(0, $this->getSearches(false, null, null, ''));
+        $this->assertEquals(28, $this->getSearches(false, null, null, ''));
+        $this->assertEquals(28, $this->getSearches(false, null, null, null));
     }
 
     /**

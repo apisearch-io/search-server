@@ -19,12 +19,12 @@ use Apisearch\Config\Config;
 use Apisearch\Exception\ForbiddenException;
 use Apisearch\Query\Query;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class QueryRestrictionsFunctionalTest.
  */
-class RestrictedQueryOriginsMiddlewareTest extends CurlFunctionalTest
+class RestrictedQueryOriginsMiddlewareTest extends HttpFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 

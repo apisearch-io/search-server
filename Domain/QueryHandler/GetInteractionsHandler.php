@@ -26,10 +26,7 @@ use React\Promise\PromiseInterface;
  */
 class GetInteractionsHandler
 {
-    /**
-     * @var InteractionRepository
-     */
-    private $interactionRepository;
+    private InteractionRepository $interactionRepository;
 
     /**
      * @param InteractionRepository $interactionRepository

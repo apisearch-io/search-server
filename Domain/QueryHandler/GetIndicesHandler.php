@@ -29,10 +29,7 @@ use React\Promise\PromiseInterface;
  */
 class GetIndicesHandler extends WithAppRepository
 {
-    /**
-     * @var ConfigRepository
-     */
-    private $configRepository;
+    private ConfigRepository $configRepository;
 
     /**
      * @param AppRepository    $appRepository

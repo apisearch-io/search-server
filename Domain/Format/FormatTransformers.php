@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Format;
 
-use Apisearch\Server\Exception\FormatterException;
+use Apisearch\Server\Domain\Exception\FormatterException;
 
 /**
  * Class FormatTransformers.

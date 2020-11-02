@@ -11,7 +11,6 @@ jobs:
     with-infrastructure:
         docker:
             -   image: circleci/php:7.4.4-cli
-            -   image: rabbitmq:3-alpine
             -   image: redis:4-alpine
             -   image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
                 name: apisearch.elasticsearch.6.1
@@ -55,7 +54,7 @@ jobs:
             -   run:
                     name: Run tests
                     command: |
-                        php vendor/bin/phpunit --testsuite plugins
+                        php vendor/bin/phpunit --testsuite with-infrastructure
 
 
     without-infrastructure:
@@ -76,7 +75,7 @@ jobs:
             -   run:
                     name: Run tests
                     command: |
-                        docker run apisearch/server sh .circleci/scripts/run-domain-tests
+                        docker run apisearch/server sh .circleci/scripts/run-without-infrastructure-tests
 
 workflows:
     version: 2

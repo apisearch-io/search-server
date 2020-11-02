@@ -35,17 +35,8 @@ use Symfony\Component\Routing\RouterInterface;
  */
 final class TokenCheckOverHTTP implements EventSubscriberInterface
 {
-    /**
-     * @var TokenManager
-     *
-     * Token manager
-     */
-    private $tokenManager;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private TokenManager $tokenManager;
+    private RouterInterface $router;
 
     /**
      * TokenValidationOverHTTP constructor.
@@ -126,7 +117,7 @@ final class TokenCheckOverHTTP implements EventSubscriberInterface
             })
             ->then(function (Token $token) use ($request) {
                 $request
-                    ->query
+                    ->attributes
                     ->set(Http::TOKEN_FIELD, $token);
             });
     }

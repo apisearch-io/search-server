@@ -25,12 +25,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
  */
 class CheckMappedQuery
 {
-    /**
-     * @var QueryMapperLoader
-     *
-     * Query mapper loader
-     */
-    private $queryMapperLoader;
+    private QueryMapperLoader $queryMapperLoader;
 
     /**
      * CheckMappingQueries constructor.

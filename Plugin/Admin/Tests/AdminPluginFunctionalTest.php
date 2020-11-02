@@ -18,12 +18,12 @@ namespace Apisearch\Plugin\Admin\Tests;
 use Apisearch\Plugin\Admin\AdminPluginBundle;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class AdminPluginFunctionalTest.
  */
-abstract class AdminPluginFunctionalTest extends CurlFunctionalTest
+abstract class AdminPluginFunctionalTest extends HttpFunctionalTest
 {
     /**
      * Decorate bundles.

@@ -25,7 +25,7 @@ class GetAppsTest extends AdminPluginFunctionalTest
      */
     public function testController()
     {
-        $response = self::makeCurl('admin_get_apps');
+        $response = $this->request('admin_get_apps');
 
         $this->assertEquals([
             static::$appId => [

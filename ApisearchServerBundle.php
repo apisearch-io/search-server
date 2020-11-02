@@ -29,12 +29,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class ApisearchServerBundle extends BaseBundle
 {
-    /**
-     * @var KernelInterface
-     *
-     * Kernel
-     */
-    protected $kernel;
+    protected KernelInterface $kernel;
 
     /**
      * ApisearchServerBundle constructor.

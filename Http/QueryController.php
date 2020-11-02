@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Http\Http;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\Query;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,21 +31,24 @@ use Symfony\Component\HttpFoundation\Request;
 final class QueryController extends ControllerWithQueryBus
 {
     /**
-     * Make a query.
-     *
-     * @param Request $request
+     * @param Request     $request
+     * @param UserEncrypt $userEncrypt
      *
      * @return PromiseInterface
      *
      * @throws InvalidFormatException
      */
-    public function __invoke(Request $request): PromiseInterface
-    {
+    public function __invoke(
+        Request $request,
+        UserEncrypt $userEncrypt
+    ): PromiseInterface {
         $requestQuery = $request->query;
+        $requestAttributes = $request->attributes;
         $queryModel = RequestAccessor::extractQuery($request);
         $origin = $this->createOriginByRequest($request);
+
         $parameters = \array_merge(
-            $request->attributes->all(),
+            $requestAttributes->all(),
             \array_filter($requestQuery->all(), function (string $key) {
                 return !\in_array($key, [
                     Http::TOKEN_FIELD,
@@ -61,15 +65,16 @@ final class QueryController extends ControllerWithQueryBus
                 RequestAccessor::getTokenFromRequest($request),
                 $queryModel,
                 $origin,
+                $userEncrypt->getUUIDByInput($requestQuery->get('user_id'), $origin),
                 $parameters
             ))
-            ->then(function (Result $result) use ($requestQuery, $request) {
+            ->then(function (Result $result) use ($requestAttributes, $request) {
                 /*
                  * To allow result manipulation during the response returning, and in
                  * order to increase performance, we will save the Result instance as a
                  * query attribute
                  */
-                $requestQuery->set('result', $result);
+                $requestAttributes->set('result', $result);
 
                 return new JsonResponse(
                     $result->toArray(),

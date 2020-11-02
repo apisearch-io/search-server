@@ -42,13 +42,13 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
      * @param TemporaryInteractionRepository $temporaryInteractionRepository
      * @param DBALInteractionRepository      $persistentInteractionRepository
      * @param LoopInterface                  $loop
-     * @param int                            $loopPushInterval
+     * @param float                          $loopPushInterval
      */
     public function __construct(
         TemporaryInteractionRepository $temporaryInteractionRepository,
         DBALInteractionRepository $persistentInteractionRepository,
         LoopInterface $loop,
-        int $loopPushInterval
+        float $loopPushInterval
     ) {
         $this->temporaryInteractionRepository = $temporaryInteractionRepository;
         $this->persistentInteractionRepository = $persistentInteractionRepository;

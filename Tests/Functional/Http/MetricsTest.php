@@ -21,12 +21,12 @@ use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class MetricsTest.
  */
-class MetricsTest extends CurlFunctionalTest
+class MetricsTest extends HttpFunctionalTest
 {
     /**
      * Decorate configuration.

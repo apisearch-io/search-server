@@ -13,16 +13,10 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\Elasticsearch\Tests;
+namespace Apisearch\Server\Domain\Exception;
 
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
-use Apisearch\Server\Tests\Functional\Domain\Repository\AllTests;
+use Exception;
 
-/**
- * Class CurlRepositoryTest.
- */
-class CurlRepositoryTest extends CurlFunctionalTest
+class FormatterException extends Exception
 {
-    use ElasticFunctionalTestTrait;
-    use AllTests;
 }

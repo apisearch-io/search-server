@@ -17,7 +17,8 @@ namespace Apisearch\Plugin\DBAL\Tests\Functional;
 
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\Command\PostClick;
+use Apisearch\Server\Domain\Command\PostInteraction;
+use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
@@ -53,13 +54,14 @@ class ShutdownInteractionRepositoryTest extends ServiceFunctionalTest
      */
     public function clickWithoutFlush(string $userId)
     {
-        self::executeCommand(new PostClick(
+        self::executeCommand(new PostInteraction(
             RepositoryReference::createFromComposed(static::$appId.'_'.static::$index),
             static::getGodToken(),
             $userId,
             ItemUUID::createByComposedUUID('1~it'),
             1,
-            new Origin('d.com', '0.0.0.0', Origin::PHONE)
+            new Origin('d.com', '0.0.0.0', Origin::PHONE),
+            InteractionType::CLICK
         ));
     }
 }

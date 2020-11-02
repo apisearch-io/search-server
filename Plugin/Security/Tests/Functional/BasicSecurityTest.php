@@ -21,13 +21,13 @@ use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use Apisearch\Query\Query;
 use Apisearch\Server\Domain\Model\Origin;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Class BasicSecurityTest.
  */
-class BasicSecurityTest extends CurlFunctionalTest
+class BasicSecurityTest extends HttpFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 
@@ -107,7 +107,7 @@ class BasicSecurityTest extends CurlFunctionalTest
                 self::$appId,
                 self::$index,
                 $token, [], Origin::createEmpty(), [
-                    'Referer: '.static::CURL_REFERER,
+                    'Referer' => static::CURL_REFERER,
                 ]
             );
             $this->fail(\sprintf('%s exception expected', InvalidTokenException::class));
@@ -149,7 +149,7 @@ class BasicSecurityTest extends CurlFunctionalTest
             self::$appId,
             self::$index,
             $token, [], Origin::createEmpty(), [
-                'Referer: '.static::CURL_REFERER,
+                'Referer' => static::CURL_REFERER,
             ]
         );
     }

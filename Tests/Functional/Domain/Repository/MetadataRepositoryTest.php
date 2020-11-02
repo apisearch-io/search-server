@@ -125,7 +125,7 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
 
         static::await($commandBus1->execute(new IndexItems($repositoryReference, $godToken, [$item])), $loop1);
 
-        $result = static::await($queryBus1->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty())), $loop1);
+        $result = static::await($queryBus1->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty(), '1')), $loop1);
         $this->assertEquals([
             'id' => 1,
             'name' => 'cat1',
@@ -140,7 +140,7 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
         $queryBus2 = $newKernel2->getContainer()->get('drift.query_bus.test');
         $loop2 = $newKernel2->getContainer()->get('reactphp.event_loop');
 
-        $result = static::await($queryBus2->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty())), $loop2);
+        $result = static::await($queryBus2->ask(new Query($repositoryReference, $godToken, QueryModel::createMatchAll(), Origin::createEmpty(), '1')), $loop2);
         $this->assertEquals([
             'id' => 1,
             'name' => 'cat1',

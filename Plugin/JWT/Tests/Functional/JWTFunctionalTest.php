@@ -16,12 +16,12 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\JWT\Tests\Functional;
 
 use Apisearch\Plugin\JWT\JWTPluginBundle;
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class JWTFunctionalTest.
  */
-abstract class JWTFunctionalTest extends CurlFunctionalTest
+abstract class JWTFunctionalTest extends HttpFunctionalTest
 {
     const PRIVATE_KEY = '6F27583CEB7C75C68246784261456';
     const ALGORITHM = 'HS256';

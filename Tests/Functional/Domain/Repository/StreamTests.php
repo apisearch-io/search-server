@@ -13,14 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Tests\Functional\Domain\Repository\InteractionRepository;
-
-use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
+namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 /**
- * Class CurlInteractionRepositoryTest.
+ * Trait StreamTests.
  */
-class CurlInteractionRepositoryTest extends CurlFunctionalTest
+trait StreamTests
 {
-    use InteractionRepositoryTest;
+    use ExportTest;
+    use ImportTest;
 }

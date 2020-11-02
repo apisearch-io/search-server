@@ -62,12 +62,12 @@ abstract class ControllerWithQueryBus extends BaseController
         $query = $request->query;
         $from = $query->get('from');
         $from = $from
-            ? DateTime::createFromFormat('Ymd', $from, new DateTimeZone('UTC'))
+            ? DateTime::createFromFormat('Ymd', \strval($from), new DateTimeZone('UTC'))
             : (new DateTime('first day of this month', new DateTimeZone('UTC')))->setTime(0, 0, 0);
 
         $to = $query->get('to');
         $to = $to
-            ? DateTime::createFromFormat('Ymd', $to, new DateTimeZone('UTC'))
+            ? DateTime::createFromFormat('Ymd', \strval($to), new DateTimeZone('UTC'))
             : null;
 
         return [$from, $to];
