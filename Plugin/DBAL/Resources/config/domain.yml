@@ -8,11 +8,13 @@ services:
             string $usageLinesTable: "%apisearch_plugin.dbal.usage_lines_table%"
             string $metadataTable: "%apisearch_plugin.dbal.metadata_table%"
             string $interactionsTable: "%apisearch_plugin.dbal.interactions_table%"
-            string $searchesTable: "%apisearch_plugin.dbal.searches_table%"
-            bool $locatorEnabled: "%apisearch_plugin.dbal.locator_enabled%"
-            float $loopPushInterval: "%apisearch_plugin.dbal.loop_push_interval%"
+            string $searchLinesTable: "%apisearch_plugin.dbal.searches_table%"
 
-            $persistentUsageRepository: '@Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository'
+            bool $tokensRepositoryEnabled: "%apisearch_server.tokens_repository_enabled%"
+            bool $interactionsRepositoryEnabled: "%apisearch_server.interactions_repository_enabled%"
+            bool $searchesRepositoryEnabled: "%apisearch_server.searches_repository_enabled%"
+            bool $usageLinesRepositoryEnabled: "%apisearch_server.usage_lines_repository_enabled%"
+
 
     Apisearch\Plugin\DBAL\Domain\Encrypter\EmptyEncrypter:
     Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter:
@@ -24,23 +26,22 @@ services:
     #
     # Token Repository
     #
-    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
-        class: Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository
+    Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository:
+        bind:
+            bool $locatorEnabled: "%apisearch_plugin.dbal.locator_enabled%"
         tags:
             - "apisearch_server.token_locator"
             - "apisearch_server.token_provider"
 
-    Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository:
-        alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository
+    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository
 
     #
     # Config Repository
     #
-    Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
-        class: Apisearch\Plugin\DBAL\Domain\AppRepository\DBALConfigRepository
-
     Apisearch\Plugin\DBAL\Domain\AppRepository\DBALConfigRepository:
-        alias: Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository
+    Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\AppRepository\DBALConfigRepository
 
     #
     # Usage Repository
@@ -65,6 +66,9 @@ services:
     #
     Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository:
     Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository:
+        tags:
+            - { name: "periodic_timer", interval: "%apisearch_plugin.dbal.loop_push_interval%", method: "flush" }
+
     Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository:
         alias: Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository
 
@@ -73,5 +77,8 @@ services:
     #
     Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository:
     Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository:
+        tags:
+            - { name: "periodic_timer", interval: "%apisearch_plugin.dbal.loop_push_interval%", method: "flush" }
+
     Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository:
         alias: Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository

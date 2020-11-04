@@ -64,19 +64,25 @@ services:
     Apisearch\Server\Domain\Repository\Repository\QueryRepository:
         alias: Apisearch\Server\Domain\Repository\InMemoryRepository
 
+    # App Repositories
     Apisearch\Server\Domain\Repository\Repository\Repository:
     Apisearch\Server\Domain\Repository\AppRepository\Repository:
-    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
-        class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository
+
+    # Token Repositories
+    Apisearch\Server\Domain\Repository\AppRepository\EmptyTokenRepository:
+    Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository:
         tags:
             - { name: apisearch_server.token_locator }
             - { name: apisearch_server.token_provider }
-    Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository:
-        alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository
 
+    Apisearch\Server\Domain\Repository\AppRepository\TokenRepository:
+        alias: Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository
+
+    # Config Repositories
     Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository:
         class: Apisearch\Server\Domain\Repository\AppRepository\InMemoryConfigRepository
 
+    # Usage Lines Repositories
     Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository:
     Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository:
     Apisearch\Server\Domain\Repository\UsageRepository\TemporaryUsageRepository:
@@ -85,6 +91,7 @@ services:
     Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository
 
+    # Metadata Repositories
     Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository:
     Apisearch\Server\Domain\Repository\MetadataRepository\DiskMetadataRepository:
         arguments:
@@ -92,12 +99,15 @@ services:
     Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository:
         alias: Apisearch\Server\Domain\Repository\MetadataRepository\DiskMetadataRepository
 
+    # Interaction Repositories
+    Apisearch\Server\Domain\Repository\InteractionRepository\EmptyInteractionRepository:
     Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository:
     Apisearch\Server\Domain\Repository\InteractionRepository\TemporaryInteractionRepository:
         alias: Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository
     Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository:
         alias: Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository
 
+    # Searches Repositories
     Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository:
     Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository:
     Apisearch\Server\Domain\Repository\SearchesRepository\TemporarySearchesRepository:

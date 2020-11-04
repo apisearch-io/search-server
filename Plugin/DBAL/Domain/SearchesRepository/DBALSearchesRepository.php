@@ -38,14 +38,14 @@ final class DBALSearchesRepository implements SearchesRepository
 
     /**
      * @param Connection $dbalPluginConnection
-     * @param string     $searchesTable
+     * @param string     $searchLinesTable
      */
     public function __construct(
         Connection $dbalPluginConnection,
-        string $searchesTable
+        string $searchLinesTable
     ) {
         $this->connection = $dbalPluginConnection;
-        $this->tableName = $searchesTable;
+        $this->tableName = $searchLinesTable;
     }
 
     /**

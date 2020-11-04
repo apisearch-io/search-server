@@ -1,6 +1,6 @@
 services:
 
-    apisearch_server.token_repository_test:
+    apisearch_server.tokens_repository_test:
         alias: Apisearch\Server\Domain\Repository\AppRepository\TokenRepository
         public: true
 
@@ -12,6 +12,14 @@ services:
         alias: Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository
         public: true
 
-    apisearch_server.interaction_repository_test:
+    apisearch_server.interactions_repository_test:
         alias: Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository
+        public: true
+
+    apisearch_server.searches_repository_test:
+        alias: Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository
+        public: true
+
+    apisearch_server.usage_lines_repository_test:
+        alias: Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository
         public: true

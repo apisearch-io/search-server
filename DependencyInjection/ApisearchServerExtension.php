@@ -89,21 +89,55 @@ class ApisearchServerExtension extends BaseExtension
     protected function getParametrizationValues(array $config): array
     {
         return [
-            'apisearch_server.environment' => Env::get('APISEARCH_ENV', $config['environment']),
+            'apisearch_server.environment' => Env::get(
+                'APISEARCH_ENV',
+                $config['environment']
+            ),
 
-            'apisearch_server.god_token' => Env::get('APISEARCH_GOD_TOKEN', $config['god_token']),
-            'apisearch_server.readonly_token' => Env::get('APISEARCH_READONLY_TOKEN', $config['readonly_token']),
-            'apisearch_server.ping_token' => Env::get('APISEARCH_PING_TOKEN', $config['ping_token']),
+            'apisearch_server.god_token' => Env::get(
+                'APISEARCH_GOD_TOKEN',
+                $config['god_token']
+            ),
+            'apisearch_server.readonly_token' => Env::get(
+                'APISEARCH_READONLY_TOKEN',
+                $config['readonly_token']
+            ),
+            'apisearch_server.ping_token' => Env::get(
+                'APISEARCH_PING_TOKEN',
+                $config['ping_token']
+            ),
 
             /*
              * Limitations
              */
-            'apisearch_server.limitations_number_of_results' => Env::get('APISEARCH_NUMBER_OF_RESULTS_LIMITATION', $config['limitations']['number_of_results']),
-            'apisearch_server.default_number_of_suggestions' => Env::get('APISEARCH_NUMBER_OF_SUGGESTIONS_DEFAULT', $config['defaults']['number_of_suggestions']),
+            'apisearch_server.limitations_number_of_results' => Env::get(
+                'APISEARCH_NUMBER_OF_RESULTS_LIMITATION',
+                $config['limitations']['number_of_results']
+            ),
+            'apisearch_server.default_number_of_suggestions' => Env::get(
+                'APISEARCH_NUMBER_OF_SUGGESTIONS_DEFAULT',
+                $config['defaults']['number_of_suggestions']
+            ),
 
             /*
-             * Disk Repositories
+             * Repositories
              */
+            'apisearch_server.tokens_repository_enabled' => Env::get(
+                'APISEARCH_TOKENS_REPOSITORY_ENABLED',
+                $config['repositories']['tokens_repository_enabled']
+            ),
+            'apisearch_server.interactions_repository_enabled' => Env::get(
+                'APISEARCH_INTERACTIONS_REPOSITORY_ENABLED',
+                $config['repositories']['interactions_repository_enabled']
+            ),
+            'apisearch_server.searches_repository_enabled' => Env::get(
+                'APISEARCH_SEARCHES_REPOSITORY_ENABLED',
+                $config['repositories']['searches_repository_enabled']
+            ),
+            'apisearch_server.usage_lines_repository_enabled' => Env::get(
+                'APISEARCH_USAGE_LINES_REPOSITORY_ENABLED',
+                $config['repositories']['usage_lines_repository_enabled']
+            ),
             'apisearch_server.metadata_disk_repository_path' => $config['repositories']['metadata_disk_path'],
         ];
     }

@@ -21,33 +21,55 @@ use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
 use function React\Promise\all;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class CheckHealthMiddleware.
  */
 final class CheckHealthMiddleware implements PluginMiddleware
 {
-    private $connection;
+    private Connection $connection;
+    private bool $interactionsRepositoryEnabled;
     private string $interactionsTable;
+    private bool $usageLinesRepositoryEnabled;
     private string $usageLinesTable;
+    private bool $searchesRepositoryEnabled;
     private string $searchLinesTable;
+    private bool $tokensRepositoryEnabled;
+    private string $tokensTable;
 
     /**
-     * @param Connection $dbalPluginConnection
+     * @param Connection $connection
+     * @param bool       $interactionsRepositoryEnabled
      * @param string     $interactionsTable
+     * @param bool       $usageLinesRepositoryEnabled
      * @param string     $usageLinesTable
+     * @param bool       $searchesRepositoryEnabled
      * @param string     $searchLinesTable
+     * @param bool       $tokensRepositoryEnabled
+     * @param string     $tokensTable
      */
     public function __construct(
-        Connection $dbalPluginConnection,
+        Connection $connection,
+        bool $interactionsRepositoryEnabled,
         string $interactionsTable,
+        bool $usageLinesRepositoryEnabled,
         string $usageLinesTable,
-        string $searchesTable
-    ) {
-        $this->connection = $dbalPluginConnection;
+        bool $searchesRepositoryEnabled,
+        string $searchLinesTable,
+        bool $tokensRepositoryEnabled,
+        string $tokensTable
+    )
+    {
+        $this->connection = $connection;
+        $this->interactionsRepositoryEnabled = $interactionsRepositoryEnabled;
         $this->interactionsTable = $interactionsTable;
+        $this->usageLinesRepositoryEnabled = $usageLinesRepositoryEnabled;
         $this->usageLinesTable = $usageLinesTable;
-        $this->searchLinesTable = $searchesTable;
+        $this->searchesRepositoryEnabled = $searchesRepositoryEnabled;
+        $this->searchLinesTable = $searchLinesTable;
+        $this->tokensRepositoryEnabled = $tokensRepositoryEnabled;
+        $this->tokensTable = $tokensTable;
     }
 
     /**
@@ -72,15 +94,17 @@ final class CheckHealthMiddleware implements PluginMiddleware
                             $data['healthy'] = $data['healthy'] && $isHealth;
 
                             return all([
-                                $this->getInteractionRows(),
-                                $this->getUsageLinesRows(),
-                                $this->getSearchLinesRows(),
+                                $this->interactionsRepositoryEnabled ? $this->getInteractionRows() : resolve(0),
+                                $this->usageLinesRepositoryEnabled ? $this->getUsageLinesRows() : resolve(0),
+                                $this->searchesRepositoryEnabled ? $this->getSearchLinesRows() : resolve(0),
+                                $this->tokensRepositoryEnabled ? $this->getTokensRows() : resolve(0),
                             ])
                                 ->then(function (array $results) use ($data) {
                                     $data['info']['dbal'] = [
                                         'interactions' => $results[0],
                                         'usage_lines' => $results[1],
                                         'search_lines' => $results[2],
+                                        'tokens' => $results[3],
                                     ];
 
                                     return $data;
@@ -90,8 +114,6 @@ final class CheckHealthMiddleware implements PluginMiddleware
     }
 
     /**
-     * Get client status.
-     *
      * @return PromiseInterface<bool>
      */
     private function getClientStatus(): PromiseInterface
@@ -108,8 +130,6 @@ final class CheckHealthMiddleware implements PluginMiddleware
     }
 
     /**
-     * Get interaction rows.
-     *
      * @return PromiseInterface<int>
      */
     private function getInteractionRows(): PromiseInterface
@@ -121,13 +141,11 @@ final class CheckHealthMiddleware implements PluginMiddleware
                 return $result->fetchFirstRow()['count'];
             })
             ->otherwise(function (\Exception $e) {
-                return false;
+                return -1;
             });
     }
 
     /**
-     * Get usage lines rows.
-     *
      * @return PromiseInterface<int>
      */
     private function getUsageLinesRows(): PromiseInterface
@@ -139,13 +157,11 @@ final class CheckHealthMiddleware implements PluginMiddleware
                 return $result->fetchFirstRow()['count'];
             })
             ->otherwise(function (\Exception $e) {
-                return false;
+                return -1;
             });
     }
 
     /**
-     * Get search lines rows.
-     *
      * @return PromiseInterface<int>
      */
     private function getSearchLinesRows(): PromiseInterface
@@ -157,7 +173,23 @@ final class CheckHealthMiddleware implements PluginMiddleware
                 return $result->fetchFirstRow()['count'];
             })
             ->otherwise(function (\Exception $e) {
-                return false;
+                return -1;
+            });
+    }
+
+    /**
+     * @return PromiseInterface<int>
+     */
+    private function getTokensRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from '.$this->tokensTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return -1;
             });
     }
 
