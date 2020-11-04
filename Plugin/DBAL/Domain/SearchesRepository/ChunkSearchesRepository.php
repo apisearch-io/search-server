@@ -41,20 +41,15 @@ final class ChunkSearchesRepository implements SearchesRepository, EventSubscrib
      * @param TemporarySearchesRepository $temporarySearchesRepository
      * @param DBALSearchesRepository      $persistentSearchesRepository
      * @param LoopInterface               $loop
-     * @param float                       $loopPushInterval
      */
     public function __construct(
         TemporarySearchesRepository $temporarySearchesRepository,
         DBALSearchesRepository $persistentSearchesRepository,
-        LoopInterface $loop,
-        float $loopPushInterval
+        LoopInterface $loop
     ) {
         $this->temporarySearchesRepository = $temporarySearchesRepository;
         $this->persistentSearchesRepository = $persistentSearchesRepository;
         $this->loop = $loop;
-        $loop->addPeriodicTimer($loopPushInterval, function () {
-            $this->flush();
-        });
     }
 
     /**

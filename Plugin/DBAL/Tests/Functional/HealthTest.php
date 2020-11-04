@@ -51,12 +51,14 @@ class HealthTest extends ServiceFunctionalTest
             'interactions' => 3,
             'usage_lines' => 6,
             'search_lines' => 1,
+            'tokens' => 0,
         ], $response['info']['dbal']);
 
         $this->click('555', 'product~1', 1, Origin::createEmpty());
         $this->query(Query::create('engonga')->byUser(new User('1')));
         $this->query(Query::create('lol')->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));
+        $this->putToken($this->createTokenByIdAndAppId('lala'));
         $this->dispatchImperative(new FlushInteractions());
         $this->dispatchImperative(new FlushUsageLines());
         $this->dispatchImperative(new FlushSearches());
@@ -65,8 +67,9 @@ class HealthTest extends ServiceFunctionalTest
         $this->assertTrue($response['status']['dbal']);
         $this->assertEquals([
             'interactions' => 4,
-            'usage_lines' => 7,
+            'usage_lines' => 8,
             'search_lines' => 3,
+            'tokens' => 1,
         ], $response['info']['dbal']);
     }
 }

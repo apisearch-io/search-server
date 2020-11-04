@@ -35,10 +35,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 abstract class TokenRepository implements TokenLocator, TokenProvider, EventSubscriberInterface
 {
-    /**
-     * @var array
-     */
-    protected $tokens = [];
+    protected array $tokens = [];
 
     /**
      * Add token.

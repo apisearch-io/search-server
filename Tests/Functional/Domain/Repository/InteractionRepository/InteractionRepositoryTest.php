@@ -232,7 +232,7 @@ trait InteractionRepositoryTest
      */
     public function testPosition()
     {
-        $interactionRepository = $this->get('apisearch_server.interaction_repository_test');
+        $interactionRepository = $this->get('apisearch_server.interactions_repository_test');
         if (
             !$interactionRepository instanceof TestableInteractionRepository ||
             !$this instanceof ServiceInteractionRepositoryTest

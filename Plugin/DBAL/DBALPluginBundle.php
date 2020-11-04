@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL;
 
 use Apisearch\Plugin\DBAL\DependencyInjection\CompilerPass\ConnectionCompilerPass;
+use Apisearch\Plugin\DBAL\DependencyInjection\CompilerPass\DeletedUnusedRepositoriesCompilerPass;
 use Apisearch\Plugin\DBAL\DependencyInjection\DBALPluginExtension;
 use Apisearch\Server\ApisearchServerBundle;
 use Apisearch\Server\Domain\Plugin\Plugin;
@@ -23,6 +24,8 @@ use Apisearch\Server\Domain\Plugin\StoragePlugin;
 use Mmoreram\BaseBundle\BaseBundle;
 use Mmoreram\SymfonyBundleDependencies\DependentBundleInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -31,6 +34,19 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, DependentBundleInterface
 {
+
+    /**
+     * Builds bundle.
+     *
+     * @param ContainerBuilder $container Container
+     */
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new DeletedUnusedRepositoriesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 16);
+    }
+
     /**
      * Return all bundle dependencies.
      *
@@ -68,6 +84,7 @@ class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, Depe
     {
         return [
             new ConnectionCompilerPass(),
+            new DeletedUnusedRepositoriesCompilerPass(),
         ];
     }
 

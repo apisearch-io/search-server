@@ -22,7 +22,6 @@ use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Clue\React\Mq\Queue;
 use DateTime;
 use Drift\DBAL\Connection;
-use Drift\EventBus\Bus\Bus as EventBus;
 use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
@@ -40,7 +39,6 @@ final class ChunkUsageRepository implements UsageRepository, EventSubscriberInte
     /**
      * @param TemporaryUsageRepository $temporaryUsageRepository
      * @param DBALUsageRepository      $persistentUsageRepository
-     * @param EventBus                 $eventBus
      * @param LoopInterface            $loop
      */
     public function __construct(
