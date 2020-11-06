@@ -36,7 +36,7 @@ use Doctrine\DBAL\Schema\Schema;
 use function React\Promise\all;
 
 /**
- * Class DisableRepositoriesTest
+ * Class DisableRepositoriesTest.
  */
 class DisableRepositoriesTest extends ServiceFunctionalTest
 {
@@ -73,7 +73,7 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
     }
 
     /**
-     * Test repositories
+     * Test repositories.
      */
     public function testRepositories()
     {
@@ -87,6 +87,7 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
         $this->assertFalse($this->has(InMemoryInteractionRepository::class));
         $this->assertFalse($this->has(InMemorySearchesRepository::class));
     }
+
     /**
      * Test if health check has redis.
      */
@@ -105,6 +106,8 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
 
         $response = $this->checkHealth();
         $this->assertTrue($response['status']['dbal']);
+        $this->assertGreaterThan(0, $response['info']['dbal']['ping_in_microseconds']);
+        unset($response['info']['dbal']['ping_in_microseconds']);
         $this->assertEquals([
             'interactions' => 0,
             'usage_lines' => 0,

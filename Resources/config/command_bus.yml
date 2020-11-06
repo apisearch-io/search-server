@@ -12,6 +12,7 @@ command_bus:
             - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
             - Apisearch\Server\Domain\Middleware\CheckIndexAvailabilityMiddleware
+            - Apisearch\Server\Domain\Middleware\CheckHealthEventsQueueMiddleware
             - Apisearch\Server\Domain\Middleware\TokenQueryMiddleware
             - Apisearch\Server\Domain\Middleware\DefaultQueryValuesMiddleware
             - Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware

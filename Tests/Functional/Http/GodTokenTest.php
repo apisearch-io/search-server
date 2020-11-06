@@ -16,45 +16,52 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Http;
 
 use Apisearch\Exception\TransportableException;
+use Apisearch\Model\Token;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * Class PingTest.
+ * Class GodTokenTest.
  */
-class PingTest extends HttpFunctionalTest
+class GodTokenTest extends HttpFunctionalTest
 {
     /**
-     * Test ping with different tokens.
+     * Test check health with different tokens.
      *
      * @param string $token
      * @param int    $responseCode
      *
-     * @dataProvider dataPing
+     * @dataProvider dataCheckHealth
      */
-    public function testPing(
+    public function testCheckHealth(
         string $token,
         int $responseCode
     ) {
         try {
-            $this->ping($this->createTokenByIdAndAppId($token));
-            $this->assertTrue(200 === $responseCode);
+            $result = $this->teapot($this->createTokenByIdAndAppId($token));
         } catch (TransportableException $exception) {
-            $this->assertTrue(200 !== $responseCode);
+            $this->assertEquals(
+                $responseCode,
+                $exception->getTransportableHTTPError()
+            );
+
+            return;
         }
+
+        $this->assertEquals(418, $result['code']);
     }
 
     /**
-     * Data for ping testing.
+     * Data for check health testing.
      *
      * @return array
      */
-    public function dataPing(): array
+    public function dataCheckHealth(): array
     {
         return [
-            [$_ENV['APISEARCH_GOD_TOKEN'], 401],
+            [$_ENV['APISEARCH_GOD_TOKEN'], 200],
             [$_ENV['APISEARCH_HEALTH_CHECK_TOKEN'], 401],
-            [$_ENV['APISEARCH_PING_TOKEN'], 200],
-            ['1234', 401],
+            [$_ENV['APISEARCH_PING_TOKEN'], 401],
+            ['non-existing-key', 401],
         ];
     }
 
@@ -64,10 +71,10 @@ class PingTest extends HttpFunctionalTest
     public function testHealthCheckCantBeAddedInToken()
     {
         $token = $this->createTokenByIdAndAppId('another_token');
-        $token->setEndpoints(['ping', 'apisearch_ping']);
+        $token->setEndpoints(['teapot', 'apisearch_teapot']);
         $this->putToken($token);
         try {
-            $this->ping($token);
+            $this->checkHealth($token);
             $this->fail('Should throw token not found exception');
         } catch (TransportableException $exception) {
             $this->assertEquals(
@@ -75,5 +82,15 @@ class PingTest extends HttpFunctionalTest
                 $exception->getTransportableHTTPError()
             );
         }
+    }
+
+    /**
+     * @param Token $token
+     *
+     * @return array
+     */
+    private function teapot(Token $token): array
+    {
+        return $this->request('teapot', [], $token);
     }
 }

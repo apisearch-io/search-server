@@ -9,26 +9,10 @@ services:
     Apisearch\Plugin\Security\Domain\:
         resource: '../../Domain/'
 
-    #
-    # Token Validators
-    #
-    Apisearch\Plugin\Security\Domain\Token\HttpReferrersTokenValidator:
-        tags: ["apisearch_server.token_validator"]
+    Apisearch\Plugin\Security\Domain\Token\:
+        resource: '../../Domain/Token/'
+        tags: [ "apisearch_server.token_validator" ]
 
-    Apisearch\Plugin\Security\Domain\Token\SecondsValidTokenValidator:
-        tags: ["apisearch_server.token_validator"]
-
-    Apisearch\Plugin\Security\Domain\Token\RequestsLimitTokenValidator:
-        tags: ["apisearch_server.token_validator"]
-
-    #
-    # Middleware
-    #
-    Apisearch\Plugin\Security\Domain\Middleware\RestrictedFieldsMiddleware:
-        tags: ["apisearch_plugin.middleware"]
-
-    Apisearch\Plugin\Security\Domain\Middleware\RestrictedCORSOriginsMiddleware:
-        tags: ["apisearch_plugin.middleware"]
-
-    Apisearch\Plugin\Security\Domain\Middleware\RestrictedQueryOriginsMiddleware:
-        tags: ["apisearch_plugin.middleware"]
+    Apisearch\Plugin\Security\Domain\Middleware\:
+        resource: '../../Domain/Middleware/'
+        tags: [ "apisearch_plugin.middleware" ]

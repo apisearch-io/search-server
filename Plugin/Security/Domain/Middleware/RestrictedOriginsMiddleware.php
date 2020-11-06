@@ -29,11 +29,7 @@ use React\Promise\PromiseInterface;
 abstract class RestrictedOriginsMiddleware
 {
     use OriginMatcherTrait;
-
-    /**
-     * @var ConfigRepository
-     */
-    private $configRepository;
+    private ConfigRepository $configRepository;
 
     /**
      * @param ConfigRepository $configRepository

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Http;
 
+use Apisearch\Server\Domain\Model\HealthCheckData;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,8 +44,12 @@ final class CheckHealthController extends ControllerWithQueryBus
          */
         return $this
             ->ask(new CheckHealth())
-            ->then(function (array $health) {
-                return new JsonResponse($health);
+            ->then(function (HealthCheckData $healthCheckData) {
+                return $healthCheckData
+                    ->getData()
+                    ->then(function (array $data) {
+                        return new JsonResponse($data);
+                    });
             });
     }
 }

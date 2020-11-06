@@ -28,7 +28,7 @@ docker pull apisearchio/search-server:latest
 docker run -d \
     --network host \
     -e "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93" \
-    -e "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
+    -e "APISEARCH_HEALTH_CHECK_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9" \
     -e "APISEARCH_ENABLED_PLUGINS=elasticsearch" \
     -e "ELASTICSEARCH_HOST=localhost" \
     apisearchio/search-server:latest
@@ -38,7 +38,7 @@ docker run -d \
 
 ```
 curl "http://localhost:8000/health" \
-    -H "Apisearch-Token-Id: 0e4d75ba-c640-44c1-a745-06ee51db4e93"
+    -H "Apisearch-Token-Id: 6326d504-0a5f-f1ae-7344-8e70b75fcde9"
 ```
 
 Some first steps for you!

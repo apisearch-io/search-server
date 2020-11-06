@@ -14,8 +14,6 @@ services:
     Apisearch\Plugin\Logstash\Domain\:
         resource: '../../Domain/'
 
-    #
-    # Event Domain Subscribers
-    #
-    Apisearch\Plugin\Logstash\Domain\Event\DomainEventSubscriber:
-        tags: ["apisearch_server.domain_event_subscriber"]
+    Apisearch\Plugin\Logstash\Domain\Middleware\:
+        resource: '../../Domain/Middleware/'
+        tags: [ "apisearch_plugin.middleware" ]

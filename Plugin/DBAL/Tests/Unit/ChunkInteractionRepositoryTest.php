@@ -31,14 +31,19 @@ class ChunkInteractionRepositoryTest extends InteractionRepositoryTest
      */
     public function getEmptyRepository(LoopInterface $loop): InteractionRepository
     {
-        return new ChunkInteractionRepository(
+        $repository = new ChunkInteractionRepository(
             new InMemoryInteractionRepository(),
             DBALInteractionRepositoryTest::createEmptyRepository(
                 DBALInteractionRepositoryTest::createConnection($loop)
             ),
-            $loop,
-            .05
+            $loop
         );
+
+        $loop->addPeriodicTimer(.05, function () use ($repository) {
+            $repository->flush();
+        });
+
+        return $repository;
     }
 
     /**

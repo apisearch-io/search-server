@@ -28,17 +28,21 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 final class AdminFirewall implements EventSubscriberInterface
 {
     private string $godToken;
+    private string $healthCheckToken;
     private string $pingToken;
 
     /**
      * @param string $godToken
+     * @param string $healthCheckToken
      * @param string $pingToken
      */
     public function __construct(
         string $godToken,
+        string $healthCheckToken,
         string $pingToken
     ) {
         $this->godToken = $godToken;
+        $this->healthCheckToken = $healthCheckToken;
         $this->pingToken = $pingToken;
     }
 
@@ -53,16 +57,24 @@ final class AdminFirewall implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         $tokenString = RequestHelper::getTokenStringFromRequest($request);
+        $firewall = $request->get('firewall');
 
         if (
-            'admin' === $request->get('firewall') &&
+            'admin' === $firewall &&
             $tokenString !== $this->godToken
         ) {
             return reject(new InvalidTokenException('Admin permissions required'));
         }
 
         if (
-            'ping' === $request->get('firewall') &&
+            'health_check' === $firewall &&
+            $tokenString !== $this->healthCheckToken
+        ) {
+            return reject(new InvalidTokenException('Health Check permissions required'));
+        }
+
+        if (
+            'ping' === $firewall &&
             $tokenString !== $this->pingToken
         ) {
             return reject(new InvalidTokenException('Ping permissions required'));

@@ -44,7 +44,7 @@ class EventBusCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $passThrough = true;
-        $asyncAdapterEnabled = (bool) ($_ENV['APISEARCH_ASYNC_EVENTS_ENABLED'] ?? false);
+        $asyncAdapterEnabled = $container->getParameter('apisearch_server.async_events_enabled');
 
         $distribution = Bus::DISTRIBUTION_INLINE;
         $events = [
@@ -82,15 +82,16 @@ class EventBusCompilerPass implements CompilerPassInterface
 
         if ($asyncAdapterEnabled) {
             $eventBusExchanges = [
-                'events' => $_ENV['APISEARCH_EVENTS_EXCHANGE'] ?? 'events',
+                'events' => $container->getParameter('apisearch_server.async_events_exchange_name'),
             ];
 
             $asyncAdapter = [
                 'type' => 'amqp',
-                'host' => $_ENV['AMQP_HOST'],
-                'user' => $_ENV['AMQP_USER'],
-                'password' => $_ENV['AMQP_PASSWORD'],
-                'vhost' => $_ENV['AMQP_VHOST'],
+                'host' => $container->getParameter('apisearch_server.async_events_amqp_host'),
+                'port' => $container->getParameter('apisearch_server.async_events_amqp_port'),
+                'user' => $container->getParameter('apisearch_server.async_events_amqp_user'),
+                'password' => $container->getParameter('apisearch_server.async_events_amqp_password'),
+                'vhost' => $container->getParameter('apisearch_server.async_events_amqp_vhost'),
             ];
 
             EventBusBuilder::createAsyncBus(

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
+use Apisearch\Server\Domain\Model\HealthCheckData;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Drift\CommandBus\Middleware\DiscriminableMiddleware;
 use React\Promise\PromiseInterface;
@@ -24,16 +25,9 @@ use React\Promise\PromiseInterface;
  */
 final class CheckHealthPluginsMiddleware implements DiscriminableMiddleware
 {
-    /**
-     * @var string[]
-     *
-     * Enabled plugins
-     */
-    private $enabledPlugins;
+    private array $enabledPlugins;
 
     /**
-     * PluginMiddlewareCollector constructor.
-     *
      * @param string[] $enabledPlugins
      */
     public function __construct(array $enabledPlugins)
@@ -55,15 +49,19 @@ final class CheckHealthPluginsMiddleware implements DiscriminableMiddleware
     ): PromiseInterface {
         return
             $next($command)
-                ->then(function (array $data) {
+                ->then(function (HealthCheckData $healthCheckData) {
                     $plugins = [];
                     foreach ($this->enabledPlugins as $enabledPluginName => $enabledPluginConfig) {
                         $plugins[$enabledPluginName] = $enabledPluginConfig['namespace'];
                     }
 
-                    $data['info']['plugins'] = $plugins;
+                    $healthCheckData->mergeData([
+                        'info' => [
+                            'plugins' => $plugins,
+                        ],
+                    ]);
 
-                    return $data;
+                    return $healthCheckData;
                 });
     }
 

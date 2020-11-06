@@ -13,15 +13,15 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\Elasticsearch\Tests\Http;
+namespace Apisearch\Plugin\Elasticsearch\Tests;
 
-use Apisearch\Plugin\Elasticsearch\Tests\ElasticFunctionalTestTrait;
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use Apisearch\Plugin\Elasticsearch\ElasticsearchPluginBundle;
+use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
- * Class HealthCheckTest.
+ * Class CheckHealthMiddlewareTest.
  */
-class HealthTest extends HttpFunctionalTest
+class CheckHealthMiddlewareTest extends ServiceFunctionalTest
 {
     use ElasticFunctionalTestTrait;
 
@@ -38,8 +38,9 @@ class HealthTest extends HttpFunctionalTest
             )
         );
 
-        $this->assertNotEmpty($response['info']['plugins']['elasticsearch']);
+        $this->assertEquals(ElasticsearchPluginBundle::class, $response['info']['plugins']['elasticsearch']);
         $this->assertNotEmpty($response['info']['elasticsearch']);
         $this->assertEquals(3, $response['info']['elasticsearch']['number_of_indices']);
+        $this->assertGreaterThan(0, $response['info']['elasticsearch']['ping_in_microseconds']);
     }
 }

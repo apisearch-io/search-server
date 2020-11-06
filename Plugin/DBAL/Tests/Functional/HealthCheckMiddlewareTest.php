@@ -24,9 +24,9 @@ use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
- * Class HealthTest.
+ * Class HealthCheckMiddlewareTest.
  */
-class HealthTest extends ServiceFunctionalTest
+class HealthCheckMiddlewareTest extends ServiceFunctionalTest
 {
     use DBALFunctionalTestTrait;
 
@@ -47,6 +47,8 @@ class HealthTest extends ServiceFunctionalTest
 
         $response = $this->checkHealth();
         $this->assertTrue($response['status']['dbal']);
+        $this->assertGreaterThan(0, $response['info']['dbal']['ping_in_microseconds']);
+        unset($response['info']['dbal']['ping_in_microseconds']);
         $this->assertEquals([
             'interactions' => 3,
             'usage_lines' => 6,
@@ -65,6 +67,8 @@ class HealthTest extends ServiceFunctionalTest
 
         $response = $this->checkHealth();
         $this->assertTrue($response['status']['dbal']);
+        $this->assertGreaterThan(0, $response['info']['dbal']['ping_in_microseconds']);
+        unset($response['info']['dbal']['ping_in_microseconds']);
         $this->assertEquals([
             'interactions' => 4,
             'usage_lines' => 8,

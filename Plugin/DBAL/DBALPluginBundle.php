@@ -34,7 +34,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, DependentBundleInterface
 {
-
     /**
      * Builds bundle.
      *

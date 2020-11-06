@@ -39,12 +39,7 @@ use React\Promise\PromiseInterface;
  */
 class RequestsLimitTokenValidator implements TokenValidator
 {
-    /**
-     * @var Client
-     *
-     * Redis client
-     */
-    private $redisClient;
+    private Client $redisClient;
 
     /**
      * HttpReferrersTokenValidator constructor.
