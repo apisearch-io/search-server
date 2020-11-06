@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\QueryHandler;
 
+use Apisearch\Server\Domain\Model\HealthCheckData;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
@@ -31,13 +32,13 @@ class CheckHealthHandler
      */
     public function handle(CheckHealth $checkHealth): PromiseInterface
     {
-        return resolve([
-            'healthy' => true,
+        return resolve(new HealthCheckData([
             'status' => [],
             'info' => [],
             'process' => [
                 'memory_used' => \memory_get_usage(false),
+                'real_memory_used' => \memory_get_usage(true),
             ],
-        ]);
+        ]));
     }
 }

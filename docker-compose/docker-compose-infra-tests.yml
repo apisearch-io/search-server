@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+    elasticsearch:
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.6.0"
+        ports:
+            - "9200:9200"
+        environment:
+            - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+            - "discovery.type=single-node"
+            - "action.auto_create_index=-apisearch*,+*"
+
+    amqp:
+        image: "rabbitmq:3-management"
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+
+    redis:
+        image: "redis:alpine"
+        ports:
+            - "6379:6379"

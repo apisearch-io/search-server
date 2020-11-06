@@ -67,19 +67,18 @@ class EnabledRepositoriesCompilerPass implements CompilerPassInterface
 
     /**
      * @param ContainerBuilder $container
-     * @param string $class
-     * @param string $emptyRepositoryClass
-     * @param string $parameter
+     * @param string           $class
+     * @param string           $emptyRepositoryClass
+     * @param string           $parameter
      */
     private function enableOrDisableRepository(
         ContainerBuilder $container,
         string $class,
         string $emptyRepositoryClass,
         string $parameter
-    )
-    {
+    ) {
         $enabled = $container->resolveEnvPlaceholders($container->getParameter($parameter));
-        $enabled = boolval($enabled);
+        $enabled = \boolval($enabled);
         if (!$enabled) {
             $container->setAlias($class, $emptyRepositoryClass);
         }

@@ -31,14 +31,19 @@ class ChunkSearchesRepositoryTest extends SearchesRepositoryTest
      */
     public function getEmptyRepository(LoopInterface $loop): SearchesRepository
     {
-        return new ChunkSearchesRepository(
+        $repository = new ChunkSearchesRepository(
             new InMemorySearchesRepository(),
             DBALSearchesRepositoryTest::createEmptyRepository(
                 DBALSearchesRepositoryTest::createConnection($loop)
             ),
-            $loop,
-            .05
+            $loop
         );
+
+        $loop->addPeriodicTimer(.05, function () use ($repository) {
+            $repository->flush();
+        });
+
+        return $repository;
     }
 
     /**

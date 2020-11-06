@@ -409,7 +409,7 @@ apisearch_check_health:
     methods: ["GET"]
     controller: Apisearch\Server\Http\CheckHealthController
     defaults:
-        firewall: admin
+        firewall: health_check
 
 apisearch_ping:
     path: /
@@ -417,3 +417,10 @@ apisearch_ping:
     controller: Apisearch\Server\Http\PingController
     defaults:
         firewall: ping
+
+apisearch_teapot:
+    path: /teapot
+    methods: ["HEAD"]
+    controller: Apisearch\Server\Http\TeapotController
+    defaults:
+        firewall: admin

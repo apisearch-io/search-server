@@ -48,7 +48,6 @@ class EmptyInteractionRepository implements TemporaryInteractionRepository, Test
         string $type,
         DateTime $when
     ): PromiseInterface {
-
         return resolve();
     }
 
@@ -77,7 +76,6 @@ class EmptyInteractionRepository implements TemporaryInteractionRepository, Test
         InteractionFilter $filter,
         int $n
     ): PromiseInterface {
-
         return resolve([]);
     }
 

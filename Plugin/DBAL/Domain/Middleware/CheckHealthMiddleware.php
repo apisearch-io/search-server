@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\DBAL\Domain\Middleware;
 
+use Apisearch\Server\Domain\Model\HealthCheckData;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use Drift\DBAL\Connection;
@@ -59,8 +60,7 @@ final class CheckHealthMiddleware implements PluginMiddleware
         string $searchLinesTable,
         bool $tokensRepositoryEnabled,
         string $tokensTable
-    )
-    {
+    ) {
         $this->connection = $connection;
         $this->interactionsRepositoryEnabled = $interactionsRepositoryEnabled;
         $this->interactionsTable = $interactionsTable;
@@ -84,33 +84,42 @@ final class CheckHealthMiddleware implements PluginMiddleware
         $command,
         $next
     ): PromiseInterface {
-        return
-            $next($command)
-                ->then(function ($data) {
-                    return $this
-                        ->getClientStatus()
-                        ->then(function (bool $isHealth) use ($data) {
-                            $data['status']['dbal'] = $isHealth;
-                            $data['healthy'] = $data['healthy'] && $isHealth;
+        return $next($command)
+            ->then(function (HealthCheckData $healthCheckData) {
+                $from = \microtime(true);
+                $healthCheckData->addPromise($this
+                    ->getClientStatus()
+                    ->then(function (bool $isHealth) use ($healthCheckData, $from) {
+                        $healthCheckData->setPartialHealth($isHealth);
+                        $to = \microtime(true);
+                        $statusInMicroseconds = \intval(($to - $from) * 1000000);
 
-                            return all([
-                                $this->interactionsRepositoryEnabled ? $this->getInteractionRows() : resolve(0),
-                                $this->usageLinesRepositoryEnabled ? $this->getUsageLinesRows() : resolve(0),
-                                $this->searchesRepositoryEnabled ? $this->getSearchLinesRows() : resolve(0),
-                                $this->tokensRepositoryEnabled ? $this->getTokensRows() : resolve(0),
-                            ])
-                                ->then(function (array $results) use ($data) {
-                                    $data['info']['dbal'] = [
-                                        'interactions' => $results[0],
-                                        'usage_lines' => $results[1],
-                                        'search_lines' => $results[2],
-                                        'tokens' => $results[3],
-                                    ];
+                        return all([
+                            $this->interactionsRepositoryEnabled ? $this->getInteractionRows() : resolve(0),
+                            $this->usageLinesRepositoryEnabled ? $this->getUsageLinesRows() : resolve(0),
+                            $this->searchesRepositoryEnabled ? $this->getSearchLinesRows() : resolve(0),
+                            $this->tokensRepositoryEnabled ? $this->getTokensRows() : resolve(0),
+                        ])
+                            ->then(function (array $results) use ($healthCheckData, $statusInMicroseconds, $isHealth) {
+                                $healthCheckData->mergeData([
+                                    'status' => [
+                                        'dbal' => $isHealth,
+                                    ],
+                                    'info' => [
+                                        'dbal' => [
+                                            'ping_in_microseconds' => $statusInMicroseconds,
+                                            'interactions' => $results[0],
+                                            'usage_lines' => $results[1],
+                                            'search_lines' => $results[2],
+                                            'tokens' => $results[3],
+                                        ],
+                                    ],
+                                ]);
+                            });
+                    }));
 
-                                    return $data;
-                                });
-                        });
-                });
+                return $healthCheckData;
+            });
     }
 
     /**

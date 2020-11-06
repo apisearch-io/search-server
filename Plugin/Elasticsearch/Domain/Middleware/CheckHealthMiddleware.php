@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Elasticsearch\Domain\Middleware;
 
 use Apisearch\Plugin\Elasticsearch\Domain\ElasticaWrapper;
+use Apisearch\Server\Domain\Model\HealthCheckData;
 use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Query\CheckHealth;
 use React\Promise\PromiseInterface;
@@ -54,27 +55,37 @@ class CheckHealthMiddleware implements PluginMiddleware
         $command,
         $next
     ): PromiseInterface {
-        return
-            $next($command)
-                ->then(function ($data) {
-                    return $this
-                        ->elasticaWrapper
-                        ->getClusterStatus()
-                        ->then(function (array $elasticsearchData) use ($data) {
-                            $numberOfIndices = \count($elasticsearchData['indices']);
-                            unset($elasticsearchData['indices']);
-                            $elasticsearchData['number_of_indices'] = $numberOfIndices;
+        return $next($command)
+            ->then(function (HealthCheckData $healthCheckData) {
+                $from = \microtime(true);
+                $healthCheckData->addPromise($this
+                    ->elasticaWrapper
+                    ->getClusterStatus()
+                    ->then(function (array $elasticsearchData) use ($healthCheckData, $from) {
+                        $healthCheckData->setPartialHealth(\in_array(\strtolower($elasticsearchData['status']), [
+                            'yellow',
+                            'green',
+                        ]));
+                        $to = \microtime(true);
+                        $statusInMicroseconds = \intval(($to - $from) * 1000000);
 
-                            $data['status']['elasticsearch'] = $elasticsearchData['status'];
-                            $data['info']['elasticsearch'] = $elasticsearchData;
-                            $data['healthy'] = $data['healthy'] && \in_array(\strtolower($elasticsearchData['status']), [
-                                    'yellow',
-                                    'green',
-                                ]);
+                        $numberOfIndices = \count($elasticsearchData['indices']);
+                        unset($elasticsearchData['indices']);
+                        $elasticsearchData['number_of_indices'] = $numberOfIndices;
+                        $elasticsearchData['ping_in_microseconds'] = $statusInMicroseconds;
 
-                            return $data;
-                        });
-                });
+                        $healthCheckData->mergeData([
+                            'status' => [
+                                'elasticsearch' => $elasticsearchData['status'],
+                            ],
+                            'info' => [
+                                'elasticsearch' => $elasticsearchData,
+                            ],
+                        ]);
+                    }));
+
+                return $healthCheckData;
+            });
     }
 
     /**

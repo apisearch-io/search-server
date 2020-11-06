@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Token;
 
 use Apisearch\Model\AppUUID;
+use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
 use React\Promise\PromiseInterface;
 
@@ -25,15 +26,11 @@ use React\Promise\PromiseInterface;
 interface TokenLocator
 {
     /**
-     * Locator is enabled.
-     *
      * @return bool
      */
     public function isValid(): bool;
 
     /**
-     * Get token by uuid.
-     *
      * @param AppUUID   $appUUID
      * @param TokenUUID $tokenUUID
      *

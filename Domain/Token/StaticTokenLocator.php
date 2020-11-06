@@ -27,47 +27,30 @@ use function React\Promise\resolve;
  */
 class StaticTokenLocator implements TokenLocator, TokenProvider
 {
-    /**
-     * @var string
-     *
-     * God token
-     */
-    private $godToken;
+    private string $godToken;
+    private string $readonlyToken;
+    private string $healthCheckToken;
+    private string $pingToken;
 
     /**
-     * @var string
-     *
-     * Readonly token
-     */
-    private $readonlyToken;
-
-    /**
-     * @var string
-     *
-     * Ping token
-     */
-    private $pingToken;
-
-    /**
-     * TokenValidator constructor.
-     *
      * @param string $godToken
      * @param string $readonlyToken
+     * @param string $healthCheckToken
      * @param string $pingToken
      */
     public function __construct(
         string $godToken,
         string $readonlyToken,
+        string $healthCheckToken,
         string $pingToken
     ) {
         $this->godToken = $godToken;
         $this->readonlyToken = $readonlyToken;
+        $this->healthCheckToken = $healthCheckToken;
         $this->pingToken = $pingToken;
     }
 
     /**
-     * Locator is enabled.
-     *
      * @return bool
      */
     public function isValid(): bool
@@ -76,8 +59,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
     }
 
     /**
-     * Get token by uuid.
-     *
      * @param AppUUID   $appUUID
      * @param TokenUUID $tokenUUID
      *
@@ -87,7 +68,10 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
         AppUUID $appUUID,
         TokenUUID $tokenUUID
     ): PromiseInterface {
-        if ($tokenUUID->composeUUID() === $this->godToken) {
+        if (
+            !empty($this->godToken) &&
+            $tokenUUID->composeUUID() === $this->godToken
+        ) {
             return resolve($this->createGodToken($appUUID));
         }
 
@@ -96,6 +80,13 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             $tokenUUID->composeUUID() === $this->readonlyToken
         ) {
             return resolve($this->createReadOnlyToken($appUUID));
+        }
+
+        if (
+            !empty($this->healthCheckToken) &&
+            $tokenUUID->composeUUID() === $this->healthCheckToken
+        ) {
+            return resolve($this->createHealthCheckToken($appUUID));
         }
 
         if (
@@ -109,8 +100,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
     }
 
     /**
-     * Create god token instance.
-     *
      * @param AppUUID $appUUID
      *
      * @return Token
@@ -131,8 +120,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
     }
 
     /**
-     * Create read only token instance.
-     *
      * @param AppUUID $appUUID
      *
      * @return Token
@@ -146,6 +133,28 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             Endpoints::queryOnly(),
             [],
             Token::DEFAULT_TTL,
+            [
+                'read_only' => true,
+            ]
+        );
+    }
+
+    /**
+     * @param AppUUID $appUUID
+     *
+     * @return Token
+     */
+    private function createHealthCheckToken(AppUUID $appUUID): Token
+    {
+        return new Token(
+            TokenUUID::createById($this->healthCheckToken),
+            $appUUID,
+            [],
+            [
+                'check_health', // Check health
+            ],
+            [],
+            Token::NO_CACHE,
             [
                 'read_only' => true,
             ]
@@ -167,7 +176,6 @@ class StaticTokenLocator implements TokenLocator, TokenProvider
             [],
             [
                 'ping', // Ping
-                'check_health', // Check health
             ],
             [],
             Token::NO_CACHE,

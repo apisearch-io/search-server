@@ -886,7 +886,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      */
     public function checkHealth(Token $token = null): array
     {
-        return self::askQuery(new CheckHealth());
+        $healthCheckData = self::askQuery(new CheckHealth());
+
+        return Block\await($healthCheckData->getData(), self::getStatic('reactphp.event_loop'));
     }
 
     /**

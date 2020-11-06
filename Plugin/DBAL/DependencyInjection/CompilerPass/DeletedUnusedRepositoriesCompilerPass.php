@@ -38,7 +38,7 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
         $this->deleteRepositoriesIfDisabled(
             $container,
             [
-                DBALTokenRepository::class
+                DBALTokenRepository::class,
             ],
             'apisearch_server.tokens_repository_enabled'
         );
@@ -47,7 +47,7 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
             $container,
             [
                 DBALInteractionRepository::class,
-                ChunkInteractionRepository::class
+                ChunkInteractionRepository::class,
             ],
             'apisearch_server.interactions_repository_enabled'
         );
@@ -65,7 +65,7 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
             $container,
             [
                 DBALUsageRepository::class,
-                ChunkUsageRepository::class
+                ChunkUsageRepository::class,
             ],
             'apisearch_server.usage_lines_repository_enabled'
         );
@@ -73,17 +73,16 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
 
     /**
      * @param ContainerBuilder $container
-     * @param string[] $repositories
-     * @param string $parameter
+     * @param string[]         $repositories
+     * @param string           $parameter
      */
     private function deleteRepositoriesIfDisabled(
         ContainerBuilder $container,
         array $repositories,
         string $parameter
-    )
-    {
+    ) {
         $enabled = $container->resolveEnvPlaceholders($container->getParameter($parameter));
-        $enabled = boolval($enabled);
+        $enabled = \boolval($enabled);
         if (!$enabled) {
             foreach ($repositories as $repositoryId) {
                 $container->removeDefinition($repositoryId);

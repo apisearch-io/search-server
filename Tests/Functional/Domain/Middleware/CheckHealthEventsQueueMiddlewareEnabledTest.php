@@ -13,30 +13,15 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Plugin\Logstash\Tests\Functional;
+namespace Apisearch\Search\Domain\Middleware;
 
-use Apisearch\Plugin\Logstash\LogstashPluginBundle;
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 
 /**
- * Class LogstashFunctionalTest.
+ * Class CheckHealthEventsQueueMiddlewareEnabledTest.
  */
-abstract class LogstashFunctionalTest extends ServiceFunctionalTest
+class CheckHealthEventsQueueMiddlewareEnabledTest extends ServiceFunctionalTest
 {
-    /**
-     * Decorate bundles.
-     *
-     * @param array $bundles
-     *
-     * @return array
-     */
-    protected static function decorateBundles(array $bundles): array
-    {
-        $bundles[] = LogstashPluginBundle::class;
-
-        return $bundles;
-    }
-
     /**
      * Decorate configuration.
      *
@@ -47,12 +32,16 @@ abstract class LogstashFunctionalTest extends ServiceFunctionalTest
     protected static function decorateConfiguration(array $configuration): array
     {
         $configuration = parent::decorateConfiguration($configuration);
-
-        $configuration['services']['redis.logstash_client_test'] = [
-            'alias' => 'redis.logstash_client',
-            'public' => true,
-        ];
+        $configuration['apisearch_server']['async_events']['enabled'] = true;
 
         return $configuration;
+    }
+
+    public function testHealthCheck()
+    {
+        $data = $this->checkHealth();
+        $this->assertTrue($data['status']['amqp']);
+        $this->assertGreaterThan(0, $data['info']['amqp']['ping_in_microseconds']);
+        $this->assertArrayNotHasKey('error', $data['info']['amqp']);
     }
 }

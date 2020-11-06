@@ -37,8 +37,7 @@ class ServerMemoryControlTest extends CurlFunctionalTest
             fn () => $this->exportIndex('source'),
             fn () => $this->exportIndex('standard'),
             fn () => $this->checkIndex(),
-            fn () => $this->checkHealth(),
-            fn () => $this->checkHealth(),
+            fn () => $this->checkHealth($this->createTokenByIdAndAppId(self::$healthCheckToken)),
             fn () => $this->deleteItems([
                 ItemUUID::createFromArray(['type' => 'type1', 'id' => \rand(10, 1000)]),
                 ItemUUID::createFromArray(['type' => 'type1', 'id' => \rand(10, 1000)]),
@@ -81,7 +80,7 @@ class ServerMemoryControlTest extends CurlFunctionalTest
 
         for ($i = 0; $i <= $calls; ++$i) {
             $callable();
-            $health = $this->checkHealth();
+            $health = $this->checkHealth($this->createTokenByIdAndAppId(self::$healthCheckToken));
             $partialMemory = $health['process']['memory_used'];
 
             if (\is_null($lastMemory)) {

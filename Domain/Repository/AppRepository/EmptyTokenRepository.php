@@ -40,7 +40,6 @@ class EmptyTokenRepository extends TokenRepository implements ResetableRepositor
         RepositoryReference $repositoryReference,
         Token $token
     ): PromiseInterface {
-
         return resolve();
     }
 
@@ -56,9 +55,9 @@ class EmptyTokenRepository extends TokenRepository implements ResetableRepositor
         RepositoryReference $repositoryReference,
         TokenUUID $tokenUUID
     ): PromiseInterface {
-
         return resolve();
     }
+
     /**
      * Get tokens.
      *
@@ -83,7 +82,6 @@ class EmptyTokenRepository extends TokenRepository implements ResetableRepositor
         AppUUID $appUUID,
         TokenUUID $tokenUUID
     ): PromiseInterface {
-
         return resolve();
     }
 

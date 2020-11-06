@@ -64,6 +64,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     const HTTP_TEST_SERVICE_PORT = '8888';
     public static string $godToken;
     public static string $readonlyToken;
+    public static string $healthCheckToken;
     public static string $pingToken;
     public static string $appId = '26178621test';
     public static string $index = 'default';
@@ -118,6 +119,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     {
         self::$godToken = $_ENV['APISEARCH_GOD_TOKEN'];
         self::$pingToken = $_ENV['APISEARCH_PING_TOKEN'];
+        self::$healthCheckToken = $_ENV['APISEARCH_HEALTH_CHECK_TOKEN'];
         self::$readonlyToken = $_ENV['APISEARCH_READONLY_TOKEN'];
         $imports = [
             ['resource' => '@ApisearchServerBundle/Resources/config/command_bus.yml'],
@@ -153,6 +155,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
                 'god_token' => self::$godToken,
                 'ping_token' => self::$pingToken,
                 'readonly_token' => self::$readonlyToken,
+                'health_check_token' => self::$healthCheckToken,
             ],
         ];
 

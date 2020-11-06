@@ -88,6 +88,11 @@ class ApisearchServerExtension extends BaseExtension
      */
     protected function getParametrizationValues(array $config): array
     {
+        $asyncEventsAreEnabled = \boolval(Env::get(
+            'APISEARCH_ASYNC_EVENTS_ENABLED',
+            $config['async_events']['enabled']
+        ));
+
         return [
             'apisearch_server.environment' => Env::get(
                 'APISEARCH_ENV',
@@ -102,9 +107,43 @@ class ApisearchServerExtension extends BaseExtension
                 'APISEARCH_READONLY_TOKEN',
                 $config['readonly_token']
             ),
+            'apisearch_server.health_check_token' => Env::get(
+                'APISEARCH_HEALTH_CHECK_TOKEN',
+                $config['health_check_token']
+            ),
             'apisearch_server.ping_token' => Env::get(
                 'APISEARCH_PING_TOKEN',
                 $config['ping_token']
+            ),
+
+            /*
+             * Async events / AMQP
+             */
+            'apisearch_server.async_events_enabled' => $asyncEventsAreEnabled,
+            'apisearch_server.async_events_exchange_name' => Env::get(
+                'APISEARCH_EVENTS_EXCHANGE',
+                $config['async_events']['events_exchange']
+            ),
+            'apisearch_server.async_events_amqp_host' => Env::get(
+                'AMQP_HOST',
+                $config['async_events']['amqp']['host'],
+                $asyncEventsAreEnabled
+            ),
+            'apisearch_server.async_events_amqp_port' => Env::get(
+                'AMQP_PORT',
+                $config['async_events']['amqp']['port']
+            ),
+            'apisearch_server.async_events_amqp_user' => Env::get(
+                'AMQP_USER',
+                $config['async_events']['amqp']['user']
+            ),
+            'apisearch_server.async_events_amqp_password' => Env::get(
+                'AMQP_PASSWORD',
+                $config['async_events']['amqp']['password']
+            ),
+            'apisearch_server.async_events_amqp_vhost' => Env::get(
+                'AMQP_VHOST',
+                $config['async_events']['amqp']['vhost']
             ),
 
             /*
