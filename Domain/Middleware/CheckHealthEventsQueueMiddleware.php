@@ -55,7 +55,7 @@ class CheckHealthEventsQueueMiddleware implements DiscriminableMiddleware
                     $from = \microtime(true);
                     $healthCheckData->addPromise($this
                         ->channel
-                        ->exchangeDeclare($this->exchangeName, 'fanout', false)
+                        ->exchangeDeclare($this->exchangeName, 'fanout', false, true)
                         ->then(function ($_) use ($healthCheckData) {
                             $healthCheckData->setPartialHealth(true);
                             $healthCheckData->mergeData([

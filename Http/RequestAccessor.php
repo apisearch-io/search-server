@@ -105,7 +105,7 @@ final class RequestAccessor
          * CDNs by using Cache headers
          */
         if ([] === $queryAsArray) {
-            $possibleQuery = $request->query->all(Http::QUERY_FIELD);
+            $possibleQuery = $request->query->get(Http::QUERY_FIELD);
             if (\is_string($possibleQuery)) {
                 $queryAsArray = self::decodeQuery($possibleQuery);
             }
