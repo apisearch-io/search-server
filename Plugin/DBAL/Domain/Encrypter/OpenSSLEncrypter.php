@@ -48,7 +48,9 @@ class OpenSSLEncrypter implements Encrypter
     {
         return \is_null($content)
             ? null
-            : \openssl_encrypt($content, $this->encryptMethod, $this->encryptPrivateKey, OPENSSL_RAW_DATA, $this->encryptIV);
+            : \utf8_encode(
+                \openssl_encrypt($content, $this->encryptMethod, $this->encryptPrivateKey, OPENSSL_RAW_DATA, $this->encryptIV)
+            );
     }
 
     /**
@@ -62,6 +64,7 @@ class OpenSSLEncrypter implements Encrypter
             return null;
         }
 
+        $content = \utf8_decode($content);
         $decrypted = \openssl_decrypt($content, $this->encryptMethod, $this->encryptPrivateKey, OPENSSL_RAW_DATA, $this->encryptIV);
 
         if (false === $decrypted) {
