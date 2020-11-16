@@ -27,12 +27,7 @@ use function React\Promise\resolve;
  */
 class InMemoryTokenRepository extends TokenRepository implements ResetableRepository
 {
-    /**
-     * @var array
-     *
-     * Stored tokens
-     */
-    private $storedTokens = [];
+    private array $storedTokens = [];
 
     /**
      * Add token.
