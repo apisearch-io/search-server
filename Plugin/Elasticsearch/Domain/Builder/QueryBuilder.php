@@ -20,6 +20,7 @@ use Apisearch\Geo\LocationRange;
 use Apisearch\Geo\Polygon;
 use Apisearch\Geo\Square;
 use Apisearch\Model\Item;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Aggregation as QueryAggregation;
 use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
@@ -27,6 +28,7 @@ use Apisearch\Query\Range;
 use Apisearch\Query\ScoreStrategies;
 use Apisearch\Query\ScoreStrategy;
 use Apisearch\Query\SortBy;
+use Apisearch\Server\Domain\Model\ServerQuery;
 use Elastica\Aggregation as ElasticaAggregation;
 use Elastica\Query as ElasticaQuery;
 use Elastica\Script\Script;
@@ -53,14 +55,18 @@ class QueryBuilder
             $mainQuery
         );
 
-        $this->addFilters(
-            $query,
-            $boolQuery,
-            $query->getFilters(),
-            $query->getSearchableFields(),
-            null,
-            false
-        );
+        $isARegularQuery = !$this->setMoreLikeThis($query, $boolQuery);
+
+        if ($isARegularQuery) {
+            $this->addFilters(
+                $query,
+                $boolQuery,
+                $query->getFilters(),
+                $query->getSearchableFields(),
+                null,
+                false
+            );
+        }
 
         $boolQuery = $this->addAdditionalBoostings(
             $query,
@@ -97,7 +103,7 @@ class QueryBuilder
             $boolQuery
         );
 
-        if ($query->areAggregationsEnabled()) {
+        if ($isARegularQuery && $query->areAggregationsEnabled()) {
             $this->addAggregations(
                 $query,
                 $mainQuery,
@@ -1118,5 +1124,36 @@ class QueryBuilder
         }
 
         return $parentBoolQuery;
+    }
+
+    /**
+     * @param Query                   $query
+     * @param ElasticaQuery\BoolQuery $boolQuery
+     *
+     * @return bool
+     */
+    private function setMoreLikeThis(
+        Query $query,
+        ElasticaQuery\BoolQuery $boolQuery
+    ): bool {
+        if (
+            !$query instanceof ServerQuery ||
+            empty($query->getLikeItems())
+        ) {
+            return false;
+        }
+
+        $moreLikeThis = new ElasticaQuery\MoreLikeThis();
+        $moreLikeThis->setLike(\array_map(function (ItemUUID $itemUUID) {
+            return [
+                '_id' => $itemUUID->composeUUID(),
+            ];
+        }, $query->getLikeItems()));
+        $moreLikeThis->setMinDocFrequency(5);
+        $moreLikeThis->setMinTermFrequency(1);
+
+        $boolQuery->addMust($moreLikeThis);
+
+        return true;
     }
 }

@@ -79,27 +79,6 @@ apisearch_v1_check_index:
     defaults:
         tags: [indices]
 
-apisearch_v1_export_index:
-    path: /v1/{app_id}/indices/{index_id}/export
-    methods: ["GET"]
-    controller: Apisearch\Server\Http\ExportIndexController
-    defaults:
-        tags: [indices, catalog]
-
-apisearch_v1_import_index_by_feed:
-    path: /v1/{app_id}/indices/{index_id}/import/by-feed
-    methods: ["PUT"]
-    controller: Apisearch\Server\Http\ImportIndexByFeedController
-    defaults:
-        tags: [indices, catalog]
-
-apisearch_v1_import_index_by_stream:
-    path: /v1/{app_id}/indices/{index_id}/import/by-stream
-    methods: ["PUT"]
-    controller: Apisearch\Server\Http\ImportIndexByStreamController
-    defaults:
-        tags: [indices, catalog]
-
 #
 # Items API
 #
@@ -137,6 +116,27 @@ apisearch_v1_delete_items_by_query:
         tags: [catalog]
         json: true
 
+apisearch_v1_export_index:
+    path: /v1/{app_id}/indices/{index_id}/export
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\ExportIndexController
+    defaults:
+        tags: [catalog]
+
+apisearch_v1_import_index_by_feed:
+    path: /v1/{app_id}/indices/{index_id}/import/by-feed
+    methods: ["PUT"]
+    controller: Apisearch\Server\Http\ImportIndexByFeedController
+    defaults:
+        tags: [catalog]
+
+apisearch_v1_import_index_by_stream:
+    path: /v1/{app_id}/indices/{index_id}/import/by-stream
+    methods: ["PUT"]
+    controller: Apisearch\Server\Http\ImportIndexByStreamController
+    defaults:
+        tags: [catalog]
+
 #
 # Usage API
 #
@@ -146,7 +146,7 @@ apisearch_v1_get_usage:
     controller: Apisearch\Server\Http\GetUsageController
     defaults:
         per_day: false
-        tags: [usage, metrics]
+        tags: [usage, full_metrics]
 
 apisearch_v1_get_usage_per_day:
     path: /v1/{app_id}/usage/per-day
@@ -154,7 +154,7 @@ apisearch_v1_get_usage_per_day:
     controller: Apisearch\Server\Http\GetUsageController
     defaults:
         per_day: true
-        tags: [usage, metrics]
+        tags: [usage, full_metrics]
 
 apisearch_v1_get_index_usage:
     path: /v1/{app_id}/indices/{index_id}/usage
@@ -162,7 +162,7 @@ apisearch_v1_get_index_usage:
     controller: Apisearch\Server\Http\GetUsageController
     defaults:
         per_day: false
-        tags: [usage, metrics]
+        tags: [usage, full_metrics]
 
 apisearch_v1_get_index_usage_per_day:
     path: /v1/{app_id}/indices/{index_id}/usage/per-day
@@ -170,7 +170,7 @@ apisearch_v1_get_index_usage_per_day:
     controller: Apisearch\Server\Http\GetUsageController
     defaults:
         per_day: true
-        tags: [usage, metrics]
+        tags: [usage, full_metrics]
 
 
 #
@@ -237,6 +237,22 @@ apisearch_v1_query_all_indices_preflight:
         index_id: "*"
 
 #
+# Similar + Recommend API
+#
+apisearch_v1_get_similar:
+    path: /v1/{app_id}/indices/{index_id}/similar
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetSimilarItemsController
+    defaults:
+        with_query: true
+        tags: [query]
+
+apisearch_v1_get_similar_preflight:
+    path: /v1/{app_id}/indices/{index_id}/similar
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Http\QueryCORSController
+
+#
 # Interaction API
 #
 apisearch_v1_post_click:
@@ -245,7 +261,7 @@ apisearch_v1_post_click:
     controller: Apisearch\Server\Http\PostInteractionController
     defaults:
         interaction: cli
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_post_click_preflight:
     path: /v1/{app_id}/indices/{index_id}/items/{item_id}/click
@@ -259,7 +275,7 @@ apisearch_v1_post_interaction:
     methods: ["POST"]
     controller: Apisearch\Server\Http\PostInteractionController
     defaults:
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_post_interaction_preflight:
     path: /v1/{app_id}/indices/{index_id}/items/{item_id}/interaction/{interaction}
@@ -274,7 +290,7 @@ apisearch_v1_get_interactions:
     controller: Apisearch\Server\Http\GetInteractionsController
     defaults:
         per_day: false
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_get_interactions_all_indices:
     path: /v1/{app_id}/interactions
@@ -283,7 +299,7 @@ apisearch_v1_get_interactions_all_indices:
     defaults:
         index_id: "*"
         per_day: false
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_get_interactions_per_day:
     path: /v1/{app_id}/indices/{index_id}/interactions/per-day
@@ -291,7 +307,7 @@ apisearch_v1_get_interactions_per_day:
     controller: Apisearch\Server\Http\GetInteractionsController
     defaults:
         per_day: true
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_get_interactions_all_indices_per_day:
     path: /v1/{app_id}/interactions/per-day
@@ -300,14 +316,14 @@ apisearch_v1_get_interactions_all_indices_per_day:
     defaults:
         index_id: "*"
         per_day: true
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_get_top_clicks:
     path: /v1/{app_id}/indices/{index_id}/top-clicks
     methods: ["GET"]
     controller: Apisearch\Server\Http\GetTopInteractionsController
     defaults:
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
 apisearch_v1_get_top_clicks_all_indices:
     path: /v1/{app_id}/top-clicks
@@ -315,7 +331,7 @@ apisearch_v1_get_top_clicks_all_indices:
     controller: Apisearch\Server\Http\GetTopInteractionsController
     defaults:
         index_id: "*"
-        tags: [interactions, metrics]
+        tags: [interactions, full_metrics]
 
         
 #
@@ -327,7 +343,7 @@ apisearch_v1_get_searches:
     controller: Apisearch\Server\Http\GetSearchesController
     defaults:
         per_day: false
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 apisearch_v1_get_searches_all_indices:
     path: /v1/{app_id}/searches
@@ -336,7 +352,7 @@ apisearch_v1_get_searches_all_indices:
     defaults:
         index_id: "*"
         per_day: false
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 apisearch_v1_get_searches_per_day:
     path: /v1/{app_id}/indices/{index_id}/searches/per-day
@@ -344,7 +360,7 @@ apisearch_v1_get_searches_per_day:
     controller: Apisearch\Server\Http\GetSearchesController
     defaults:
         per_day: true
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 apisearch_v1_get_searches_all_indices_per_day:
     path: /v1/{app_id}/searches/per-day
@@ -353,7 +369,7 @@ apisearch_v1_get_searches_all_indices_per_day:
     defaults:
         index_id: "*"
         per_day: true
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 
 apisearch_v1_get_top_searches:
@@ -361,7 +377,7 @@ apisearch_v1_get_top_searches:
     methods: ["GET"]
     controller: Apisearch\Server\Http\GetTopInteractionsController
     defaults:
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 apisearch_v1_get_top_searches_all_indices:
     path: /v1/{app_id}/top-searches
@@ -369,7 +385,7 @@ apisearch_v1_get_top_searches_all_indices:
     controller: Apisearch\Server\Http\GetTopSearchesController
     defaults:
         index_id: "*"
-        tags: [searches, metrics]
+        tags: [searches, full_metrics]
 
 #
 # Metrics
@@ -379,7 +395,7 @@ apisearch_v1_get_metrics:
     methods: ["GET"]
     controller: Apisearch\Server\Http\GetMetricsController
     defaults:
-        tags: [metrics]
+        tags: [metrics, full_metrics]
 
 apisearch_v1_get_metrics_all_indices:
     path: /v1/{app_id}/metrics
@@ -387,7 +403,7 @@ apisearch_v1_get_metrics_all_indices:
     controller: Apisearch\Server\Http\GetMetricsController
     defaults:
         index_id: "*"
-        tags: [metrics]
+        tags: [metrics, full_metrics]
 
 apisearch_v1_get_metrics_preflight:
     path: /v1/{app_id}/indices/{index_id}/metrics

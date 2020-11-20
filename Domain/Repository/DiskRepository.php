@@ -16,10 +16,13 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Repository;
 
 use Apisearch\Config\Config;
+use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\Changes;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Result\Result;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
@@ -198,6 +201,27 @@ class DiskRepository extends InMemoryRepository implements FullRepository
             ->loadFromDisk()
             ->then(function () use ($repositoryReference, $query) {
                 return parent::query($repositoryReference, $query);
+            });
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
+     *
+     * @return PromiseInterface<Result>
+     *
+     * @throws ResourceNotAvailableException
+     */
+    public function querySimilar(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        array $itemsUUID
+    ): PromiseInterface {
+        return $this
+            ->loadFromDisk()
+            ->then(function () use ($repositoryReference, $query, $itemsUUID) {
+                return parent::querySimilar($repositoryReference, $query, $itemsUUID);
             });
     }
 

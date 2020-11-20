@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Repository\Repository;
 
+use Apisearch\Exception\ResourceNotAvailableException;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
@@ -37,6 +39,21 @@ interface QueryRepository
     public function query(
         RepositoryReference $repositoryReference,
         Query $query
+    ): PromiseInterface;
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
+     *
+     * @return PromiseInterface<Result>
+     *
+     * @throws ResourceNotAvailableException
+     */
+    public function querySimilar(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        array $itemsUUID
     ): PromiseInterface;
 
     /**

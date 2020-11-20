@@ -23,6 +23,7 @@ use Apisearch\Model\Changes;
 use Apisearch\Model\Index;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
@@ -165,6 +166,23 @@ class InMemoryRepository implements FullRepository, ResetableRepository
             $repositoryReference,
             $query
         ));
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
+     *
+     * @return PromiseInterface<Result>
+     *
+     * @throws ResourceNotAvailableException
+     */
+    public function querySimilar(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        array $itemsUUID
+    ): PromiseInterface {
+        return resolve(new Result(null, 0, 0));
     }
 
     /**

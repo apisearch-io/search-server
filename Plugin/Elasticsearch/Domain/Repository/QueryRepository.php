@@ -15,8 +15,10 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Elasticsearch\Domain\Repository;
 
+use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Item;
+use Apisearch\Model\ItemUUID;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\QueryBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\Builder\ResultBuilder;
 use Apisearch\Plugin\Elasticsearch\Domain\ElasticaWrapper;
@@ -27,6 +29,7 @@ use Apisearch\Plugin\Elasticsearch\Domain\WithElasticaWrapper;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\ServerQuery;
 use Apisearch\Server\Domain\Repository\Repository\QueryRepository as QueryRepositoryInterface;
 use function Drift\React\wait_for_stream_listeners;
 use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
@@ -102,6 +105,26 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         return (\count($query->getSubqueries()) > 0)
             ? $this->makeMultiQuery($repositoryReference, $query)
             : $this->makeSimpleQuery($repositoryReference, $query);
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
+     *
+     * @return PromiseInterface<Result>
+     *
+     * @throws ResourceNotAvailableException
+     */
+    public function querySimilar(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        array $itemsUUID
+    ): PromiseInterface {
+        $query = ServerQuery::createFromArray($query->toArray());
+        $query->likeItemUUIDs($itemsUUID);
+
+        return $this->makeSimpleQuery($repositoryReference, $query);
     }
 
     /**

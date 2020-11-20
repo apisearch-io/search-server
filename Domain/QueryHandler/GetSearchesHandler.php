@@ -25,10 +25,7 @@ use React\Promise\PromiseInterface;
  */
 class GetSearchesHandler
 {
-    /**
-     * @var SearchesRepository
-     */
-    private $searchesRepository;
+    private SearchesRepository $searchesRepository;
 
     /**
      * @param SearchesRepository $searchesRepository
