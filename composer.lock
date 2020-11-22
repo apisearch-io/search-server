@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7692b5110008c7099095c7db5771db7b",
+    "content-hash": "0022084c9df1f7d1a5536f8b306da73c",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -116,22 +116,22 @@
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.33",
+            "version": "0.1.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "d8dbbb80ff8821118fbb9592dd109980f05a1b2f"
+                "reference": "635dd995a8b5f1f719a6200789cfe9a6f86b93a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/d8dbbb80ff8821118fbb9592dd109980f05a1b2f",
-                "reference": "d8dbbb80ff8821118fbb9592dd109980f05a1b2f",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/635dd995a8b5f1f719a6200789cfe9a6f86b93a1",
+                "reference": "635dd995a8b5f1f719a6200789cfe9a6f86b93a1",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "nesbot/carbon": "^1.22 || ^2.0",
-                "php": ">=7.1",
+                "php": ">=7.2",
                 "symfony/event-dispatcher": "^3.4 || ^4.0 || ^5.0",
                 "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
             },
@@ -157,9 +157,9 @@
             "description": "PHP Library for Apisearch",
             "support": {
                 "issues": "https://github.com/apisearch-io/php-client/issues",
-                "source": "https://github.com/apisearch-io/php-client/tree/0.1.33"
+                "source": "https://github.com/apisearch-io/php-client/tree/0.1.34"
             },
-            "time": "2020-10-23T14:00:51+00:00"
+            "time": "2020-11-17T23:14:36+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -223,16 +223,16 @@
         },
         {
             "name": "cakephp/core",
-            "version": "3.9.3",
+            "version": "3.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "76b9450dc68c81f93bca7827cfbb42a53a5f7737"
+                "reference": "4b45635d6be8a98be175fea9c9f575de29d515b3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/76b9450dc68c81f93bca7827cfbb42a53a5f7737",
-                "reference": "76b9450dc68c81f93bca7827cfbb42a53a5f7737",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/4b45635d6be8a98be175fea9c9f575de29d515b3",
+                "reference": "4b45635d6be8a98be175fea9c9f575de29d515b3",
                 "shasum": ""
             },
             "require": {
@@ -275,11 +275,11 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/core"
             },
-            "time": "2020-06-16T00:54:28+00:00"
+            "time": "2020-10-21T21:21:05+00:00"
         },
         {
             "name": "cakephp/utility",
-            "version": "3.9.3",
+            "version": "3.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
@@ -860,16 +860,16 @@
         },
         {
             "name": "composer/package-versions-deprecated",
-            "version": "1.11.99",
+            "version": "1.11.99.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/package-versions-deprecated.git",
-                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855"
+                "reference": "7413f0b55a051e89485c5cb9f765fe24bb02a7b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
-                "reference": "c8c9aa8a14cc3d3bec86d0a8c3fa52ea79936855",
+                "url": "https://api.github.com/repos/composer/package-versions-deprecated/zipball/7413f0b55a051e89485c5cb9f765fe24bb02a7b6",
+                "reference": "7413f0b55a051e89485c5cb9f765fe24bb02a7b6",
                 "shasum": ""
             },
             "require": {
@@ -913,7 +913,7 @@
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
             "support": {
                 "issues": "https://github.com/composer/package-versions-deprecated/issues",
-                "source": "https://github.com/composer/package-versions-deprecated/tree/master"
+                "source": "https://github.com/composer/package-versions-deprecated/tree/1.11.99.1"
             },
             "funding": [
                 {
@@ -929,7 +929,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-25T05:50:16+00:00"
+            "time": "2020-11-11T10:22:58+00:00"
         },
         {
             "name": "doctrine/cache",
@@ -1033,16 +1033,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "2.12.0",
+            "version": "2.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "c6d37b4c42aaa3c3ee175f05eca68056f4185646"
+                "reference": "adce7a954a1c2f14f85e94aed90c8489af204086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/c6d37b4c42aaa3c3ee175f05eca68056f4185646",
-                "reference": "c6d37b4c42aaa3c3ee175f05eca68056f4185646",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/adce7a954a1c2f14f85e94aed90c8489af204086",
+                "reference": "adce7a954a1c2f14f85e94aed90c8489af204086",
                 "shasum": ""
             },
             "require": {
@@ -1124,7 +1124,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/2.12.0"
+                "source": "https://github.com/doctrine/dbal/tree/2.12.1"
             },
             "funding": [
                 {
@@ -1140,7 +1140,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-22T17:26:24+00:00"
+            "time": "2020-11-14T20:26:58+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -1334,36 +1334,31 @@
         },
         {
             "name": "doctrine/instantiator",
-            "version": "1.3.1",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea"
+                "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f350df0268e904597e3bd9c4685c53e0e333feea",
-                "reference": "f350df0268e904597e3bd9c4685c53e0e333feea",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/d56bf6102915de5702778fe20f2de3b2fe570b5b",
+                "reference": "d56bf6102915de5702778fe20f2de3b2fe570b5b",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^6.0",
+                "doctrine/coding-standard": "^8.0",
                 "ext-pdo": "*",
                 "ext-phar": "*",
-                "phpbench/phpbench": "^0.13",
-                "phpstan/phpstan-phpunit": "^0.11",
-                "phpstan/phpstan-shim": "^0.11",
-                "phpunit/phpunit": "^7.0"
+                "phpbench/phpbench": "^0.13 || 1.0.0-alpha2",
+                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan-phpunit": "^0.12",
+                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.2.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Doctrine\\Instantiator\\": "src/Doctrine/Instantiator/"
@@ -1377,7 +1372,7 @@
                 {
                     "name": "Marco Pivetta",
                     "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/"
+                    "homepage": "https://ocramius.github.io/"
                 }
             ],
             "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
@@ -1388,7 +1383,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/instantiator/issues",
-                "source": "https://github.com/doctrine/instantiator/tree/1.3.x"
+                "source": "https://github.com/doctrine/instantiator/tree/1.4.0"
             },
             "funding": [
                 {
@@ -1404,7 +1399,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-29T17:27:14+00:00"
+            "time": "2020-11-10T18:47:58+00:00"
         },
         {
             "name": "drift/amqp-bundle",
@@ -1455,16 +1450,16 @@
         },
         {
             "name": "drift/command-bus-bundle",
-            "version": "0.1.8",
+            "version": "0.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/command-bus-bundle.git",
-                "reference": "d9ca648f37b4001d59aee8625a1682baaa5c05d1"
+                "reference": "72ce30e8ad6906fa8a8c0eaefb2ead13b0eef172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/command-bus-bundle/zipball/d9ca648f37b4001d59aee8625a1682baaa5c05d1",
-                "reference": "d9ca648f37b4001d59aee8625a1682baaa5c05d1",
+                "url": "https://api.github.com/repos/driftphp/command-bus-bundle/zipball/72ce30e8ad6906fa8a8c0eaefb2ead13b0eef172",
+                "reference": "72ce30e8ad6906fa8a8c0eaefb2ead13b0eef172",
                 "shasum": ""
             },
             "require": {
@@ -1482,6 +1477,7 @@
                 "drift/amqp-bundle": "0.1.*, >=0.1.2",
                 "drift/postgresql-bundle": "0.1.*, >=0.1.2",
                 "drift/redis-bundle": "0.1.*, >=0.1.4",
+                "phpunit/phpunit": "7.5.17",
                 "symfony/process": "^5.0.0"
             },
             "suggest": {
@@ -1509,9 +1505,9 @@
             "homepage": "https://github.com/driftphp/command-bus-bundle",
             "support": {
                 "issues": "https://github.com/driftphp/command-bus-bundle/issues",
-                "source": "https://github.com/driftphp/command-bus-bundle/tree/master"
+                "source": "https://github.com/driftphp/command-bus-bundle/tree/0.1.9"
             },
-            "time": "2020-03-10T09:41:27+00:00"
+            "time": "2020-11-16T11:41:24+00:00"
         },
         {
             "name": "drift/console-bridge",
@@ -1828,16 +1824,16 @@
         },
         {
             "name": "drift/preload-bundle",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/preload-bundle.git",
-                "reference": "7dad89aae4c9ada6bdf6ecc6784880732b1cf30b"
+                "reference": "dd804061f68a92cb61297908792363706eeefac8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/preload-bundle/zipball/7dad89aae4c9ada6bdf6ecc6784880732b1cf30b",
-                "reference": "7dad89aae4c9ada6bdf6ecc6784880732b1cf30b",
+                "url": "https://api.github.com/repos/driftphp/preload-bundle/zipball/dd804061f68a92cb61297908792363706eeefac8",
+                "reference": "dd804061f68a92cb61297908792363706eeefac8",
                 "shasum": ""
             },
             "require": {
@@ -1873,9 +1869,9 @@
             "homepage": "https://github.com/driftphp/preload-bundle",
             "support": {
                 "issues": "https://github.com/driftphp/preload-bundle/issues",
-                "source": "https://github.com/driftphp/preload-bundle/tree/0.1.1"
+                "source": "https://github.com/driftphp/preload-bundle/tree/0.1.2"
             },
-            "time": "2020-04-22T23:54:22+00:00"
+            "time": "2020-11-16T11:55:02+00:00"
         },
         {
             "name": "drift/react-functions",
@@ -2104,16 +2100,16 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v7.9.1",
+            "version": "v7.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "38e821f37491bd91fe06b18b88613128950a11bb"
+                "reference": "f4a5741f1d1966a4d0a3a3f68666e6d81432c343"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/38e821f37491bd91fe06b18b88613128950a11bb",
-                "reference": "38e821f37491bd91fe06b18b88613128950a11bb",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/f4a5741f1d1966a4d0a3a3f68666e6d81432c343",
+                "reference": "f4a5741f1d1966a4d0a3a3f68666e6d81432c343",
                 "shasum": ""
             },
             "require": {
@@ -2126,6 +2122,7 @@
                 "cpliakas/git-wrapper": "~2.0",
                 "doctrine/inflector": "^1.3",
                 "ext-yaml": "*",
+                "ext-zip": "*",
                 "mockery/mockery": "^1.2",
                 "phpstan/phpstan": "^0.12",
                 "phpunit/phpunit": "^7.5",
@@ -2166,9 +2163,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elastic/elasticsearch-php/issues",
-                "source": "https://github.com/elastic/elasticsearch-php/tree/v7.9.1"
+                "source": "https://github.com/elastic/elasticsearch-php/tree/v7.10.0"
             },
-            "time": "2020-10-06T13:03:50+00:00"
+            "time": "2020-11-11T16:31:00+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -2570,48 +2567,41 @@
         },
         {
             "name": "laminas/laminas-code",
-            "version": "3.4.1",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-code.git",
-                "reference": "1cb8f203389ab1482bf89c0e70a04849bacd7766"
+                "reference": "cb90ef428da9260c2deaa827b037c20695f968ae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-code/zipball/1cb8f203389ab1482bf89c0e70a04849bacd7766",
-                "reference": "1cb8f203389ab1482bf89c0e70a04849bacd7766",
+                "url": "https://api.github.com/repos/laminas/laminas-code/zipball/cb90ef428da9260c2deaa827b037c20695f968ae",
+                "reference": "cb90ef428da9260c2deaa827b037c20695f968ae",
                 "shasum": ""
             },
             "require": {
-                "laminas/laminas-eventmanager": "^2.6 || ^3.0",
-                "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^7.1"
+                "laminas/laminas-eventmanager": "^3.3",
+                "laminas/laminas-zendframework-bridge": "^1.1",
+                "php": "^7.3 || ~8.0.0"
             },
             "conflict": {
                 "phpspec/prophecy": "<1.9.0"
             },
             "replace": {
-                "zendframework/zend-code": "self.version"
+                "zendframework/zend-code": "^3.4.1"
             },
             "require-dev": {
-                "doctrine/annotations": "^1.7",
+                "doctrine/annotations": "^1.10.4",
                 "ext-phar": "*",
-                "laminas/laminas-coding-standard": "^1.0",
-                "laminas/laminas-stdlib": "^2.7 || ^3.0",
-                "phpunit/phpunit": "^7.5.16 || ^8.4"
+                "laminas/laminas-coding-standard": "^1.0.0",
+                "laminas/laminas-stdlib": "^3.3.0",
+                "phpunit/phpunit": "^9.4.2"
             },
             "suggest": {
                 "doctrine/annotations": "Doctrine\\Common\\Annotations >=1.0 for annotation features",
                 "laminas/laminas-stdlib": "Laminas\\Stdlib component"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.4.x-dev",
-                    "dev-develop": "3.5.x-dev",
-                    "dev-dev-4.0": "4.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Laminas\\Code\\": "src/"
@@ -2635,7 +2625,13 @@
                 "rss": "https://github.com/laminas/laminas-code/releases.atom",
                 "source": "https://github.com/laminas/laminas-code"
             },
-            "time": "2019-12-31T16:28:24+00:00"
+            "funding": [
+                {
+                    "url": "https://funding.communitybridge.org/projects/laminas-project",
+                    "type": "community_bridge"
+                }
+            ],
+            "time": "2020-11-11T22:11:27+00:00"
         },
         {
             "name": "laminas/laminas-eventmanager",
@@ -3029,16 +3025,16 @@
         },
         {
             "name": "ocramius/proxy-manager",
-            "version": "2.9.1",
+            "version": "2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/ProxyManager.git",
-                "reference": "7452942d38ae36223b0f8408619181f69799eb5c"
+                "reference": "f65ae0f9dcbdd9d6ad3abb721a9e09c3d7d868a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/7452942d38ae36223b0f8408619181f69799eb5c",
-                "reference": "7452942d38ae36223b0f8408619181f69799eb5c",
+                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/f65ae0f9dcbdd9d6ad3abb721a9e09c3d7d868a4",
+                "reference": "f65ae0f9dcbdd9d6ad3abb721a9e09c3d7d868a4",
                 "shasum": ""
             },
             "require": {
@@ -3103,7 +3099,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Ocramius/ProxyManager/issues",
-                "source": "https://github.com/Ocramius/ProxyManager/tree/2.9.1"
+                "source": "https://github.com/Ocramius/ProxyManager/tree/2.10.0"
             },
             "funding": [
                 {
@@ -3115,7 +3111,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-08-26T16:19:12+00:00"
+            "time": "2020-11-12T17:04:46+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -8020,16 +8016,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.10.1",
+            "version": "1.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5"
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
-                "reference": "969b211f9a51aa1f6c01d1d2aef56d3bd91598e5",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/776f831124e9c62e1a2c601ecc52e776d8bb7220",
+                "reference": "776f831124e9c62e1a2c601ecc52e776d8bb7220",
                 "shasum": ""
             },
             "require": {
@@ -8066,7 +8062,7 @@
             ],
             "support": {
                 "issues": "https://github.com/myclabs/DeepCopy/issues",
-                "source": "https://github.com/myclabs/DeepCopy/tree/1.x"
+                "source": "https://github.com/myclabs/DeepCopy/tree/1.10.2"
             },
             "funding": [
                 {
@@ -8074,7 +8070,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-06-29T13:22:24+00:00"
+            "time": "2020-11-13T09:40:50+00:00"
         },
         {
             "name": "phar-io/manifest",

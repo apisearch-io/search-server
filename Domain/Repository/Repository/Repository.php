@@ -30,19 +30,8 @@ use React\Stream\DuplexStreamInterface;
  */
 final class Repository
 {
-    /**
-     * @var ItemsRepository
-     *
-     * Items repository
-     */
-    private $itemsRepository;
-
-    /**
-     * @var QueryRepository
-     *
-     * Query Repository
-     */
-    private $queryRepository;
+    private ItemsRepository $itemsRepository;
+    private QueryRepository $queryRepository;
 
     /**
      * Repository constructor.
@@ -59,8 +48,6 @@ final class Repository
     }
 
     /**
-     * Add items.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Item[]              $items
      *
@@ -79,8 +66,6 @@ final class Repository
     }
 
     /**
-     * Delete items.
-     *
      * @param RepositoryReference $repositoryReference
      * @param ItemUUID[]          $itemsUUID
      *
@@ -117,8 +102,6 @@ final class Repository
     }
 
     /**
-     * Search across the index types.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Query               $query
      *
@@ -139,8 +122,6 @@ final class Repository
     }
 
     /**
-     * Update items.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Query               $query
      * @param Changes             $changes
@@ -162,8 +143,29 @@ final class Repository
     }
 
     /**
-     * Export index.
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
      *
+     * @return PromiseInterface<Result>
+     *
+     * @throws ResourceNotAvailableException
+     */
+    public function querySimilar(
+        RepositoryReference $repositoryReference,
+        Query $query,
+        array $itemsUUID
+    ): PromiseInterface {
+        return $this
+            ->queryRepository
+            ->querySimilar(
+                $repositoryReference,
+                $query,
+                $itemsUUID
+            );
+    }
+
+    /**
      * @param RepositoryReference $repositoryReference
      *
      * @return PromiseInterface<DuplexStreamInterface>

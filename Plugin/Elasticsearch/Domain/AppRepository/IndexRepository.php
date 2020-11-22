@@ -32,8 +32,6 @@ use React\Promise\PromiseInterface;
 class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInterface
 {
     /**
-     * Get indices.
-     *
      * @param RepositoryReference $repositoryReference
      *
      * @return PromiseInterface<Index[]>
@@ -49,8 +47,6 @@ class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInte
     }
 
     /**
-     * Create an index.
-     *
      * @param RepositoryReference $repositoryReference
      * @param IndexUUID           $indexUUID
      * @param Config              $config
@@ -82,8 +78,6 @@ class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInte
     }
 
     /**
-     * Delete the index.
-     *
      * @param RepositoryReference $repositoryReference
      * @param IndexUUID           $indexUUID
      *
@@ -99,8 +93,6 @@ class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInte
     }
 
     /**
-     * Reset the index.
-     *
      * @param RepositoryReference $repositoryReference
      * @param IndexUUID           $indexUUID
      *
@@ -118,8 +110,6 @@ class IndexRepository extends WithElasticaWrapper implements IndexRepositoryInte
     }
 
     /**
-     * Configure the index.
-     *
      * @param RepositoryReference $repositoryReference
      * @param IndexUUID           $indexUUID
      * @param Config              $config

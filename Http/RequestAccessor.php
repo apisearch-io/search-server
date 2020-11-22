@@ -82,20 +82,23 @@ final class RequestAccessor
      * Extract query from request.
      *
      * @param Request $request
+     * @param string  $requestField
      *
      * @return Query
      *
      * @throws InvalidFormatException
      */
-    public static function extractQuery(Request $request): Query
-    {
+    public static function extractQuery(
+        Request $request,
+        string $requestField = ''
+    ): Query {
         if ($request->attributes->has(Http::QUERY_FIELD)) {
             return $request->attributes->get(Http::QUERY_FIELD);
         }
 
         $queryAsArray = self::extractRequestContentObject(
             $request,
-            '',
+            $requestField,
             InvalidFormatException::queryFormatNotValid($request->getContent()),
             []
         );

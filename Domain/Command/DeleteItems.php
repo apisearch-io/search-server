@@ -29,10 +29,8 @@ class DeleteItems extends CommandWithRepositoryReferenceAndToken implements With
 {
     /**
      * @var ItemUUID[]
-     *
-     * Items UUID
      */
-    private $itemsUUID;
+    private array $itemsUUID;
 
     /**
      * DeleteCommand constructor.

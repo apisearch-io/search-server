@@ -13,31 +13,37 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Command;
+namespace Apisearch\Server\Domain\Query;
 
+use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
-use Apisearch\Query\Query;
+use Apisearch\Query\Query as Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
 
-/**
- * Class DeleteItemsByQuery.
- */
-class DeleteItemsByQuery extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
+class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
+    /**
+     * @var ItemUUID[]
+     */
+    private array $itemsUUID;
     private Query $query;
 
     /**
+     * DeleteCommand constructor.
+     *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param Query               $query
+     * @param ItemUUID[]          $itemsUUID
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        Query $query
+        Query $query,
+        array $itemsUUID
     ) {
         parent::__construct(
             $repositoryReference,
@@ -45,6 +51,7 @@ class DeleteItemsByQuery extends CommandWithRepositoryReferenceAndToken implemen
         );
 
         $this->query = $query;
+        $this->itemsUUID = $itemsUUID;
     }
 
     /**
@@ -53,5 +60,15 @@ class DeleteItemsByQuery extends CommandWithRepositoryReferenceAndToken implemen
     public function getQuery(): Query
     {
         return $this->query;
+    }
+
+    /**
+     * Get Items.
+     *
+     * @return ItemUUID[]
+     */
+    public function getItemsUUID(): array
+    {
+        return $this->itemsUUID;
     }
 }
