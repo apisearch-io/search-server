@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\DependencyInjection;
 
+use Apisearch\Server\Domain\Model\EndpointNormalizer;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -153,6 +154,10 @@ class ApisearchServerExtension extends BaseExtension
                 'APISEARCH_NUMBER_OF_RESULTS_LIMITATION',
                 $config['limitations']['number_of_results']
             ),
+            'apisearch_server.limitations_token_endpoint_permissions' => EndpointNormalizer::normalizeEndpoints(Env::getArray(
+                'APISEARCH_TOKEN_ENDPOINT_PERMISSIONS_LIMITATION',
+                $config['limitations']['token_endpoint_permissions']
+            )),
             'apisearch_server.default_number_of_suggestions' => Env::get(
                 'APISEARCH_NUMBER_OF_SUGGESTIONS_DEFAULT',
                 $config['defaults']['number_of_suggestions']

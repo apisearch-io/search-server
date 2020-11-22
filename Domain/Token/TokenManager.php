@@ -29,18 +29,14 @@ use function React\Promise\resolve;
 class TokenManager
 {
     /**
-     * @var TokenLocators
-     *
-     * Token locators
+     * Token locators.
      */
-    private $tokenLocators;
+    private TokenLocators $tokenLocators;
 
     /**
-     * @var TokenValidators
-     *
-     * Token validators
+     * Token validators.
      */
-    private $tokenValidators;
+    private TokenValidators $tokenValidators;
 
     /**
      * TokenManager constructor.

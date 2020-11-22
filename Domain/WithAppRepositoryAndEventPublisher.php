@@ -23,12 +23,7 @@ use Drift\EventBus\Bus\EventBus;
  */
 abstract class WithAppRepositoryAndEventPublisher extends WithEventBus
 {
-    /**
-     * @var AppRepository
-     *
-     * App Repository
-     */
-    protected $appRepository;
+    protected AppRepository $appRepository;
 
     /**
      * QueryHandler constructor.
