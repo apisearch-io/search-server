@@ -23,8 +23,6 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 class Env
 {
     /**
-     * Get environment variable.
-     *
      * @param string $variableName
      * @param $defaultValue
      * @param bool $throwExceptionOnMissing
@@ -42,6 +40,28 @@ class Env
             throw new InvalidConfigurationException(
                 "Missing configuration value $variableName. Check that the environment variable exists or that the required value on configuration is properly set."
             );
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param string $variableName
+     * @param $defaultValue
+     * @param bool $throwExceptionOnMissing
+     *
+     * @return string[]
+     */
+    public static function getArray(
+        string $variableName,
+        $defaultValue,
+        bool $throwExceptionOnMissing = false
+    ): array {
+        $value = static::get($variableName, $defaultValue, $throwExceptionOnMissing);
+
+        if (\is_string($value)) {
+            $value = \explode(',', $value);
+            $value = \array_map('trim', $value);
         }
 
         return $value;

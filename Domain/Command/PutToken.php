@@ -25,12 +25,7 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
  */
 class PutToken extends CommandWithRepositoryReferenceAndToken implements AppRequiredCommand
 {
-    /**
-     * @var Token
-     *
-     * Token
-     */
-    private $newToken;
+    private Token $newToken;
 
     /**
      * @param RepositoryReference $repositoryReference

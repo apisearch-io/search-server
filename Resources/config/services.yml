@@ -9,6 +9,7 @@ services:
             string $pingToken: "%apisearch_server.ping_token%"
             int $numberOfResultsLimitation: "%apisearch_server.limitations_number_of_results%"
             int $defaultNumberOfSuggestions: "%apisearch_server.default_number_of_suggestions%"
+            array $tokenEndpointPermissionsLimitation: "%apisearch_server.limitations_token_endpoint_permissions%"
             array $enabledPlugins: "%apisearch_server.enabled_plugins%"
             string $exchangeName: "%apisearch_server.async_events_exchange_name%"
 
