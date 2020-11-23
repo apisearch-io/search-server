@@ -1,0 +1,1007 @@
+openapi: "3.0.0"
+
+info:
+    description: "Apisearch Server API documentation"
+    version: "1.0"
+    title: "Apisearch Server"
+    contact:
+        name: "Apisearch team"
+        email: "info@apisearch.io"
+    license:
+        name: "MIT"
+        url: "https://opensource.org/licenses/MIT"
+
+paths:
+
+    #
+    # Server paths
+    #
+    /:
+        head:
+            summary: "Ping the server. Needs a ping token."
+            description: "This route is named `ping`"
+            tags: ["admin"]
+            responses:
+                204:
+                    description: "The server is up and running"
+                401:
+                    $ref: '#/components/responses/invalidToken'
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+    /health:
+        get:
+            summary: "Check the server health, including all infrastructure dependencies. Needs a health_check token."
+            description: "This route is named `check_health`"
+            tags: ["admin"]
+            responses:
+                200:
+                    $ref: "#/components/schemas/HealthCheck"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+    /teapot:
+        head:
+            summary: "Makes a simple server head with GOD authorization. Needs a god token."
+            description: "This route is named `teapot`"
+            tags: [ "admin" ]
+            responses:
+                200:
+                    description: "I'm a teagod"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+    #
+    # Token paths
+    #
+    /v1/{app_id}/tokens/{token_id}:
+        put:
+            summary: "Put a token attached to an app"
+            description: "This route is named `v1_put_token`"
+            tags: ["token"]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - $ref: "#/components/schemas/Token"
+            responses:
+                200:
+                    description: "Token put"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        delete:
+            summary: "Delete a token attached to an app"
+            description: "This route is named `v1_delete_token`"
+            tags: ["token"]
+            responses:
+                200:
+                    description: "Token deleted"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: {format: "string"}
+            -   in: "path"
+                name: "token_id"
+                required: true
+                description: "Token composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/tokens:
+        get:
+            summary: "Get all app tokens"
+            description: "This route is named `v1_get_tokens`"
+            tags: ["token"]
+            responses:
+                200:
+                    description: "Tokens list"
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Token"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        delete:
+            summary: "Delete all app tokens"
+            description: "This route is named `v1_delete_tokens`"
+            tags: [ "token" ]
+            responses:
+                200:
+                    description: "Tokens deleted"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+
+
+    #
+    # Index paths
+    #
+    /v1/{app_id}/indices:
+        get:
+            summary: "Get all app indices"
+            description: "This route is named `v1_get_indices`"
+            tags: [ "index" ]
+            responses:
+                200:
+                    description: "Indices list"
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Index"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/indices/{index_id}:
+        put:
+            summary: "Creates an index to an app. This endpoint will only work is the index does not exist."
+            description: "This route is named `v1_put_index`"
+            tags: ["index"]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                -   $ref: "#/components/schemas/IndexConfig"
+            responses:
+                200:
+                    description: "Index created properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                409:
+                    description: "Index exists"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        delete:
+            summary: "Deletes an index"
+            description: "This route is named `v1_delete_index`"
+            tags: ["index"]
+            responses:
+                200:
+                    description: "Index deleted properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        head:
+            summary: "Check the status of an index"
+            description: "This route is named `v1_check_index`"
+            tags: ["index"]
+            responses:
+                200:
+                    description: "Index works properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        get:
+            summary: "Query the index"
+            description: "This route is named `v1_query`"
+            tags: ["query"]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Query"
+            responses:
+                200:
+                    description: "Query result"
+                    $ref: "#/components/schemas/Result"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+
+    /v1/{app_id}/indices/{index_id}/configure:
+        put:
+            summary: "Configures an existing index."
+            description: "This route is named `v1_configure_index`"
+            tags: [ "index" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                -   $ref: "#/components/schemas/IndexConfig"
+            responses:
+                200:
+                    description: "Index configured properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/indices/{index_id}/reset:
+        put:
+            summary: "Resets an existing index."
+            description: "This route is named `v1_reset_index`"
+            tags: [ "index" ]
+            responses:
+                200:
+                    description: "Index configured properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+    #
+    # Items / Catalog
+    #
+    /v1/{app_id}/indices/{index_id}/items:
+        put:
+            summary: "Put a list of items inside an index"
+            description: "This route is named `v1_put_items`"
+            tags: ["catalog"]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                - type: array
+                                  items:
+                                      $ref: "#/components/schemas/Item"
+            responses:
+                200:
+                    description: "Items indexed properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        delete:
+            summary: "Delete a list of item uuids from an index"
+            description: "This route is named `v1_delete_items`"
+            tags: [ "catalog" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                -   type: array
+                                    items:
+                                        $ref: "#/components/schemas/ItemUUID"
+            responses:
+                200:
+                    description: "Items deleted properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/indices/{index_id}/items/by-query:
+        delete:
+            summary: "Delete a set of items as result of a query"
+            description: "This route is named `v1_delete_items_by_query`"
+            tags: [ "catalog" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                -   type: array
+                                    items:
+                                        $ref: "#/components/schemas/Query"
+            responses:
+                200:
+                    description: "Items deleted properly"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/indices/{index_id}/export:
+        get:
+            summary: "Exports the whole index by using an stream response"
+            description: "This route is named `v1_export_index`"
+            tags: [ "catalog" ]
+            responses:
+                200:
+                    description: "All items collection from this index"
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Item"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+
+    /v1/{app_id}/indices/{index_id}/import-by-feed:
+        put:
+            summary: "Import an index by feed"
+            description: "This route is named `v1_import_index_by_feed`"
+            tags: [ "catalog" ]
+            responses:
+                200:
+                    description: "All items imported or scheduled for being imported"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+            -   in: "query"
+                name: "feed"
+                required: true
+                schema: { format: "url" }
+            -   in: "query"
+                name: "detached"
+                required: false
+                schema:
+                    enum: [0, 1]
+                    default: 0
+
+    /v1/{app_id}/indices/{index_id}/import-by-stream:
+        put:
+            summary: "Import an index by stream"
+            description: "This route is named `v1_import_index_by_stream`"
+            tags: [ "catalog" ]
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: "array"
+                            items:
+                                $ref: "#/components/schemas/Item"
+            responses:
+                200:
+                    description: "All items imported or scheduled for being imported"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                404:
+                    description: "Index not found"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+            -   in: "path"
+                name: "index_id"
+                required: true
+                description: "Index composed UUID"
+                schema: { format: "string" }
+            -   in: "query"
+                name: "detached"
+                required: false
+                schema:
+                    enum: [ 0, 1 ]
+                    default: 0
+
+    /v1/{app_id}:
+        get:
+            summary: "Query all app indices"
+            description: "This route is named `v1_query_all_indices`"
+            tags: [ "query" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Query"
+            responses:
+                200:
+                    description: "Query result"
+                    $ref: "#/components/schemas/Result"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+        parameters:
+            -   in: "path"
+                name: "app_id"
+                required: true
+                description: "App composed UUID"
+                schema: { format: "string" }
+
+
+#
+# Components
+#
+components:
+    securitySchemes:
+        token:
+            type: apiKey
+            in: query
+            name: token
+
+    responses:
+        invalidToken:
+            description: "Token is missing or is not valid"
+        serverDown:
+            description: "Token is missing or is not valid"
+
+    schemas:
+
+        HealthCheck:
+            type: "object"
+            description: "Health check object with server-related health information and infrastructure dependencies status"
+            properties:
+                healthy:
+                    type: "boolean"
+                status:
+                    type: "array"
+                    items: {}
+                info:
+                    type: "array"
+                    items: {}
+                process:
+                    type: "object"
+                    properties:
+                        memory_user:
+                            type: "integer"
+                        real_memory_used:
+                            type: "integer"
+
+        Synonym:
+            type: "object"
+            description: "Synonyms representation"
+            properties:
+                words:
+                    type: "array"
+                    items:
+                        type: "string"
+
+        AppUUID:
+            type: "object"
+            description: "App UUID representation"
+            properties:
+                id:
+                    type: "string"
+
+        TokenUUID:
+            type: "object"
+            description: "Token UUID representation"
+            properties:
+                id:
+                    type: "string"
+
+        Token:
+            type: "object"
+            description: "Token representation of permissions and properties. No IDs are included inside the body"
+            properties:
+                uuid:
+                    $ref: "#/components/schemas/TokenUUID"
+                    readOnly: true
+                app_uuid:
+                    $ref: "#/components/schemas/AppUUID"
+                    readOnly: true
+                indices:
+                    type: "array"
+                    description: "Indices name where this token will have permissions"
+                    items:
+                        type: string
+                endpoints:
+                    type: "array"
+                    description: "Endpoints where this token is permitted"
+                    items:
+                        type: string
+                plugins:
+                    type: "array"
+                    description: "Plugins to enable when this token is used"
+                    items:
+                        type: string
+                ttl:
+                    type: integer
+                    description: "Seconds that this token will keep responses cached"
+                metadata:
+                    type: array
+                    description: "Metadata associated to this token"
+                    items: { }
+            required:
+                - uuid
+                - app_uuid
+
+        IndexUUID:
+            type: "object"
+            description: "Index UUID representation"
+            properties:
+                id:
+                    type: "string"
+
+        IndexConfig:
+            type: "object"
+            description: "Index configuration parameters"
+            properties:
+                shards:
+                    type: "integer"
+                    description: "Number of shards you want to assign to this index"
+                    default: 1
+                replicas:
+                    type: "integer"
+                    description: "Number of replicas you want to assign to this index"
+                    default: 0
+                language:
+                    type: "string"
+                    description: "Specific language for the index. When empty, the index is considered language agnostic"
+                store_searchable_metadata:
+                    type: "boolean"
+                    description: "Store all searchable metadata. A must if you want to export the index. Increases index size"
+                    default: true
+                synonyms:
+                    type: "array"
+                    description: "Synonyms to be considered in this index"
+                    items:
+                        $ref: "#/components/schemas/Synonym"
+                metadata:
+                    type: array
+                    items: {}
+
+        Index:
+            allOf:
+                -   $ref: "#/components/schemas/IndexConfig"
+                -   type: "object"
+                    description: "Index representation with configuration parameters, including IDs and server completion."
+                    properties:
+                        uuid:
+                            $ref: "#/components/schemas/IndexUUID"
+                        app_uuid:
+                            $ref: "#/components/schemas/AppUUID"
+
+        Coordinate:
+            type: "object"
+            description: "Representation of a coordinate point"
+            properties:
+                lat:
+                    type: "number"
+                lon:
+                    type: "number"
+            required:
+                - lat
+                - lon
+
+        ItemUUID:
+            type: "object"
+            description: "Item UUID"
+            properties:
+                id:
+                    type: "string"
+                    description: "ID of the item. Should be unique among its type"
+                type:
+                    type: "string"
+                    description: "Type of item. That will group items inside a unique index"
+
+        Item:
+            type: "object"
+            description: "Item representation. You can store different type of fields"
+            properties:
+                uuid:
+                    $ref: "#/components/schemas/ItemUUID"
+                metadata:
+                    type: "object"
+                    items: {}
+                indexed_metadata:
+                    type: "object"
+                    items: {}
+                searchable_metadata:
+                    type: "object"
+                    items: { }
+                exact_matching_metadata:
+                    type: "array"
+                    items: { }
+                suggests:
+                    type: "array"
+                    items: {}
+                coordinate:
+                    $ref: "#/components/schemas/Coordinate"
+            required:
+                - uuid
+
+        User:
+            type: "object"
+            description: "User representation"
+            properties:
+                id:
+                    description: "User unique id."
+                    type: "string"
+                attributes:
+                    description: "Attributes to enrich the representation of the user"
+                    type: "object"
+                    items: {}
+
+        ScoreStrategy:
+            type: "object"
+            properties:
+                type:
+                    type: "string"
+                configuration:
+                    description: "Configuration object. Depends on the strategy will require some values"
+                    type: "object"
+                    items: {}
+                weight:
+                    description: "Weight of this strategy"
+                    type: "integer"
+                score_mode:
+                    description: "Score mode when working with collections. Can be `none` for no extra score, and `sum`, `avg`, `max` and `min`"
+                    type: "string"
+                filter:
+                    description: "Some strategies need a filter"
+                    $ref: "#/components/schemas/QueryFilter"
+
+        ScoreStrategies:
+            type: "object"
+            properties:
+                score_mode:
+                    description: "How scores are combined when working with several score strategies. Can be `multiply`, `sum`, `avg`, `max` and `min`"
+                    type: "string"
+                score_strategies:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/ScoreStrategy"
+
+        QueryFilter:
+            type: "object"
+            description: "Filter representation for a Query."
+            properties:
+                field:
+                    type: "string"
+                values:
+                    type: "array"
+                    items: {}
+                application_type:
+                    description: "When having multiple values, how are they combined. Possible values are [4] for `all values must match`, [5] for `all values must match by using levels`, [8] for `at least one must match`, [16] for excluding them and [32] for promoting them"
+                    default: 8
+                filter_type:
+                    description: "Type of filter. Can be `field` for a simple field inside indexed_metadata, `range` for a range of 2 values [X..Y], `date_range` for a range of 2 dates and `geo` for a coordinate range`"
+                    default: "field"
+
+        QueryAggregation:
+            type: "object"
+            description: "Aggregation representation for a Query."
+            properties:
+                name:
+                    description: "This name will be important for the result object, as will allow you to match with the results"
+                    type: "string"
+                field:
+                    description: "Field for the aggregation"
+                    type: "string"
+                application_type:
+                    description: "When having multiple values, how are they combined. Possible values are [4] for `all values must match`, [5] for `all values must match by using levels`, [8] for `at least one must match`, [16] for excluding them and [32] for promoting them"
+                    type: "integer"
+                    enum: [4, 5, 8, 16, 32]
+                    default: 8
+                filter_type:
+                    description: "Type of filter. Can be `field` for a simple field inside indexed_metadata, `range` for a range of 2 values [X..Y], `date_range` for a range of 2 dates and `geo` for a coordinate range`"
+                    default: "field"
+                sort:
+                    description: "What order aggregations should follow."
+                    type: "object"
+                    enum: [['_count', 'asc'], ['_count', 'desc'], ['_term', 'asc'], ['_term', 'desc']]
+                    default: ['_count', 'desc']
+                limit:
+                    description: "Number of aggregations to return for given field. 0 means no limit."
+                    default: 0
+
+        QuerySortBy:
+            type: "object"
+            description: "Sort by representation for a query"
+            properties:
+                type:
+                    type: "string"
+                    enum: ["score", "field", "nested", "random", "distance", "function"]
+                field:
+                    type: "string"
+                order:
+                    type: "string"
+                    enum: [ "asc", "desc" ]
+
+        Query:
+            type: "object"
+            description: "Query representation. Find among all your items"
+            properties:
+                coordinate:
+                    $ref: "#/components/schemas/Coordinate"
+                q:
+                    type: "string"
+                page:
+                    type: "integer"
+                    default: 1
+                size:
+                    type: "integer"
+                    default: 10
+                fields:
+                    type: "array"
+                    items: {type: "string"}
+                aggregations:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QueryAggregation"
+                filters:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QueryFilter"
+                universe_filters:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QueryFilter"
+                results_enabled:
+                    type: "boolean"
+                    default: true
+                suggestions_enabled:
+                    type: "boolean"
+                    default: true
+                aggregations_enabled:
+                    type: "boolean"
+                    default: true
+                highlights_enabled:
+                    type: "boolean"
+                    default: true
+                items_promoted:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/ItemUUID"
+                fuzziness:
+                    description: "Values can be `Auto` or an integer higher or equal than 1"
+                    type: "string"
+                searchable_fields:
+                    description: "Fields to use for searching. By default, all of them from searchable_metadata and exact_matching_metadata, with an extra weight on this second one"
+                    type: "array"
+                    items: {type: "string" }
+                sort:
+                    description: "Sort by definitions"
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QuerySortBy"
+                score_strategies:
+                    description: "Score strategies to apply during the search"
+                    $ref: "#/components/schemas/ScoreStrategies"
+                min_score:
+                    description: "Min score to apply when filtering result items"
+                    type: "number"
+                    default: 0.0
+                metadata:
+                    description: "Metadata values used in some plugins. Adds some context inside the query action"
+                    type: "object"
+                    items: {}
+                user:
+                    description: "User that is performing this query"
+                    $ref: "#/components/schemas/User"
+                subqueries:
+                    description: "When this query is a multi-query, you should add all your subqueries here"
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/Query"
+                uuid:
+                    description: "Represents a unique identifier for this query"
+                    type: "string"
+                index_uuid:
+                    description: "Represents the index UUID where to perform this query"
+
+        ResultAggregations:
+            type: "object"
+            description: "A set of result aggregations"
+            properties:
+                aggregations:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/ResultAggregation"
+
+        ResultAggregation:
+            type: "object"
+            description: "A representation of a result aggregation"
+            properties:
+                name:
+                    description: "Name of the aggregation. Linkable with the name of the query aggregation"
+                    type: "string"
+                counters:
+                    description: "Aggregation counters that are not active"
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/ResultAggregationCounter"
+                active_elements:
+                    description: "Aggregation counters that are currently active"
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/ResultAggregationCounter"
+                highest_active_level:
+                    description: "When working with levels, like categories, this value will give you the current level"
+                    type: "integer"
+
+        ResultAggregationCounter:
+            type: "object"
+            description: "A single result aggregation counter"
+            properties:
+                values:
+                    description: "Counter values"
+                    type: "object"
+                    properties:
+                        id:
+                            description: "Identifier of the value. Usable for filtering"
+                            type: "string"
+                        name:
+                            description: "Name of the value. Usable for printing"
+                            type: "string"
+                used:
+                    description: "Is this counter used for filtering?"
+                    type: "boolean"
+                n:
+                    description: "Number of times this counter appears in the result subset"
+                    type: "integer"
+
+
+        Result:
+            type: "object"
+            description: "Result representation."
+            properties:
+                query_uuid:
+                    description: "Unique identifier of the source query"
+                    type: "string"
+                total_items:
+                    description: "Number of the items in the index"
+                    type: "integer"
+                total_hits:
+                    description: "Number of the hits given by the query"
+                    type: "integer"
+                items:
+                    description: "Result items"
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Item"
+                aggregations:
+                    description: "Result aggregations"
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/ResultAggregation"
+                suggests:
+                    description: "Suggestions given by the index"
+                    type: array
+                    items:
+                        type: "string"
+                subresults:
+                    description: "When the query has subqueries, the result has subresults"
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Result"
+
+#
+# Security
+#
+security:
+    -
+        token: []
