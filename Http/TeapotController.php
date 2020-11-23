@@ -30,6 +30,6 @@ final class TeapotController extends ControllerWithQueryBus
      */
     public function __invoke(Request $request): Response
     {
-        return new Response(418);
+        return new Response(418, [], 'I\'m a teagod');
     }
 }
