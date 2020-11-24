@@ -16,26 +16,27 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\CommandHandler;
 
 use Apisearch\Server\Domain\Command\ImportIndexByFeed;
+use Apisearch\Server\Domain\Command\ImportIndexByStream;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\Format\FormatTransformers;
 use Apisearch\Server\Domain\Repository\Repository\Repository;
 use Apisearch\Server\Domain\Resource\ResourceLoader;
 use Drift\CommandBus\Bus\CommandBus;
+use Drift\CommandBus\Bus\QueryBus;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use React\Stream\ReadableStreamInterface;
 
 /**
  * Class ImportIndexHandler.
  */
 class ImportIndexByFeedHandler extends ImportIndexHandler
 {
-    /**
-     * @var ResourceLoader
-     */
-    private $resourceLoader;
+    private ResourceLoader $resourceLoader;
 
     /**
      * @param CommandBus         $commandBus
+     * @param QueryBus           $queryBus
      * @param Repository         $repository
      * @param FormatTransformers $formatTransformers
      * @param LoopInterface      $loop
@@ -43,6 +44,7 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
      */
     public function __construct(
         CommandBus $commandBus,
+        QueryBus $queryBus,
         Repository $repository,
         FormatTransformers $formatTransformers,
         LoopInterface $loop,
@@ -50,6 +52,7 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
     ) {
         parent::__construct(
             $commandBus,
+            $queryBus,
             $repository,
             $formatTransformers,
             $loop
@@ -71,12 +74,21 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
     /**
      * @param CommandWithRepositoryReferenceAndToken $command
      *
-     * @return PromiseInterface
+     * @return PromiseInterface<ImportIndexByStream>
      */
-    protected function getStreamByCommand(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
+    protected function getImportIndexByStream(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
     {
         return $this
             ->resourceLoader
-            ->getByPath($command->getFeed());
+            ->getByPath($command->getFeed())
+            ->then(function (ReadableStreamInterface $stream) use ($command) {
+                return new ImportIndexByStream(
+                    $command->getRepositoryReference(),
+                    $command->getToken(),
+                    $stream,
+                    $command->shouldDeleteOldVersions(),
+                    $command->getVersionUUID()
+                );
+            });
     }
 }

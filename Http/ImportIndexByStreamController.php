@@ -37,7 +37,9 @@ final class ImportIndexByStreamController extends ControllerWithCommandBus
     {
         $query = $request->query;
         $stream = $request->get('body');
-        $detached = $query->get('detached', false);
+        $detached = \boolval($query->get('detached', false));
+        $deleteOldVersions = \boolval($query->get('delete_old_versions', false));
+        $currentVersionUUID = \strval($query->get('version', $this->generateUUID4(8)));
 
         if (!$stream instanceof ReadableStreamInterface) {
             return resolve(new Response(400));
@@ -49,7 +51,9 @@ final class ImportIndexByStreamController extends ControllerWithCommandBus
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $stream
+            $stream,
+            $deleteOldVersions,
+            $currentVersionUUID
         ));
 
         return $detached

@@ -336,12 +336,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @param string $appId
      * @param string $index
+     * @param string $path
      */
     protected static function indexTestingItems(
         string $appId = null,
-        string $index = null
+        string $index = null,
+        string $path = null
     ) {
-        $items = Yaml::parse(\file_get_contents(static::getItemsFilePath()));
+        $items = Yaml::parse(\file_get_contents($path ?? static::getItemsFilePath()));
         $itemsInstances = [];
         foreach ($items['items'] as $item) {
             if (isset($item['indexed_metadata']['created_at'])) {
@@ -361,6 +363,16 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     public static function getItemsFilePath(): string
     {
         return __DIR__.'/../items.yml';
+    }
+
+    /**
+     * Get items file path.
+     *
+     * @return string
+     */
+    public static function getItemsReducedFilePath(): string
+    {
+        return __DIR__.'/../items_reduced.yml';
     }
 
     /**
@@ -433,15 +445,19 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Import index by feed.
      *
-     * @param string $feed
-     * @param bool   $detached
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $feed
+     * @param bool        $detached
+     * @param bool        $deleteOldVersions
+     * @param string|null $version
+     * @param string      $appId
+     * @param string      $index
+     * @param Token       $token
      */
     abstract public function importIndexByFeed(
         string $feed,
         bool $detached = false,
+        bool $deleteOldVersions = false,
+        ?string $version = null,
         string $appId = null,
         string $index = null,
         Token $token = null

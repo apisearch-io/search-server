@@ -24,12 +24,7 @@ use Apisearch\Repository\RepositoryReference;
  */
 abstract class CommandWithRepositoryReferenceAndTokenAndIndexUUID extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index UUID
-     */
-    private $indexUUID;
+    private IndexUUID $indexUUID;
 
     /**
      * ResetCommand constructor.

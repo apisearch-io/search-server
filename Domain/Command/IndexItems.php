@@ -29,14 +29,10 @@ class IndexItems extends CommandWithRepositoryReferenceAndToken implements WithR
 {
     /**
      * @var Item[]
-     *
-     * Items
      */
-    private $items;
+    private array $items;
 
     /**
-     * IndexCommand constructor.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param Item[]              $items

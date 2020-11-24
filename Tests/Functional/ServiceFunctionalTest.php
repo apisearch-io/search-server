@@ -59,6 +59,7 @@ use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
 use Clue\React\Block;
 use DateTime;
+use Ramsey\Uuid\UuidFactory;
 use React\Promise\Deferred;
 
 /**
@@ -179,15 +180,19 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Import index by feed.
      *
-     * @param string $feed
-     * @param bool   $detached
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $feed
+     * @param bool        $detached
+     * @param bool        $deleteOldVersions
+     * @param string|null $version
+     * @param string      $appId
+     * @param string      $index
+     * @param Token       $token
      */
     public function importIndexByFeed(
         string $feed,
         bool $detached = false,
+        bool $deleteOldVersions = false,
+        ?string $version = null,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -203,7 +208,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
                     $appUUID
                 ),
-            $feed
+            $feed,
+            $deleteOldVersions,
+            $version ?? (new UuidFactory())->uuid4()->toString()
         ));
     }
 

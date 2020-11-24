@@ -61,20 +61,9 @@ use React\Stream\ReadableStreamInterface;
  */
 class ElasticaWrapper implements AsyncRequestAccessor
 {
-    /**
-     * @var AsyncClient
-     */
-    private $client;
-
-    /**
-     * @var string
-     */
-    private $elasticsearchVersion;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private AsyncClient $client;
+    private string $elasticsearchVersion;
+    private LoopInterface $loop;
 
     /**
      * Construct.
@@ -909,7 +898,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      *
      * @return PromiseInterface
      *
-     * @throws ResourceExistsException
+     * @throws ResourceNotAvailableException
      */
     public function addDocuments(
         RepositoryReference $repositoryReference,
@@ -1052,11 +1041,11 @@ class ElasticaWrapper implements AsyncRequestAccessor
             return "{$prefix}_{$appId}_*";
         }
 
-        $splittedIndexId = \explode(',', $indexId);
+        $indexIdsAsArray = \explode(',', $indexId);
 
         return \implode(',', \array_map(function (string $indexId) use ($prefix, $appId) {
             return \trim("{$prefix}_{$appId}_$indexId", '_ ');
-        }, $splittedIndexId));
+        }, $indexIdsAsArray));
     }
 
     /**

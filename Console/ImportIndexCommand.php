@@ -69,7 +69,9 @@ class ImportIndexCommand extends CommandWithCommandBusAndGodToken
         $this->executeAndWait(new ImportIndexByFeed(
             $objects['repository_reference'],
             $this->createGodToken($objects['app_uuid']),
-            $input->getArgument('source')
+            $input->getArgument('source'),
+            false,
+            ''
         ));
 
         return 0;

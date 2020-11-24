@@ -1,0 +1,119 @@
+items:
+    1_product:
+        uuid:
+            id: 1
+            type: product
+        coordinate:
+            lat: 30
+            lon: 30
+        metadata:
+            field: true
+            array_of_arrays:
+                - {id: 1, name: "number_1"}
+                - {id: 2, name: "number_2"}
+            stored_field_boolean_false: false
+            updated: true
+        indexed_metadata:
+            field_text: "This is my field one"
+            field_keyword: "my_keyword"
+            field_boolean: true
+            field_boolean_false: false
+            field_integer: 10
+            simple_int: 7
+            simple_string: hola
+            price: 950
+            created_at: "2020-01-01T00:00:00+00:00"
+            color:
+                - pink
+            editorial:
+                - id: 111
+                  name: Alfaguarra
+            category:
+                - {id: 1, name: cat1, level: 1}
+                - {id: 2, name: cat2, level: 2}
+                - {id: 3, name: cat3, level: 3}
+            sortable_data:
+                - "1"
+                - "3"
+            stores:
+                - ppal
+            field_for_boosting_test:
+                - one
+                - two
+            other_field_for_boosting_test:
+                - one
+                - two
+            relevance: 50
+            strange_field: "煮"
+            array_of_values:
+                first: 1
+                second: 2
+            array_of_arrays_ids:
+                - "1"
+                - "2"
+            brand:
+                - {id: 1, category: 1, rank: 10}
+                - {id: 2, category: 1, rank: 8}
+                - {id: 3, category: 2, rank: 13}
+            comic:
+                - { id: "t%27challa_(earth-616)", name: "Challa" }
+                - { id: "t'chollo_(earth-616)", name: "Chollo" }
+        searchable_metadata:
+            editorial: "Alfaguarra"
+            specific: "Stylestep"
+            boosting: "boosting"
+            strange_field: "煮"
+
+    2_product:
+        uuid:
+            id: 2
+            type: product
+        coordinate:
+            lat: 55
+            lon: 35
+        metadata:
+            field: true
+            array_of_arrays:
+                - {id: 1, name: "number_1"}
+                - {id: 3, name: "number_3"}
+            updated: true
+        indexed_metadata:
+            simple_int: 6
+            simple_string: canasta
+            price: 1500
+            created_at: "2020-02-02T00:00:00+00:00"
+            author:
+                - {id: 111, name: Marc, last_name: Morera}
+            editorial:
+                - {id: 333, name: Matutano}
+            category:
+                - {id: 1, name: cat1, level: 1}
+                - {id: 2, name: cat2, level: 2}
+                - {id: 4, name: cat4, level: 3}
+            sortable_data:
+                - "3"
+            stores:
+                - sec
+            field_for_boosting_test:
+                - one
+                - two
+                - three
+            other_field_for_boosting_test:
+                - one
+                - two
+                - three
+            relevance: 10
+            array_of_arrays_ids:
+                - "1"
+                - "3"
+            brand:
+                - {id: 2, category: 1, rank: 12}
+                - {id: 3, category: 2, rank: 5}
+        searchable_metadata:
+            editorial: "Matutano"
+            specific: "This style of the steep is not good, and the steep of the style, neither. Set this style, and the step."
+            boosting:
+                - "boosting"
+                - "anotherboosting"
+        suggest:
+            - barce

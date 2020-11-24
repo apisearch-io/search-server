@@ -31,15 +31,8 @@ use React\Stream\WritableStreamInterface;
  */
 class ItemToLineExportMiddleware implements DiscriminableMiddleware
 {
-    /**
-     * @var FormatTransformers
-     */
-    private $formatTransformers;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private FormatTransformers $formatTransformers;
+    private LoopInterface $loop;
 
     /**
      * @param FormatTransformers $formatTransformers

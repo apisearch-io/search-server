@@ -28,6 +28,7 @@ use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\InternalVersionUUID;
 use function Drift\React\wait_for_stream_listeners;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
@@ -43,12 +44,8 @@ class InMemoryRepository implements FullRepository, ResetableRepository
     /**
      * @var Index[]
      */
-    protected $indices = [];
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    protected array $indices = [];
+    private LoopInterface $loop;
 
     /**
      * @param LoopInterface $loop
@@ -209,6 +206,7 @@ class InMemoryRepository implements FullRepository, ResetableRepository
                             continue 2;
                         }
 
+                        $item->deleteIndexedMetadata(InternalVersionUUID::INDEXED_METADATA_FIELD);
                         $stream->write($item);
                     }
                 }
@@ -409,15 +407,27 @@ class InMemoryRepository implements FullRepository, ResetableRepository
                 $fieldValues = \is_array($fieldValues) ? $fieldValues : [$fieldValues];
                 $expectedValues = $universeFilter->getValues();
 
-                return Filter::MUST_ALL === $universeFilter->getApplicationType()
-                    ? \count(\array_intersect($expectedValues, $fieldValues)) === \count($expectedValues)
-                    : \count(\array_intersect($expectedValues, $fieldValues)) > 0;
+                if (Filter::MUST_ALL === $universeFilter->getApplicationType()) {
+                    return \count(\array_intersect($expectedValues, $fieldValues)) === \count($expectedValues);
+                }
+
+                if (Filter::AT_LEAST_ONE === $universeFilter->getApplicationType()) {
+                    return \count(\array_intersect($expectedValues, $fieldValues)) > 0;
+                }
+
+                if (Filter::EXCLUDE === $universeFilter->getApplicationType()) {
+                    return 0 == \count(\array_intersect($expectedValues, $fieldValues));
+                }
+
+                return true;
             });
         }
 
         $itemCopies = [];
         foreach ($items as $item) {
-            $itemCopies[] = Item::createFromArray($item->toArray());
+            $itemCopy = Item::createFromArray($item->toArray());
+            $itemCopy->deleteIndexedMetadata(InternalVersionUUID::INDEXED_METADATA_FIELD);
+            $itemCopies[] = $itemCopy;
         }
         $items = $itemCopies;
 

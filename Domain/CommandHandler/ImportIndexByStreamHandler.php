@@ -38,10 +38,10 @@ class ImportIndexByStreamHandler extends ImportIndexHandler
     /**
      * @param CommandWithRepositoryReferenceAndToken $command
      *
-     * @return PromiseInterface
+     * @return PromiseInterface<ImportIndexByStream>
      */
-    protected function getStreamByCommand(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
+    protected function getImportIndexByStream(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
     {
-        return resolve($command->getStream());
+        return resolve($command);
     }
 }
