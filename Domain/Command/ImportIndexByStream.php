@@ -25,10 +25,9 @@ use React\Stream\ReadableStreamInterface;
  */
 class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var ReadableStreamInterface
-     */
-    private $stream;
+    private ReadableStreamInterface $stream;
+    private bool $deleteOldVersions;
+    private string $versionUUID;
 
     /**
      * ResetCommand constructor.
@@ -36,14 +35,20 @@ class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
      * @param RepositoryReference     $repositoryReference
      * @param Token                   $token
      * @param ReadableStreamInterface $stream
+     * @param bool                    $deleteOldVersions
+     * @param string                  $versionUUID
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        ReadableStreamInterface $stream
+        ReadableStreamInterface $stream,
+        bool $deleteOldVersions,
+        string $versionUUID
     ) {
         parent::__construct($repositoryReference, $token);
         $this->stream = $stream;
+        $this->deleteOldVersions = $deleteOldVersions;
+        $this->versionUUID = $versionUUID;
     }
 
     /**
@@ -52,5 +57,21 @@ class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
     public function getStream(): ReadableStreamInterface
     {
         return $this->stream;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldDeleteOldVersions(): bool
+    {
+        return $this->deleteOldVersions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersionUUID(): string
+    {
+        return $this->versionUUID;
     }
 }

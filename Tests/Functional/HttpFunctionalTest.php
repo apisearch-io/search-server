@@ -160,15 +160,19 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Import index by feed.
      *
-     * @param string $feed
-     * @param bool   $detached
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $feed
+     * @param bool        $detached
+     * @param bool        $deleteOldVersions
+     * @param string|null $version
+     * @param string      $appId
+     * @param string      $index
+     * @param Token       $token
      */
     public function importIndexByFeed(
         string $feed,
         bool $detached = false,
+        bool $deleteOldVersions = false,
+        ?string $version = null,
         string $appId = null,
         string $index = null,
         Token $token = null
@@ -184,6 +188,8 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             [
                 'feed' => $feed,
                 'detached' => $detached,
+                'delete_old_versions' => $deleteOldVersions,
+                'version' => $version,
             ]
         );
     }

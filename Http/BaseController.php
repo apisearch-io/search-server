@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Http;
 
 use Apisearch\Server\Domain\Model\Origin;
+use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,6 +60,16 @@ abstract class BaseController
             $this->getRemoteAddrFromHeaderBag($headers),
             $headers->get('USER_AGENT', '')
         );
+    }
+
+    /**
+     * @param int $length
+     *
+     * @return string
+     */
+    protected function generateUUID4(int $length = 32): string
+    {
+        return \substr((new UuidFactory())->uuid4()->toString(), 0, $length);
     }
 
     /**

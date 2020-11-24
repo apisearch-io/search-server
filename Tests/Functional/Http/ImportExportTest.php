@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Query\Query;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\InternalVersionUUID;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory;
@@ -50,7 +51,7 @@ class ImportExportTest extends CurlFunctionalTest
         @\unlink('/tmp/dump.apisearch');
         $this->resetIndex();
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
-        $this->importIndexByFeed('file:///tmp/dump.apisearch');
+        $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false, '1334');
         $source2 = $this->exportIndex('source');
         $this->assertEquals($source, $source2);
     }
@@ -113,7 +114,7 @@ class ImportExportTest extends CurlFunctionalTest
     public function testImportNonExistingIndex()
     {
         $this->expectException(ResourceNotAvailableException::class);
-        $this->importIndexByFeed('file://'.__DIR__.'/dump.source.as', false, static::$anotherInexistentAppId, static::$appId);
+        $this->importIndexByFeed('file://'.__DIR__.'/dump.source.as', false, false, null, static::$anotherInexistentAppId, static::$appId);
     }
 
     /**
@@ -180,5 +181,58 @@ class ImportExportTest extends CurlFunctionalTest
         });
 
         $this->await($promise, $loop);
+    }
+
+    /**
+     * Test import by version.
+     */
+    public function testImportByVersion()
+    {
+        $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
+        $source = $this->exportIndex('source');
+        @\unlink('/tmp/dump.apisearch');
+        \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
+        $this->resetIndex();
+        $this->indexTestingItems(self::$appId, self::$index, self::getItemsReducedFilePath());
+        $sourceReduced = $this->exportIndex('source');
+        @\unlink('/tmp/dump.reduced.apisearch');
+        \file_put_contents('/tmp/dump.reduced.apisearch', \implode("\n", $sourceReduced)."\n");
+        $this->resetIndex();
+
+        $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false);
+        $totalItems = $this->query(Query::createMatchAll())->getTotalItems();
+        $this->assertEquals(5, $totalItems);
+
+        $this->importIndexByFeed('file:///tmp/dump.reduced.apisearch', false, true);
+        $totalItems = $this->query(Query::createMatchAll())->getTotalItems();
+        $this->assertEquals(2, $totalItems);
+    }
+
+    /**
+     * Test import by version.
+     */
+    public function testImportByCustomVersion()
+    {
+        $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
+        $source = $this->exportIndex('source');
+        @\unlink('/tmp/dump.apisearch');
+        \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
+        $this->resetIndex();
+        $this->indexTestingItems(self::$appId, self::$index, self::getItemsReducedFilePath());
+        $sourceReduced = $this->exportIndex('source');
+        @\unlink('/tmp/dump.reduced.apisearch');
+        \file_put_contents('/tmp/dump.reduced.apisearch', \implode("\n", $sourceReduced)."\n");
+        $this->resetIndex();
+
+        $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false);
+        $totalItems = $this->query(Query::createMatchAll())->getTotalItems();
+        $this->assertEquals(5, $totalItems);
+
+        $this->importIndexByFeed('file:///tmp/dump.reduced.apisearch', false, true, 'custom_UUID_123');
+        $totalItems = $this->query(Query::createMatchAll())->getTotalItems();
+        $this->assertEquals(2, $totalItems);
+
+        $totalItems = $this->query(Query::createMatchAll()->filterUniverseBy(InternalVersionUUID::INDEXED_METADATA_FIELD, ['custom_UUID_123']))->getTotalItems();
+        $this->assertEquals(2, $totalItems);
     }
 }

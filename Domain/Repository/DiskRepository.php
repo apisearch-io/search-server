@@ -33,10 +33,7 @@ use React\Stream\DuplexStreamInterface;
  */
 class DiskRepository extends InMemoryRepository implements FullRepository
 {
-    /**
-     * @var string
-     */
-    private $file;
+    private string $file;
 
     /**
      * @param string        $file

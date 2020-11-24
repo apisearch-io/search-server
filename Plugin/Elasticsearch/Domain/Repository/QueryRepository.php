@@ -29,6 +29,7 @@ use Apisearch\Plugin\Elasticsearch\Domain\WithElasticaWrapper;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Model\InternalVersionUUID;
 use Apisearch\Server\Domain\Model\ServerQuery;
 use Apisearch\Server\Domain\Repository\Repository\QueryRepository as QueryRepositoryInterface;
 use function Drift\React\wait_for_stream_listeners;
@@ -49,20 +50,9 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
 {
     use Transformers;
 
-    /**
-     * @var QueryBuilder
-     */
-    private $queryBuilder;
-
-    /**
-     * @var ResultBuilder
-     */
-    private $resultBuilder;
-
-    /**
-     * @var LoopInterface
-     */
-    private $loop;
+    private QueryBuilder $queryBuilder;
+    private ResultBuilder $resultBuilder;
+    private LoopInterface $loop;
 
     /**
      * ElasticaSearchRepository constructor.
@@ -154,6 +144,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                         );
 
                         foreach ($result->getItems() as $item) {
+                            $item->deleteIndexedMetadata(InternalVersionUUID::INDEXED_METADATA_FIELD);
                             $stream->write($item);
                         }
                     });
@@ -294,6 +285,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                 $source['distance'] = $elasticaResult->getParam('sort')[0];
             }
 
+            unset($source['indexed_metadata'][InternalVersionUUID::INDEXED_METADATA_FIELD]);
             $item = Item::createFromArray($source);
             $score = $elasticaResult->getScore();
             $item->setScore(\is_float($score)

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0022084c9df1f7d1a5536f8b306da73c",
+    "content-hash": "2d55cde8e7a5a66cd17d0979f59ad616",
     "packages": [
         {
             "name": "alecrabbit/php-cli-snake",
@@ -116,16 +116,16 @@
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.34",
+            "version": "0.1.35",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "635dd995a8b5f1f719a6200789cfe9a6f86b93a1"
+                "reference": "99322be81a3424c2417e909a41329376978168e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/635dd995a8b5f1f719a6200789cfe9a6f86b93a1",
-                "reference": "635dd995a8b5f1f719a6200789cfe9a6f86b93a1",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/99322be81a3424c2417e909a41329376978168e8",
+                "reference": "99322be81a3424c2417e909a41329376978168e8",
                 "shasum": ""
             },
             "require": {
@@ -157,9 +157,9 @@
             "description": "PHP Library for Apisearch",
             "support": {
                 "issues": "https://github.com/apisearch-io/php-client/issues",
-                "source": "https://github.com/apisearch-io/php-client/tree/0.1.34"
+                "source": "https://github.com/apisearch-io/php-client/tree/0.1.35"
             },
-            "time": "2020-11-17T23:14:36+00:00"
+            "time": "2020-11-24T22:36:33+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -2432,16 +2432,16 @@
         },
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.102",
+            "version": "v1.2.103",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "346cfd72d11bb41f15e82654e532dc55360612ac"
+                "reference": "3efa2860959cc971f17624b40bf0699823f9d0f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/346cfd72d11bb41f15e82654e532dc55360612ac",
-                "reference": "346cfd72d11bb41f15e82654e532dc55360612ac",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/3efa2860959cc971f17624b40bf0699823f9d0f3",
+                "reference": "3efa2860959cc971f17624b40bf0699823f9d0f3",
                 "shasum": ""
             },
             "require": {
@@ -2478,9 +2478,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
-                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.102"
+                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.103"
             },
-            "time": "2020-11-04T19:23:01+00:00"
+            "time": "2020-11-23T19:49:25+00:00"
         },
         {
             "name": "jenssegers/agent",

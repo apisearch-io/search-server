@@ -24,19 +24,8 @@ use React\Promise\PromiseInterface;
  */
 abstract class WithElasticaWrapper implements AsyncRequestAccessor
 {
-    /**
-     * @var ElasticaWrapper
-     *
-     * Elastica wrapper
-     */
-    protected $elasticaWrapper;
-
-    /**
-     * @var bool
-     *
-     * Refresh on write
-     */
-    protected $refreshOnWrite;
+    protected ElasticaWrapper $elasticaWrapper;
+    protected bool $refreshOnWrite;
 
     /**
      * ElasticaSearchRepository constructor.

@@ -39,12 +39,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
 {
     use Transformers;
 
-    /**
-     * @var QueryBuilder
-     *
-     * Query builder
-     */
-    private $queryBuilder;
+    private QueryBuilder $queryBuilder;
 
     /**
      * ElasticaSearchRepository constructor.

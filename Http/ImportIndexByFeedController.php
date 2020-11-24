@@ -36,7 +36,9 @@ final class ImportIndexByFeedController extends ControllerWithCommandBus
     {
         $query = $request->query;
         $feed = $query->get('feed');
-        $detached = $query->get('detached', false);
+        $detached = \boolval($query->get('detached', false));
+        $deleteOldVersions = \boolval($query->get('delete_old_versions', false));
+        $currentVersionUUID = \strval($query->get('version', $this->generateUUID4(8)));
 
         $promise = $this->execute(new ImportIndexByFeed(
             RepositoryReference::create(
@@ -44,7 +46,9 @@ final class ImportIndexByFeedController extends ControllerWithCommandBus
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $feed
+            $feed,
+            $deleteOldVersions,
+            $currentVersionUUID
         ));
 
         return $detached

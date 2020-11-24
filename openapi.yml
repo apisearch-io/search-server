@@ -514,6 +514,18 @@ paths:
                 schema:
                     enum: [0, 1]
                     default: 0
+            -   in: "query"
+                name: "delete_old_versions"
+                description: "Delete old versions by filtering by a version UUID different than the current one"
+                required: false
+                schema:
+                    enum: [ 0, 1 ]
+                    default: 0
+            -   in: "query"
+                name: "version"
+                description: "Adds this version to each item, related to the import action. By default, a 8-bytes random one"
+                required: false
+                schema: { format: "string" }
 
     /v1/{app_id}/indices/{index_id}/import-by-stream:
         put:
@@ -554,6 +566,18 @@ paths:
                 schema:
                     enum: [ 0, 1 ]
                     default: 0
+            -   in: "query"
+                name: "delete_old_versions"
+                description: "Delete old versions by filtering by a version UUID different than the current one"
+                required: false
+                schema:
+                    enum: [ 0, 1 ]
+                    default: 0
+            -   in: "query"
+                name: "version"
+                description: "Adds this version to each item, related to the import action. By default, a 8-bytes random one"
+                required: false
+                schema: { format: "string" }
 
     /v1/{app_id}:
         get:
@@ -590,9 +614,6 @@ paths:
                         $ref: "#/components/examples/query-with-filter"
                     query-with-filter-and-aggregation:
                         $ref: "#/components/examples/query-with-filter-and-aggregation"
-
-
-
 
 #
 # Components
