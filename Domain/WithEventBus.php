@@ -22,12 +22,7 @@ use Drift\EventBus\Bus\EventBus;
  */
 abstract class WithEventBus
 {
-    /**
-     * @var EventBus
-     *
-     * Event publisher
-     */
-    protected $eventBus;
+    protected EventBus $eventBus;
 
     /**
      * WithEventBus constructor.

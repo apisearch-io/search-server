@@ -27,19 +27,8 @@ use Apisearch\Server\Domain\IndexRequiredCommand;
  */
 class CreateIndex extends CommandWithRepositoryReferenceAndToken implements IndexRequiredCommand
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index uuid
-     */
-    private $indexUUID;
-
-    /**
-     * @var Config
-     *
-     * Config
-     */
-    private $config;
+    private IndexUUID $indexUUID;
+    private Config $config;
 
     /**
      * ResetCommand constructor.

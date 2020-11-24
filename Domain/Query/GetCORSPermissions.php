@@ -27,10 +27,7 @@ class GetCORSPermissions implements IndexRequiredCommand
 {
     use WithRepositoryReferenceTrait;
 
-    /**
-     * @var Origin
-     */
-    private $origin;
+    private Origin $origin;
 
     /**
      * @param RepositoryReference $repositoryReference

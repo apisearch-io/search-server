@@ -615,6 +615,92 @@ paths:
                     query-with-filter-and-aggregation:
                         $ref: "#/components/examples/query-with-filter-and-aggregation"
 
+    /v1/{app_id}/indices/{index_id}/similar-items:
+        get:
+            summary: "By passing an array of existing items, get similar items"
+            description: "This route is named `v1_get_similar_items`"
+            tags: [ "query" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                query:
+                                    $ref: "#/components/schemas/ReducedQuery"
+                                items_uuid:
+                                    type: array
+                                    items:
+                                        $ref: "#/components/schemas/ItemUUID"
+                            example:
+                                query:
+                                    size: 5
+                                    page: 1
+                                items_uuid:
+                                    - { id: "123", type: "product" }
+                                    - { id: "456", type: "product" }
+
+            responses:
+                200:
+                    description: "Result with similar items"
+                    $ref: "#/components/schemas/Result"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+            parameters:
+                -   in: "path"
+                    name: "app_id"
+                    required: true
+                    description: "App composed UUID"
+                    schema: { format: "string" }
+                -   in: "path"
+                    name: "index_id"
+                    required: true
+                    description: "Index composed UUID"
+                    schema: { format: "string" }
+
+
+    /v1/{app_id}/indices/{index_id}/recommended-items:
+        get:
+            summary: "By passing a possible user ID, and having all internal metrics, get recommended items"
+            description: "This route is named `v1_get_recommended_items`"
+            tags: [ "query" ]
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ReducedQuery"
+                        example:
+                            size: 5
+                            page: 1
+
+            responses:
+                200:
+                    description: "Result with recommended items"
+                    $ref: "#/components/schemas/Result"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+
+            parameters:
+                -   in: "path"
+                    name: "app_id"
+                    required: true
+                    description: "App composed UUID"
+                    schema: { format: "string" }
+                -   in: "path"
+                    name: "index_id"
+                    required: true
+                    description: "Index composed UUID"
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "user_id"
+                    required: false
+                    description: "User that makes the call"
+                    schema: { format: "string" }
+
 #
 # Components
 #
@@ -1013,6 +1099,63 @@ components:
                     description: "Represents the index UUID where to perform this query"
                     $ref: "#/components/schemas/IndexUUID"
 
+        ReducedQuery:
+            type: "object"
+            description: "Reduced Query representation. Specifically for pagination, sort-by and limit"
+            properties:
+                coordinate:
+                    $ref: "#/components/schemas/Coordinate"
+                page:
+                    type: "integer"
+                    default: 1
+                size:
+                    type: "integer"
+                    default: 10
+                fields:
+                    type: "array"
+                    items: { type: "string" }
+                universe_filters:
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QueryFilter"
+                results_enabled:
+                    type: "boolean"
+                    default: true
+                suggestions_enabled:
+                    type: "boolean"
+                    default: true
+                highlights_enabled:
+                    type: "boolean"
+                    default: true
+                fuzziness:
+                    description: "Values can be `Auto` or an integer higher or equal than 1"
+                    type: "string"
+                sort:
+                    description: "Sort by definitions"
+                    type: "array"
+                    items:
+                        $ref: "#/components/schemas/QuerySortBy"
+                score_strategies:
+                    description: "Score strategies to apply during the search"
+                    $ref: "#/components/schemas/ScoreStrategies"
+                min_score:
+                    description: "Min score to apply when filtering result items"
+                    type: "number"
+                    default: 0.0
+                metadata:
+                    description: "Metadata values used in some plugins. Adds some context inside the query action"
+                    type: "object"
+                    items: { }
+                user:
+                    description: "User that is performing this query"
+                    $ref: "#/components/schemas/User"
+                uuid:
+                    description: "Represents a unique identifier for this query"
+                    type: "string"
+                index_uuid:
+                    description: "Represents the index UUID where to perform this query"
+                    $ref: "#/components/schemas/IndexUUID"
+
         ResultAggregations:
             type: "object"
             description: "A set of result aggregations"
@@ -1137,6 +1280,12 @@ components:
                         filter_type: "field"
                         sort: {0: "_count", 1: "desc"}
                         limit: 10
+
+        query-with-page-and-size:
+            summary: "Pagination and number of elements"
+            value:
+                page: 1
+                size: 10
 #
 # Security
 #

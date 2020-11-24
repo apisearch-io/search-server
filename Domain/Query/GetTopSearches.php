@@ -25,40 +25,13 @@ use DateTime;
  */
 class GetTopSearches extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var DateTime|null
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
-
-    /**
-     * @var string|null
-     */
-    private $platform;
-
-    /**
-     * @var string|null
-     */
-    private $user;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithResults;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithoutResults;
-
-    /**
-     * @var int|null
-     */
-    private $n;
+    private ?DateTime $from;
+    private ?DateTime $to;
+    private ?string $platform;
+    private ?string $user;
+    private bool $excludeWithResults;
+    private bool $excludeWithoutResults;
+    private ?int $n;
 
     /**
      * @param RepositoryReference $repositoryReference
@@ -69,7 +42,7 @@ class GetTopSearches extends CommandWithRepositoryReferenceAndToken
      * @param string|null         $user
      * @param bool                $excludeWithResults
      * @param bool                $excludeWithoutResults
-     * @param int                 $n
+     * @param int|null            $n
      */
     public function __construct(
         RepositoryReference $repositoryReference,

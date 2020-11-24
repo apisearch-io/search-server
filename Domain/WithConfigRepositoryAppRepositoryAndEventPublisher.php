@@ -25,10 +25,7 @@ use Drift\EventBus\Bus\EventBus;
  */
 abstract class WithConfigRepositoryAppRepositoryAndEventPublisher extends WithAppRepositoryAndEventPublisher
 {
-    /**
-     * @var ConfigRepository
-     */
-    protected $configRepository;
+    protected ConfigRepository $configRepository;
 
     /**
      * QueryHandler constructor.

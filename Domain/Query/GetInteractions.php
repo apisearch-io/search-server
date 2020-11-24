@@ -25,45 +25,14 @@ use DateTime;
  */
 class GetInteractions extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var DateTime|null
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
-
-    /**
-     * @var bool
-     */
-    private $perDay;
-
-    /**
-     * @var string|null
-     */
-    private $platform;
-
-    /**
-     * @var string|null
-     */
-    private $user;
-
-    /**
-     * @var string|null
-     */
-    private $itemId;
-
-    /**
-     * @var string|null
-     */
-    private $type;
-
-    /**
-     * @var string
-     */
-    private $count;
+    private ?DateTime $from;
+    private ?DateTime $to;
+    private bool $perDay;
+    private ?string $platform;
+    private ?string $user;
+    private ?string $itemId;
+    private ?string $type;
+    private ?string $count;
 
     /**
      * @param RepositoryReference $repositoryReference

@@ -24,10 +24,7 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
  */
 class ExportIndex extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var string
-     */
-    private $format;
+    private string $format;
 
     /**
      * ResetCommand constructor.

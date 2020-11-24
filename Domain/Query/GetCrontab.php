@@ -24,10 +24,8 @@ class GetCrontab
 {
     /**
      * @var CrontabLine[]
-     *
-     * Crontab lines
      */
-    private $lines = [];
+    private array $lines = [];
 
     /**
      * @param CrontabLine $line

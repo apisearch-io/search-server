@@ -15,24 +15,22 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Query;
 
-use Apisearch\Model\ItemUUID;
 use Apisearch\Model\Token;
 use Apisearch\Query\Query as Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
+use Apisearch\Server\Domain\Model\Origin;
 
 /**
- * Class GetSimilarItems
+ * Class GetRecommendedItems
  */
-class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
+class GetRecommendedItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
-    /**
-     * @var ItemUUID[]
-     */
-    private array $itemsUUID;
     private Query $query;
+    private ?string $user;
+    private Origin $origin;
 
     /**
      * DeleteCommand constructor.
@@ -40,13 +38,15 @@ class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements 
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param Query               $query
-     * @param ItemUUID[]          $itemsUUID
+     * @param string|null $user
+     * @param Origin $origin
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
         Query $query,
-        array $itemsUUID
+        ?string $user,
+        Origin $origin
     ) {
         parent::__construct(
             $repositoryReference,
@@ -54,7 +54,8 @@ class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements 
         );
 
         $this->query = $query;
-        $this->itemsUUID = $itemsUUID;
+        $this->user = $user;
+        $this->origin = $origin;
     }
 
     /**
@@ -66,12 +67,18 @@ class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements 
     }
 
     /**
-     * Get Items.
-     *
-     * @return ItemUUID[]
+     * @return string|null
      */
-    public function getItemsUUID(): array
+    public function getUser():? string
     {
-        return $this->itemsUUID;
+        return $this->user;
+    }
+
+    /**
+     * @return Origin
+     */
+    public function getOrigin(): Origin
+    {
+        return $this->origin;
     }
 }
