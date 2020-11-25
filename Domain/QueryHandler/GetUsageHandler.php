@@ -24,10 +24,7 @@ use React\Promise\PromiseInterface;
  */
 class GetUsageHandler
 {
-    /**
-     * @var UsageRepository
-     */
-    private $usageRepository;
+    private UsageRepository $usageRepository;
 
     /**
      * @param UsageRepository $usageRepository

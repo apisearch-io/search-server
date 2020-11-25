@@ -36,7 +36,7 @@ trait GetSimilarItems
         ]);
 
         $response = static::request(
-            'v1_get_similar',
+            'v1_get_similar_items',
             [
                 'app_id' => $appId ?? static::$appId,
                 'index_id' => $index ?? static::$index,

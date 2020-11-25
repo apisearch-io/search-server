@@ -239,16 +239,29 @@ apisearch_v1_query_all_indices_preflight:
 #
 # Similar + Recommend API
 #
-apisearch_v1_get_similar:
-    path: /v1/{app_id}/indices/{index_id}/similar
+apisearch_v1_get_similar_items:
+    path: /v1/{app_id}/indices/{index_id}/similar-items
     methods: ["GET"]
     controller: Apisearch\Server\Http\GetSimilarItemsController
     defaults:
         with_query: true
         tags: [query]
 
-apisearch_v1_get_similar_preflight:
-    path: /v1/{app_id}/indices/{index_id}/similar
+apisearch_v1_get_similar_items_preflight:
+    path: /v1/{app_id}/indices/{index_id}/similar-items
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Http\QueryCORSController
+
+apisearch_v1_get_recommended_items:
+    path: /v1/{app_id}/indices/{index_id}/recommended-items
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetRecommendedItemsController
+    defaults:
+        with_query: true
+        tags: [query]
+
+apisearch_v1_get_recommended_items_preflight:
+    path: /v1/{app_id}/indices/{index_id}/recommended-items
     methods: ["OPTIONS"]
     controller: Apisearch\Server\Http\QueryCORSController
 

@@ -28,24 +28,9 @@ use Apisearch\Server\Domain\IndexRequiredCommand;
  */
 class ConfigureIndex extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index uuid
-     */
-    private $indexUUID;
-
-    /**
-     * @var Config
-     *
-     * Config
-     */
-    private $config;
-
-    /**
-     * @var bool
-     */
-    private $forceReindex;
+    private IndexUUID $indexUUID;
+    private Config $config;
+    private bool $forceReindex;
 
     /**
      * ResetCommand constructor.

@@ -25,25 +25,10 @@ use DateTime;
  */
 class GetUsage extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var DateTime
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
-
-    /**
-     * @var string|null
-     */
-    private $eventName;
-
-    /**
-     * @var bool
-     */
-    private $perDay;
+    private ?DateTime $from;
+    private ?DateTime $to;
+    private ?string $eventName;
+    private bool $perDay;
 
     /**
      * @param RepositoryReference $repositoryReference

@@ -22,12 +22,7 @@ use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository
  */
 abstract class WithAppRepository
 {
-    /**
-     * @var AppRepository
-     *
-     * App Repository
-     */
-    protected $appRepository;
+    protected AppRepository $appRepository;
 
     /**
      * QueryHandler constructor.

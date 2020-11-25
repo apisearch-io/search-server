@@ -25,45 +25,14 @@ use DateTime;
  */
 class GetSearches extends CommandWithRepositoryReferenceAndToken
 {
-    /**
-     * @var DateTime|null
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
-
-    /**
-     * @var bool
-     */
-    private $perDay;
-
-    /**
-     * @var string|null
-     */
-    private $platform;
-
-    /**
-     * @var string|null
-     */
-    private $user;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithResults;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithoutResults;
-
-    /**
-     * @var string|null
-     */
-    private $count;
+    private ?DateTime $from;
+    private ?DateTime $to;
+    private bool $perDay;
+    private ?string $platform;
+    private ?string $user;
+    private bool $excludeWithResults;
+    private bool $excludeWithoutResults;
+    private ?string $count;
 
     /**
      * @param RepositoryReference $repositoryReference

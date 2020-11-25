@@ -28,19 +28,8 @@ use Apisearch\Server\Domain\IndexRequiredCommand;
  */
 class UpdateItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
-    /**
-     * @var Query
-     *
-     * Query
-     */
-    private $query;
-
-    /**
-     * @var Changes
-     *
-     * Changes
-     */
-    private $changes;
+    private Query $query;
+    private Changes $changes;
 
     /**
      * IndexCommand constructor.

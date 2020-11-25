@@ -25,10 +25,7 @@ use React\Promise\PromiseInterface;
  */
 class GetTopInteractionsHandler
 {
-    /**
-     * @var InteractionRepository
-     */
-    private $interactionRepository;
+    private InteractionRepository $interactionRepository;
 
     /**
      * @param InteractionRepository $interactionRepository

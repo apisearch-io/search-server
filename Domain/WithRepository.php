@@ -22,12 +22,7 @@ use Apisearch\Repository\Repository;
  */
 abstract class WithRepository
 {
-    /**
-     * @var Repository
-     *
-     * Repository
-     */
-    protected $repository;
+    protected Repository $repository;
 
     /**
      * QueryHandler constructor.

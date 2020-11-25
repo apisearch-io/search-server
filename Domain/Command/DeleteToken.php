@@ -26,12 +26,7 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
  */
 class DeleteToken extends CommandWithRepositoryReferenceAndToken implements AppRequiredCommand
 {
-    /**
-     * @var TokenUUID
-     *
-     * TokenUUID to delete
-     */
-    private $tokenUUIDToDelete;
+    private TokenUUID $tokenUUIDToDelete;
 
     /**
      * AddToken constructor.

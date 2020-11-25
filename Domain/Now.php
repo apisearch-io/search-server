@@ -25,6 +25,8 @@ class Now
     /**
      * In epoch time with microseconds.
      *
+     * @param Carbon|null $now
+     *
      * @return int
      */
     public static function epochTimeWithMicroseconds(Carbon $now = null): int
