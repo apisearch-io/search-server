@@ -31,7 +31,7 @@ class InMemorySearchesRepository implements SearchesRepository, TemporarySearche
     /**
      * @var Search[]
      */
-    private $searches = [];
+    private array $searches = [];
 
     /**
      * @param RepositoryReference $repositoryReference
@@ -154,8 +154,6 @@ class InMemorySearchesRepository implements SearchesRepository, TemporarySearche
     }
 
     /**
-     * Interaction is valid given a filter.
-     *
      * @param Search         $search
      * @param SearchesFilter $filter
      *

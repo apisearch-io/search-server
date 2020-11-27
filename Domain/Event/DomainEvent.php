@@ -24,24 +24,9 @@ use Carbon\Carbon;
  */
 abstract class DomainEvent
 {
-    /**
-     * @var int
-     *
-     * Occurred on
-     */
-    private $occurredOn;
-
-    /**
-     * @var Carbon;
-     *
-     * Now
-     */
-    private $now;
-
-    /**
-     * @var RepositoryReference
-     */
-    private $repositoryReference;
+    private int $occurredOn;
+    private Carbon $now;
+    private RepositoryReference $repositoryReference;
 
     /**
      * DomainEvent.
@@ -88,7 +73,7 @@ abstract class DomainEvent
     /**
      * Set repository reference.
      *
-     * @param RepositoryReference
+     * @param RepositoryReference $repositoryReference
      */
     public function withRepositoryReference(RepositoryReference $repositoryReference)
     {

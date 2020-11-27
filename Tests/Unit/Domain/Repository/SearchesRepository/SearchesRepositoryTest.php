@@ -29,29 +29,10 @@ use React\EventLoop\LoopInterface;
  */
 abstract class SearchesRepositoryTest extends BaseUnitTest
 {
-    /**
-     * @var int
-     */
     const DAY_MINUS_INF = '20000101';
-
-    /**
-     * @var int
-     */
     const DAY_31_12_2019 = '20191231';
-
-    /**
-     * @var int
-     */
     const DAY_1_1_2020 = '20200101';
-
-    /**
-     * @var int
-     */
     const DAY_15_1_2020 = '20200115';
-
-    /**
-     * @var int
-     */
     const DAY_INF = '20303131';
 
     /**

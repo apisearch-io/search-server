@@ -29,15 +29,8 @@ use React\Stream\ReadableStreamInterface;
  */
 class ResourceLoader
 {
-    /**
-     * @var HTTPClient
-     */
-    private $client;
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private HTTPClient $client;
+    private Filesystem $filesystem;
 
     /**
      * @param HTTPClient $client

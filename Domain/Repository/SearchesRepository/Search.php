@@ -22,55 +22,16 @@ use DateTime;
  */
 class Search
 {
-    /**
-     * @var string
-     */
-    private $user;
-
-    /**
-     * @var string
-     */
-    private $appUUID;
-
-    /**
-     * @var string
-     */
-    private $indexUUID;
-
-    /**
-     * @var string
-     */
-    private $text;
-
-    /**
-     * @var int
-     */
-    private $numberOfResults;
-
-    /**
-     * @var bool
-     */
-    private $withResults;
-
-    /**
-     * @var string
-     */
-    private $ip;
-
-    /**
-     * @var string
-     */
-    private $host;
-
-    /**
-     * @var string
-     */
-    private $platform;
-
-    /**
-     * @var DateTime
-     */
-    private $when;
+    private string $user;
+    private string $appUUID;
+    private string $indexUUID;
+    private string $text;
+    private int $numberOfResults;
+    private bool $withResults;
+    private string $ip;
+    private string $host;
+    private string $platform;
+    private DateTime $when;
 
     /**
      * @param string   $user

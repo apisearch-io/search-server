@@ -24,7 +24,7 @@ use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use Apisearch\Server\Domain\IndexRequiredCommand;
 
 /**
- * Class GetSimilarItems
+ * Class GetSimilarItems.
  */
 class GetSimilarItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {

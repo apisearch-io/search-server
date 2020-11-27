@@ -8,8 +8,10 @@ services:
             string $healthCheckToken: "%apisearch_server.health_check_token%"
             string $pingToken: "%apisearch_server.ping_token%"
             int $numberOfResultsLimitation: "%apisearch_server.limitations_number_of_results%"
-            int $defaultNumberOfSuggestions: "%apisearch_server.default_number_of_suggestions%"
+            int $numberOfLogsPerPageLimitation: "%apisearch_server.limitations_number_of_logs_per_page%"
             array $tokenEndpointPermissionsLimitation: "%apisearch_server.limitations_token_endpoint_permissions%"
+            int $defaultNumberOfSuggestions: "%apisearch_server.default_number_of_suggestions%"
+            int $numberOfBulkItemsInARequest: "%apisearch_server.number_of_bulk_items_in_a_request%"
             array $enabledPlugins: "%apisearch_server.enabled_plugins%"
             string $exchangeName: "%apisearch_server.async_events_exchange_name%"
 
@@ -92,7 +94,7 @@ services:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
 
     Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository:
-        alias: Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository
+        alias: Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository
 
     # Metadata Repositories
     Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository:
@@ -117,6 +119,15 @@ services:
         alias: Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository
     Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository:
         alias: Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository
+
+    # Logs Repositories
+    Apisearch\Server\Domain\Repository\LogRepository\EmptyLogRepository:
+    Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository:
+    Apisearch\Server\Domain\Repository\LogRepository\TemporaryUsageRepository:
+        alias: Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository
+
+    Apisearch\Server\Domain\Repository\LogRepository\LogRepository:
+        alias: Apisearch\Server\Domain\Repository\LogRepository\EmptyLogRepository
 
     #
     # Token

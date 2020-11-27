@@ -19,6 +19,8 @@ use Apisearch\Server\Domain\Repository\AppRepository\EmptyTokenRepository;
 use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\EmptyInteractionRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
+use Apisearch\Server\Domain\Repository\LogRepository\EmptyLogRepository;
+use Apisearch\Server\Domain\Repository\LogRepository\LogRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository;
@@ -62,6 +64,13 @@ class EnabledRepositoriesCompilerPass implements CompilerPassInterface
             UsageRepository::class,
             EmptyUsageRepository::class,
             'apisearch_server.usage_lines_repository_enabled'
+        );
+
+        $this->enableOrDisableRepository(
+            $container,
+            LogRepository::class,
+            EmptyLogRepository::class,
+            'apisearch_server.logs_repository_enabled'
         );
     }
 

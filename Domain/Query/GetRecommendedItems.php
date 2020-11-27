@@ -24,7 +24,7 @@ use Apisearch\Server\Domain\IndexRequiredCommand;
 use Apisearch\Server\Domain\Model\Origin;
 
 /**
- * Class GetRecommendedItems
+ * Class GetRecommendedItems.
  */
 class GetRecommendedItems extends CommandWithRepositoryReferenceAndToken implements WithRepositoryReference, IndexRequiredCommand
 {
@@ -38,8 +38,8 @@ class GetRecommendedItems extends CommandWithRepositoryReferenceAndToken impleme
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
      * @param Query               $query
-     * @param string|null $user
-     * @param Origin $origin
+     * @param string|null         $user
+     * @param Origin              $origin
      */
     public function __construct(
         RepositoryReference $repositoryReference,
@@ -69,7 +69,7 @@ class GetRecommendedItems extends CommandWithRepositoryReferenceAndToken impleme
     /**
      * @return string|null
      */
-    public function getUser():? string
+    public function getUser(): ? string
     {
         return $this->user;
     }

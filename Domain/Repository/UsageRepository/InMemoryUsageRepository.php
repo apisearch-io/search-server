@@ -28,10 +28,7 @@ use function React\Promise\resolve;
  */
 class InMemoryUsageRepository implements TemporaryUsageRepository, ResetableRepository
 {
-    /**
-     * @var array
-     */
-    private $useLines = [];
+    private array $useLines = [];
 
     /**
      * Register event.
@@ -51,7 +48,7 @@ class InMemoryUsageRepository implements TemporaryUsageRepository, ResetableRepo
     ): PromiseInterface {
         $appUUID = $repositoryReference->getAppUUID();
         if (!$appUUID instanceof AppUUID) {
-            return resolve([]);
+            return resolve();
         }
         $when->setTime(0, 0, 0);
         $indexUUID = $repositoryReference->getIndexUUID();

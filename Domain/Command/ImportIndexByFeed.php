@@ -17,37 +17,32 @@ namespace Apisearch\Server\Domain\Command;
 
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 
 /**
  * Class ImportIndex.
  */
-class ImportIndexByFeed extends CommandWithRepositoryReferenceAndToken
+class ImportIndexByFeed extends ImportIndex
 {
     private string $feed;
-    private bool $deleteOldVersions;
-    private string $versionUUID;
 
     /**
      * ResetCommand constructor.
      *
      * @param RepositoryReference $repositoryReference
      * @param Token               $token
-     * @param string              $feed
      * @param bool                $deleteOldVersions
      * @param string              $versionUUID
+     * @param string              $feed
      */
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        string $feed,
         bool $deleteOldVersions,
-        string $versionUUID
+        string $versionUUID,
+        string $feed
     ) {
-        parent::__construct($repositoryReference, $token);
+        parent::__construct($repositoryReference, $token, $deleteOldVersions, $versionUUID);
         $this->feed = $feed;
-        $this->deleteOldVersions = $deleteOldVersions;
-        $this->versionUUID = $versionUUID;
     }
 
     /**
@@ -56,21 +51,5 @@ class ImportIndexByFeed extends CommandWithRepositoryReferenceAndToken
     public function getFeed(): string
     {
         return $this->feed;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldDeleteOldVersions(): bool
-    {
-        return $this->deleteOldVersions;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersionUUID(): string
-    {
-        return $this->versionUUID;
     }
 }

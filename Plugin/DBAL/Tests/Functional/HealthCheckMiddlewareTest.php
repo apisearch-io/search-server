@@ -54,6 +54,7 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
             'usage_lines' => 6,
             'search_lines' => 1,
             'tokens' => 0,
+            'logs' => 6,
         ], $response['info']['dbal']);
 
         $this->click('555', 'product~1', 1, Origin::createEmpty());
@@ -74,6 +75,7 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
             'usage_lines' => 8,
             'search_lines' => 3,
             'tokens' => 1,
+            'logs' => 6,
         ], $response['info']['dbal']);
     }
 }

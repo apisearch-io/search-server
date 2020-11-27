@@ -154,6 +154,10 @@ class ApisearchServerExtension extends BaseExtension
                 'APISEARCH_NUMBER_OF_RESULTS_LIMITATION',
                 $config['limitations']['number_of_results']
             ),
+            'apisearch_server.limitations_number_of_logs_per_page' => Env::get(
+                'APISEARCH_NUMBER_OF_LOGS_PER_PAGE_LIMITATION',
+                $config['limitations']['number_of_logs_per_page']
+            ),
             'apisearch_server.limitations_token_endpoint_permissions' => EndpointNormalizer::normalizeEndpoints(Env::getArray(
                 'APISEARCH_TOKEN_ENDPOINT_PERMISSIONS_LIMITATION',
                 $config['limitations']['token_endpoint_permissions']
@@ -161,6 +165,10 @@ class ApisearchServerExtension extends BaseExtension
             'apisearch_server.default_number_of_suggestions' => Env::get(
                 'APISEARCH_NUMBER_OF_SUGGESTIONS_DEFAULT',
                 $config['defaults']['number_of_suggestions']
+            ),
+            'apisearch_server.number_of_bulk_items_in_a_request' => Env::get(
+                'APISEARCH_NUMBER_OF_BULK_ITEMS_IN_A_REQUEST',
+                $config['defaults']['number_of_bulk_items_in_a_request']
             ),
 
             /*
@@ -181,6 +189,10 @@ class ApisearchServerExtension extends BaseExtension
             'apisearch_server.usage_lines_repository_enabled' => Env::get(
                 'APISEARCH_USAGE_LINES_REPOSITORY_ENABLED',
                 $config['repositories']['usage_lines_repository_enabled']
+            ),
+            'apisearch_server.logs_repository_enabled' => Env::get(
+                'APISEARCH_LOGS_REPOSITORY_ENABLED',
+                $config['repositories']['logs_repository_enabled']
             ),
             'apisearch_server.metadata_disk_repository_path' => $config['repositories']['metadata_disk_path'],
         ];

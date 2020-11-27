@@ -24,60 +24,18 @@ use DateTime;
  */
 final class InteractionFilter
 {
-    /**
-     * @var string
-     */
     const LINES = 'lines';
-
-    /**
-     * @var string
-     */
     const UNIQUE_USERS = 'unique_users';
 
-    /**
-     * @var RepositoryReference
-     */
-    private $repositoryReference;
-
-    /**
-     * @var bool
-     */
-    private $perDay;
-
-    /**
-     * @var DateTime|null
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
-
-    /**
-     * @var string|null
-     */
-    private $user;
-
-    /**
-     * @var string|null
-     */
-    private $platform;
-
-    /**
-     * @var ItemUUID|null
-     */
-    private $itemUUID;
-
-    /**
-     * @var string|null
-     */
-    private $type;
-
-    /**
-     * @var string|null
-     */
-    private $count;
+    private RepositoryReference $repositoryReference;
+    private bool $perDay;
+    private ?DateTime $from = null;
+    private ?DateTime $to = null;
+    private ?string $user = null;
+    private ?string $platform = null;
+    private ?ItemUUID $itemUUID = null;
+    private ?string $type = null;
+    private ?string $count = null;
 
     private function __construct()
     {

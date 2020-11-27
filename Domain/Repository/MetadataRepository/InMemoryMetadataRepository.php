@@ -25,10 +25,7 @@ use function React\Promise\resolve;
  */
 class InMemoryMetadataRepository extends MetadataRepository implements ResetableRepository
 {
-    /**
-     * @var array
-     */
-    protected $storedMetadata = [];
+    protected array $storedMetadata = [];
 
     /**
      * @param RepositoryReference $repositoryReference

@@ -21,8 +21,6 @@ namespace Apisearch\Server\Domain\Repository\InteractionRepository;
 interface TemporaryInteractionRepository extends InteractionRepository
 {
     /**
-     * Get stored interactions and reset.
-     *
      * @return Interaction[]
      */
     public function getAndResetInteractions(): array;

@@ -23,60 +23,22 @@ use DateTime;
  */
 class SearchesFilter
 {
-    /**
-     * @var string
-     */
     const LINES = 'lines';
-
-    /**
-     * @var string
-     */
     const UNIQUE_USERS = 'unique_users';
 
-    /**
-     * @var RepositoryReference
-     */
-    private $repositoryReference;
-
-    /**
-     * @var bool
-     */
-    private $perDay;
-
-    /**
-     * @var DateTime|null
-     */
-    private $from;
-
-    /**
-     * @var DateTime|null
-     */
-    private $to;
+    private RepositoryReference $repositoryReference;
+    private bool $perDay;
+    private ?DateTime $from = null;
+    private ?DateTime $to = null;
+    private ?string $user = null;
+    private ?string $platform = null;
+    private bool $excludeWithResults;
+    private bool $excludeWithoutResults;
 
     /**
      * @var string|null
      */
-    private $user;
-
-    /**
-     * @var string|null
-     */
-    private $platform;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithResults;
-
-    /**
-     * @var bool
-     */
-    private $excludeWithoutResults;
-
-    /**
-     * @var string|null
-     */
-    private $count;
+    private ?string $count;
 
     private function __construct()
     {

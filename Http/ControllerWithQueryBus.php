@@ -72,4 +72,20 @@ abstract class ControllerWithQueryBus extends BaseController
 
         return [$from, $to];
     }
+
+    /**
+     * Get pagination from request.
+     *
+     * @param Request $request
+     *
+     * @return [int, int]
+     */
+    protected function getPaginationFromRequest(Request $request): array
+    {
+        $query = $request->query;
+        $limit = \intval($query->get('limit', 0));
+        $page = \intval($query->get('page', 0));
+
+        return [$limit, $page];
+    }
 }

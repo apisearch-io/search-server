@@ -22,55 +22,16 @@ use DateTime;
  */
 final class Interaction
 {
-    /**
-     * @var string
-     */
-    private $user;
-
-    /**
-     * @var string
-     */
-    private $appUUID;
-
-    /**
-     * @var string
-     */
-    private $indexUUID;
-
-    /**
-     * @var string
-     */
-    private $itemUUID;
-
-    /**
-     * @var int
-     */
-    private $position;
-
-    /**
-     * @var string
-     */
-    private $ip;
-
-    /**
-     * @var string
-     */
-    private $host;
-
-    /**
-     * @var string
-     */
-    private $platform;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var DateTime
-     */
-    private $when;
+    private string $user;
+    private string $appUUID;
+    private string $indexUUID;
+    private string $itemUUID;
+    private int $position;
+    private string $ip;
+    private string $host;
+    private string $platform;
+    private string $type;
+    private DateTime $when;
 
     /**
      * @param string   $user
