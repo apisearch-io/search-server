@@ -20,6 +20,11 @@ use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Query\Query;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Model\InternalVersionUUID;
+use Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository;
+use Apisearch\Server\Domain\Repository\LogRepository\LogMapper;
+use Apisearch\Server\Domain\Repository\LogRepository\LogRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory;
@@ -42,10 +47,76 @@ class ImportExportTest extends CurlFunctionalTest
     }
 
     /**
+     * Decorate configuration.
+     *
+     * @param array $configuration
+     *
+     * @return array
+     */
+    protected static function decorateConfiguration(array $configuration): array
+    {
+        $configuration = parent::decorateConfiguration($configuration);
+        $configuration['services'][UsageRepository::class] = [
+            'alias' => InMemoryUsageRepository::class,
+        ];
+
+        $configuration['services'][LogRepository::class] = [
+            'alias' => InMemoryLogRepository::class,
+        ];
+
+        return $configuration;
+    }
+
+    /**
+     * Test requests counting and log.
+     */
+    public function testRequestsCountingAndLog()
+    {
+        $this->assertEquals(3, $this->getUsage()['admin']);
+        $this->loadMassiveIndexItems(2500); // 50 iterations of 50
+        $this->assertEquals(53, $this->getUsage()['admin']);
+        $source = $this->exportIndex('source');
+        \usleep(100000);
+        $this->assertEquals(54, $this->getUsage()['admin']);
+
+        @\unlink('/tmp/dump.apisearch');
+        $this->resetIndex();
+        $this->assertEquals(55, $this->getUsage()['admin']);
+        \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
+        $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false, '9911');
+        $this->assertEquals(60, $this->getUsage()['admin']);
+        $this->exportIndex('source');
+        $this->exportIndex('source');
+        $this->assertEquals(62, $this->getUsage()['admin']);
+        $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false);
+        $this->assertEquals(67, $this->getUsage()['admin']);
+
+        $logs = $this->getLogs(null, null, null, null, null, [
+            LogMapper::INDEX_WAS_IMPORTED,
+            LogMapper::INDEX_WAS_EXPORTED,
+        ]);
+
+        $this->assertCount(5, $logs);
+        $this->assertContains('exported', $logs[0]['text']);
+        $this->assertContains(self::$index, $logs[0]['text']);
+        $this->assertContains('imported', $logs[1]['text']);
+        $this->assertContains('9911', $logs[1]['text']);
+        $this->assertContains(self::$index, $logs[1]['text']);
+        $this->assertContains('exported', $logs[2]['text']);
+        $this->assertContains(self::$index, $logs[2]['text']);
+        $this->assertContains('exported', $logs[3]['text']);
+        $this->assertContains(self::$index, $logs[3]['text']);
+        $this->assertContains('imported', $logs[4]['text']);
+        $this->assertNotContains('9911', $logs[4]['text']);
+        $this->assertContains(self::$index, $logs[4]['text']);
+    }
+
+    /**
      * Test import export combination.
      */
     public function testImportExportSource()
     {
+        $this->resetScenario();
         $this->indexTestingItems();
         $source = $this->exportIndex('source');
         @\unlink('/tmp/dump.apisearch');
@@ -122,6 +193,7 @@ class ImportExportTest extends CurlFunctionalTest
      */
     public function testImportByStream()
     {
+        $this->resetIndex();
         $loop = Factory::create();
         $browser = new Browser($loop);
         $filesystem = Filesystem::create($loop);

@@ -80,7 +80,7 @@ class InMemoryRepository implements FullRepository, ResetableRepository
                 if (!\array_key_exists($appUUIDComposed, $this->indices)) {
                     $this->indices[$appUUIDComposed] = [];
                 } elseif (\array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])) {
-                    throw new ResourceExistsException();
+                    throw new ResourceExistsException('index_exists');
                 }
 
                 $this->setIndex(
@@ -323,7 +323,7 @@ class InMemoryRepository implements FullRepository, ResetableRepository
             !\is_array($this->indices[$appUUIDComposed]) ||
             !\array_key_exists($indexUUIDComposed, $this->indices[$appUUIDComposed])
         ) {
-            throw new ResourceNotAvailableException();
+            throw new ResourceNotAvailableException('index_not_found');
         }
     }
 

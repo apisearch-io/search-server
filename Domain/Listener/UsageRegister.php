@@ -28,10 +28,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class UsageRegister implements EventSubscriberInterface
 {
-    /**
-     * @var UsageRepository
-     */
-    private $usageRepository;
+    private UsageRepository $usageRepository;
 
     /**
      * @param UsageRepository $usageRepository
@@ -125,19 +122,5 @@ class UsageRegister implements EventSubscriberInterface
         }
 
         return $eventsStructure;
-    }
-
-    /**
-     * Get event name.
-     *
-     * @param object $event
-     *
-     * @return string
-     */
-    private function getEventName($event): string
-    {
-        $parts = \explode('\\', \get_class($event));
-
-        return \strtolower(\end($parts));
     }
 }

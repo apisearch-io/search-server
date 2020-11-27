@@ -26,6 +26,8 @@ use Apisearch\Server\Domain\Repository\AppRepository\EmptyTokenRepository;
 use Apisearch\Server\Domain\Repository\AppRepository\InMemoryTokenRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\EmptyInteractionRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InMemoryInteractionRepository;
+use Apisearch\Server\Domain\Repository\LogRepository\EmptyLogRepository;
+use Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\EmptySearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\EmptyUsageRepository;
@@ -68,6 +70,7 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
         $configuration['parameters']['apisearch_server.interactions_repository_enabled'] = false;
         $configuration['parameters']['apisearch_server.searches_repository_enabled'] = false;
         $configuration['parameters']['apisearch_server.usage_lines_repository_enabled'] = false;
+        $configuration['parameters']['apisearch_server.logs_repository_enabled'] = false;
 
         return $configuration;
     }
@@ -81,11 +84,13 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
         $this->assertInstanceOf(EmptyInteractionRepository::class, $this->get('apisearch_server.interactions_repository_test'));
         $this->assertInstanceOf(EmptySearchesRepository::class, $this->get('apisearch_server.searches_repository_test'));
         $this->assertInstanceOf(EmptyUsageRepository::class, $this->get('apisearch_server.usage_lines_repository_test'));
+        $this->assertInstanceOf(EmptyLogRepository::class, $this->get('apisearch_server.logs_repository_test'));
 
         $this->assertFalse($this->has(InMemoryTokenRepository::class));
         $this->assertFalse($this->has(InMemoryUsageRepository::class));
         $this->assertFalse($this->has(InMemoryInteractionRepository::class));
         $this->assertFalse($this->has(InMemorySearchesRepository::class));
+        $this->assertFalse($this->has(InMemoryLogRepository::class));
     }
 
     /**
@@ -113,6 +118,7 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
             'usage_lines' => 0,
             'search_lines' => 0,
             'tokens' => 0,
+            'logs' => 0,
         ], $response['info']['dbal']);
     }
 

@@ -20,40 +20,11 @@ namespace Apisearch\Server\Domain\Exception;
  */
 class StorableException
 {
-    /**
-     * @var string
-     *
-     * Message
-     */
-    private $message;
-
-    /**
-     * @var int
-     *
-     * Code
-     */
-    private $code;
-
-    /**
-     * @var string
-     *
-     * Trace as string
-     */
-    private $traceAsString;
-
-    /**
-     * @var string
-     *
-     * File
-     */
-    private $file;
-
-    /**
-     * @var int
-     *
-     * Line
-     */
-    private $line;
+    private string $message;
+    private int $code;
+    private string $traceAsString;
+    private string $file;
+    private int $line;
 
     /**
      * StorableException constructor.

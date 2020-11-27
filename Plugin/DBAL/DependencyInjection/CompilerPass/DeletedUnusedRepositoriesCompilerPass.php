@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\DBAL\DependencyInjection\CompilerPass;
 use Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository;
 use Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository;
 use Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository;
+use Apisearch\Plugin\DBAL\Domain\LogRepository\DBALLogRepository;
 use Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
@@ -68,6 +69,14 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
                 ChunkUsageRepository::class,
             ],
             'apisearch_server.usage_lines_repository_enabled'
+        );
+
+        $this->deleteRepositoriesIfDisabled(
+            $container,
+            [
+                DBALLogRepository::class,
+            ],
+            'apisearch_server.logs_repository_enabled'
         );
     }
 

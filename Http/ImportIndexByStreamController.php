@@ -51,9 +51,9 @@ final class ImportIndexByStreamController extends ControllerWithCommandBus
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $stream,
             $deleteOldVersions,
-            $currentVersionUUID
+            $currentVersionUUID,
+            $stream
         ));
 
         return $detached

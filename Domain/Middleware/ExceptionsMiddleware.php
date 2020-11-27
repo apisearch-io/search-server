@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
+use Apisearch\Exception\TransportableException;
 use Apisearch\Repository\WithRepositoryReference;
 use Apisearch\Server\Domain\Event\ExceptionWasCached;
 use Apisearch\Server\Domain\Exception\StorableException;
@@ -26,12 +27,7 @@ use Throwable;
  */
 final class ExceptionsMiddleware
 {
-    /**
-     * @var EventBus
-     *
-     * Event bus
-     */
-    protected $eventBus;
+    protected EventBus $eventBus;
 
     /**
      * ExceptionsMiddleware constructor.
@@ -57,7 +53,10 @@ final class ExceptionsMiddleware
             ->otherwise(function (Throwable $throwable) use ($command) {
                 $event = (new ExceptionWasCached(new StorableException(
                     $throwable->getMessage(),
-                    (int) $throwable->getCode(),
+                    (int) ($throwable instanceof TransportableException
+                        ? $throwable->getTransportableHTTPError()
+                        : $throwable->getCode()
+                    ),
                     $throwable->getTraceAsString(),
                     $throwable->getFile(),
                     (int) $throwable->getLine()

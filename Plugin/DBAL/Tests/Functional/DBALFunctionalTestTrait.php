@@ -95,6 +95,7 @@ trait DBALFunctionalTestTrait
         $metadataTableName = static::getParameterStatic('apisearch_plugin.dbal.metadata_table');
         $interactionTableName = static::getParameterStatic('apisearch_plugin.dbal.interactions_table');
         $searchesTableName = static::getParameterStatic('apisearch_plugin.dbal.searches_table');
+        $logTableName = static::getParameterStatic('apisearch_plugin.dbal.logs_table');
         @\unlink('/tmp/apisearch.repository');
 
         $promise = all([
@@ -128,8 +129,13 @@ trait DBALFunctionalTestTrait
                 ->otherwise(function (TableNotFoundException $_) {
                     // Silent pass
                 }),
+            $mainConnection
+                ->dropTable($logTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
         ])
-            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName, $interactionTableName, $searchesTableName) {
+            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName, $interactionTableName, $searchesTableName, $logTableName) {
                 return all([
                     $mainConnection->createTable($tokensTableName, [
                         'token_uuid' => 'string',
@@ -198,6 +204,19 @@ trait DBALFunctionalTestTrait
 
                         return $connection->executeSchema($schema);
                     })($mainConnection, $searchesTableName),
+
+                    (function ($connection, $logsTableName) {
+                        $schema = new Schema();
+                        $table = $schema->createTable($logsTableName);
+                        $table->addColumn('app_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('index_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('time', 'integer', ['length' => 8]);
+                        $table->addColumn('n', 'integer', ['length' => 6]);
+                        $table->addColumn('type', 'string', ['length' => 30]);
+                        $table->addColumn('params', 'string', ['length' => 255]);
+
+                        return $connection->executeSchema($schema);
+                    })($mainConnection, $logTableName),
                 ]);
             });
 

@@ -200,6 +200,35 @@ apisearch_v1_get_index_usage_per_day_preflight:
     methods: ["OPTIONS"]
     controller: Apisearch\Server\Http\QueryCORSController
 
+#
+# Logs API
+#
+apisearch_v1_get_logs:
+    path: /v1/{app_id}/logs
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetLogsController
+    defaults:
+        tags: [logs, full_metrics]
+
+apisearch_v1_get_index_logs:
+    path: /v1/{app_id}/indices/{index_id}/logs
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetLogsController
+    defaults:
+        tags: [logs, full_metrics]
+
+#
+# Logs CORS API
+#
+apisearch_v1_get_logs_preflight:
+    path: /v1/{app_id}/logs
+    methods: [ "OPTIONS" ]
+    controller: Apisearch\Server\Http\QueryCORSController
+
+apisearch_v1_get_index_logs_preflight:
+    path: /v1/{app_id}/indices/{index_id}/logs
+    methods: [ "OPTIONS" ]
+    controller: Apisearch\Server\Http\QueryCORSController
 
 #
 # Query API

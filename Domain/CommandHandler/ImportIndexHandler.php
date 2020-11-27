@@ -21,9 +21,11 @@ use Apisearch\Model\Token;
 use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Command\ImportIndex;
 use Apisearch\Server\Domain\Command\ImportIndexByStream;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
+use Apisearch\Server\Domain\Event\IndexWasImported;
 use Apisearch\Server\Domain\Format\FormatTransformer;
 use Apisearch\Server\Domain\Format\FormatTransformers;
 use Apisearch\Server\Domain\Model\InternalVersionUUID;
@@ -32,10 +34,12 @@ use Apisearch\Server\Domain\Repository\Repository\Repository;
 use Clue\React\Csv\Decoder;
 use Drift\CommandBus\Bus\CommandBus;
 use Drift\CommandBus\Bus\QueryBus;
+use Drift\EventBus\Bus\EventBus;
 use React\EventLoop\LoopInterface;
 use function React\Promise\all;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use React\Stream\ReadableStreamInterface;
 
 /**
@@ -48,6 +52,7 @@ abstract class ImportIndexHandler
     private Repository $repository;
     private FormatTransformers $formatTransformers;
     protected LoopInterface $loop;
+    private EventBus $eventBus;
 
     /**
      * @param CommandBus         $commandBus
@@ -55,28 +60,34 @@ abstract class ImportIndexHandler
      * @param Repository         $repository
      * @param FormatTransformers $formatTransformers
      * @param LoopInterface      $loop
+     * @param EventBus           $eventBus
      */
     public function __construct(
         CommandBus $commandBus,
         QueryBus $queryBus,
         Repository $repository,
         FormatTransformers $formatTransformers,
-        LoopInterface $loop
+        LoopInterface $loop,
+        EventBus $eventBus
     ) {
         $this->commandBus = $commandBus;
         $this->queryBus = $queryBus;
         $this->repository = $repository;
         $this->formatTransformers = $formatTransformers;
         $this->loop = $loop;
+        $this->eventBus = $eventBus;
     }
 
     /**
      * @param CommandWithRepositoryReferenceAndToken $command
      *
-     * @return PromiseInterface
+     * @return PromiseInterface<int>
      */
     public function handleByCommand(CommandWithRepositoryReferenceAndToken $command): PromiseInterface
     {
+        /**
+         * @var ImportIndex
+         */
         $repositoryReference = $command->getRepositoryReference();
         $token = $command->getToken();
         $deferred = new Deferred();
@@ -115,13 +126,18 @@ abstract class ImportIndexHandler
                     ->futureTick(function () use ($repositoryReference, $token, $stream, $deferred, $shouldDeleteOldVersions, $versionUUID) {
                         return $this
                             ->importFromStream($repositoryReference, $token, $stream, $versionUUID)
-                            ->then(function () use ($repositoryReference, $shouldDeleteOldVersions, $versionUUID) {
-                                return $shouldDeleteOldVersions
-                                    ? $this->deleteOldVersions($repositoryReference, $versionUUID)
-                                    : null;
+                            ->then(function (int $numberOfIndexedItems) use ($repositoryReference, $shouldDeleteOldVersions, $versionUUID) {
+                                return (
+                                    $shouldDeleteOldVersions
+                                        ? $this->deleteOldVersions($repositoryReference, $versionUUID)
+                                        : resolve()
+                                )
+                                    ->then(function () use ($numberOfIndexedItems) {
+                                        return $numberOfIndexedItems;
+                                    });
                             })
-                            ->then(function () use ($deferred) {
-                                $deferred->resolve();
+                            ->then(function (int $numberOfIndexedItems) use ($deferred) {
+                                $deferred->resolve($numberOfIndexedItems);
                             })
                             ->otherwise(function (\Throwable $throwable) use ($deferred) {
                                 $deferred->reject($throwable);
@@ -129,7 +145,21 @@ abstract class ImportIndexHandler
                     });
             });
 
-        return $deferred->promise();
+        $from = \microtime(true);
+
+        return $deferred
+            ->promise()
+            ->then(function (int $numberOfIndexedItems) use ($indexUUID, $from, $repositoryReference, $command) {
+                return $this
+                    ->eventBus
+                    ->dispatch((new IndexWasImported(
+                        $indexUUID,
+                        (int) ((\microtime(true) - $from) * 1000),
+                        $numberOfIndexedItems,
+                        $command->getVersionUUID(),
+                        $command->shouldDeleteOldVersions()
+                    ))->withRepositoryReference($repositoryReference));
+            });
     }
 
     /**
@@ -144,6 +174,8 @@ abstract class ImportIndexHandler
      * @param Token                   $token
      * @param ReadableStreamInterface $stream
      * @param string                  $versionUUID
+     *
+     * @return PromiseInterface<int>
      */
     private function importFromStream(
         RepositoryReference $repositoryReference,
@@ -175,7 +207,7 @@ abstract class ImportIndexHandler
 
                     if (\is_null($formatTransformer)) {
                         $stream->close();
-                        $deferred->resolve();
+                        $deferred->resolve(0);
                     }
 
                     return;
@@ -192,18 +224,19 @@ abstract class ImportIndexHandler
 
                 $item->addIndexedMetadata(InternalVersionUUID::INDEXED_METADATA_FIELD, $versionUUID);
                 $items[] = $item;
+                $itemsCount = \count($items);
 
-                if (\count($items) >= 500) {
+                if ($itemsCount >= 500) {
                     $newDeferred = new Deferred();
                     $callsDeferred[] = $newDeferred->promise();
                     $this
                         ->loop
-                        ->futureTick(function () use ($repositoryReference, $token, $items, $newDeferred) {
+                        ->futureTick(function () use ($repositoryReference, $token, $items, $newDeferred, $itemsCount) {
                             return $this
                                 ->commandBus
                                 ->execute(new IndexItems($repositoryReference, $token, $items))
-                                ->then(function () use ($newDeferred) {
-                                    $newDeferred->resolve();
+                                ->then(function () use ($newDeferred, $itemsCount) {
+                                    $newDeferred->resolve($itemsCount);
                                 })
                                 ->otherwise(function (\Throwable $throwable) use ($newDeferred) {
                                     $newDeferred->reject($throwable->getMessage());
@@ -217,21 +250,21 @@ abstract class ImportIndexHandler
         });
 
         $stream->on('close', function () use ($repositoryReference, $token, $deferred, &$items, &$callsDeferred) {
-            if (empty($items)) {
-                return;
-            }
-
             $this
                 ->loop
                 ->futureTick(function () use ($repositoryReference, $token, $items, $deferred, &$callsDeferred) {
-                    return $this
-                        ->commandBus
-                        ->execute(new IndexItems($repositoryReference, $token, $items))
+                    return (
+                        empty($items)
+                            ? resolve()
+                            : $this
+                                ->commandBus
+                                ->execute(new IndexItems($repositoryReference, $token, $items))
+                        )
                         ->then(function () use (&$callsDeferred) {
                             return all($callsDeferred);
                         })
-                        ->then(function () use ($deferred) {
-                            $deferred->resolve();
+                        ->then(function ($numberOfItemsAsArray) use ($deferred, $items) {
+                            $deferred->resolve(\array_sum($numberOfItemsAsArray) + \count($items));
                         })
                         ->otherwise(function (\Throwable $throwable) use ($deferred) {
                             $deferred->reject($throwable->getMessage());
@@ -249,6 +282,8 @@ abstract class ImportIndexHandler
     /**
      * @param RepositoryReference $repositoryReference
      * @param string              $versionUUID
+     *
+     * @return PromiseInterface
      */
     private function deleteOldVersions(
         RepositoryReference $repositoryReference,

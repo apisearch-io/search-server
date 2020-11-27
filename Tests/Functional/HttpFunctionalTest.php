@@ -596,6 +596,50 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string[]      $types
+     * @param int           $limit
+     * @param int           $page
+     *
+     * @return array
+     */
+    public function getLogs(
+        string $appId = null,
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        array $types = [],
+        int $limit = 0,
+        int $page = 0
+    ): array {
+        $routeParameters = ['app_id' => $appId ?? static::$appId];
+        if ($indexId) {
+            $routeParameters['index_id'] = $indexId;
+        }
+
+        $response = static::request(
+            'v1_get_'.($indexId ? 'index_' : '').'logs',
+            $routeParameters,
+            $token,
+            [],
+            \array_filter([
+                'from' => (\is_null($from) ? false : $from->format('Ymd')),
+                'to' => (\is_null($to) ? false : $to->format('Ymd')),
+                'types' => $types,
+                'limit' => $limit,
+                'page' => $page,
+            ])
+        );
+
+        return $response['body'];
+    }
+
+    /**
      * Add interaction.
      *
      * @param string|null $userId

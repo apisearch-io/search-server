@@ -35,6 +35,7 @@
         <env name="DBAL_METADATA_TABLE" value="metadata" force="true" />
         <env name="DBAL_INTERACTIONS_TABLE" value="interactions" force="true" />
         <env name="DBAL_SEARCHES_TABLE" value="search_lines" force="true" />
+        <env name="DBAL_LOGS_TABLE" value="logs" force="true" />
         <env name="DBAL_ENCRYPT_ENABLED" value="1" force="true" />
         <env name="DBAL_ENCRYPT_PRIVATE_KEY" value="fd9f89d7f89ds78f9sd" force="true" />
         <env name="DBAL_ENCRYPT_METHOD" value="aes128" force="true" />

@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Http;
 
-use Apisearch\Model\Item;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Query\Query;
 use Apisearch\Server\Tests\Functional\CurlFunctionalTest;
@@ -106,40 +105,6 @@ class ServerMemoryControlTest extends CurlFunctionalTest
             $acceptableWithoutIncrementing,
             $iterationsOk
         ));
-    }
-
-    /**
-     * Load massive index items.
-     *
-     * @param int $n
-     */
-    private function loadMassiveIndexItems(int $n)
-    {
-        $ri = $rj = \intval(\sqrt($n));
-
-        for ($i = 0; $i < $ri; ++$i) {
-            $items = [];
-            for ($j = 0; $j < $rj; ++$j) {
-                $id = $i.'a'.$j;
-                $items[] = Item::createFromArray([
-                    'uuid' => [
-                        'id' => $id,
-                        'type' => 'type1',
-                    ],
-                    'metadata' => [
-                        'title' => 'value',
-                        'title2' => 'value2',
-                        'title3' => 'value3',
-                        'title4' => 'value4',
-                        'title5' => 'value5',
-                        'title6' => 'value6',
-                        'title7' => 'value7',
-                    ],
-                ]);
-            }
-
-            static::indexItems($items);
-        }
     }
 
     /**

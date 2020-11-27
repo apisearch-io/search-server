@@ -23,3 +23,7 @@ services:
     apisearch_server.usage_lines_repository_test:
         alias: Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository
         public: true
+
+    apisearch_server.logs_repository_test:
+        alias: Apisearch\Server\Domain\Repository\LogRepository\LogRepository
+        public: true

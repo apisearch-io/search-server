@@ -46,9 +46,9 @@ final class ImportIndexByFeedController extends ControllerWithCommandBus
                 RequestAccessor::getIndexUUIDFromRequest($request)
             ),
             RequestAccessor::getTokenFromRequest($request),
-            $feed,
             $deleteOldVersions,
-            $currentVersionUUID
+            $currentVersionUUID,
+            $feed
         ));
 
         return $detached

@@ -17,17 +17,14 @@ namespace Apisearch\Server\Domain\Command;
 
 use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
-use Apisearch\Server\Domain\CommandWithRepositoryReferenceAndToken;
 use React\Stream\ReadableStreamInterface;
 
 /**
  * Class ImportIndexByStream.
  */
-class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
+class ImportIndexByStream extends ImportIndex
 {
     private ReadableStreamInterface $stream;
-    private bool $deleteOldVersions;
-    private string $versionUUID;
 
     /**
      * ResetCommand constructor.
@@ -41,14 +38,12 @@ class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
     public function __construct(
         RepositoryReference $repositoryReference,
         Token $token,
-        ReadableStreamInterface $stream,
         bool $deleteOldVersions,
-        string $versionUUID
+        string $versionUUID,
+        ReadableStreamInterface $stream
     ) {
-        parent::__construct($repositoryReference, $token);
+        parent::__construct($repositoryReference, $token, $deleteOldVersions, $versionUUID);
         $this->stream = $stream;
-        $this->deleteOldVersions = $deleteOldVersions;
-        $this->versionUUID = $versionUUID;
     }
 
     /**
@@ -57,21 +52,5 @@ class ImportIndexByStream extends CommandWithRepositoryReferenceAndToken
     public function getStream(): ReadableStreamInterface
     {
         return $this->stream;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldDeleteOldVersions(): bool
-    {
-        return $this->deleteOldVersions;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVersionUUID(): string
-    {
-        return $this->versionUUID;
     }
 }

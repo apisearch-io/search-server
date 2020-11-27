@@ -38,6 +38,8 @@ final class CheckHealthMiddleware implements PluginMiddleware
     private string $searchLinesTable;
     private bool $tokensRepositoryEnabled;
     private string $tokensTable;
+    private bool $logsRepositoryEnabled;
+    private string $logsTable;
 
     /**
      * @param Connection $connection
@@ -49,6 +51,8 @@ final class CheckHealthMiddleware implements PluginMiddleware
      * @param string     $searchLinesTable
      * @param bool       $tokensRepositoryEnabled
      * @param string     $tokensTable
+     * @param bool       $logsRepositoryEnabled
+     * @param string     $logsTable
      */
     public function __construct(
         Connection $connection,
@@ -59,7 +63,9 @@ final class CheckHealthMiddleware implements PluginMiddleware
         bool $searchesRepositoryEnabled,
         string $searchLinesTable,
         bool $tokensRepositoryEnabled,
-        string $tokensTable
+        string $tokensTable,
+        bool $logsRepositoryEnabled,
+        string $logsTable
     ) {
         $this->connection = $connection;
         $this->interactionsRepositoryEnabled = $interactionsRepositoryEnabled;
@@ -70,6 +76,8 @@ final class CheckHealthMiddleware implements PluginMiddleware
         $this->searchLinesTable = $searchLinesTable;
         $this->tokensRepositoryEnabled = $tokensRepositoryEnabled;
         $this->tokensTable = $tokensTable;
+        $this->logsRepositoryEnabled = $logsRepositoryEnabled;
+        $this->logsTable = $logsTable;
     }
 
     /**
@@ -99,6 +107,7 @@ final class CheckHealthMiddleware implements PluginMiddleware
                             $this->usageLinesRepositoryEnabled ? $this->getUsageLinesRows() : resolve(0),
                             $this->searchesRepositoryEnabled ? $this->getSearchLinesRows() : resolve(0),
                             $this->tokensRepositoryEnabled ? $this->getTokensRows() : resolve(0),
+                            $this->logsRepositoryEnabled ? $this->getLogRows() : resolve(0),
                         ])
                             ->then(function (array $results) use ($healthCheckData, $statusInMicroseconds, $isHealth) {
                                 $healthCheckData->mergeData([
@@ -112,6 +121,7 @@ final class CheckHealthMiddleware implements PluginMiddleware
                                             'usage_lines' => $results[1],
                                             'search_lines' => $results[2],
                                             'tokens' => $results[3],
+                                            'logs' => $results[4],
                                         ],
                                     ],
                                 ]);
@@ -194,6 +204,22 @@ final class CheckHealthMiddleware implements PluginMiddleware
         return $this
             ->connection
             ->queryBySQL('SELECT count(*) as count from '.$this->tokensTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return -1;
+            });
+    }
+
+    /**
+     * @return PromiseInterface<int>
+     */
+    private function getLogRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from '.$this->logsTable)
             ->then(function (Result $result) {
                 return $result->fetchFirstRow()['count'];
             })

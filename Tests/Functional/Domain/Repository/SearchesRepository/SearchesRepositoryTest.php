@@ -48,8 +48,6 @@ trait SearchesRepositoryTest
 
     /**
      * Load searches.
-     *
-     * @group lol
      */
     public function testLoadSearches()
     {

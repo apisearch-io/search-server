@@ -22,30 +22,11 @@ use DateTime;
  */
 class UseLine
 {
-    /**
-     * @var string
-     */
-    private $event;
-
-    /**
-     * @var string
-     */
-    private $appUUID;
-
-    /**
-     * @var string|null
-     */
-    private $indexUUID;
-
-    /**
-     * @var DateTime
-     */
-    private $when;
-
-    /**
-     * @var int
-     */
-    private $n;
+    private string $event;
+    private string $appUUID;
+    private ?string $indexUUID;
+    private DateTime $when;
+    private int $n;
 
     /**
      * @param string      $event

@@ -22,12 +22,7 @@ use Apisearch\Server\Domain\Exception\StorableException;
  */
 final class ExceptionWasCached extends DomainEvent
 {
-    /**
-     * @var StorableException
-     *
-     * Exception
-     */
-    private $exception;
+    private StorableException $exception;
 
     /**
      * ExceptionWasCached constructor.

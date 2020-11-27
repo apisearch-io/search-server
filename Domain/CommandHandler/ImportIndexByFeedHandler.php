@@ -23,6 +23,7 @@ use Apisearch\Server\Domain\Repository\Repository\Repository;
 use Apisearch\Server\Domain\Resource\ResourceLoader;
 use Drift\CommandBus\Bus\CommandBus;
 use Drift\CommandBus\Bus\QueryBus;
+use Drift\EventBus\Bus\EventBus;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
 use React\Stream\ReadableStreamInterface;
@@ -41,6 +42,7 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
      * @param FormatTransformers $formatTransformers
      * @param LoopInterface      $loop
      * @param ResourceLoader     $resourceLoader
+     * @param EventBus           $eventBus
      */
     public function __construct(
         CommandBus $commandBus,
@@ -48,14 +50,16 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
         Repository $repository,
         FormatTransformers $formatTransformers,
         LoopInterface $loop,
-        ResourceLoader $resourceLoader
+        ResourceLoader $resourceLoader,
+        EventBus $eventBus
     ) {
         parent::__construct(
             $commandBus,
             $queryBus,
             $repository,
             $formatTransformers,
-            $loop
+            $loop,
+            $eventBus
         );
 
         $this->resourceLoader = $resourceLoader;
@@ -85,9 +89,9 @@ class ImportIndexByFeedHandler extends ImportIndexHandler
                 return new ImportIndexByStream(
                     $command->getRepositoryReference(),
                     $command->getToken(),
-                    $stream,
                     $command->shouldDeleteOldVersions(),
-                    $command->getVersionUUID()
+                    $command->getVersionUUID(),
+                    $stream
                 );
             });
     }

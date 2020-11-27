@@ -50,6 +50,7 @@ use Apisearch\Server\Domain\Query\ExportIndex;
 use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetInteractions;
+use Apisearch\Server\Domain\Query\GetLogs;
 use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
@@ -57,6 +58,8 @@ use Apisearch\Server\Domain\Query\GetTopSearches;
 use Apisearch\Server\Domain\Query\GetUsage;
 use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
+use Apisearch\Server\Domain\Repository\LogRepository\LogFilter;
+use Apisearch\Server\Domain\Repository\LogRepository\LogWithText;
 use Clue\React\Block;
 use DateTime;
 use Ramsey\Uuid\UuidFactory;
@@ -208,9 +211,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
                     TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
                     $appUUID
                 ),
-            $feed,
             $deleteOldVersions,
-            $version ?? (new UuidFactory())->uuid4()->toString()
+            $version ?? (new UuidFactory())->uuid4()->toString(),
+            $feed
         ));
     }
 
@@ -648,6 +651,50 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $event,
             $perDay ?? false
         ));
+    }
+
+    /**
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string[]      $types
+     * @param int           $limit
+     * @param int           $page
+     *
+     * @return array
+     */
+    public function getLogs(
+        string $appId = null,
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        array $types = [],
+        int $limit = 0,
+        int $page = 0
+    ): array {
+        $appId = $appId ?? self::$appId;
+        $repositoryReference = RepositoryReference::createFromComposed("{$appId}_{$indexId}");
+
+        $logsWithText = self::askQuery(new GetLogs(
+            $repositoryReference,
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            LogFilter::create($repositoryReference)
+                ->from($from)
+                ->to($to)
+                ->fromTypes($types)
+                ->paginate($limit, $page)
+        ));
+
+        return \array_map(function (LogWithText $logWithText) {
+            return $logWithText->toArray();
+        }, $logsWithText);
     }
 
     /**

@@ -44,13 +44,14 @@ class ExportIndexHandler extends WithRepositoryAndEventPublisher
             ->repository
             ->exportIndex($repositoryReference)
             ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $from) {
-                $stream->on('close', function () use ($repositoryReference, $from) {
+                $stream->on('end', function () use ($repositoryReference, $from, $stream) {
                     $this
                         ->eventBus
                         ->dispatch(
                             (new IndexWasExported(
                                 $repositoryReference->getIndexUUID(),
-                                (int) ((\microtime(true) - $from) * 1000)
+                                (int) ((\microtime(true) - $from) * 1000),
+                                0
                             ))
                                 ->withRepositoryReference($repositoryReference)
                         );

@@ -719,14 +719,47 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
-     * @param string|null $appId
-     * @param Token       $token
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $event
+     * @param bool|null     $perDay
      *
      * @return array
      */
     abstract public function getUsage(
         string $appId = null,
-        Token $token = null
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $event = null,
+        ?bool $perDay = false
+    ): array;
+
+    /**
+     * @param string|null   $appId
+     * @param Token|null    $token
+     * @param string|null   $indexId
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string[]      $types
+     * @param int           $limit
+     * @param int           $page
+     *
+     * @return array
+     */
+    abstract public function getLogs(
+        string $appId = null,
+        ?Token $token = null,
+        ?string $indexId = null,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        array $types = [],
+        int $limit = 0,
+        int $page = 0
     ): array;
 
     /**
@@ -942,7 +975,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @param int $n
      */
-    public function createImportFile(int $n)
+    protected function createImportFile(int $n)
     {
         @\unlink("/tmp/dump.$n.apisearch");
         $data = 'uid|type|title|link|image|categories|attributes'.PHP_EOL;
@@ -952,5 +985,39 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         }
 
         \file_put_contents("/tmp/dump.$n.apisearch", $data);
+    }
+
+    /**
+     * Load massive index items.
+     *
+     * @param int $n
+     */
+    protected function loadMassiveIndexItems(int $n)
+    {
+        $ri = $rj = \intval(\sqrt($n));
+
+        for ($i = 0; $i < $ri; ++$i) {
+            $items = [];
+            for ($j = 0; $j < $rj; ++$j) {
+                $id = $i.'a'.$j;
+                $items[] = Item::createFromArray([
+                    'uuid' => [
+                        'id' => $id,
+                        'type' => 'type1',
+                    ],
+                    'metadata' => [
+                        'title' => 'value',
+                        'title2' => 'value2',
+                        'title3' => 'value3',
+                        'title4' => 'value4',
+                        'title5' => 'value5',
+                        'title6' => 'value6',
+                        'title7' => 'value7',
+                    ],
+                ]);
+            }
+
+            static::indexItems($items);
+        }
     }
 }

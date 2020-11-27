@@ -177,6 +177,11 @@ class DBALPluginExtension extends BaseExtension
                 $config['searches_table'] ?? null,
                 true
             ),
+            'apisearch_plugin.dbal.logs_table' => Env::get(
+                'DBAL_LOGS_TABLE',
+                $config['logs_table'] ?? null,
+                true
+            ),
 
             'apisearch_plugin.dbal.encrypt_private_key' => Env::get(
                 'DBAL_ENCRYPT_PRIVATE_KEY',

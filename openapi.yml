@@ -701,6 +701,137 @@ paths:
                     description: "User that makes the call"
                     schema: { format: "string" }
 
+    /v1/{app_id}/logs:
+        get:
+            summary: "Get all app associated logs"
+            description: "This route is named `v1_get_logs`"
+            tags: ["logs"]
+            responses:
+                200:
+                    description: "Array of logs"
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Log"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+            parameters:
+                -   in: "path"
+                    name: "app_id"
+                    required: true
+                    description: "App composed UUID"
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "from"
+                    required: false
+                    description: "Datetime in format YmdHim"
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "to"
+                    required: false
+                    description: "Datetime in format YmdHim."
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "type"
+                    required: false
+                    description: "Type to filter logs by."
+                    schema:
+                        type: "array"
+                        items:
+                            enum:
+                                - 'index_created'
+                                - 'index_deleted'
+                                - 'index_configured'
+                                - 'index_reset'
+                                - 'index_imported'
+                                - 'index_exported'
+                                - 'token_put'
+                                - 'token_deleted'
+                                - 'tokens_deleted'
+                                - 'exception'
+                -   in: "query"
+                    name: "limit"
+                    required: false
+                    description: "Number of results for the current page"
+                    schema: { format: "integer" }
+                -   in: "query"
+                    name: "page"
+                    required: false
+                    description: "Pagination page"
+                    schema: { format: "integer" }
+
+    /v1/{app_id}/indices/{index_id}/logs:
+        get:
+            summary: "Get all app index associated logs"
+            description: "This route is named `v1_get_index_logs`"
+            tags: [ "logs" ]
+            responses:
+                200:
+                    description: "Array of logs"
+                    content:
+                        application/json:
+                            schema:
+                                type: "array"
+                                items:
+                                    $ref: "#/components/schemas/Log"
+                401:
+                    $ref: "#/components/responses/invalidToken"
+                500:
+                    $ref: "#/components/responses/serverDown"
+            parameters:
+                -   in: "path"
+                    name: "app_id"
+                    required: true
+                    description: "App composed UUID"
+                    schema: { format: "string" }
+                -   in: "path"
+                    name: "index_id"
+                    required: true
+                    description: "Index composed UUID"
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "from"
+                    required: false
+                    description: "Datetime in format YmdHim"
+                    schema: { format: "string" }
+                -   in: "query"
+                    name: "to"
+                    required: false
+                    description: "Datetime in format YmdHim."
+                    schema: { format: "string"}
+                -   in: "query"
+                    name: "type"
+                    required: false
+                    description: "Type to filter logs by."
+                    schema:
+                        type: "array"
+                        items:
+                            enum:
+                                - 'index_created'
+                                - 'index_deleted'
+                                - 'index_configured'
+                                - 'index_reset'
+                                - 'index_imported'
+                                - 'index_exported'
+                                - 'token_put'
+                                - 'token_deleted'
+                                - 'tokens_deleted'
+                                - 'exception'
+                -   in: "query"
+                    name: "limit"
+                    required: false
+                    description: "Number of results for the current page"
+                    schema: { format: "integer" }
+                -   in: "query"
+                    name: "page"
+                    required: false
+                    description: "Pagination page"
+                    schema: { format: "integer" }
+
 #
 # Components
 #
@@ -1241,6 +1372,29 @@ components:
                     type: array
                     items:
                         $ref: "#/components/schemas/Result"
+
+        Log:
+            type: "object"
+            description: "Log representation."
+            properties:
+                app_uuid:
+                    description: "Unique identifier of app"
+                    type: "string"
+                index_uuid:
+                    description: "If exists, unique identifier of app"
+                    type: "string"
+                n:
+                    description: "Number of times this action did occur"
+                    type: "integer"
+                when:
+                    description: "When this action happened, in format timestamp"
+                    type: "string"
+                text:
+                    description: "Body of the log"
+                    type: "string"
+                code:
+                    description: "Code representation of the log. Can represent internal exception code"
+                    type: "string"
 
     #
     # Examples

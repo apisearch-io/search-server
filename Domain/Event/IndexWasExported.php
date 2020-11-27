@@ -22,31 +22,21 @@ use Apisearch\Model\IndexUUID;
  */
 final class IndexWasExported extends DomainEvent
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index UUID
-     */
-    private $indexUUID;
+    private IndexUUID $indexUUID;
+    private int $cost;
+    private int $numberOfItems;
 
     /**
-     * @var int
-     */
-    private $cost;
-
-    /**
-     * IndexWasConfigured constructor.
-     *
      * @param IndexUUID $indexUUID
      * @param int       $cost
+     * @param int       $numberOfItems
      */
-    public function __construct(
-        IndexUUID $indexUUID,
-        int $cost
-    ) {
+    public function __construct(IndexUUID $indexUUID, int $cost, int $numberOfItems)
+    {
         parent::__construct();
         $this->indexUUID = $indexUUID;
         $this->cost = $cost;
+        $this->numberOfItems = $numberOfItems;
     }
 
     /**
@@ -66,6 +56,14 @@ final class IndexWasExported extends DomainEvent
     }
 
     /**
+     * @return int
+     */
+    public function getNumberOfItems(): int
+    {
+        return $this->numberOfItems;
+    }
+
+    /**
      * to array payload.
      *
      * @return array
@@ -77,6 +75,7 @@ final class IndexWasExported extends DomainEvent
             'index_uuid' => $this
                 ->indexUUID
                 ->composeUUID(),
+            'number_of_items' => $this->numberOfItems,
         ];
     }
 }

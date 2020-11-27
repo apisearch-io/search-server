@@ -2,6 +2,7 @@ command_bus:
     command_bus:
         middlewares:
             - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
+            - Apisearch\Server\Domain\Middleware\ExceptionsTranslationMiddleware
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
             - Apisearch\Server\Domain\Middleware\TokenEndpointPermissionsLimitationMiddleware
             - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
@@ -11,12 +12,14 @@ command_bus:
     query_bus:
         middlewares:
             - Apisearch\Server\Domain\Middleware\ExceptionsMiddleware
+            - Apisearch\Server\Domain\Middleware\ExceptionsTranslationMiddleware
             - Apisearch\Server\Domain\Middleware\RepositoryReferenceMiddleware
             - Apisearch\Server\Domain\Middleware\CheckIndexAvailabilityMiddleware
             - Apisearch\Server\Domain\Middleware\CheckHealthEventsQueueMiddleware
             - Apisearch\Server\Domain\Middleware\TokenQueryMiddleware
             - Apisearch\Server\Domain\Middleware\DefaultQueryValuesMiddleware
             - Apisearch\Server\Domain\Middleware\CheckHealthPluginsMiddleware
+            - Apisearch\Server\Domain\Middleware\CheckGetLogsLimitationsMiddleware
             - Apisearch\Server\Domain\Middleware\ItemToLineExportMiddleware
             - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
             - Apisearch\Server\Domain\Middleware\ComplexFields\QueryComplexFieldsMiddleware
