@@ -52,7 +52,7 @@ final class GetTopInteractionsController extends ControllerWithQueryBus
                 $to,
                 $query->get('platform', null),
                 $userEncrypt->getUUIDByInput($query->get('user_id')),
-                $query->get('type', InteractionType::CLICK),
+                InteractionType::resolveAlias($query->get('type', InteractionType::CLICK)),
                 \intval($query->get('n', 10))
             ))
             ->then(function ($interactions) use ($request, $from, $to, $days) {

@@ -49,6 +49,7 @@ class PostInteractionHandler
                 $putInteraction->getUserUUID(),
                 $putInteraction->getItemUUID(),
                 $putInteraction->getPosition(),
+                $putInteraction->getContext(),
                 $putInteraction->getOrigin(),
                 $putInteraction->getInteractionType(),
                 new DateTime()

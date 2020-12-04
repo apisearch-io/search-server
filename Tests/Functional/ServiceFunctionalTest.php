@@ -701,6 +701,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null $userId
      * @param string      $itemId
      * @param int         $position
+     * @param string|null $context
      * @param Origin      $origin
      * @param string      $appId
      * @param string      $indexId
@@ -710,6 +711,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $userId,
         string $itemId,
         int $position,
+        ?string $context,
         Origin $origin,
         string $appId = null,
         string $indexId = null,
@@ -728,12 +730,12 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $userId,
             ItemUUID::createByComposedUUID($itemId),
             $position,
+            $context,
             $origin,
             InteractionType::CLICK
         ));
 
         $this->dispatchImperative(new FlushInteractions());
-        self::usleep(200000);
     }
 
     /**
@@ -745,6 +747,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $itemId
      * @param string|null   $type
      * @param string|null   $count
+     * @param string|null   $context
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -760,6 +763,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $itemId = null,
         ?string $type = null,
         ?string $count = null,
+        ?string $context = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -781,7 +785,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $userId,
             $itemId,
             $type,
-            $count
+            $count,
+            $context
         ));
     }
 

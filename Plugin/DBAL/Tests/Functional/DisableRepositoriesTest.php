@@ -72,6 +72,11 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
         $configuration['parameters']['apisearch_server.usage_lines_repository_enabled'] = false;
         $configuration['parameters']['apisearch_server.logs_repository_enabled'] = false;
 
+        $configuration['services']['dbal.dbal_plugin_connection_test'] = [
+            'alias' => 'dbal.dbal_plugin_connection',
+            'public' => true,
+        ];
+
         return $configuration;
     }
 
@@ -98,9 +103,9 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
      */
     public function testCheckHealth()
     {
-        $this->click('123', 'product~1', 1, Origin::createEmpty());
-        $this->click('123', 'product~1', 1, Origin::createEmpty());
-        $this->click('456', 'product~1', 1, Origin::createEmpty());
+        $this->click('123', 'product~1', 1, null, Origin::createEmpty());
+        $this->click('123', 'product~1', 1, null, Origin::createEmpty());
+        $this->click('456', 'product~1', 1, null, Origin::createEmpty());
         $this->query(Query::create('hola')->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));
@@ -127,7 +132,7 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
      */
     public static function resetScenario()
     {
-        $mainConnection = static::getStatic('dbal.dbal_plugin_connection');
+        $mainConnection = static::getStatic('dbal.dbal_plugin_connection_test');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
         $metadataTableName = static::getParameterStatic('apisearch_plugin.dbal.metadata_table');
 

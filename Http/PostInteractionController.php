@@ -48,6 +48,7 @@ final class PostInteractionController extends ControllerWithCommandBus
         $host = $this->createOriginByRequest($request)->getHost();
         $origin = $this->createOriginByRequest($request);
         $user = $userEncrypt->getUUIDByInput($query->get('user_id'));
+        $context = $userEncrypt->getUUIDByInput($query->get('context'));
 
         if (
             \is_null($user) ||
@@ -65,6 +66,7 @@ final class PostInteractionController extends ControllerWithCommandBus
             $userEncrypt->getUUIDByInput($query->get('user_id')),
             ItemUUID::createByComposedUUID($itemUUID),
             \intval($query->get('position', 0)),
+            $context,
             $origin,
             $interaction
         ));

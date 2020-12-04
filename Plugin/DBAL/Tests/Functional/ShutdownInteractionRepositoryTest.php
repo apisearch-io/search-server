@@ -60,6 +60,7 @@ class ShutdownInteractionRepositoryTest extends ServiceFunctionalTest
             $userId,
             ItemUUID::createByComposedUUID('1~it'),
             1,
+            null,
             new Origin('d.com', '0.0.0.0', Origin::PHONE),
             InteractionType::CLICK
         ));

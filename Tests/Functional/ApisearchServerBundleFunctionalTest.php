@@ -766,6 +766,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string|null $userId
      * @param string      $itemId
      * @param int         $position
+     * @param string|null $context
      * @param Origin      $origin
      * @param string      $appId
      * @param string      $indexId
@@ -775,6 +776,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?string $userId,
         string $itemId,
         int $position,
+        ?string $context,
         Origin $origin,
         string $appId = null,
         string $indexId = null,
@@ -790,6 +792,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string|null   $itemId
      * @param string|null   $type
      * @param string|null   $count
+     * @param string|null   $context
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -805,6 +808,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?string $itemId = null,
         ?string $type = null,
         ?string $count = null,
+        ?string $context = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null

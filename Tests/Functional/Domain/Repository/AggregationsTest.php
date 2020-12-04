@@ -333,6 +333,46 @@ trait AggregationsTest
     }
 
     /**
+     * Test aggregation sort.
+     *
+     * @param int   $firstId
+     * @param array $order
+     *
+     * @dataProvider dataAggregationsSortComplex
+     */
+    public function testAggregationsSortInComplexFields(
+        int $firstId,
+        ? array $order
+    ) {
+        $query = Query::createMatchAll();
+        \is_null($order)
+            ? $query->aggregateBy('category', 'category', Filter::AT_LEAST_ONE)
+            : $query->aggregateBy('category', 'category', Filter::AT_LEAST_ONE, $order);
+
+        $counters = $this
+            ->query($query)
+            ->getAggregation('category')
+            ->getCounters();
+
+        $firstCounter = \reset($counters);
+        $this->assertEquals($firstId, $firstCounter->getId());
+    }
+
+    /**
+     * data for testAggregationsSort.
+     */
+    public function dataAggregationsSortComplex()
+    {
+        return [
+            ['1', null],
+            ['1', Aggregation::SORT_BY_COUNT_DESC],
+            ['3', Aggregation::SORT_BY_COUNT_ASC],
+            ['9', Aggregation::SORT_BY_NAME_DESC],
+            ['1', Aggregation::SORT_BY_NAME_ASC],
+        ];
+    }
+
+    /**
      * Test aggregation limit.
      */
     public function testAggregationsLimit()
