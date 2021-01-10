@@ -16,14 +16,15 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Tests;
 
 use Apisearch\Plugin\Admin\AdminPluginBundle;
+use Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository;
+use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
-use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
- * Class AdminPluginFunctionalTest.
+ * Trait AdminPluginFunctionalTest.
  */
-abstract class AdminPluginFunctionalTest extends HttpFunctionalTest
+trait AdminPluginFunctionalTest
 {
     /**
      * Decorate bundles.
@@ -52,6 +53,10 @@ abstract class AdminPluginFunctionalTest extends HttpFunctionalTest
         $configuration = parent::decorateConfiguration($configuration);
         $configuration['services'][UsageRepository::class] = [
             'alias' => InMemoryUsageRepository::class,
+        ];
+
+        $configuration['services'][MetadataRepository::class] = [
+            'alias' => InMemoryMetadataRepository::class,
         ];
 
         return $configuration;

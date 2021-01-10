@@ -39,7 +39,7 @@ final class GetTopInteractionsController extends ControllerWithQueryBus
         UserEncrypt $userEncrypt
     ): PromiseInterface {
         $query = $request->query;
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetTopInteractions(
@@ -55,9 +55,14 @@ final class GetTopInteractionsController extends ControllerWithQueryBus
                 $query->get('type', InteractionType::CLICK),
                 \intval($query->get('n', 10))
             ))
-            ->then(function ($interactions) use ($request) {
+            ->then(function ($interactions) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $interactions,
+                    [
+                        'data' => $interactions,
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers

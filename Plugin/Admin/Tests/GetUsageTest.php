@@ -16,12 +16,15 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Tests;
 
 use Apisearch\Query\Query;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 
 /**
  * Class GetUsageTest.
  */
-class GetUsageTest extends AdminPluginFunctionalTest
+class GetUsageTest extends HttpFunctionalTest
 {
+    use AdminPluginFunctionalTest;
+
     /**
      * Test controller result.
      */

@@ -23,19 +23,8 @@ use Apisearch\Model\IndexUUID;
  */
 final class IndexWasCreated extends DomainEvent
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index UUID
-     */
-    private $indexUUID;
-
-    /**
-     * @var Config
-     *
-     * Config
-     */
-    private $config;
+    private IndexUUID $indexUUID;
+    private Config $config;
 
     /**
      * IndexWasConfigured constructor.

@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Listener;
 
+use Apisearch\Model\Token;
 use Apisearch\Server\Domain\Event;
 use Apisearch\Server\Domain\Event\DomainEvent;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
@@ -29,13 +30,22 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class UsageRegister implements EventSubscriberInterface
 {
     private UsageRepository $usageRepository;
+    private string $godToken;
+    private bool $registerGodUsage;
 
     /**
      * @param UsageRepository $usageRepository
+     * @param string          $godToken
+     * @param bool            $registerGodUsage
      */
-    public function __construct(UsageRepository $usageRepository)
-    {
+    public function __construct(
+        UsageRepository $usageRepository,
+        string $godToken,
+        bool $registerGodUsage
+    ) {
         $this->usageRepository = $usageRepository;
+        $this->godToken = $godToken;
+        $this->registerGodUsage = $registerGodUsage;
     }
 
     /**
@@ -45,7 +55,13 @@ class UsageRegister implements EventSubscriberInterface
      */
     public function registerQueryEventUsage(DomainEventEnvelope $domainEventEnvelope)
     {
-        $this->registerEventUsage($domainEventEnvelope, 'query');
+        /**
+         * @var DomainEvent
+         */
+        $event = $domainEventEnvelope->getDomainEvent();
+        if ($this->eventCanBeRegistered($event)) {
+            $this->registerEventUsage($event, 'query');
+        }
     }
 
     /**
@@ -55,23 +71,25 @@ class UsageRegister implements EventSubscriberInterface
      */
     public function registerAdminEventUsage(DomainEventEnvelope $domainEventEnvelope)
     {
-        $this->registerEventUsage($domainEventEnvelope, 'admin');
+        /**
+         * @var DomainEvent
+         */
+        $event = $domainEventEnvelope->getDomainEvent();
+        if ($this->eventCanBeRegistered($event)) {
+            $this->registerEventUsage($event, 'admin');
+        }
     }
 
     /**
      * Register event by name.
      *
-     * @param DomainEventEnvelope $domainEventEnvelope
-     * @param string              $eventName
+     * @param DomainEvent $event
+     * @param string      $eventName
      */
     public function registerEventUsage(
-        DomainEventEnvelope $domainEventEnvelope,
+        DomainEvent $event,
         string $eventName
     ) {
-        /**
-         * @var DomainEvent
-         */
-        $event = $domainEventEnvelope->getDomainEvent();
         $today = new DateTime('now', new DateTimeZone('UTC'));
         $today->setTime(0, 0, 0);
 
@@ -82,6 +100,23 @@ class UsageRegister implements EventSubscriberInterface
                 $eventName,
                 $today
             );
+    }
+
+    /**
+     * @param DomainEvent $event
+     *
+     * @return bool
+     */
+    private function eventCanBeRegistered(DomainEvent $event)
+    {
+        $token = $event->getDispatchedBy();
+        if ($token instanceof Token) {
+            return
+                $this->registerGodUsage ||
+                $token->getTokenUUID()->composeUUID() !== $this->godToken;
+        }
+
+        return true;
     }
 
     /**

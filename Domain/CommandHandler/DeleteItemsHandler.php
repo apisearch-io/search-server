@@ -35,6 +35,7 @@ class DeleteItemsHandler extends WithRepositoryAndEventPublisher
     public function handle(DeleteItems $deleteItems): PromiseInterface
     {
         $repositoryReference = $deleteItems->getRepositoryReference();
+        $ownerToken = $deleteItems->getToken();
         $itemsUUID = $deleteItems->getItemsUUID();
 
         return $this
@@ -43,12 +44,13 @@ class DeleteItemsHandler extends WithRepositoryAndEventPublisher
                 $repositoryReference,
                 $itemsUUID
             )
-            ->then(function () use ($repositoryReference, $itemsUUID) {
+            ->then(function () use ($repositoryReference, $itemsUUID, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new ItemsWereDeleted($itemsUUID))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

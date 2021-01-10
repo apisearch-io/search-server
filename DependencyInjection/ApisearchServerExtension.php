@@ -195,6 +195,14 @@ class ApisearchServerExtension extends BaseExtension
                 $config['repositories']['logs_repository_enabled']
             ),
             'apisearch_server.metadata_disk_repository_path' => $config['repositories']['metadata_disk_path'],
+
+            /*
+             * Settings
+             */
+            'apisearch_server.register_god_usage' => Env::get(
+                'APISEARCH_REGISTER_GOD_USAGE',
+                $config['settings']['register_god_usage']
+            ),
         ];
     }
 

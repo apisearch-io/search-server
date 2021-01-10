@@ -22,12 +22,7 @@ use Apisearch\Model\Token;
  */
 final class TokenWasPut extends DomainEvent
 {
-    /**
-     * @var Token
-     *
-     * Token
-     */
-    private $token;
+    private Token $token;
 
     /**
      * ItemsWasIndexed constructor.

@@ -22,10 +22,7 @@ use Apisearch\Query\Query;
  */
 final class ItemsWereDeletedByQuery extends DomainEvent
 {
-    /**
-     * @var Query
-     */
-    private $query;
+    private Query $query;
 
     /**
      * @param Query $query

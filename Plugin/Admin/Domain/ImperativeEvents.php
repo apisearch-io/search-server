@@ -38,4 +38,12 @@ class ImperativeEvents
         'flush_interactions' => FlushInteractions::class,
         'flush_searches' => FlushSearches::class,
     ];
+
+    /**
+     * @return string[]
+     */
+    public static function all(): array
+    {
+        return \array_keys(self::ALIASES);
+    }
 }

@@ -38,6 +38,7 @@ class ConfigureIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPub
     {
         $repositoryReference = $configureIndex->getRepositoryReference();
         $indexUUID = $configureIndex->getIndexUUID();
+        $ownerToken = $configureIndex->getToken();
         $config = $configureIndex->getConfig();
 
         $currentMetadataConfig = $this
@@ -68,7 +69,7 @@ class ConfigureIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPub
                             return true;
                         }),
             ])
-            ->then(function (array $results) use ($repositoryReference, $indexUUID, $config) {
+            ->then(function (array $results) use ($repositoryReference, $indexUUID, $config, $ownerToken) {
                 $indexWasReindexed = $results[1];
 
                 return $this
@@ -80,6 +81,7 @@ class ConfigureIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPub
                             $indexWasReindexed
                         ))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

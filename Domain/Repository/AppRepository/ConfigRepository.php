@@ -17,6 +17,7 @@ namespace Apisearch\Server\Domain\Repository\AppRepository;
 
 use Apisearch\Config\Config;
 use Apisearch\Model\AppUUID;
+use Apisearch\Model\IndexUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Event\IndexWasConfigured;
 use Apisearch\Server\Domain\Event\IndexWasCreated;
@@ -31,10 +32,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 abstract class ConfigRepository implements EventSubscriberInterface
 {
-    /**
-     * @var array
-     */
-    private $configs = [];
+    private array $configs = [];
 
     /**
      * Put config.
@@ -122,6 +120,24 @@ abstract class ConfigRepository implements EventSubscriberInterface
     public function getAppConfigs(AppUUID $appUUID): array
     {
         return $this->configs[$appUUID->composeUUID()] ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function allRepositoryReferences(): array
+    {
+        $indicesUUIDComposed = [];
+        foreach ($this->configs as $appUUIDComposed => $config) {
+            foreach ($config as $indexUUIDComposed => $data) {
+                $indicesUUIDComposed[] = RepositoryReference::create(
+                    AppUUID::createById($appUUIDComposed),
+                    IndexUUID::createById($indexUUIDComposed)
+                );
+            }
+        }
+
+        return $indicesUUIDComposed;
     }
 
     /**

@@ -33,6 +33,7 @@ class PutTokenHandler extends WithAppRepositoryAndEventPublisher
     public function handle(PutToken $putToken): PromiseInterface
     {
         $repositoryReference = $putToken->getRepositoryReference();
+        $ownerToken = $putToken->getToken();
         $token = $putToken->getNewToken();
 
         return $this
@@ -41,12 +42,13 @@ class PutTokenHandler extends WithAppRepositoryAndEventPublisher
                 $repositoryReference,
                 $token
             )
-            ->then(function () use ($repositoryReference, $token) {
+            ->then(function () use ($repositoryReference, $token, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new TokenWasPut($token))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

@@ -22,12 +22,7 @@ use Apisearch\Model\TokenUUID;
  */
 final class TokenWasDeleted extends DomainEvent
 {
-    /**
-     * @var TokenUUID
-     *
-     * Token UUID
-     */
-    private $tokenUUID;
+    private TokenUUID $tokenUUID;
 
     /**
      * ItemsWasIndexed constructor.

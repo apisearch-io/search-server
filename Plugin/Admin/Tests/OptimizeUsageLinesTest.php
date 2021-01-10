@@ -17,13 +17,16 @@ namespace Apisearch\Plugin\Admin\Tests;
 
 use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Query\Query;
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
 use DateTime;
 
 /**
  * Class OptimizeUsageLinesTest.
  */
-class OptimizeUsageLinesTest extends AdminPluginFunctionalTest
+class OptimizeUsageLinesTest extends HttpFunctionalTest
 {
+    use AdminPluginFunctionalTest;
+
     /**
      * Test controller result.
      */

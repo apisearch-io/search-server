@@ -39,7 +39,7 @@ final class GetSearchesController extends ControllerWithQueryBus
     ): PromiseInterface {
         $query = $request->query;
         $perDay = $request->attributes->get('per_day', false);
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetSearches(
@@ -51,15 +51,20 @@ final class GetSearchesController extends ControllerWithQueryBus
                 $from,
                 $to,
                 $perDay,
-                $query->get('platform', null),
+                $query->get('platform'),
                 $userEncrypt->getUUIDByInput($query->get('user_id')),
                 \boolval($query->get('exclude_with_results', false)),
                 \boolval($query->get('exclude_without_results', false)),
-                $query->get('count', null),
+                $query->get('count'),
             ))
-            ->then(function ($searches) use ($request) {
+            ->then(function ($searches) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $searches,
+                    [
+                        'data' => $searches,
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers

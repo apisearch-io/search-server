@@ -35,6 +35,7 @@ class DeleteTokenHandler extends WithAppRepositoryAndEventPublisher
     public function handle(DeleteToken $deleteToken): PromiseInterface
     {
         $repositoryReference = $deleteToken->getRepositoryReference();
+        $ownerToken = $deleteToken->getToken();
         $tokenUUID = $deleteToken->getTokenUUIDToDelete();
 
         return $this
@@ -43,12 +44,13 @@ class DeleteTokenHandler extends WithAppRepositoryAndEventPublisher
                 $repositoryReference,
                 $tokenUUID
             )
-            ->then(function () use ($repositoryReference, $tokenUUID) {
+            ->then(function () use ($repositoryReference, $tokenUUID, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new TokenWasDeleted($tokenUUID))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

@@ -22,12 +22,7 @@ use Apisearch\Model\IndexUUID;
  */
 final class IndexWasReset extends DomainEvent
 {
-    /**
-     * @var IndexUUID
-     *
-     * Index UUID
-     */
-    private $indexUUID;
+    private IndexUUID $indexUUID;
 
     /**
      * IndexWasConfigured constructor.

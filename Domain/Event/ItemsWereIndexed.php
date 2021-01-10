@@ -24,10 +24,8 @@ final class ItemsWereIndexed extends DomainEvent
 {
     /**
      * @var ItemUUID[]
-     *
-     * Items UUID
      */
-    private $itemsUUID;
+    private array $itemsUUID;
 
     /**
      * ItemsWasIndexed constructor.

@@ -35,6 +35,7 @@ class ResetIndexHandler extends WithAppRepositoryAndEventPublisher
     public function handle(ResetIndex $resetIndex): PromiseInterface
     {
         $repositoryReference = $resetIndex->getRepositoryReference();
+        $ownerToken = $resetIndex->getToken();
         $indexUUID = $resetIndex->getIndexUUID();
 
         return $this
@@ -43,12 +44,13 @@ class ResetIndexHandler extends WithAppRepositoryAndEventPublisher
                 $repositoryReference,
                 $indexUUID
             )
-            ->then(function () use ($repositoryReference, $indexUUID) {
+            ->then(function () use ($repositoryReference, $indexUUID, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new IndexWasReset($indexUUID))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

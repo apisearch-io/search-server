@@ -22,6 +22,7 @@ use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\SearchesRepository\InMemorySearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+use DateTime;
 
 /**
  * Class MetricsTest.
@@ -110,6 +111,7 @@ class MetricsTest extends HttpFunctionalTest
                 $timeKey => 1,
             ],
             'total_searches_without_results' => 1,
+            'total_searches' => 5,
             'unique_users_searching' => [
                 $timeKey => 3,
             ],
@@ -120,6 +122,9 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'from' => (new DateTime('first day of this month'))->format('Ymd'),
+            'to' => (new DateTime('first day of next month'))->format('Ymd'),
+            'days' => \intval(\date('t')),
         ], $metrics);
 
         $metrics = $this->getMetrics(null, null, null, 'u1');
@@ -145,6 +150,7 @@ class MetricsTest extends HttpFunctionalTest
             'total_searches_with_results' => 3,
             'searches_without_results' => [],
             'total_searches_without_results' => 0,
+            'total_searches' => 3,
             'unique_users_searching' => [
                 $timeKey => 1,
             ],
@@ -154,6 +160,9 @@ class MetricsTest extends HttpFunctionalTest
                 'Stylestep' => 1,
             ],
             'top_searches_without_results' => [],
+            'from' => (new DateTime('first day of this month'))->format('Ymd'),
+            'to' => (new DateTime('first day of next month'))->format('Ymd'),
+            'days' => \intval(\date('t')),
         ], $metrics);
 
         $metrics = $this->getMetrics(null, null, null, null, Origin::MOBILE);
@@ -181,6 +190,7 @@ class MetricsTest extends HttpFunctionalTest
                 $timeKey => 1,
             ],
             'total_searches_without_results' => 1,
+            'total_searches' => 3,
             'unique_users_searching' => [
                 $timeKey => 3,
             ],
@@ -191,50 +201,67 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'from' => (new DateTime('first day of this month'))->format('Ymd'),
+            'to' => (new DateTime('first day of next month'))->format('Ymd'),
+            'days' => \intval(\date('t')),
         ], $metrics);
 
         $metrics = $this->getMetrics(null, null, null, null, 'non-existing');
         $this->assertEquals(
-            $this->getEmptyMetricsArray(),
+            $this->getEmptyMetricsArray(null, null),
             $metrics
         );
 
-        $metrics = $this->getMetrics(null, (new \DateTime())->modify('+1 day'));
+        $from = (new \DateTime())->modify('+1 day');
+        $metrics = $this->getMetrics(null, $from);
         $this->assertEquals(
-            $this->getEmptyMetricsArray(),
+            $this->getEmptyMetricsArray($from, null),
             $metrics
         );
 
-        $metrics = $this->getMetrics(null, null, (new \DateTime())->modify('-1 day'));
+        $to = (new \DateTime())->modify('-1 day');
+        $metrics = $this->getMetrics(null, null, $to);
         $this->assertEquals(
-            $this->getEmptyMetricsArray(),
+            $this->getEmptyMetricsArray(null, $to),
             $metrics
         );
 
-        $metrics = $this->getMetrics(null, (new \DateTime())->modify('-1 day'));
+        $from = (new \DateTime())->modify('-1 day');
+        $metrics = $this->getMetrics(null, $from);
         $this->assertEquals(
-            $this->getAllMetricsArray($metrics),
+            $this->getAllMetricsArray($metrics, $from, null),
             $metrics
         );
 
-        $metrics = $this->getMetrics(null, null, (new \DateTime())->modify('+1 day'));
+        $to = (new \DateTime())->modify('+1 day');
+        $metrics = $this->getMetrics(null, null, $to);
         $this->assertEquals(
-            $this->getAllMetricsArray($metrics),
+            $this->getAllMetricsArray($metrics, null, $to),
             $metrics
         );
 
-        $metrics = $this->getMetrics(null, (new \DateTime())->modify('-1 day'), (new \DateTime())->modify('+1 day'));
+        $from = (new \DateTime())->modify('-1 day');
+        $to = (new \DateTime())->modify('+1 day');
+        $metrics = $this->getMetrics(null, $from, $to);
         $this->assertEquals(
-            $this->getAllMetricsArray($metrics),
+            $this->getAllMetricsArray($metrics, $from, $to),
             $metrics
         );
     }
 
     /**
+     * @param Datetime|null $from
+     * @param DateTime|null $to
+     *
      * @return array
      */
-    private function getEmptyMetricsArray(): array
-    {
+    private function getEmptyMetricsArray(
+        ?Datetime $from,
+        ?Datetime $to
+    ): array {
+        $from = $from ?? new DateTime('first day of this month');
+        $to = $to ?? new DateTime('first day of next month');
+
         return [
             'clicks' => [],
             'total_clicks' => 0,
@@ -245,20 +272,31 @@ class MetricsTest extends HttpFunctionalTest
             'total_searches_with_results' => 0,
             'searches_without_results' => [],
             'total_searches_without_results' => 0,
+            'total_searches' => 0,
             'unique_users_searching' => [],
             'total_unique_users_searching' => 0,
             'top_searches_with_results' => [],
             'top_searches_without_results' => [],
+            'from' => $from->format('Ymd'),
+            'to' => $to->format('Ymd'),
+            'days' => \intval((clone $to)->diff($from)->days),
         ];
     }
 
     /**
-     * @param array $metrics
+     * @param array         $metrics
+     * @param Datetime|null $from
+     * @param DateTime|null $to
      *
      * @return array
      */
-    private function getAllMetricsArray(array $metrics): array
-    {
+    private function getAllMetricsArray(
+        array $metrics,
+        ?Datetime $from = null,
+        ?Datetime $to = null
+    ): array {
+        $from = $from ?? new DateTime('first day of this month');
+        $to = $to ?? new DateTime('first day of next month');
         $clicks = $metrics['clicks'];
         $timeKey = \key($clicks);
 
@@ -285,6 +323,7 @@ class MetricsTest extends HttpFunctionalTest
                 $timeKey => 1,
             ],
             'total_searches_without_results' => 1,
+            'total_searches' => 5,
             'unique_users_searching' => [
                 $timeKey => 3,
             ],
@@ -296,6 +335,9 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'from' => $from->format('Ymd'),
+            'to' => $to->format('Ymd'),
+            'days' => \intval((clone $to)->diff($from)->days),
         ];
     }
 }

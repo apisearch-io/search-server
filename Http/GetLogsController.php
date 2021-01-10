@@ -35,7 +35,7 @@ final class GetLogsController extends ControllerWithQueryBus
      */
     public function __invoke(Request $request): PromiseInterface
     {
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
         $types = $request->query->get('types');
         $types = \is_array($types) ? $types : [];
         list($limit, $page) = $this->getPaginationFromRequest($request);
@@ -55,9 +55,14 @@ final class GetLogsController extends ControllerWithQueryBus
                     ->fromTypes($types)
                     ->paginate($limit, $page)
             ))
-            ->then(function (array $logsWithText) use ($request) {
+            ->then(function (array $logsWithText) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $this->logsWithTextToArray($logsWithText),
+                    [
+                        'data' => $this->logsWithTextToArray($logsWithText),
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers

@@ -129,6 +129,13 @@ class ApisearchServerConfiguration extends BaseConfiguration
                             ->defaultValue(500)
                         ->end()
                     ->end()
+                ->end()
+                ->arrayNode('settings')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('register_god_usage')
+                        ->defaultTrue()
+                    ->end()
                 ->end();
     }
 }

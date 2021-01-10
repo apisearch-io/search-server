@@ -12,6 +12,7 @@ services:
             array $tokenEndpointPermissionsLimitation: "%apisearch_server.limitations_token_endpoint_permissions%"
             int $defaultNumberOfSuggestions: "%apisearch_server.default_number_of_suggestions%"
             int $numberOfBulkItemsInARequest: "%apisearch_server.number_of_bulk_items_in_a_request%"
+            bool $registerGodUsage: "%apisearch_server.register_god_usage%"
             array $enabledPlugins: "%apisearch_server.enabled_plugins%"
             string $exchangeName: "%apisearch_server.async_events_exchange_name%"
 

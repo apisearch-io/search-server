@@ -39,12 +39,13 @@ class ExportIndexHandler extends WithRepositoryAndEventPublisher
     {
         $from = \microtime(true);
         $repositoryReference = $exportIndex->getRepositoryReference();
+        $ownerToken = $exportIndex->getToken();
 
         return $this
             ->repository
             ->exportIndex($repositoryReference)
-            ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $from) {
-                $stream->on('end', function () use ($repositoryReference, $from, $stream) {
+            ->then(function (ReadableStreamInterface $stream) use ($repositoryReference, $from, $ownerToken) {
+                $stream->on('end', function () use ($repositoryReference, $from, $stream, $ownerToken) {
                     $this
                         ->eventBus
                         ->dispatch(
@@ -54,6 +55,7 @@ class ExportIndexHandler extends WithRepositoryAndEventPublisher
                                 0
                             ))
                                 ->withRepositoryReference($repositoryReference)
+                                ->dispatchedBy($ownerToken)
                         );
                 });
 

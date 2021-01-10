@@ -15,7 +15,9 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Admin\DependencyInjection;
 
+use Apisearch\Server\DependencyInjection\Env;
 use Mmoreram\BaseBundle\DependencyInjection\BaseExtension;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
  * Class AdminPluginExtension.
@@ -32,6 +34,23 @@ class AdminPluginExtension extends BaseExtension
     public function getAlias()
     {
         return 'apisearch_plugin_admin';
+    }
+
+    /**
+     * Return a new Configuration instance.
+     *
+     * If object returned by this method is an instance of
+     * ConfigurationInterface, extension will use the Configuration to read all
+     * bundle config definitions.
+     *
+     * Also will call getParametrizationValues method to load some config values
+     * to internal parameters.
+     *
+     * @return ConfigurationInterface|null
+     */
+    protected function getConfigurationInstance(): ? ConfigurationInterface
+    {
+        return new AdminPluginConfiguration($this->getAlias());
     }
 
     /**
@@ -69,6 +88,29 @@ class AdminPluginExtension extends BaseExtension
     {
         return [
             'domain',
+        ];
+    }
+
+    /**
+     * Load Parametrization definition.
+     *
+     * return array(
+     *      'parameter1' => $config['parameter1'],
+     *      'parameter2' => $config['parameter2'],
+     *      ...
+     * );
+     *
+     * @param array $config Bundles config values
+     *
+     * @return array
+     */
+    protected function getParametrizationValues(array $config): array
+    {
+        return [
+            'apisearch_plugin.admin.minutes_interval_between_preload_all_metrics' => Env::get(
+                'ADMIN_MINUTES_INTERVAL_BETWEEN_PRELOAD_ALL_METRICS',
+                $config['minutes_interval_between_preload_all_metrics']
+            ),
         ];
     }
 }

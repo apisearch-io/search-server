@@ -25,12 +25,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 abstract class CommandWithCommandBusAndGodToken extends ApisearchServerCommand
 {
-    /**
-     * @var InlineCommandBus
-     *
-     * Command bus
-     */
-    protected $commandBus;
+    protected InlineCommandBus $commandBus;
 
     /**
      * Controller constructor.

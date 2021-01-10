@@ -592,7 +592,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ])
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -636,7 +636,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ])
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -739,7 +739,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ]
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -787,7 +787,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ]
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -847,7 +847,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ]
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -899,7 +899,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ]
         );
 
-        return $response['body'];
+        return $response['body']['data'];
     }
 
     /**
@@ -1087,6 +1087,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         }
 
         self::$lastResponse = $result;
+
         self::throwTransportableExceptionIfNeeded($result);
 
         return $result;

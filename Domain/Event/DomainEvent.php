@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Event;
 
+use Apisearch\Model\Token;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Now;
 use Carbon\Carbon;
@@ -27,6 +28,7 @@ abstract class DomainEvent
     private int $occurredOn;
     private Carbon $now;
     private RepositoryReference $repositoryReference;
+    private ?Token $token;
 
     /**
      * DomainEvent.
@@ -74,8 +76,10 @@ abstract class DomainEvent
      * Set repository reference.
      *
      * @param RepositoryReference $repositoryReference
+     *
+     * @return self
      */
-    public function withRepositoryReference(RepositoryReference $repositoryReference)
+    public function withRepositoryReference(RepositoryReference $repositoryReference): self
     {
         $this->repositoryReference = $repositoryReference;
 
@@ -90,6 +94,26 @@ abstract class DomainEvent
     public function getRepositoryReference(): RepositoryReference
     {
         return $this->repositoryReference;
+    }
+
+    /**
+     * @param Token $token
+     *
+     * @return self
+     */
+    public function dispatchedBy(Token $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Token|null
+     */
+    public function getDispatchedBy(): ?Token
+    {
+        return $this->token;
     }
 
     /**

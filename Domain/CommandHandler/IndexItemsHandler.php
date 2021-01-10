@@ -36,6 +36,7 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
     public function handle(IndexItems $indexItems): PromiseInterface
     {
         $repositoryReference = $indexItems->getRepositoryReference();
+        $ownerToken = $indexItems->getToken();
         $items = $indexItems->getItems();
 
         return $this
@@ -44,7 +45,7 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
                 $repositoryReference,
                 $items
             )
-            ->then(function () use ($repositoryReference, $items) {
+            ->then(function () use ($repositoryReference, $items, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
@@ -52,6 +53,7 @@ class IndexItemsHandler extends WithRepositoryAndEventPublisher
                             return $item->getUUID();
                         }, $items)))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

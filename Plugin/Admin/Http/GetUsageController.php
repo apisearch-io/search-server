@@ -39,7 +39,7 @@ class GetUsageController extends ControllerWithQueryBusAsGod
     {
         $query = $request->query;
         $perDay = $request->attributes->get('per_day', false);
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetUsage(
@@ -53,9 +53,14 @@ class GetUsageController extends ControllerWithQueryBusAsGod
                 $query->get('event', null),
                 $perDay
             ))
-            ->then(function (array $usage) use ($request) {
+            ->then(function (array $usage) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $usage,
+                    [
+                        'data' => $usage,
+                        'from' => $from->format('Ymd'),
+                        'to' => $from->format('Ymd'),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers

@@ -78,7 +78,7 @@ trait LogsRepositoryTest
 
         $logs = $this->getLogs();
         $this->assertContains('not found', $logs[0]['text']);
-        $this->assertContains('404', $logs[0]['code']);
+        $this->assertEquals('404', $logs[0]['code']);
 
         $this->assertContains('not found', $logs[1]['text']);
         $this->assertContains('404', $logs[1]['code']);

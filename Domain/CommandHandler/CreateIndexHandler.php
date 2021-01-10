@@ -36,6 +36,7 @@ class CreateIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
     public function handle(CreateIndex $createIndex): PromiseInterface
     {
         $repositoryReference = $createIndex->getRepositoryReference();
+        $ownerToken = $createIndex->getToken();
         $indexUUID = $createIndex->getIndexUUID();
         $config = $createIndex->getConfig();
 
@@ -51,7 +52,7 @@ class CreateIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                     ->configRepository
                     ->putConfig($repositoryReference, $config),
             ])
-            ->then(function () use ($repositoryReference, $indexUUID, $config) {
+            ->then(function () use ($repositoryReference, $indexUUID, $config, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
@@ -60,6 +61,7 @@ class CreateIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                             $config
                         ))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

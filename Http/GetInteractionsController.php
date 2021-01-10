@@ -39,7 +39,7 @@ final class GetInteractionsController extends ControllerWithQueryBus
     ): PromiseInterface {
         $query = $request->query;
         $perDay = $request->attributes->get('per_day', false);
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetInteractions(
@@ -51,15 +51,20 @@ final class GetInteractionsController extends ControllerWithQueryBus
                 $from,
                 $to,
                 $perDay,
-                $query->get('platform', null),
+                $query->get('platform'),
                 $userEncrypt->getUUIDByInput($query->get('user_id')),
-                $query->get('item_id', null),
-                $query->get('type', null),
-                $query->get('count', null),
+                $query->get('item_id'),
+                $query->get('type'),
+                $query->get('count'),
             ))
-            ->then(function ($interactions) use ($request) {
+            ->then(function ($interactions) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $interactions,
+                    [
+                        'data' => $interactions,
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers
