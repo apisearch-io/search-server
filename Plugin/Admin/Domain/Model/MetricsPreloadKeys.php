@@ -13,11 +13,13 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Server\Domain\Event;
+namespace Apisearch\Plugin\Admin\Domain\Model;
 
 /**
- * Class AllInteractionsWereDeleted.
+ * Class MetricsPreloadKeys.
  */
-final class AllInteractionsWereDeleted extends DomainEvent
+class MetricsPreloadKeys
 {
+    const CURRENT_MONTH_USAGES_ALL = 'cmu_all';
+    const LAST_15_DAYS_USAGES_ALL = 'last15u_all';
 }

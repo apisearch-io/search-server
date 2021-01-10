@@ -147,7 +147,7 @@ class LogMapper
     {
         return [
             'txt' => $storableException->getMessage(),
-            'code' => $storableException->getCode(),
+            'code' => \strval($storableException->getCode()),
         ];
     }
 }

@@ -33,6 +33,7 @@ class DeleteItemsByQueryHandler extends WithRepositoryAndEventPublisher
     public function handle(DeleteItemsByQuery $deleteItemsByQuery): PromiseInterface
     {
         $repositoryReference = $deleteItemsByQuery->getRepositoryReference();
+        $ownerToken = $deleteItemsByQuery->getToken();
         $query = $deleteItemsByQuery->getQuery();
 
         return $this
@@ -41,12 +42,13 @@ class DeleteItemsByQueryHandler extends WithRepositoryAndEventPublisher
                 $repositoryReference,
                 $query
             )
-            ->then(function () use ($repositoryReference, $query) {
+            ->then(function () use ($repositoryReference, $query, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new ItemsWereDeletedByQuery($query))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

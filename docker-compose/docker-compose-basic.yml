@@ -1,0 +1,30 @@
+version: '3'
+
+networks:
+    apisearch_basic:
+
+services:
+    elasticsearch:
+        image: "docker.elastic.co/elasticsearch/elasticsearch:7.6.0"
+        networks:
+            - apisearch_basic
+        ports:
+            - "9200"
+        environment:
+            - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+            - "discovery.type=single-node"
+            - "action.auto_create_index=-apisearch*,+*"
+
+    server:
+        build: ../
+        networks:
+            - apisearch_basic
+        ports:
+            - "8000:8000"
+        environment:
+            - "APISEARCH_GOD_TOKEN=0e4d75ba-c640-44c1-a745-06ee51db4e93"
+            - "APISEARCH_READONLY_TOKEN=410806ed-f2c2-8d22-96ea-7fb68026df34"
+            - "APISEARCH_HEALTH_CHECK_TOKEN=77fa21d4-7755-4cfb-bad3-255232391047"
+            - "APISEARCH_PING_TOKEN=6326d504-0a5f-f1ae-7344-8e70b75fcde9"
+            - "APISEARCH_ENABLED_PLUGINS=elasticsearch,admin"
+            - "ELASTICSEARCH_HOST=elasticsearch"

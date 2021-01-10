@@ -16,15 +16,15 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Admin\Console;
 
 use Apisearch\Plugin\Admin\Domain\ImperativeEvents;
-use Apisearch\Server\Console\ApisearchServerCommand;
+use Apisearch\Server\Console\CommandWithEventBusAndGodToken;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SendImperativeEventCommand.
+ * Class DispatchImperativeEventCommand.
  */
-class DispatchImperativeEventCommand extends ApisearchServerCommand
+class DispatchImperativeEventCommand extends CommandWithEventBusAndGodToken
 {
     /**
      * @var string
@@ -37,7 +37,7 @@ class DispatchImperativeEventCommand extends ApisearchServerCommand
     protected function configure()
     {
         $this
-            ->setDescription('Dispatch imperative events. Available events: load_configs, load_tokens')
+            ->setDescription('Dispatch imperative events. Available events: '.\implode(', ', ImperativeEvents::all()))
             ->addOption('event', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_OPTIONAL, 'Events');
     }
 
@@ -58,5 +58,7 @@ class DispatchImperativeEventCommand extends ApisearchServerCommand
             $this->dispatchAndWait(new $event());
             static::printMessage($output, 'EventBus', "Event $eventName dispatched");
         }
+
+        return 0;
     }
 }

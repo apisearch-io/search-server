@@ -67,6 +67,7 @@ class CredentialsTokenValidator implements TokenValidator
             (
                 empty($token->getEndpoints()) ||
                 \in_array($routeName, $token->getEndpoints()) ||
+                \in_array(\str_replace('apisearch_', '', $routeName), $token->getEndpoints()) ||
                 !empty(\array_intersect(
                     $token->getEndpoints(),
                     $routeTags

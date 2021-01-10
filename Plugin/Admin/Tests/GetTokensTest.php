@@ -15,11 +15,15 @@ declare(strict_types=1);
 
 namespace Apisearch\Plugin\Admin\Tests;
 
+use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
+
 /**
  * Class GetTokensTest.
  */
-class GetTokensTest extends AdminPluginFunctionalTest
+class GetTokensTest extends HttpFunctionalTest
 {
+    use AdminPluginFunctionalTest;
+
     /**
      * Test controller result.
      */

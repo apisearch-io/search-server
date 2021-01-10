@@ -38,6 +38,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
     {
         $repositoryReference = $query->getRepositoryReference();
         $searchQuery = $query->getQuery();
+        $ownerToken = $query->getToken();
         $this->assignUUIDIfNeeded($query->getQuery());
         $from = \microtime(true);
 
@@ -47,7 +48,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                 $repositoryReference,
                 $searchQuery
             )
-            ->then(function (Result $result) use ($from, $repositoryReference, $searchQuery, $query) {
+            ->then(function (Result $result) use ($from, $repositoryReference, $searchQuery, $query, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
@@ -64,6 +65,7 @@ class QueryHandler extends WithRepositoryAndEventPublisher
                             (int) ((\microtime(true) - $from) * 1000)
                         ))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     )
                     ->then(function () use ($result) {
                         return $result;

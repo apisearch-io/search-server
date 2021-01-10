@@ -36,6 +36,7 @@ class DeleteIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
     public function handle(DeleteIndex $deleteIndex): PromiseInterface
     {
         $repositoryReference = $deleteIndex->getRepositoryReference();
+        $ownerToken = $deleteIndex->getToken();
         $indexUUID = $deleteIndex->getIndexUUID();
 
         return all([
@@ -49,12 +50,13 @@ class DeleteIndexHandler extends WithConfigRepositoryAppRepositoryAndEventPublis
                 ->configRepository
                 ->deleteConfig($repositoryReference),
         ])
-            ->then(function () use ($repositoryReference, $indexUUID) {
+            ->then(function () use ($repositoryReference, $indexUUID, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
                         (new IndexWasDeleted($indexUUID))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

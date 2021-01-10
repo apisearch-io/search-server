@@ -149,7 +149,7 @@ abstract class ImportIndexHandler
 
         return $deferred
             ->promise()
-            ->then(function (int $numberOfIndexedItems) use ($indexUUID, $from, $repositoryReference, $command) {
+            ->then(function (int $numberOfIndexedItems) use ($indexUUID, $from, $repositoryReference, $command, $token) {
                 return $this
                     ->eventBus
                     ->dispatch((new IndexWasImported(
@@ -158,7 +158,10 @@ abstract class ImportIndexHandler
                         $numberOfIndexedItems,
                         $command->getVersionUUID(),
                         $command->shouldDeleteOldVersions()
-                    ))->withRepositoryReference($repositoryReference));
+                    ))
+                        ->withRepositoryReference($repositoryReference)
+                        ->dispatchedBy($token)
+                    );
             });
     }
 

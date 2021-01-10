@@ -38,7 +38,7 @@ final class GetTopSearchesController extends ControllerWithQueryBus
         UserEncrypt $userEncrypt
     ): PromiseInterface {
         $query = $request->query;
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
 
         return $this
             ->ask(new GetTopSearches(
@@ -55,9 +55,14 @@ final class GetTopSearchesController extends ControllerWithQueryBus
                 \boolval($query->get('exclude_without_results', false)),
                 \intval($query->get('n', 10))
             ))
-            ->then(function ($searches) use ($request) {
+            ->then(function ($searches) use ($request, $from, $to, $days) {
                 return new JsonResponse(
-                    $searches,
+                    [
+                        'data' => $searches,
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
+                    ],
                     200, [
                         'Access-Control-Allow-Origin' => $request
                             ->headers

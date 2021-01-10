@@ -10,7 +10,19 @@ technologies. The project provides an *in crescendo* set of language
 integration libraries for her users, as well as some third party projects 
 integration bundles, plugins, or javascript widgets.
 
-**Step 1** - Start Eleasticsearch docker container
+**Step 1** - First of all, let's use docker to create a clean installation of
+the minimum requirements Apisearch server has.
+
+**Using docker-compose** - Clone this repository and use docker-compose
+
+```
+git clone git@github.com:apisearch-io/search-server.git
+de search-server
+docker-compose -f docker-compose/docker-compose-basic.yml up
+```
+
+**Using Docker** - Create an elasticsearch and a server containers from the
+registry
 
 ```
 docker run -d \
@@ -19,11 +31,7 @@ docker run -d \
     -e "discovery.type=single-node" \
     -e "action.auto_create_index=-apisearch*,+*" \
     docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-```
-
-**Step 2** - Start an Apisearch Server docker container
-
-```
+    
 docker pull apisearchio/search-server:latest
 docker run -d \
     --network host \
@@ -34,7 +42,7 @@ docker run -d \
     apisearchio/search-server:latest
 ```
 
-**Step 3** - Check the Server health
+**Step 2** - Check the Server health
 
 ```
 curl "http://localhost:8000/health" \

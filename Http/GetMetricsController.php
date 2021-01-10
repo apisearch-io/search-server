@@ -51,7 +51,7 @@ final class GetMetricsController extends ControllerWithQueryBus
             RequestAccessor::getIndexUUIDFromRequest($request)
         );
         $token = RequestAccessor::getTokenFromRequest($request);
-        list($from, $to) = $this->getDateRangeFromRequest($request);
+        list($from, $to, $days) = $this->getDateRangeFromRequest($request);
         $platform = $query->get('platform', null);
         $userId = $userEncrypt->getUUIDByInput($query->get('user_id'));
         $n = \intval($query->get('n', 10));
@@ -126,7 +126,7 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $n
                 )),
             ])
-            ->then(function (array $results) use ($request) {
+            ->then(function (array $results) use ($request, $from, $to, $days) {
                 list(
                     $clicks,
                     $topClicks,
@@ -138,6 +138,10 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $topSearchesWithoutResults
                     ) = $results;
 
+                $totalSearchesWithResults = \array_sum($searchesWithResults);
+                $totalSearchesWithoutResults = \array_sum($searchesWithoutResults);
+                $totalsearches = $totalSearchesWithResults + $totalSearchesWithoutResults;
+
                 return new JsonResponse(
                     [
                         'clicks' => $clicks,
@@ -146,13 +150,18 @@ final class GetMetricsController extends ControllerWithQueryBus
                         'unique_users_clicks' => $uniqueUsersClick,
                         'total_unique_users_clicks' => \array_sum($uniqueUsersClick),
                         'searches_with_results' => $searchesWithResults,
-                        'total_searches_with_results' => \array_sum($searchesWithResults),
+                        'total_searches_with_results' => $totalSearchesWithResults,
                         'searches_without_results' => $searchesWithoutResults,
-                        'total_searches_without_results' => \array_sum($searchesWithoutResults),
+                        'total_searches_without_results' => $totalSearchesWithoutResults,
+                        'total_searches' => $totalsearches,
                         'unique_users_searching' => $uniqueUsersSearches,
                         'total_unique_users_searching' => \array_sum($uniqueUsersSearches),
                         'top_searches_with_results' => $topSearchesWithResults,
                         'top_searches_without_results' => $topSearchesWithoutResults,
+
+                        'from' => DateTimeFormatter::formatDateTime($from),
+                        'to' => DateTimeFormatter::formatDateTime($to),
+                        'days' => $days,
                     ],
                     200, [
                         'Access-Control-Allow-Origin' => $request

@@ -18,7 +18,6 @@ namespace Apisearch\Server\Http;
 use Apisearch\Server\Domain\Model\Origin;
 use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\HttpFoundation\HeaderBag;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -26,26 +25,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class BaseController
 {
-    /**
-     * Get query value and cast to int of not null.
-     *
-     * @param ParameterBag $parameters
-     * @param string       $paramName
-     *
-     * @return int|null
-     */
-    protected function castToIntIfNotNull(
-        ParameterBag $parameters,
-        string $paramName
-    ): ? int {
-        $param = $parameters->get($paramName, null);
-        if (!\is_null($param)) {
-            $param = \intval($param);
-        }
-
-        return $param;
-    }
-
     /**
      * @param Request $request
      *

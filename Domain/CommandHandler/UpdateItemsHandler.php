@@ -35,6 +35,7 @@ class UpdateItemsHandler extends WithRepositoryAndEventPublisher
     public function handle(UpdateItems $updateItems): PromiseInterface
     {
         $repositoryReference = $updateItems->getRepositoryReference();
+        $ownerToken = $updateItems->getToken();
         $query = $updateItems->getQuery();
         $changes = $updateItems->getChanges();
 
@@ -45,7 +46,7 @@ class UpdateItemsHandler extends WithRepositoryAndEventPublisher
                 $query,
                 $changes
             )
-            ->then(function () use ($repositoryReference, $query, $changes) {
+            ->then(function () use ($repositoryReference, $query, $changes, $ownerToken) {
                 return $this
                     ->eventBus
                     ->dispatch(
@@ -54,6 +55,7 @@ class UpdateItemsHandler extends WithRepositoryAndEventPublisher
                             $changes
                         ))
                             ->withRepositoryReference($repositoryReference)
+                            ->dispatchedBy($ownerToken)
                     );
             });
     }

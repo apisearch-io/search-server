@@ -20,35 +20,12 @@ namespace Apisearch\Server\Domain\Model;
  */
 class CrontabLine
 {
-    /**
-     * @var string
-     */
-    private $minute;
-
-    /**
-     * @var string
-     */
-    private $hour;
-
-    /**
-     * @var string
-     */
-    private $monthDay;
-
-    /**
-     * @var string
-     */
-    private $month;
-
-    /**
-     * @var string
-     */
-    private $weekDay;
-
-    /**
-     * @var string
-     */
-    private $command;
+    private string $minute;
+    private string $hour;
+    private string $monthDay;
+    private string $month;
+    private string $weekDay;
+    private string $command;
 
     /**
      * CrontabLine constructor.
@@ -74,6 +51,52 @@ class CrontabLine
         $this->month = $month;
         $this->weekDay = $weekDay;
         $this->command = $command;
+    }
+
+    /**
+     * @param string $line
+     * @param string $command
+     *
+     * @return self
+     */
+    public static function fromLine(
+        string $line,
+        string $command
+    ): self {
+        list(
+            $minute,
+            $hour,
+            $monthDay,
+            $month,
+            $weekDay
+        ) = \explode(' ', $line, 5);
+
+        return new self(
+            $minute,
+            $hour,
+            $monthDay,
+            $month,
+            $weekDay,
+            $command
+        );
+    }
+
+    /**
+     * @param int    $minutesInterval
+     * @param string $command
+     */
+    public static function fromMinutesInterval(
+        int $minutesInterval,
+        string $command
+    ): self {
+        return new self(
+            '*/'.$minutesInterval,
+            '*',
+            '*',
+            '*',
+            '*',
+            $command
+        );
     }
 
     /**

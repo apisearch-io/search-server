@@ -6,3 +6,6 @@ services:
     Apisearch\Plugin\Testing\Http\:
         resource: '../../Http/*Controller.php'
         tags: ["controller.service_arguments"]
+
+    Apisearch\Plugin\Testing\Console\:
+        resource: "../../Console/*"

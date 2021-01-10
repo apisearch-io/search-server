@@ -27,10 +27,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 abstract class MetadataRepository implements EventSubscriberInterface
 {
-    /**
-     * @var array
-     */
-    private $metadata = [];
+    private array $metadata = [];
 
     /**
      * Set metadata value.
@@ -48,8 +45,24 @@ abstract class MetadataRepository implements EventSubscriberInterface
     ): PromiseInterface;
 
     /**
-     * Get metadata value.
+     * @param RepositoryReference $repositoryReference
+     * @param string              $key
      *
+     * @return mixed
+     */
+    public function has(
+        RepositoryReference $repositoryReference,
+        string $key
+    ) {
+        $composedRepositoryReference = $repositoryReference->compose();
+
+        return
+            \array_key_exists($composedRepositoryReference, $this->metadata) &&
+            \array_key_exists($key, $this->metadata[$composedRepositoryReference])
+        ;
+    }
+
+    /**
      * @param RepositoryReference $repositoryReference
      * @param string              $key
      *
@@ -59,14 +72,11 @@ abstract class MetadataRepository implements EventSubscriberInterface
         RepositoryReference $repositoryReference,
         string $key
     ) {
-        $composedRepositoryReference = $repositoryReference->compose();
-
-        if (
-            !\array_key_exists($composedRepositoryReference, $this->metadata) ||
-            !\array_key_exists($key, $this->metadata[$composedRepositoryReference])
-        ) {
+        if (!$this->has($repositoryReference, $key)) {
             return null;
         }
+
+        $composedRepositoryReference = $repositoryReference->compose();
 
         return $this->metadata[$composedRepositoryReference][$key];
     }

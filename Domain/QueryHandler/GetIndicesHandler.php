@@ -21,6 +21,7 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
 use Apisearch\Server\Domain\Repository\AppRepository\Repository as AppRepository;
+use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Apisearch\Server\Domain\WithAppRepository;
 use React\Promise\PromiseInterface;
 
@@ -30,18 +31,22 @@ use React\Promise\PromiseInterface;
 class GetIndicesHandler extends WithAppRepository
 {
     private ConfigRepository $configRepository;
+    private MetadataRepository $metadataRepository;
 
     /**
-     * @param AppRepository    $appRepository
-     * @param ConfigRepository $configRepository
+     * @param AppRepository      $appRepository
+     * @param ConfigRepository   $configRepository
+     * @param MetadataRepository $metadataRepository
      */
     public function __construct(
         AppRepository $appRepository,
-        ConfigRepository $configRepository
+        ConfigRepository $configRepository,
+        MetadataRepository $metadataRepository
     ) {
         parent::__construct($appRepository);
 
         $this->configRepository = $configRepository;
+        $this->metadataRepository = $metadataRepository;
     }
 
     /**
@@ -70,7 +75,11 @@ class GetIndicesHandler extends WithAppRepository
 
                     $indexAsArray['metadata'] = \array_merge(
                         $currentMetadata,
-                        $newMetadata
+                        $newMetadata,
+                        $this->metadataRepository->all(RepositoryReference::create(
+                            $index->getAppUUID(),
+                            $index->getUUID()
+                        ))
                     );
 
                     return Index::createFromArray($indexAsArray);

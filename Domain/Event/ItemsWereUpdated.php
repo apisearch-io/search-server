@@ -25,17 +25,9 @@ final class ItemsWereUpdated extends DomainEvent
 {
     /**
      * @var Filter[]
-     *
-     * Applied filters
      */
-    private $appliedFilters;
-
-    /**
-     * @var Changes
-     *
-     * Changes
-     */
-    private $changes;
+    private array $appliedFilters;
+    private Changes $changes;
 
     /**
      * ItemsWasIndexed constructor.
