@@ -86,6 +86,7 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
         $table->addColumn('host', 'string', ['length' => 50]);
         $table->addColumn('platform', 'string', ['length' => 25]);
         $table->addColumn('type', 'string', ['length' => 3]);
+        $table->addColumn('context', 'string', ['length' => 25, 'notnull' => false]);
         $table->addColumn('time', 'integer', ['length' => 8]);
 
         $table->addIndex(['time', 'app_uuid']);

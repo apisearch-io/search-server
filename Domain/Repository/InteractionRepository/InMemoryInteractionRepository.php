@@ -39,6 +39,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, T
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
+     * @param string|null         $context
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -50,6 +51,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, T
         string $userUUID,
         ItemUUID $itemUUID,
         int $position,
+        ?string $context,
         Origin $origin,
         string $type,
         DateTime $when
@@ -64,6 +66,7 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, T
             $origin->getHost(),
             $origin->getPlatform(),
             $type,
+            $context,
             $when
         );
 
@@ -226,11 +229,19 @@ class InMemoryInteractionRepository implements TemporaryInteractionRepository, T
         }
 
         if (
+            !\is_null($filter->getContext()) &&
+            $interaction->getContext() !== $filter->getContext()
+        ) {
+            return false;
+        }
+
+        if (
             !\is_null($filter->getFrom()) &&
             $whenFormatted < $filter->getFrom()->format('Ymd')
         ) {
             return false;
         }
+
         if (
             !\is_null($filter->getTo()) &&
             $whenFormatted >= $filter->getTo()->format('Ymd')

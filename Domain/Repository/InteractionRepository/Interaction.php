@@ -31,6 +31,7 @@ final class Interaction
     private string $host;
     private string $platform;
     private string $type;
+    private ?string $context;
     private DateTime $when;
 
     /**
@@ -43,6 +44,7 @@ final class Interaction
      * @param string   $host
      * @param string   $platform
      * @param string   $type
+     * @param ?string  $context
      * @param DateTime $when
      */
     public function __construct(
@@ -55,6 +57,7 @@ final class Interaction
         string $host,
         string $platform,
         string $type,
+        ?string $context,
         DateTime $when
     ) {
         $this->user = $user;
@@ -66,6 +69,7 @@ final class Interaction
         $this->host = $host;
         $this->platform = $platform;
         $this->type = $type;
+        $this->context = $context;
         $this->when = $when;
     }
 
@@ -139,6 +143,14 @@ final class Interaction
     public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContext(): ?string
+    {
+        return $this->context;
     }
 
     /**

@@ -32,36 +32,36 @@ trait InteractionRepositoryTest
     public function testLoadClicks()
     {
         $this->expectNotToPerformAssertions();
-        $this->click('u1', '3~it', 1, new Origin('d.com', '0.0.0.0', Origin::PHONE));
-        $this->click('u1', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.1', origin::PHONE));
-        $this->click('u1', '4~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', 2, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '3~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '4~it', 1, new Origin('a.com', '0.0.0.1', origin::TABLET));
-        $this->click('u5', '2~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u5', '2~it', 1, new Origin('d.com', '0.0.0.1', origin::PHONE));
-        $this->click('u1', '1~it', 2, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', 1, new Origin('b.com', '0.0.0.0', origin::DESKTOP));
-        $this->click('u3', '1~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u3', '1~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', 2, new Origin('b.com', '0.0.0.1', origin::TABLET));
-        $this->click('u2', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::DESKTOP));
-        $this->click('u1', '1~it', 1, new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u2', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '2~it', 2, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '1~it', 2, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u2', '2~it', 2, new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u4', '1~it', 1, new Origin('d.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '2~it', 2, new Origin('a.com', '0.0.0.0', origin::PHONE));
-        $this->click('u3', '1~it', 1, new Origin('a.com', '0.0.0.1', origin::PHONE));
-        $this->click('u3', '3~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
-        $this->click('u1', '2~it', 2, new Origin('a.com', '0.0.0.0', origin::TABLET));
-        $this->click('u2', '2~it', 1, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '3~it', 1, 'context1', new Origin('d.com', '0.0.0.0', Origin::PHONE));
+        $this->click('u1', '1~it', 1, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 2, null, new Origin('d.com', '0.0.0.1', origin::PHONE));
+        $this->click('u1', '4~it', 2, null, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, null, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '1~it', 2, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u1', '1~it', 2, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 2, 'context1', new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '3~it', 2, null, new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '4~it', 1, null, new Origin('a.com', '0.0.0.1', origin::TABLET));
+        $this->click('u5', '2~it', 1, null, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u5', '2~it', 1, null, new Origin('d.com', '0.0.0.1', origin::PHONE));
+        $this->click('u1', '1~it', 2, 'context2', new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, 'context2', new Origin('b.com', '0.0.0.0', origin::DESKTOP));
+        $this->click('u3', '1~it', 2, 'context2', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u3', '1~it', 2, 'context2', new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, null, new Origin('b.com', '0.0.0.1', origin::TABLET));
+        $this->click('u2', '1~it', 1, null, new Origin('d.com', '0.0.0.0', origin::DESKTOP));
+        $this->click('u1', '1~it', 1, null, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u2', '1~it', 1, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '2~it', 2, 'context1', new Origin('d.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '1~it', 2, null, new Origin('a.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u2', '2~it', 2, null, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u4', '1~it', 1, null, new Origin('d.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '2~it', 2, 'context2', new Origin('a.com', '0.0.0.0', origin::PHONE));
+        $this->click('u3', '1~it', 1, null, new Origin('a.com', '0.0.0.1', origin::PHONE));
+        $this->click('u3', '3~it', 1, 'context1', new Origin('b.com', '0.0.0.1', origin::DESKTOP));
+        $this->click('u1', '2~it', 2, null, new Origin('a.com', '0.0.0.0', origin::TABLET));
+        $this->click('u2', '2~it', 1, null, new Origin('b.com', '0.0.0.1', origin::DESKTOP));
     }
 
     /**
@@ -126,17 +126,17 @@ trait InteractionRepositoryTest
      */
     public function testFilterByIndex()
     {
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
 
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$appId, self::$index);
         $this->assertEquals(30, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$anotherIndex);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$appId, self::$anotherIndex);
         $this->assertEquals(3, $interactions);
     }
 
@@ -145,25 +145,25 @@ trait InteractionRepositoryTest
      */
     public function testFilterByApp()
     {
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '2~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
-        $this->click('u1', '3~it', 2, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '2~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
+        $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$anotherIndex);
 
         $interactions = $this->getInteractions(false);
         $this->assertEquals(33, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$appId, self::$index);
         $this->assertEquals(30, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$anotherAppId);
         $this->assertEquals(5, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$anotherAppId, self::$index);
         $this->assertEquals(3, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, self::$anotherAppId, self::$anotherIndex);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, null, self::$anotherAppId, self::$anotherIndex);
         $this->assertEquals(2, $interactions);
     }
 
@@ -212,18 +212,18 @@ trait InteractionRepositoryTest
      */
     public function testCountUniqueUsers()
     {
-        $interactions = $this->getInteractions(true, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $interactions = $this->getInteractions(true, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertCount(1, $interactions);
         $this->assertEquals(5, \reset($interactions));
 
-        $interactions = $this->getInteractions(true, null, null, null, origin::DESKTOP, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $interactions = $this->getInteractions(true, null, null, null, origin::DESKTOP, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertCount(1, $interactions);
         $this->assertEquals(4, \reset($interactions));
 
-        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertEquals(5, $interactions);
 
-        $interactions = $this->getInteractions(false, null, null, null, origin::DESKTOP, '3~it', null, InteractionFilter::UNIQUE_USERS, self::$appId, self::$index);
+        $interactions = $this->getInteractions(false, null, null, null, origin::DESKTOP, '3~it', null, InteractionFilter::UNIQUE_USERS);
         $this->assertEquals(1, $interactions);
     }
 
@@ -244,5 +244,20 @@ trait InteractionRepositoryTest
 
         $this->assertEquals(1, $interactions[0]->getPosition());
         $this->assertEquals(2, $interactions[3]->getPosition());
+    }
+
+    /**
+     * Test context.
+     */
+    public function testContext()
+    {
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, 'context1', self::$appId, self::$index);
+        $this->assertEquals(4, $interactions);
+        $interactions = $this->getInteractions(false, null, null, null, null, '3~it', null, null, 'context1', self::$appId, self::$index);
+        $this->assertEquals(2, $interactions);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, 'context2', self::$appId, self::$index);
+        $this->assertEquals(5, $interactions);
+        $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, 'context3', self::$appId, self::$index);
+        $this->assertEquals(0, $interactions);
     }
 }

@@ -21,12 +21,27 @@ namespace Apisearch\Server\Domain\Model;
 class InteractionType
 {
     const CLICK = 'cli';
+    const CLICK_RECOMMENDED = 'cli_recomm';
+    const CLICK_SUGGESTED = 'cli_sugg';
+    const CLICK_SIMILAR = 'cli_sim';
     const BUY = 'buy';
     const FAVOURITE = 'fav';
     const TYPES = [
         self::CLICK,
+        self::CLICK_RECOMMENDED,
+        self::CLICK_SIMILAR,
+        self::CLICK_SUGGESTED,
         self::BUY,
         self::FAVOURITE,
+    ];
+
+    const TYPES_ALIAS = [
+        'click' => self::CLICK,
+        'click_recommended' => self::CLICK_RECOMMENDED,
+        'click_similar' => self::CLICK_SIMILAR,
+        'click_suggested' => self::CLICK_SUGGESTED,
+        'buy' => self::BUY,
+        'fav' => self::FAVOURITE,
     ];
 
     /**
@@ -37,5 +52,15 @@ class InteractionType
     public static function isValid(string $interactionType): bool
     {
         return \in_array($interactionType, self::TYPES);
+    }
+
+    /**
+     * @param string|null $type
+     *
+     * @return string
+     */
+    public static function resolveAlias(?string $type)
+    {
+        return $type ?? self::TYPES_ALIAS[$type] ?? $type;
     }
 }

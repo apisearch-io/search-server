@@ -33,6 +33,7 @@ class EmptyInteractionRepository implements TemporaryInteractionRepository, Test
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
+     * @param string|null         $context
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -44,6 +45,7 @@ class EmptyInteractionRepository implements TemporaryInteractionRepository, Test
         string $userUUID,
         ItemUUID $itemUUID,
         int $position,
+        ?string $context,
         Origin $origin,
         string $type,
         DateTime $when

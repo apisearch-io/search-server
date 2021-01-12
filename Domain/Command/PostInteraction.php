@@ -31,6 +31,7 @@ class PostInteraction extends CommandWithRepositoryReferenceAndToken implements 
     private ItemUUID $itemUUID;
     private int $position;
     private Origin $origin;
+    private ?string $context;
     private string $interactionType;
 
     /**
@@ -39,6 +40,7 @@ class PostInteraction extends CommandWithRepositoryReferenceAndToken implements 
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
+     * @param string|null         $context
      * @param Origin              $origin
      * @param string              $interactionType
      */
@@ -48,6 +50,7 @@ class PostInteraction extends CommandWithRepositoryReferenceAndToken implements 
         string $userUUID,
         ItemUUID $itemUUID,
         int $position,
+        ?string $context,
         Origin $origin,
         string $interactionType
     ) {
@@ -55,8 +58,8 @@ class PostInteraction extends CommandWithRepositoryReferenceAndToken implements 
         $this->userUUID = $userUUID;
         $this->itemUUID = $itemUUID;
         $this->position = $position;
+        $this->context = $context;
         $this->origin = $origin;
-        $this->interactionType = $interactionType;
         $this->interactionType = $interactionType;
     }
 
@@ -82,6 +85,14 @@ class PostInteraction extends CommandWithRepositoryReferenceAndToken implements 
     public function getPosition(): int
     {
         return $this->position;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContext(): ?string
+    {
+        return $this->context;
     }
 
     /**

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Http;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetInteractions;
 use React\Promise\PromiseInterface;
@@ -54,8 +55,9 @@ final class GetInteractionsController extends ControllerWithQueryBus
                 $query->get('platform'),
                 $userEncrypt->getUUIDByInput($query->get('user_id')),
                 $query->get('item_id'),
-                $query->get('type'),
+                InteractionType::resolveAlias($query->get('type')),
                 $query->get('count'),
+                $userEncrypt->getUUIDByInput($query->get('context')),
             ))
             ->then(function ($interactions) use ($request, $from, $to, $days) {
                 return new JsonResponse(

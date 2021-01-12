@@ -35,9 +35,9 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
      */
     public function testCheckHealth()
     {
-        $this->click('123', 'product~1', 1, Origin::createEmpty());
-        $this->click('123', 'product~1', 1, Origin::createEmpty());
-        $this->click('456', 'product~1', 1, Origin::createEmpty());
+        $this->click('123', 'product~1', 1, null, Origin::createEmpty());
+        $this->click('123', 'product~1', 1, null, Origin::createEmpty());
+        $this->click('456', 'product~1', 1, null, Origin::createEmpty());
         $this->query(Query::create('hola')->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));
@@ -57,7 +57,7 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
             'logs' => 6,
         ], $response['info']['dbal']);
 
-        $this->click('555', 'product~1', 1, Origin::createEmpty());
+        $this->click('555', 'product~1', 1, null, Origin::createEmpty());
         $this->query(Query::create('engonga')->byUser(new User('1')));
         $this->query(Query::create('lol')->byUser(new User('1')));
         $this->query(Query::createMatchAll()->byUser(new User('1')));

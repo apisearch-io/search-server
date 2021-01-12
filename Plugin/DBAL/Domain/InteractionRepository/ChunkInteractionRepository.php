@@ -58,6 +58,7 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
+     * @param string|null         $context
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -69,6 +70,7 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
         string $userUUID,
         ItemUUID $itemUUID,
         int $position,
+        ?string $context,
         Origin $origin,
         string $type,
         DateTime $when
@@ -80,6 +82,7 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
                 $userUUID,
                 $itemUUID,
                 $position,
+                $context,
                 $origin,
                 $type,
                 $when
@@ -134,6 +137,7 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
                         $interaction->getUser(),
                         ItemUUID::createByComposedUUID($interaction->getItemUUID()),
                         $interaction->getPosition(),
+                        $interaction->getContext(),
                         new Origin(
                             $interaction->getHost(),
                             $interaction->getIp(),

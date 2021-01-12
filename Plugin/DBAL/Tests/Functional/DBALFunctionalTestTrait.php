@@ -67,6 +67,11 @@ trait DBALFunctionalTestTrait
             'public' => true,
         ];
 
+        $configuration['services']['dbal.dbal_plugin_connection_test'] = [
+            'alias' => 'dbal.dbal_plugin_connection',
+            'public' => true,
+        ];
+
         /*
          * This block is already configured by the bundle, but the main test
          * sets manually the value because the default one is an empty
@@ -88,7 +93,7 @@ trait DBALFunctionalTestTrait
      */
     public static function resetScenario()
     {
-        $mainConnection = static::getStatic('dbal.dbal_plugin_connection');
+        $mainConnection = static::getStatic('dbal.dbal_plugin_connection_test');
         $tokensTableName = static::getParameterStatic('apisearch_plugin.dbal.tokens_table');
         $indexConfigTableName = static::getParameterStatic('apisearch_plugin.dbal.index_configs_table');
         $usageTableName = static::getParameterStatic('apisearch_plugin.dbal.usage_lines_table');
@@ -179,6 +184,7 @@ trait DBALFunctionalTestTrait
                         $table->addColumn('index_uuid', 'string', ['length' => 50]);
                         $table->addColumn('item_uuid', 'string', ['length' => 50]);
                         $table->addColumn('position', 'integer', ['length' => 4]);
+                        $table->addColumn('context', 'string', ['length' => 25, 'notnull' => false]);
                         $table->addColumn('ip', 'string', ['length' => 16]);
                         $table->addColumn('host', 'string', ['length' => 50]);
                         $table->addColumn('platform', 'string', ['length' => 25]);

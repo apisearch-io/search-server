@@ -645,6 +645,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null $userId
      * @param string      $itemId
      * @param int         $position
+     * @param string|null $context
      * @param Origin      $origin
      * @param string      $appId
      * @param string      $indexId
@@ -654,6 +655,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $userId,
         string $itemId,
         int $position,
+        ?string $context,
         Origin $origin,
         string $appId = null,
         string $indexId = null,
@@ -673,6 +675,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             [
                 'user_id' => $userId,
                 'position' => $position,
+                'context' => $context,
             ],
             [
                 'Origin' => $origin->getHost(),
@@ -691,6 +694,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $itemId
      * @param string|null   $type
      * @param string|null   $count
+     * @param string|null   $context
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -706,6 +710,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $itemId = null,
         ?string $type = null,
         ?string $count = null,
+        ?string $context = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -736,6 +741,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'item_id' => $itemId,
                 'type' => $type,
                 'count' => $count,
+                'context' => $context,
             ]
         );
 
@@ -908,6 +914,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param DateTime|null $to
      * @param string|null   $userId
      * @param string|null   $platform
+     * @param string|null   $context
      * @param string        $appId
      * @param string        $indexId
      * @param Token         $token
@@ -920,6 +927,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?DateTime $to = null,
         ?string $userId = null,
         ?string $platform = null,
+        ?string $context = null,
         string $appId = null,
         string $indexId = null,
         Token $token = null
@@ -943,6 +951,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
                 'to' => $to ? $to->format('Ymd') : null,
                 'user_id' => $userId,
                 'platform' => $platform,
+                'context' => $context,
                 'n' => $n,
             ]
         );

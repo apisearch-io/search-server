@@ -522,6 +522,47 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         ], $this->await($list, $loop));
     }
 
+    public function testInteractionContext()
+    {
+        $loop = Factory::create();
+        $repository = $this->getEmptyRepository($loop);
+        $repositoryReference = $this->getDefaultRepositoryReference();
+        $user = 'user-1';
+
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p', Origin::createEmpty(), 'cli', 'con1');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p', Origin::createEmpty(), 'cli', 'con2');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '2~p', Origin::createEmpty(), 'cli', 'con1');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '2~p', Origin::createEmpty(), 'cli', 'con2');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '2~p', Origin::createEmpty(), 'cli');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '3~p', Origin::createEmpty(), 'cli', 'con1');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '4~p', Origin::createEmpty(), 'cli', 'con2');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '3~p', Origin::createEmpty(), 'cli');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p', Origin::createEmpty(), 'cli', 'con1');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p', Origin::createEmpty(), 'cli', 'con1');
+        $this->addInteraction($repository, $loop, $repositoryReference, $user, '1~p', Origin::createEmpty(), 'cli', 'con2');
+
+        $this->usleep($this->microsecondsSleepingBeforeQuery(), $loop);
+        $list = $repository->getTopInteractedItems(InteractionFilter::create($repositoryReference)->fromContext('con1'), 10);
+        $this->assertEquals([
+            '1~p' => 3,
+            '2~p' => 1,
+            '3~p' => 1,
+        ], $this->await($list, $loop));
+
+        $list = $repository->getRegisteredInteractions(InteractionFilter::create($repositoryReference)->fromContext('con1'));
+        $this->assertEquals(5, $this->await($list, $loop));
+
+        $list = $repository->getTopInteractedItems(InteractionFilter::create($repositoryReference)->fromContext('con2'), 10);
+        $this->assertEquals([
+            '1~p' => 2,
+            '2~p' => 1,
+            '4~p' => 1,
+        ], $this->await($list, $loop));
+
+        $list = $repository->getRegisteredInteractions(InteractionFilter::create($repositoryReference)->fromContext('con2'));
+        $this->assertEquals(4, $this->await($list, $loop));
+    }
+
     /**
      * @return RepositoryReference
      */
@@ -549,6 +590,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
             $userUUID,
             ItemUUID::createByComposedUUID('1~p'),
             10,
+            null,
             Origin::createEmpty(),
             InteractionType::CLICK,
             \DateTime::createFromFormat('Ymd', $when)
@@ -565,6 +607,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      * @param string                   $itemUUID
      * @param Origin|null              $origin
      * @param string                   $type
+     * @param string|null              $context
      */
     protected function addInteraction(
         InteractionRepository $repository,
@@ -573,13 +616,15 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         string $userUUID = 'user-1',
         string $itemUUID = '1~p',
         Origin $origin = null,
-        string $type = InteractionType::CLICK
+        string $type = InteractionType::CLICK,
+        ?string $context = null
     ) {
         $promise = $repository->registerInteraction(
             $repositoryReference ?? $this->getDefaultRepositoryReference(),
             $userUUID,
             ItemUUID::createByComposedUUID($itemUUID),
             10,
+            $context,
             $origin ?? new Origin('h1', 'ip1', Origin::DESKTOP),
             $type,
             $when ?? new DateTime()

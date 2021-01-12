@@ -33,6 +33,7 @@ final class InteractionFilter
     private ?DateTime $to = null;
     private ?string $user = null;
     private ?string $platform = null;
+    private ?string $context = null;
     private ?ItemUUID $itemUUID = null;
     private ?string $type = null;
     private ?string $count = null;
@@ -112,6 +113,18 @@ final class InteractionFilter
     public function byPlatform(?string $platform): self
     {
         $this->platform = $platform;
+
+        return $this;
+    }
+
+    /**
+     * @var string|null
+     *
+     * @return self
+     */
+    public function fromContext(?string $context): self
+    {
+        $this->context = $context;
 
         return $this;
     }
@@ -198,6 +211,14 @@ final class InteractionFilter
     public function getPlatform(): ?string
     {
         return $this->platform;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getContext(): ?string
+    {
+        return $this->context;
     }
 
     /**

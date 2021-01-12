@@ -52,7 +52,8 @@ final class GetMetricsController extends ControllerWithQueryBus
         );
         $token = RequestAccessor::getTokenFromRequest($request);
         list($from, $to, $days) = $this->getDateRangeFromRequest($request);
-        $platform = $query->get('platform', null);
+        $platform = $query->get('platform');
+        $context = $userEncrypt->getUUIDByInput($query->get('context'));
         $userId = $userEncrypt->getUUIDByInput($query->get('user_id'));
         $n = \intval($query->get('n', 10));
 
@@ -64,7 +65,7 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $from, $to,
                     true,
                     $platform, $userId, null, InteractionType::CLICK,
-                    InteractionFilter::LINES
+                    InteractionFilter::LINES, $context
                 )),
 
                 // Top clicks
@@ -80,7 +81,7 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $from, $to,
                     true,
                     $platform, $userId, null, InteractionType::CLICK,
-                    InteractionFilter::UNIQUE_USERS
+                    InteractionFilter::UNIQUE_USERS, $context
                 )),
 
                 // Searches with results

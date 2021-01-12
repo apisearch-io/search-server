@@ -31,6 +31,7 @@ interface InteractionRepository
      * @param string              $userUUID
      * @param ItemUUID            $itemUUID
      * @param int                 $position
+     * @param string|null         $context
      * @param Origin              $origin
      * @param string              $type
      * @param DateTime            $when
@@ -42,6 +43,7 @@ interface InteractionRepository
         string $userUUID,
         ItemUUID $itemUUID,
         int $position,
+        ?string $context,
         Origin $origin,
         string $type,
         DateTime $when
