@@ -19,6 +19,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Campaign\Domain\Matcher;
 use Apisearch\Plugin\Campaign\Domain\Model\Campaign;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignCriteria;
+use Apisearch\Plugin\Campaign\Domain\Model\CampaignModifiers;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignUID;
 use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
@@ -40,31 +41,31 @@ class MatcherTest extends BaseUnitTest
         $matcher = new Matcher();
         $now = new DateTime();
 
-        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('-1 day'), null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('-1 day'), null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), $now, null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), $now, null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('-1 day'), (new DateTime())->modify('+1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('-1 day'), (new DateTime())->modify('+1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), null, (new DateTime())->modify('+1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), null, (new DateTime())->modify('+1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), null, $now, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), null, $now, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), null, (new DateTime())->modify('-1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), null, (new DateTime())->modify('-1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('+1 day'), null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('+1 day'), null, IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
 
-        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('+1 day'), (new DateTime())->modify('-1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('+1 day'), (new DateTime())->modify('-1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
     }
 
@@ -479,32 +480,32 @@ class MatcherTest extends BaseUnitTest
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC,DEF'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertFalse($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('EFG'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('EFG'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertFalse($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC,CDE'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('HIJ'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [])
+            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('HIJ'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
     }
 
@@ -532,7 +533,7 @@ class MatcherTest extends BaseUnitTest
                 $queryToMatch,
                 []
             ),
-        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []);
+        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
 
         return $matcher->queryMatchesCampaign($query, $campaign, $now);
     }
@@ -575,7 +576,7 @@ class MatcherTest extends BaseUnitTest
                 $exactMatchingQuery,
                 $anotherCriteriaFilters
             ),
-        ], $criteriaFiltersMode, []);
+        ], $criteriaFiltersMode, [], CampaignModifiers::createFromArray([]));
 
         return $matcher->queryMatchesCampaign($query, $campaign, $now);
     }

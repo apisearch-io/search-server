@@ -19,6 +19,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Campaign\Domain\Model\Campaign;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignBoostingFilter;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignCriteria;
+use Apisearch\Plugin\Campaign\Domain\Model\CampaignModifiers;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignUID;
 use Apisearch\Query\Filter;
 use DateTime;
@@ -47,7 +48,8 @@ class CampaignTest extends TestCase
                     2,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([]),
         );
 
         $campaign2 = Campaign::createFromArray($campaign->toArray());
@@ -59,7 +61,8 @@ class CampaignTest extends TestCase
         $campaign = new Campaign(
             new CampaignUID('1000'),
             (new DateTime()), (new DateTime()),
-            IndexUUID::createById('A'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []
+            IndexUUID::createById('A'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([]),
         );
 
         $campaign2 = Campaign::createFromArray($campaign->toArray());

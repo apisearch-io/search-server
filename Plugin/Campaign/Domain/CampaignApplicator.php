@@ -68,6 +68,7 @@ class CampaignApplicator
          * @var Campaign[]
          */
         foreach ($campaigns as $campaign) {
+            $campaign->getCampaignModifiers()->applyModifiersToQuery($query);
             foreach ($campaign->getBoostingFilters() as $boostingFilter) {
                 $query->addScoreStrategy(ScoreStrategy::createWeightFunction(
                     $boostingFilter->getBoostingFactor(),

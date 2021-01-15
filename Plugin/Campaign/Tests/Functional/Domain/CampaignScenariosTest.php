@@ -19,6 +19,7 @@ use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Campaign\Domain\Model\Campaign;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignBoostingFilter;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignCriteria;
+use Apisearch\Plugin\Campaign\Domain\Model\CampaignModifiers;
 use Apisearch\Plugin\Campaign\Domain\Model\CampaignUID;
 use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
@@ -48,7 +49,8 @@ trait CampaignScenariosTest
                     2,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->putCampaign($campaign);
@@ -86,7 +88,8 @@ trait CampaignScenariosTest
                     2,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->putCampaign($campaign);
@@ -168,7 +171,8 @@ trait CampaignScenariosTest
                     10,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $campaign2 = new Campaign(
@@ -185,7 +189,8 @@ trait CampaignScenariosTest
                     3,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $campaign3 = new Campaign(
@@ -202,7 +207,8 @@ trait CampaignScenariosTest
                     5,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->putCampaign($campaign1);
@@ -235,7 +241,8 @@ trait CampaignScenariosTest
                     2,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->deleteCampaigns();
@@ -267,7 +274,8 @@ trait CampaignScenariosTest
                     2,
                     false
                 ),
-            ]
+            ],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->deleteCampaigns();
@@ -288,19 +296,22 @@ trait CampaignScenariosTest
         $this->deleteCampaigns();
         $campaign1 = new Campaign(
             new CampaignUID('123'),
-            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []
+            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([])
         );
 
         $campaign2 = new Campaign(
             new CampaignUID('123'),
-            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []
+            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->putCampaign($campaign2);
 
         $campaign2 = new Campaign(
             new CampaignUID('456'),
-            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, []
+            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([])
         );
 
         $this->putCampaign($campaign1);
@@ -315,5 +326,38 @@ trait CampaignScenariosTest
 
         $this->deleteCampaigns();
         $this->assertCount(0, $this->getCampaigns()->getCampaigns());
+    }
+
+    /**
+     * Test campaign with min_score.
+     */
+    public function testCampaignWithMinScore()
+    {
+        $this->deleteCampaigns();
+        $campaign1 = new Campaign(
+            new CampaignUID('123'),
+            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([])
+        );
+        $this->putCampaign($campaign1);
+        $result = $this->query(Query::create('a'));
+        $this->assertCount(4, $result->getItems());
+
+        $result = $this->query(Query::create('a')->setMinScore(0));
+        $this->assertCount(4, $result->getItems());
+
+        $campaign1 = new Campaign(
+            new CampaignUID('123'),
+            null, null, IndexUUID::createById(self::$index), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [],
+            CampaignModifiers::createFromArray([
+                'min_score' => 1,
+            ])
+        );
+        $this->putCampaign($campaign1);
+        $result = $this->query(Query::create('a'));
+        $this->assertCount(3, $result->getItems());
+
+        $result = $this->query(Query::create('a')->setMinScore(0));
+        $this->assertCount(3, $result->getItems());
     }
 }
