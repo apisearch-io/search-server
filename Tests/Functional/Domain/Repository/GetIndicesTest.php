@@ -17,6 +17,10 @@ namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Config\Config;
 use Apisearch\Model\Index;
+use Apisearch\Model\Item;
+use Apisearch\Model\ItemUUID;
+use Apisearch\Model\User;
+use Apisearch\Query\Query;
 
 /**
  * Class IndexStatusTest.
@@ -95,5 +99,27 @@ trait GetIndicesTest
         $this->assertEquals(4, $firstIndex->getReplicas());
         $this->assertFalse($firstIndex->getMetadata()['allocated']);
         static::deleteIndex($appId, $indexId);
+    }
+
+    /**
+     * Test get indices with deleted index.
+     *
+     * @group lol
+     */
+    public function testGetIndicesWithDeletedIndex()
+    {
+        $newIndexUUID = 'mynewindex';
+        static::safeDeleteIndex(self::$appId, $newIndexUUID);
+        $indices = \count($this->getIndices(self::$appId));
+        static::createIndex(self::$appId, $newIndexUUID, $this->getGodToken(self::$appId), Config::createEmpty());
+        $indicesPlusOne = \count($this->getIndices(self::$appId));
+        static::indexItems([Item::create(ItemUUID::createByComposedUUID('1~lol'), ['field1' => 'value1'])], self::$appId, $newIndexUUID);
+        $result = $this->query(Query::createMatchAll()->byUser(User::createFromArray(['id' => '123'])), self::$appId, $newIndexUUID);
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals($indices + 1, $indicesPlusOne);
+
+        $this->deleteIndex(self::$appId, $newIndexUUID);
+        $indicesAsItWasBefore = \count($this->getIndices(self::$appId));
+        $this->assertEquals($indices, $indicesAsItWasBefore);
     }
 }
