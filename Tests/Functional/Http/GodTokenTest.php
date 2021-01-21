@@ -31,6 +31,8 @@ class GodTokenTest extends HttpFunctionalTest
      * @param int    $responseCode
      *
      * @dataProvider dataCheckHealth
+     *
+     * @return void
      */
     public function testCheckHealth(
         string $token,
@@ -67,8 +69,10 @@ class GodTokenTest extends HttpFunctionalTest
 
     /**
      * Test that anyone can add health_check in token permissions.
+     *
+     * @return void
      */
-    public function testHealthCheckCantBeAddedInToken()
+    public function testHealthCheckCantBeAddedInToken(): void
     {
         $token = $this->createTokenByIdAndAppId('another_token');
         $token->setEndpoints(['teapot', 'apisearch_teapot']);

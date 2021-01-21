@@ -109,8 +109,10 @@ final class ChunkSearchesRepository implements SearchesRepository, EventSubscrib
 
     /**
      * Flush.
+     *
+     * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         $searches = $this
             ->temporarySearchesRepository

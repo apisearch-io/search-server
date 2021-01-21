@@ -24,7 +24,7 @@ use Apisearch\Server\Tests\Functional\HttpFunctionalTest;
  */
 class GetRecommendedItemsTest extends HttpFunctionalTest
 {
-    public function testEmptyEndpoint()
+    public function testEmptyEndpoint(): void
     {
         $response = $this->request('v1_get_recommended_items', [
             'app_id' => static::$appId,
@@ -35,7 +35,7 @@ class GetRecommendedItemsTest extends HttpFunctionalTest
         $this->assertCount(5, $result->getItems());
     }
 
-    public function testEndpointWithQuery()
+    public function testEndpointWithQuery(): void
     {
         $query = Query::create('', 1, 2);
         $response = $this->request('v1_get_recommended_items', [

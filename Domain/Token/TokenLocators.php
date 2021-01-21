@@ -34,8 +34,10 @@ class TokenLocators
      * Add token locator.
      *
      * @param TokenLocator $tokenLocator
+     *
+     * @return void
      */
-    public function addTokenLocator(TokenLocator $tokenLocator)
+    public function addTokenLocator(TokenLocator $tokenLocator): void
     {
         $this->tokenLocators[] = $tokenLocator;
     }

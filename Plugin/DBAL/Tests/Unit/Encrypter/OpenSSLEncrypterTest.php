@@ -25,8 +25,10 @@ class OpenSSLEncrypterTest extends TestCase
 {
     /**
      * Test encrypt.
+     *
+     * @return void
      */
-    public function testEncrypt()
+    public function testEncrypt(): void
     {
         $encrypter = new OpenSSLEncrypter('123', 'aes128', '1234567890123456');
         $value = 'value';
@@ -40,8 +42,10 @@ class OpenSSLEncrypterTest extends TestCase
 
     /**
      * Test encrypt.
+     *
+     * @return void
      */
-    public function testDecrypt()
+    public function testDecrypt(): void
     {
         $encrypter = new OpenSSLEncrypter('123', 'aes128', '1234567890123456');
         $value = 'value';

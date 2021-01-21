@@ -25,8 +25,10 @@ class EmptyEncrypterTest extends TestCase
 {
     /**
      * Test encrypt.
+     *
+     * @return void
      */
-    public function testEncrypt()
+    public function testEncrypt(): void
     {
         $encrypter = new EmptyEncrypter();
         $value = 'value';
@@ -38,8 +40,10 @@ class EmptyEncrypterTest extends TestCase
 
     /**
      * Test encrypt.
+     *
+     * @return void
      */
-    public function testDecrypt()
+    public function testDecrypt(): void
     {
         $encrypter = new EmptyEncrypter();
         $value = 'value';

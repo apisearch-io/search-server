@@ -164,8 +164,10 @@ abstract class MetadataRepository implements EventSubscriberInterface
      * On Load metadata event.
      *
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return PromiseInterface
      */
-    public function onLoadMetadataEvent(DomainEventEnvelope $eventEnvelope)
+    public function onLoadMetadataEvent(DomainEventEnvelope $eventEnvelope): PromiseInterface
     {
         $domainEvent = $eventEnvelope->getDomainEvent();
 

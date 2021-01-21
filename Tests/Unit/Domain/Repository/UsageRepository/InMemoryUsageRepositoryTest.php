@@ -19,6 +19,7 @@ use Apisearch\Server\Domain\Repository\UsageRepository\InMemoryUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 
 /**
  * Class InMemoryUsageRepositoryTest.
@@ -45,6 +46,8 @@ class InMemoryUsageRepositoryTest extends UsageRepositoryTest
         /*
          * @var InMemoryUsageRepository $repository
          */
-        return $repository->getNumberOfRows();
+        return $repository instanceof InMemoryUsageRepository
+            ? $repository->getNumberOfRows()
+            : resolve(0);
     }
 }

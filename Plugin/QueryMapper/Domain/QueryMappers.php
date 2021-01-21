@@ -31,8 +31,10 @@ class QueryMappers
      * Add query mapper.
      *
      * @param QueryMapper
+     *
+     * @return void
      */
-    public function addQueryMapper(QueryMapper $queryMapper)
+    public function addQueryMapper(QueryMapper $queryMapper): void
     {
         $this->queryMappers[] = $queryMapper;
     }

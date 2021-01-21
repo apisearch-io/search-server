@@ -25,8 +25,10 @@ trait DeletionTest
 {
     /**
      * Test item deletions.
+     *
+     * @return void
      */
-    public function testItemDeletions()
+    public function testItemDeletions(): void
     {
         $this->deleteItems([new ItemUUID('1', 'product')]);
         $this->assertNbItems(4);
@@ -53,8 +55,10 @@ trait DeletionTest
      * Check nb items.
      *
      * @param int $nb
+     *
+     * @return void
      */
-    private function assertNbItems(int $nb)
+    private function assertNbItems(int $nb): void
     {
         $this->assertCount($nb, $this
             ->query(Query::createMatchAll())

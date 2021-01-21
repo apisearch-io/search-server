@@ -75,8 +75,10 @@ class InMemoryConfigRepository extends ConfigRepository
 
     /**
      * Flush all tokens.
+     *
+     * @return void
      */
-    public function truncate()
+    public function truncate(): void
     {
         $this->storedConfigs = [];
     }

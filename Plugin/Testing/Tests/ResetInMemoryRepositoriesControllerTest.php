@@ -24,8 +24,10 @@ class ResetInMemoryRepositoriesControllerTest extends TestingPluginFunctionalTes
      * test reset repositories.
      *
      * Before starting this case, we have 2 apps, 3 indices, X tokens
+     *
+     * @return void
      */
-    public function testResetRepositories()
+    public function testResetRepositories(): void
     {
         $this->assertCount(2, $this->getIndices());
         $this->putToken($this->createTokenByIdAndAppId('1234', static::$appId));

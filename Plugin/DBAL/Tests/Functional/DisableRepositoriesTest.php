@@ -82,8 +82,10 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
 
     /**
      * Test repositories.
+     *
+     * @return void
      */
-    public function testRepositories()
+    public function testRepositories(): void
     {
         $this->assertInstanceOf(EmptyTokenRepository::class, $this->get('apisearch_server.tokens_repository_test'));
         $this->assertInstanceOf(EmptyInteractionRepository::class, $this->get('apisearch_server.interactions_repository_test'));
@@ -100,8 +102,10 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
 
     /**
      * Test if health check has redis.
+     *
+     * @return void
      */
-    public function testCheckHealth()
+    public function testCheckHealth(): void
     {
         $this->click('123', 'product~1', 1, null, Origin::createEmpty());
         $this->click('123', 'product~1', 1, null, Origin::createEmpty());
@@ -129,6 +133,8 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
 
     /**
      * Reset database.
+     *
+     * @return void
      */
     public static function resetScenario()
     {

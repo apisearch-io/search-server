@@ -50,8 +50,10 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
 
     /**
      * Test repositories.
+     *
+     * @return void
      */
-    public function testRepositories()
+    public function testRepositories(): void
     {
         $this->assertInstanceOf(EmptyTokenRepository::class, $this->get('apisearch_server.tokens_repository_test'));
         $this->assertInstanceOf(EmptyInteractionRepository::class, $this->get('apisearch_server.interactions_repository_test'));

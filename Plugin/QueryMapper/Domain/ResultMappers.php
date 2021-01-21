@@ -22,17 +22,17 @@ class ResultMappers
 {
     /**
      * @var ResultMapper[]
-     *
-     * Result mappers
      */
-    private $resultMappers = [];
+    private array $resultMappers = [];
 
     /**
      * Add result mapper.
      *
-     * @param ResultMapper
+     * @param ResultMapper $resultMapper
+     *
+     * @return void
      */
-    public function addResultMapper(ResultMapper $resultMapper)
+    public function addResultMapper(ResultMapper $resultMapper): void
     {
         $this->resultMappers[] = $resultMapper;
     }

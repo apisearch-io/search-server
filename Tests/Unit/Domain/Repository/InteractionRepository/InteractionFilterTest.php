@@ -28,8 +28,10 @@ class InteractionFilterTest extends BaseUnitTest
 {
     /**
      * Test filter by repository reference.
+     *
+     * @return void
      */
-    public function testFilterByRepositoryReference()
+    public function testFilterByRepositoryReference(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = InteractionFilter::create($repositoryReference);
@@ -38,8 +40,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by user.
+     *
+     * @return void
      */
-    public function testFilterByUser()
+    public function testFilterByUser(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $user = 'user-1';
@@ -51,8 +55,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by item.
+     *
+     * @return void
      */
-    public function testFilterByItem()
+    public function testFilterByItem(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $item = ItemUUID::createByComposedUUID('1~product');
@@ -64,8 +70,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by from.
+     *
+     * @return void
      */
-    public function testFilterFrom()
+    public function testFilterFrom(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -77,8 +85,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by to.
+     *
+     * @return void
      */
-    public function testFilterTo()
+    public function testFilterTo(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -90,8 +100,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by platform.
+     *
+     * @return void
      */
-    public function testFilterByPlatform()
+    public function testFilterByPlatform(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $platform = 'desktop';
@@ -103,8 +115,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter by type.
+     *
+     * @return void
      */
-    public function testFilterByType()
+    public function testFilterByType(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $type = 'cli';
@@ -116,8 +130,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test filter per day.
+     *
+     * @return void
      */
-    public function testFilterPerDay()
+    public function testFilterPerDay(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = InteractionFilter::create($repositoryReference)->perDay();
@@ -134,8 +150,10 @@ class InteractionFilterTest extends BaseUnitTest
 
     /**
      * Test count.
+     *
+     * @return void
      */
-    public function testCount()
+    public function testCount(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = InteractionFilter::create($repositoryReference)->count(InteractionFilter::UNIQUE_USERS);

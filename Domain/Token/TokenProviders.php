@@ -35,8 +35,10 @@ class TokenProviders
      * Add token provider.
      *
      * @param TokenProvider $tokenProvider
+     *
+     * @return void
      */
-    public function addTokenProvider(TokenProvider $tokenProvider)
+    public function addTokenProvider(TokenProvider $tokenProvider): void
     {
         $this->tokenProviders[] = $tokenProvider;
     }

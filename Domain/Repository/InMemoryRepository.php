@@ -313,11 +313,13 @@ class InMemoryRepository implements FullRepository, ResetableRepository
      * @param string $indexUUIDComposed
      *
      * @throws ResourceNotAvailableException
+     *
+     * @return void
      */
     protected function throwExceptionIfNonExistingIndex(
         string $appUUIDComposed,
         string $indexUUIDComposed
-    ) {
+    ): void {
         if (
             !\array_key_exists($appUUIDComposed, $this->indices) ||
             !\is_array($this->indices[$appUUIDComposed]) ||
@@ -332,13 +334,15 @@ class InMemoryRepository implements FullRepository, ResetableRepository
      * @param IndexUUID $indexUUID
      * @param Config    $config
      * @param array     $items
+     *
+     * @return void
      */
     private function setIndex(
         AppUUID $appUUID,
         IndexUUID $indexUUID,
         Config $config,
         array $items
-    ) {
+    ): void {
         $appUUIDComposed = $appUUID->composeUUID();
         $indexUUIDComposed = $indexUUID->composeUUID();
         $this->indices[$appUUIDComposed][$indexUUIDComposed] = [
@@ -592,12 +596,14 @@ class InMemoryRepository implements FullRepository, ResetableRepository
      * @param array  $array
      * @param string $prefix
      * @param array  $fields
+     *
+     * @return void
      */
     private function addFieldsFromArray(
         array $array,
         string $prefix,
         array &$fields
-    ) {
+    ): void {
         foreach ($array as $field => $value) {
             $type = 'string';
             if (\is_int($value) || \is_float($value)) {

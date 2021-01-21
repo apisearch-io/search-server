@@ -28,8 +28,10 @@ trait InteractionRepositoryTest
 {
     /**
      * Load clicks.
+     *
+     * @return void
      */
-    public function testLoadClicks()
+    public function testLoadClicks(): void
     {
         $this->expectNotToPerformAssertions();
         $this->click('u1', '3~it', 1, 'context1', new Origin('d.com', '0.0.0.0', Origin::PHONE));
@@ -66,8 +68,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test basic usage.
+     *
+     * @return void
      */
-    public function testBasicUsage()
+    public function testBasicUsage(): void
     {
         $interactions = $this->getInteractions(false);
         $this->assertEquals(30, $interactions);
@@ -75,8 +79,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test when.
+     *
+     * @return void
      */
-    public function testWhenFilter()
+    public function testWhenFilter(): void
     {
         $this->assertEquals(30, $this->getInteractions(false, (new DateTime())->modify('-1 day')));
         $this->assertEquals(30, $this->getInteractions(false, null, (new DateTime())->modify('+1 day')));
@@ -85,8 +91,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filter by user.
+     *
+     * @return void
      */
-    public function testFilterByUser()
+    public function testFilterByUser(): void
     {
         $this->assertEquals(10, $this->getInteractions(false, null, null, 'u1'));
         $this->assertEquals(6, $this->getInteractions(false, null, null, 'u2'));
@@ -94,8 +102,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filter by platform.
+     *
+     * @return void
      */
-    public function testFilterByPlatform()
+    public function testFilterByPlatform(): void
     {
         $this->assertEquals(15, $this->getInteractions(false, null, null, null, origin::PHONE));
         $this->assertEquals(12, $this->getInteractions(false, null, null, null, origin::DESKTOP));
@@ -105,8 +115,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filter by item.
+     *
+     * @return void
      */
-    public function testFilterByItem()
+    public function testFilterByItem(): void
     {
         $this->assertEquals(16, $this->getInteractions(false, null, null, null, null, '1~it'));
         $this->assertEquals(9, $this->getInteractions(false, null, null, null, null, '2~it'));
@@ -114,8 +126,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filter by type.
+     *
+     * @return void
      */
-    public function testFilterByType()
+    public function testFilterByType(): void
     {
         $this->assertEquals(30, $this->getInteractions(false, null, null, null, null, null, InteractionType::CLICK));
         $this->assertEquals(0, $this->getInteractions(false, null, null, null, null, null, 'another'));
@@ -123,8 +137,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filter by index.
+     *
+     * @return void
      */
-    public function testFilterByIndex()
+    public function testFilterByIndex(): void
     {
         $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
         $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$appId, self::$anotherIndex);
@@ -142,8 +158,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test filetr by app.
+     *
+     * @return void
      */
-    public function testFilterByApp()
+    public function testFilterByApp(): void
     {
         $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
         $this->click('u1', '3~it', 2, null, new Origin('d.com', '0.0.0.0', Origin::PHONE), self::$anotherAppId, self::$index);
@@ -169,8 +187,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test get top clicks.
+     *
+     * @return void
      */
-    public function testGetTopClicks()
+    public function testGetTopClicks(): void
     {
         $this->assertEquals([
             '1~it' => 16,
@@ -209,8 +229,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test count unique users.
+     *
+     * @return void
      */
-    public function testCountUniqueUsers()
+    public function testCountUniqueUsers(): void
     {
         $interactions = $this->getInteractions(true, null, null, null, null, null, null, InteractionFilter::UNIQUE_USERS);
         $this->assertCount(1, $interactions);
@@ -229,8 +251,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test interaction.
+     *
+     * @return void
      */
-    public function testPosition()
+    public function testPosition(): void
     {
         $interactionRepository = $this->get('apisearch_server.interactions_repository_test');
         if (
@@ -248,8 +272,10 @@ trait InteractionRepositoryTest
 
     /**
      * Test context.
+     *
+     * @return void
      */
-    public function testContext()
+    public function testContext(): void
     {
         $interactions = $this->getInteractions(false, null, null, null, null, null, null, null, 'context1', self::$appId, self::$index);
         $this->assertEquals(4, $interactions);

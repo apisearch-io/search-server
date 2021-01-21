@@ -39,8 +39,10 @@ class EndpointsJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test not authenticated.
+     *
+     * @return void
      */
-    public function testNotAuthenticated()
+    public function testNotAuthenticated(): void
     {
         $this->expectNotToPerformAssertions();
         $query = Query::createMatchAll();

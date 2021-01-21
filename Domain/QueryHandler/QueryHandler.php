@@ -77,8 +77,10 @@ class QueryHandler extends WithRepositoryAndEventPublisher
      * Add UUID into query if needed.
      *
      * @param ModelQuery $query
+     *
+     * @return void
      */
-    private function assignUUIDIfNeeded(ModelQuery $query)
+    private function assignUUIDIfNeeded(ModelQuery $query): void
     {
         if (empty($query->getUUID())) {
             $query->identifyWith(Uuid::uuid4()->toString());

@@ -54,8 +54,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test empty Repository.
+     *
+     * @return void
      */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -67,8 +69,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test total.
+     *
+     * @return void
      */
-    public function testTotal()
+    public function testTotal(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -86,8 +90,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test another repository reference.
+     *
+     * @return void
      */
-    public function testPerRepositoryReference()
+    public function testPerRepositoryReference(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -133,8 +139,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test by user.
+     *
+     * @return void
      */
-    public function testByUser()
+    public function testByUser(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -179,8 +187,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test by platform.
+     *
+     * @return void
      */
-    public function testByPlatform()
+    public function testByPlatform(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -219,8 +229,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test per day.
+     *
+     * @return void
      */
-    public function testPerDay()
+    public function testPerDay(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -307,8 +319,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test unique user id.
+     *
+     * @return void
      */
-    public function testUniqueUserId()
+    public function testUniqueUserId(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -351,8 +365,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test per day.
+     *
+     * @return void
      */
-    public function testUniqueUserIdPerDay()
+    public function testUniqueUserIdPerDay(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -387,8 +403,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
 
     /**
      * Test get top searches.
+     *
+     * @return void
      */
-    public function testGetTopInteractedItems()
+    public function testGetTopInteractedItems(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -494,13 +512,15 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
      * @param LoopInterface      $loop
      * @param string             $when
      * @param string             $userUUID
+     *
+     * @return void
      */
     private function addSearchWhen(
         SearchesRepository $repository,
         LoopInterface $loop,
         string $when,
         string $userUUID = 'user-1'
-    ) {
+    ): void {
         $promise = $repository->registerSearch(
             $this->getDefaultRepositoryReference(),
             $userUUID,
@@ -519,8 +539,10 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
      * @param RepositoryReference|null $repositoryReference
      * @param string                   $userUUID
      * @param string                   $searchText
-     * @param bool                     $numberOfResults
+     * @param int                      $numberOfResults
      * @param Origin|null              $origin
+     *
+     * @return void
      */
     private function addSearch(
         SearchesRepository $repository,
@@ -530,14 +552,14 @@ abstract class SearchesRepositoryTest extends BaseUnitTest
         string $searchText = '',
         int $numberOfResults = 0,
         Origin $origin = null
-    ) {
+    ): void {
         $promise = $repository->registerSearch(
             $repositoryReference ?? $this->getDefaultRepositoryReference(),
             $userUUID,
             $searchText,
             $numberOfResults,
             $origin ?? new Origin('h1', 'ip1', Origin::DESKTOP),
-            $when ?? new DateTime()
+            new DateTime()
         );
 
         $this->await($promise, $loop);

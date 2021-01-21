@@ -32,8 +32,10 @@ class ShutdownSearchesRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test shutdown event.
+     *
+     * @return void
      */
-    public function testShutdownEvent()
+    public function testShutdownEvent(): void
     {
         $searches = $this->getSearches(false);
         $this->assertEquals(0, $searches);

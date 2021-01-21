@@ -52,12 +52,14 @@ final class Origin
      * @param string $host
      * @param string $ip
      * @param string $userAgent
+     *
+     * @return self
      */
     public static function buildByUserAgent(
         string $host = '',
         string $ip = '',
         string $userAgent = ''
-    ) {
+    ): self {
         if (empty($userAgent)) {
             return new Origin(
                 $host,

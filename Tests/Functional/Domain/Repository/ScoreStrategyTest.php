@@ -28,8 +28,10 @@ trait ScoreStrategyTest
 {
     /**
      * Test default strategy.
+     *
+     * @return void
      */
-    public function testDefaultStrategy()
+    public function testDefaultStrategy(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -47,8 +49,10 @@ trait ScoreStrategyTest
 
     /**
      * Test relevance strategy.
+     *
+     * @return void
      */
-    public function testRelevanceStrategyFieldValue()
+    public function testRelevanceStrategyFieldValue(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -68,8 +72,10 @@ trait ScoreStrategyTest
 
     /**
      * Test custom function strategy.
+     *
+     * @return void
      */
-    public function testCustomFunctionStrategy()
+    public function testCustomFunctionStrategy(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -90,8 +96,10 @@ trait ScoreStrategyTest
 
     /**
      * Score strategy composed with nested filter and sorting.
+     *
+     * @return void
      */
-    public function testScoreStrategyWithNested()
+    public function testScoreStrategyWithNested(): void
     {
         $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(
@@ -119,8 +127,10 @@ trait ScoreStrategyTest
 
     /**
      * Test decay.
+     *
+     * @return void
      */
-    public function testScoreStrategyDecay()
+    public function testScoreStrategyDecay(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -165,8 +175,10 @@ trait ScoreStrategyTest
 
     /**
      * Test several score strategies.
+     *
+     * @return void
      */
-    public function testSeveralScoreStrategies()
+    public function testSeveralScoreStrategies(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -204,8 +216,10 @@ trait ScoreStrategyTest
 
     /**
      * Test score strategy for array inside indexed_metadata.
+     *
+     * @return void
      */
-    public function testScoreStrategyInsideSimpleArray()
+    public function testScoreStrategyInsideSimpleArray(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -238,8 +252,10 @@ trait ScoreStrategyTest
 
     /**
      * Test score strategy for array inside indexed_metadata.
+     *
+     * @return void
      */
-    public function testScoreStrategyInsideArrayOfArrays()
+    public function testScoreStrategyInsideArrayOfArrays(): void
     {
         $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(
@@ -271,8 +287,10 @@ trait ScoreStrategyTest
 
     /**
      * Test several score strategies.
+     *
+     * @return void
      */
-    public function testSeveralScoreStrategiesTypeSUM()
+    public function testSeveralScoreStrategiesTypeSUM(): void
     {
         $result = $this->query(
             Query::create('c')
@@ -352,8 +370,10 @@ trait ScoreStrategyTest
     /**
      * Testing score strategies to boost external filters, outside from the
      * query scope, but inside the filtered universe.
+     *
+     * @return void
      */
-    public function testNonQueryScoreStrategies()
+    public function testNonQueryScoreStrategies(): void
     {
         $result = $this->query(
             Query::create('Hernando')

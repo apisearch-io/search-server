@@ -32,8 +32,10 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
 
     /**
      * Test if health check has redis.
+     *
+     * @return void
      */
-    public function testCheckHealth()
+    public function testCheckHealth(): void
     {
         $this->click('123', 'product~1', 1, null, Origin::createEmpty());
         $this->click('123', 'product~1', 1, null, Origin::createEmpty());

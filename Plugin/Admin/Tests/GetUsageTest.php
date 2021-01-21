@@ -27,8 +27,10 @@ class GetUsageTest extends HttpFunctionalTest
 
     /**
      * Test controller result.
+     *
+     * @return void
      */
-    public function testController()
+    public function testController(): void
     {
         $this->putToken($this->createTokenByIdAndAppId('token1', static::$appId));
         $this->putToken($this->createTokenByIdAndAppId('token2', static::$appId));
@@ -57,11 +59,13 @@ class GetUsageTest extends HttpFunctionalTest
     /**
      * @param string $appId
      * @param int    $times
+     *
+     * @return void
      */
     private function queryNTimes(
         string $appId,
         int $times
-    ) {
+    ): void {
         for ($i = 0; $i < $times; ++$i) {
             $this->query(Query::createMatchAll(), $appId);
         }

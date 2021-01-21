@@ -40,8 +40,10 @@ abstract class TokenRepositoryTest extends BaseUnitTest
 
     /**
      * Test add and remove token.
+     *
+     * @return void
      */
-    public function testAddRemoveToken()
+    public function testAddRemoveToken(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);
@@ -105,8 +107,10 @@ abstract class TokenRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete tokens.
+     *
+     * @return void
      */
-    public function testDeleteTokens()
+    public function testDeleteTokens(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);
@@ -205,8 +209,10 @@ abstract class TokenRepositoryTest extends BaseUnitTest
 
     /**
      * Test get all tokens.
+     *
+     * @return void
      */
-    public function testGetAllTokens()
+    public function testGetAllTokens(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);

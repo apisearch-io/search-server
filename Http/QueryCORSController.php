@@ -80,8 +80,10 @@ final class QueryCORSController extends ControllerWithQueryBus
 
     /**
      * Create forbidden response.
+     *
+     * @return Response
      */
-    private function createForbiddenResponse()
+    private function createForbiddenResponse(): Response
     {
         return new Response(null, 403);
     }

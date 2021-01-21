@@ -21,47 +21,55 @@ namespace Apisearch\Plugin\Elasticsearch\Domain;
 class ElasticaLanguages
 {
     /**
-     * Get stopwords language by language iso.
+     * Get stop words language by language iso.
      *
      * @param string|null $iso
      *
-     * @return string
+     * @return string|null
      */
-    public static function getStopwordsLanguageByIso(? string $iso): ? string
+    public static function getStopWordsLanguageByIso(? string $iso): ? string
     {
-        return (string) ([
-            '_' => '_arabic_',
-            '_' => '_armenian_',
+        if (\is_null($iso)) {
+            return null;
+        }
+
+        $value = ([
+            'ar' => '_arabic_',
+            'hy' => '_armenian_',
             'ba' => '_basque_',
             'br' => '_brazilian_',
-            '_' => '_bulgarian_',
+            'bg' => '_bulgarian_',
             'ca' => '_catalan_',
-            '_' => '_czech_',
-            '_' => '_danish_',
-            '_' => '_dutch_',
+            'cs' => '_czech_',
+            'da' => '_danish_',
+            'nl' => '_dutch_',
             'en' => '_english_',
-            '_' => '_finnish_',
+            'fi' => '_finnish_',
             'fr' => '_french_',
             'ga' => '_galician_',
-            '_' => '_german_',
+            'de' => '_german_',
             'gr' => '_greek_',
-            '_' => '_hindi_',
-            '_' => '_hungarian_',
-            '_' => '_indonesian_',
-            '_' => '_irish_',
+            'hi' => '_hindi_',
+            'hu' => '_hungarian_',
+            'id' => '_indonesian_',
+            'ie' => '_irish_',
             'it' => '_italian_',
-            '_' => '_latvian_',
-            '_' => '_norwegian_',
-            '_' => '_persian_',
-            '_' => '_portuguese_',
-            '_' => '_romanian_',
+            'lv' => '_latvian_',
+            'lt' => '_lithuanian_',
+            'nb' => '_norwegian_',
+            'pt' => '_portuguese_',
+            'ro' => '_romanian_',
             'ru' => '_russian_',
-            '_' => '_sorani_',
+            'ckb' => '_sorani_',
             'es' => '_spanish_',
-            '_' => '_swedish_',
-            '_' => '_thai_',
-            '_' => '_turkish_',
+            'sv' => '_swedish_',
+            'th' => '_thai_',
+            'tr' => '_turkish_',
         ][$iso] ?? null);
+
+        return \is_null($value)
+            ? $value
+            : (string) $value;
     }
 
     /**
@@ -73,61 +81,45 @@ class ElasticaLanguages
      */
     public static function getStemmerLanguageByIso(? string $iso): ? string
     {
+        if (\is_null($iso)) {
+            return null;
+        }
+
         $value = [
-            '_' => 'arabic',
-            '_' => 'armenian',
+            'ar' => 'arabic',
+            'hy' => 'armenian',
             'ba' => 'basque',
             'br' => 'brazilian',
-            '_' => 'bulgarian',
+            'bg' => 'bulgarian',
             'ca' => 'catalan',
-            '_' => 'czech',
-            '_' => 'danish',
-            '_' => 'dutch',
+            'cs' => 'czech',
+            'da' => 'danish',
+            'nl' => 'dutch',
             'en' => 'english',
-            '_' => 'finnish',
+            'fi' => 'finnish',
             'fr' => 'light_french',
             'ga' => 'galician',
-            '_' => 'light_german',
+            'de' => 'light_german',
             'gr' => 'greek',
-            '_' => 'hindi',
-            '_' => 'hungarian',
-            '_' => 'indonesian',
-            '_' => 'irish',
+            'hi' => 'hindi',
+            'hu' => 'hungarian',
+            'id' => 'indonesian',
+            'ie' => 'irish',
             'it' => 'light_italian',
-            '_' => 'sorani',
-            '_' => 'latvian',
-            '_' => 'lithuanian',
-            '_' => 'norwegian',
-            '_' => 'light_nynorsk',
-            '_' => 'portuguese',
-            '_' => 'romanian',
+            'ckb' => 'sorani',
+            'lv' => 'latvian',
+            'lt' => 'lithuanian',
+            'nb' => 'norwegian',
+            'pt' => 'portuguese',
+            'ro' => 'romanian',
             'ru' => 'russian',
             'es' => 'light_spanish',
-            '_' => 'swedish',
-            '_' => 'turkish',
+            'sv' => 'swedish',
+            'tr' => 'turkish',
         ][$iso] ?? null;
 
         return \is_null($value)
             ? $value
             : (string) $value;
-    }
-
-    /**
-     * Get languages.
-     */
-    public static function getLanguages()
-    {
-        return [
-            'ba',
-            'br',
-            'ca',
-            'en',
-            'fr',
-            'ga',
-            'gr',
-            'it',
-            'ru',
-            'es',
-        ];
     }
 }

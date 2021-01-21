@@ -40,8 +40,10 @@ abstract class QueryGlobalLimitationTest extends ServiceFunctionalTest
 
     /**
      * Test simple usage.
+     *
+     * @return void
      */
-    public function testSimpleUsage()
+    public function testSimpleUsage(): void
     {
         /*
          * Number of results limitation

@@ -26,8 +26,10 @@ class JWTQueryFilterTest extends TestCase
 {
     /**
      * Test empty.
+     *
+     * @return void
      */
-    public function testEmptyConfiguration()
+    public function testEmptyConfiguration(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([]);
 
@@ -46,8 +48,10 @@ class JWTQueryFilterTest extends TestCase
 
     /**
      * Test fields not found.
+     *
+     * @return void
      */
-    public function testFieldNotFound()
+    public function testFieldNotFound(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([
             'role' => [
@@ -64,8 +68,10 @@ class JWTQueryFilterTest extends TestCase
 
     /**
      * Test field found and value not found.
+     *
+     * @return void
      */
-    public function testFieldFoundFieldNotFound()
+    public function testFieldFoundFieldNotFound(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([
             'role' => [
@@ -82,8 +88,10 @@ class JWTQueryFilterTest extends TestCase
 
     /**
      * Test field and value match.
+     *
+     * @return void
      */
-    public function testFieldAndValueMatch()
+    public function testFieldAndValueMatch(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([
             'role' => [
@@ -104,8 +112,10 @@ class JWTQueryFilterTest extends TestCase
 
     /**
      * Test field and value match.
+     *
+     * @return void
      */
-    public function testFieldAndValueMatchMultipleFields()
+    public function testFieldAndValueMatchMultipleFields(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([
             'role' => [
@@ -141,8 +151,10 @@ class JWTQueryFilterTest extends TestCase
 
     /**
      * Test placeholder.
+     *
+     * @return void
      */
-    public function testPlaceholder()
+    public function testPlaceholder(): void
     {
         $jwtQueryFilter = new JWTQueryFilter([
             'role' => [

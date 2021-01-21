@@ -105,8 +105,10 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
 
     /**
      * Test that position is saved in DBAL.
+     *
+     * @return void
      */
-    public function testPositionIsSaved()
+    public function testPositionIsSaved(): void
     {
         $loop = Factory::create();
         $connection = $this->createConnection($loop);

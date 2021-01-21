@@ -22,8 +22,10 @@ trait IndexStatusTest
 {
     /**
      * Test index check.
+     *
+     * @return void
      */
-    public function testIndexCheck()
+    public function testIndexCheck(): void
     {
         static::resetScenario();
         $this->assertTrue($this->checkIndex(

@@ -24,8 +24,10 @@ trait ExactMatchingMetadataTest
 {
     /**
      * Test metadata.
+     *
+     * @return void
      */
-    public function testSpecialWords()
+    public function testSpecialWords(): void
     {
         $item = $this->query(Query::create('Vinci'))->getItems()[0];
         $this->assertSame(

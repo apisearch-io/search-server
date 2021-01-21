@@ -24,7 +24,7 @@ use DateTime;
  */
 class DateTimeFormatterTest extends BaseUnitTest
 {
-    public function testNormalizeRange()
+    public function testNormalizeRange(): void
     {
         $today = (new DateTime())->setTime(0, 0);
         $todayFormatted = $today->format('Ymd');
@@ -45,7 +45,7 @@ class DateTimeFormatterTest extends BaseUnitTest
         $this->assertEquals($days, 22);
     }
 
-    public function testFormatDateTime()
+    public function testFormatDateTime(): void
     {
         $today = (new DateTime())->setTime(0, 0);
         $todayFormatted = $today->format('Ymd');

@@ -47,8 +47,10 @@ class LogsRepositoryLimitationsTest extends ServiceFunctionalTest
 
     /**
      * Test pagination.
+     *
+     * @return void
      */
-    public function testLimitedPagination()
+    public function testLimitedPagination(): void
     {
         static::putToken(new Token(TokenUUID::createById('aaa'), AppUUID::createById(self::$appId)));
         static::putToken(new Token(TokenUUID::createById('aaa'), AppUUID::createById(self::$appId)));

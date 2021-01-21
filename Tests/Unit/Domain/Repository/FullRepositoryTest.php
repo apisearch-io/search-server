@@ -37,7 +37,7 @@ use React\Promise\Deferred;
 abstract class FullRepositoryTest extends BaseUnitTest
 {
     /**
-     * @param LoopInterface $loop
+     * @param LoopInterface|null $loop
      *
      * @return FullRepository
      */
@@ -45,8 +45,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete index on empty repository.
+     *
+     * @return void
      */
-    public function testDeleteIndexOnEmpty()
+    public function testDeleteIndexOnEmpty(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
@@ -56,8 +58,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete index on wrong repository.
+     *
+     * @return void
      */
-    public function testDeleteIndexOnWrongIndex()
+    public function testDeleteIndexOnWrongIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference('app2');
@@ -68,8 +72,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test index creation.
+     *
+     * @return void
      */
-    public function testIndexCreation()
+    public function testIndexCreation(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
@@ -79,8 +85,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test index deletion.
+     *
+     * @return void
      */
-    public function testIndexDeletion()
+    public function testIndexDeletion(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
@@ -91,8 +99,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test index configure on empty.
+     *
+     * @return void
      */
-    public function testIndexConfigureOnEmpty()
+    public function testIndexConfigureOnEmpty(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
@@ -102,8 +112,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test index configure on empty.
+     *
+     * @return void
      */
-    public function testIndexConfigure()
+    public function testIndexConfigure(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
@@ -116,8 +128,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test get items on non existing index.
+     *
+     * @return void
      */
-    public function testGetItemsOnNonExistingIndex()
+    public function testGetItemsOnNonExistingIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -127,8 +141,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test get items on created index.
+     *
+     * @return void
      */
-    public function testGetItemsOnCreatedIndex()
+    public function testGetItemsOnCreatedIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -144,8 +160,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete items on non existing index.
+     *
+     * @return void
      */
-    public function testDeleteItemsOnNonExistingIndex()
+    public function testDeleteItemsOnNonExistingIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -155,8 +173,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test update items on non existing index.
+     *
+     * @return void
      */
-    public function testUpdateItemsOnNonExistingIndex()
+    public function testUpdateItemsOnNonExistingIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -166,8 +186,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete Items.
+     *
+     * @return void
      */
-    public function testDeleteItems()
+    public function testDeleteItems(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -182,8 +204,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test Multiquery.
+     *
+     * @return void
      */
-    public function testMultiQuery()
+    public function testMultiQuery(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -199,8 +223,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test query filter by ids.
+     *
+     * @return void
      */
-    public function testQueryFilterByIds()
+    public function testQueryFilterByIds(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -213,8 +239,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test query filter by universal filter.
+     *
+     * @return void
      */
-    public function testQueryFilterByUniversalFilter()
+    public function testQueryFilterByUniversalFilter(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -238,8 +266,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test query by text.
+     *
+     * @return void
      */
-    public function testQueryByText()
+    public function testQueryByText(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -257,8 +287,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test query fields.
+     *
+     * @return void
      */
-    public function testFields()
+    public function testFields(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -287,8 +319,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test size.
+     *
+     * @return void
      */
-    public function testSize()
+    public function testSize(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -305,8 +339,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test export.
+     *
+     * @return void
      */
-    public function testIndexExport()
+    public function testIndexExport(): void
     {
         $loop = Factory::create();
         $repository = $this->getFullRepository($loop);
@@ -329,8 +365,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test get index fields.
+     *
+     * @return void
      */
-    public function testIndexGetFields()
+    public function testIndexGetFields(): void
     {
         $loop = Factory::create();
         $repository = $this->getFullRepository($loop);
@@ -397,13 +435,15 @@ abstract class FullRepositoryTest extends BaseUnitTest
      * @param string[]    $resultItemIds
      *
      * @dataProvider dataRepositoryReferenceSelector
+     *
+     * @return void
      */
     public function testRepositoryReferenceSelector(
         ?string $appId,
         ?string $indexId,
         array $resultIndexIds,
         array $resultItemIds
-    ) {
+    ): void {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createAppRepositoryReference();
         $this->await($repository->createIndex($repositoryReference, $this->createIndexUUID(), $this->createConfig()));
@@ -441,8 +481,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
      *    - index2
      * app2
      *    - index3 -> [3]
+     *
+     * @return array
      */
-    public function dataRepositoryReferenceSelector()
+    public function dataRepositoryReferenceSelector(): array
     {
         return [
             [null, null, ['1', '2', '3'], ['1', '2', '3']],
@@ -461,8 +503,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test items deletion by query.
+     *
+     * @return void
      */
-    public function testItemsDeletionByQuery()
+    public function testItemsDeletionByQuery(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -484,8 +528,10 @@ abstract class FullRepositoryTest extends BaseUnitTest
 
     /**
      * Test reset index.
+     *
+     * @return void
      */
-    public function testResetIndex()
+    public function testResetIndex(): void
     {
         $repository = $this->getFullRepository();
         $repositoryReference = $this->createRepositoryReference();
@@ -506,7 +552,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
      * @return RepositoryReference
      */
     private function createRepositoryReference(
-        ?string $appId = 'app1',
+        string $appId = 'app1',
         ?string $indexId = 'index1'
     ): RepositoryReference {
         return \is_null($indexId)
@@ -612,7 +658,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
     /**
      * Create config.
      *
-     * @return ItemUUID
+     * @return Config
      */
     private function createConfig(): Config
     {

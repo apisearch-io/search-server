@@ -27,6 +27,8 @@ trait ElasticFunctionalTestTrait
      * This method is called before a test is executed.
      *
      * @throws \RuntimeException unable to start the application
+     *
+     * @return void
      */
     public static function setUpBeforeClass()
     {

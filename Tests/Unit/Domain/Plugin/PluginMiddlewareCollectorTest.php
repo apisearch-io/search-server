@@ -27,8 +27,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 {
     /**
      * Test subscribed to all.
+     *
+     * @return void
      */
-    public function testSubscribedToAll()
+    public function testSubscribedToAll(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
@@ -43,8 +45,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 
     /**
      * Test subscribed  to one.
+     *
+     * @return void
      */
-    public function testSubscribedToSpecific()
+    public function testSubscribedToSpecific(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
@@ -57,8 +61,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 
     /**
      * Test subscribed  to one.
+     *
+     * @return void
      */
-    public function testNotSubscribed()
+    public function testNotSubscribed(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
@@ -70,8 +76,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 
     /**
      * Test subscribed to abstract.
+     *
+     * @return void
      */
-    public function testSubscribedToAbstract()
+    public function testSubscribedToAbstract(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
@@ -83,8 +91,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 
     /**
      * Test subscribed to multiple.
+     *
+     * @return void
      */
-    public function testSubscribedToMultiple()
+    public function testSubscribedToMultiple(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);
@@ -97,8 +107,10 @@ class PluginMiddlewareCollectorTest extends TestCase
 
     /**
      * Test subscribed to interface.
+     *
+     * @return void
      */
-    public function testSubscribedToInterface()
+    public function testSubscribedToInterface(): void
     {
         $pluginMiddlewareCollector = new PluginMiddlewareCollector();
         $middleware = $this->prophesize(PluginMiddleware::class);

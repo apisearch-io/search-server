@@ -24,8 +24,10 @@ trait SuggestTest
 {
     /**
      * Test basic suggest.
+     *
+     * @return void
      */
-    public function testBasicSuggest()
+    public function testBasicSuggest(): void
     {
         $results = $this->query(
             Query::create('barc')
@@ -41,8 +43,10 @@ trait SuggestTest
 
     /**
      * Test basic suggest same text.
+     *
+     * @return void
      */
-    public function testSuggestSameThanQuery()
+    public function testSuggestSameThanQuery(): void
     {
         $results = $this->query(
             Query::create('Barce')
@@ -58,8 +62,10 @@ trait SuggestTest
 
     /**
      * Test basic suggest same text.
+     *
+     * @return void
      */
-    public function testNumberOfSuggestions()
+    public function testNumberOfSuggestions(): void
     {
         $results = $this->query(
             Query::create('ba')

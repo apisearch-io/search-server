@@ -27,8 +27,10 @@ class SearchesFilterTest extends BaseUnitTest
 {
     /**
      * Test filter by repository reference.
+     *
+     * @return void
      */
-    public function testFilterByRepositoryReference()
+    public function testFilterByRepositoryReference(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = SearchesFilter::create($repositoryReference);
@@ -37,8 +39,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by user.
+     *
+     * @return void
      */
-    public function testFilterByUser()
+    public function testFilterByUser(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $user = 'user-1';
@@ -50,8 +54,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by from.
+     *
+     * @return void
      */
-    public function testFilterFrom()
+    public function testFilterFrom(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -63,8 +69,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by to.
+     *
+     * @return void
      */
-    public function testFilterTo()
+    public function testFilterTo(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -76,8 +84,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by platform.
+     *
+     * @return void
      */
-    public function testFilterByPlatform()
+    public function testFilterByPlatform(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $platform = 'desktop';
@@ -89,8 +99,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by not empty results.
+     *
+     * @return void
      */
-    public function testFilterByExcludeWithResults()
+    public function testFilterByExcludeWithResults(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = SearchesFilter::create($repositoryReference)->excludeWithResults();
@@ -107,8 +119,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter by empty results.
+     *
+     * @return void
      */
-    public function testFilterByExcludeWithoutResults()
+    public function testFilterByExcludeWithoutResults(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = SearchesFilter::create($repositoryReference)->excludeWithoutResults();
@@ -125,8 +139,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test filter per day.
+     *
+     * @return void
      */
-    public function testFilterPerDay()
+    public function testFilterPerDay(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = SearchesFilter::create($repositoryReference)->perDay();
@@ -143,8 +159,10 @@ class SearchesFilterTest extends BaseUnitTest
 
     /**
      * Test count.
+     *
+     * @return void
      */
-    public function testCount()
+    public function testCount(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = SearchesFilter::create($repositoryReference)->count(SearchesFilter::UNIQUE_USERS);

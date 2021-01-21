@@ -55,6 +55,8 @@ class QueryMapperLoader
      * if needed.
      *
      * @param Request $request
+     *
+     * @return void
      */
     public function fulfillRequestWithQueryAndCredentials(Request $request)
     {

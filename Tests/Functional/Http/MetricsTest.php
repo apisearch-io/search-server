@@ -48,8 +48,10 @@ class MetricsTest extends HttpFunctionalTest
 
     /**
      * Test load data.
+     *
+     * @return void
      */
-    public function testLoadData()
+    public function testLoadData(): void
     {
         $this->expectNotToPerformAssertions();
 
@@ -79,8 +81,10 @@ class MetricsTest extends HttpFunctionalTest
 
     /**
      * test basics.
+     *
+     * @return void
      */
-    public function testBasics()
+    public function testBasics(): void
     {
         $metrics = $this->getMetrics();
         $this->assertEquals(
@@ -347,7 +351,7 @@ class MetricsTest extends HttpFunctionalTest
         ];
     }
 
-    public function testMetricsContext()
+    public function testMetricsContext(): void
     {
         $metrics = $this->getMetrics(null, null, null, null, null, 'context1');
         $clicks = $metrics['clicks'];

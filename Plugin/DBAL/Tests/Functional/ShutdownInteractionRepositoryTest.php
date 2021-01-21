@@ -31,8 +31,10 @@ class ShutdownInteractionRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test shutdown event.
+     *
+     * @return void
      */
-    public function testShutdownEvent()
+    public function testShutdownEvent(): void
     {
         $interactions = $this->getInteractions(false);
         $this->assertEquals(0, $interactions);
@@ -51,8 +53,10 @@ class ShutdownInteractionRepositoryTest extends ServiceFunctionalTest
 
     /**
      * @param string $userId
+     *
+     * @return void
      */
-    public function clickWithoutFlush(string $userId)
+    public function clickWithoutFlush(string $userId): void
     {
         self::executeCommand(new PostInteraction(
             RepositoryReference::createFromComposed(static::$appId.'_'.static::$index),

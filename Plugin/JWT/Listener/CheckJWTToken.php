@@ -42,6 +42,8 @@ class CheckJWTToken implements EventSubscriberInterface
 
     /**
      * @param RequestEvent $event
+     *
+     * @return void
      */
     public function checkToken(RequestEvent $event)
     {

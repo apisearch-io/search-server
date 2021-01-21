@@ -27,8 +27,10 @@ trait ComplexFieldsTest
 {
     /**
      * Test token queries.
+     *
+     * @return void
      */
-    public function testComplexDataStructures()
+    public function testComplexDataStructures(): void
     {
         $item = Item::create(
             ItemUUID::createByComposedUUID('6~item'),

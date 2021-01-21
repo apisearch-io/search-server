@@ -32,8 +32,10 @@ trait CampaignScenariosTest
 {
     /**
      * Test simple campaign.
+     *
+     * @return void
      */
-    public function testSimple()
+    public function testSimple(): void
     {
         $campaign = new Campaign(
             new CampaignUID('123'),
@@ -68,12 +70,14 @@ trait CampaignScenariosTest
      * @param bool          $matches
      *
      * @dataProvider dataInactiveForDateCampaign
+     *
+     * @return void
      */
     public function testInactiveForDateCampaign(
         ?DateTime $from,
         ?DateTime $to,
         bool $matches
-    ) {
+    ): void {
         $campaign = new Campaign(
             new CampaignUID('123'),
             $from, $to, IndexUUID::createById(self::$index),
@@ -151,8 +155,10 @@ trait CampaignScenariosTest
 
     /**
      * Test multiple campaigns.
+     *
+     * @return void
      */
-    public function testMultipleCampaigns()
+    public function testMultipleCampaigns(): void
     {
         /**
          * This campaign is overriden by the next one (same IDs).
@@ -224,8 +230,10 @@ trait CampaignScenariosTest
 
     /**
      * Test simple campaign.
+     *
+     * @return void
      */
-    public function testIndexNotMatching()
+    public function testIndexNotMatching(): void
     {
         $campaign = new Campaign(
             new CampaignUID('123'),
@@ -257,8 +265,10 @@ trait CampaignScenariosTest
 
     /**
      * Test simple campaign.
+     *
+     * @return void
      */
-    public function testSpecialFields()
+    public function testSpecialFields(): void
     {
         $campaign = new Campaign(
             new CampaignUID('123'),
@@ -290,8 +300,10 @@ trait CampaignScenariosTest
 
     /**
      * Test rest campaigns.
+     *
+     * @return void
      */
-    public function testRestCampaigns()
+    public function testRestCampaigns(): void
     {
         $this->deleteCampaigns();
         $campaign1 = new Campaign(
@@ -330,8 +342,10 @@ trait CampaignScenariosTest
 
     /**
      * Test campaign with min_score.
+     *
+     * @return void
      */
-    public function testCampaignWithMinScore()
+    public function testCampaignWithMinScore(): void
     {
         $this->deleteCampaigns();
         $campaign1 = new Campaign(

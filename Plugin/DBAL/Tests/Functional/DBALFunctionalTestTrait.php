@@ -90,6 +90,8 @@ trait DBALFunctionalTestTrait
 
     /**
      * Reset database.
+     *
+     * @return void
      */
     public static function resetScenario()
     {

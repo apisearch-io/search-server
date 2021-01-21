@@ -31,8 +31,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test valid bearer.
+     *
+     * @return void
      */
-    public function testValidBearer()
+    public function testValidBearer(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode(['something'], self::PRIVATE_KEY, self::ALGORITHM);
@@ -43,8 +45,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test payload with future expired time.
+     *
+     * @return void
      */
-    public function testNotExpiredPayload()
+    public function testNotExpiredPayload(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode([
@@ -57,8 +61,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test payload with good IAT.
+     *
+     * @return void
      */
-    public function testExpiredPayloadWithGoodIAT()
+    public function testExpiredPayloadWithGoodIAT(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode([
@@ -71,8 +77,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test invalid bearer.
+     *
+     * @return void
      */
-    public function testInvalidBearerFormat()
+    public function testInvalidBearerFormat(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode(['something'], self::PRIVATE_KEY, self::ALGORITHM);
@@ -83,8 +91,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test different private key.
+     *
+     * @return void
      */
-    public function testDifferentPrivateKey()
+    public function testDifferentPrivateKey(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode(['something'], 'another', self::ALGORITHM);
@@ -95,8 +105,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test different algorithm.
+     *
+     * @return void
      */
-    public function testDifferentAlgorithm()
+    public function testDifferentAlgorithm(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, ['HS512'], self::TTL);
         $bearer = JWT::encode(['something'], 'another', self::ALGORITHM);
@@ -107,8 +119,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test different algorithm.
+     *
+     * @return void
      */
-    public function testNotAllowedAlgorithm()
+    public function testNotAllowedAlgorithm(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, ['Another'], self::TTL);
         $bearer = JWT::encode(['something'], self::PRIVATE_KEY, self::ALGORITHM);
@@ -119,8 +133,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test payload with past expiration time.
+     *
+     * @return void
      */
-    public function testExpiredPayload()
+    public function testExpiredPayload(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode([
@@ -133,8 +149,10 @@ class JWTBearerCheckerTest extends TestCase
 
     /**
      * Test payload with expired IAT.
+     *
+     * @return void
      */
-    public function testExpiredPayloadWithIAT()
+    public function testExpiredPayloadWithIAT(): void
     {
         $jwtBearerChecker = new JWTBearerChecker(self::PRIVATE_KEY, [self::ALGORITHM], self::TTL);
         $bearer = JWT::encode([

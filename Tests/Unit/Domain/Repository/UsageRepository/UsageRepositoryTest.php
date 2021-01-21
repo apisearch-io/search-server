@@ -111,8 +111,10 @@ abstract class UsageRepositoryTest extends TestCase
 
     /**
      * Test.
+     *
+     * @return void
      */
-    public function testUsage()
+    public function testUsage(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -138,11 +140,13 @@ abstract class UsageRepositoryTest extends TestCase
      *
      * @param UsageRepository $repository
      * @param LoopInterface   $loop
+     *
+     * @return void
      */
     protected function setUpEnvironment(
         UsageRepository $repository,
         LoopInterface $loop
-    ) {
+    ): void {
         $this->saveEvents($repository, $loop, $this->getEvents());
     }
 
@@ -234,8 +238,10 @@ abstract class UsageRepositoryTest extends TestCase
 
     /**
      * Test per day.
+     *
+     * @return void
      */
-    public function testPerDay()
+    public function testPerDay(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -259,8 +265,10 @@ abstract class UsageRepositoryTest extends TestCase
 
     /**
      * Test optimize.
+     *
+     * @return void
      */
-    public function testOptimize()
+    public function testOptimize(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -378,12 +386,14 @@ abstract class UsageRepositoryTest extends TestCase
      * @param UsageRepository $repository
      * @param LoopInterface   $loop
      * @param array           $events
+     *
+     * @return void
      */
     private function saveEvents(
         UsageRepository $repository,
         LoopInterface $loop,
         array $events
-    ) {
+    ): void {
         foreach ($events as $event) {
             for ($i = 0; $i < $event[4]; ++$i) {
                 $repositoryReference = \is_null($event[2])

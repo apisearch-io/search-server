@@ -24,8 +24,10 @@ trait FuzzinessTest
 {
     /**
      * Test fuzziness.
+     *
+     * @return void
      */
-    public function testFuzziness()
+    public function testFuzziness(): void
     {
         $items = $this
             ->query(Query::create('matutano'))
@@ -77,8 +79,10 @@ trait FuzzinessTest
 
     /**
      * Test array fuzziness.
+     *
+     * @return void
      */
-    public function testArrayFuzziness()
+    public function testArrayFuzziness(): void
     {
         $items = $this
             ->query(
@@ -143,8 +147,10 @@ trait FuzzinessTest
 
     /**
      * Test array fuzziness.
+     *
+     * @return void
      */
-    public function testChangedCharsFuzziness()
+    public function testChangedCharsFuzziness(): void
     {
         $items = $this
             ->query(

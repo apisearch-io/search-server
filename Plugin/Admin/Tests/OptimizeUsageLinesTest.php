@@ -29,8 +29,10 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
 
     /**
      * Test controller result.
+     *
+     * @return void
      */
-    public function testController()
+    public function testController(): void
     {
         $this->putToken($this->createTokenByIdAndAppId('token1', static::$appId));
         $this->putToken($this->createTokenByIdAndAppId('token2', static::$appId));
@@ -64,8 +66,10 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
      * @param mixed $to
      *
      * @dataProvider dataBadRequests
+     *
+     * @return void
      */
-    public function testBadRequests($from, $to)
+    public function testBadRequests($from, $to): void
     {
         $this->expectException(InvalidFormatException::class);
         $this->request('admin_optimize_usage_lines', [], null, [], [
@@ -76,8 +80,10 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
 
     /**
      * Data bad dates.
+     *
+     * @return array
      */
-    public function dataBadRequests()
+    public function dataBadRequests(): array
     {
         return [
             [
@@ -114,11 +120,13 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
     /**
      * @param string $appId
      * @param int    $times
+     *
+     * @return void
      */
     private function queryNTimes(
         string $appId,
         int $times
-    ) {
+    ): void {
         for ($i = 0; $i < $times; ++$i) {
             $this->query(Query::createMatchAll(), $appId);
         }

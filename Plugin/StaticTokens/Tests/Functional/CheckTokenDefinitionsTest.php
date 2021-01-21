@@ -29,8 +29,10 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
 {
     /**
      * Test simple workflow.
+     *
+     * @return void
      */
-    public function testSimpleWorkflow()
+    public function testSimpleWorkflow(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('blablabla'), AppUUID::createById(self::$appId));
@@ -57,8 +59,10 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
 
     /**
      * Test simple workflow.
+     *
+     * @return void
      */
-    public function testSpecificIndex()
+    public function testSpecificIndex(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('onlyindex'), AppUUID::createById(self::$appId));
@@ -85,8 +89,10 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
 
     /**
      * Test simple workflow.
+     *
+     * @return void
      */
-    public function testSpecificEndpoint()
+    public function testSpecificEndpoint(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('onlyaddtoken'), AppUUID::createById(self::$appId));
@@ -113,8 +119,10 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
 
     /**
      * Test wrong format.
+     *
+     * @return void
      */
-    public function testLongTokenIdFormat()
+    public function testLongTokenIdFormat(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(TokenUUID::createById('bla-bla-blah'), AppUUID::createById(self::$appId));
@@ -128,8 +136,10 @@ class CheckTokenDefinitionsTest extends StaticTokensFunctionalTest
 
     /**
      * Test readonly flag.
+     *
+     * @return void
      */
-    public function testReadOnlyFlag()
+    public function testReadOnlyFlag(): void
     {
         $tokens = $this->getTokensById();
         $this->assertTrue($tokens['bla-bla-blah']->getMetadataValue('read_only'));

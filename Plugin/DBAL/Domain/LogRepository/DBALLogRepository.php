@@ -132,11 +132,13 @@ final class DBALLogRepository implements LogRepository
     /**
      * @param QueryBuilder $queryBuilder
      * @param LogFilter    $filter
+     *
+     * @return void
      */
     private function applyFilterToQueryBuilder(
         QueryBuilder $queryBuilder,
         LogFilter $filter
-    ) {
+    ): void {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();

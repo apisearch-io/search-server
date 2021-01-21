@@ -75,8 +75,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test empty Repository.
+     *
+     * @return void
      */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -88,8 +90,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test total.
+     *
+     * @return void
      */
-    public function testTotal()
+    public function testTotal(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -107,8 +111,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test another repository reference.
+     *
+     * @return void
      */
-    public function testPerRepositoryReference()
+    public function testPerRepositoryReference(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -154,8 +160,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test by user.
+     *
+     * @return void
      */
-    public function testByUser()
+    public function testByUser(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -200,8 +208,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * test by item.
+     *
+     * @return void
      */
-    public function testByItem()
+    public function testByItem(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -235,8 +245,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test by platform.
+     *
+     * @return void
      */
-    public function testByPlatform()
+    public function testByPlatform(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -276,8 +288,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test by type.
+     *
+     * @return void
      */
-    public function testByType()
+    public function testByType(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -310,8 +324,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test per day.
+     *
+     * @return void
      */
-    public function testPerDay()
+    public function testPerDay(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -398,8 +414,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test unique user id.
+     *
+     * @return void
      */
-    public function testUniqueUserId()
+    public function testUniqueUserId(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -443,8 +461,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test per day.
+     *
+     * @return void
      */
-    public function testUniqueUserIdPerDay()
+    public function testUniqueUserIdPerDay(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -479,8 +499,10 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
 
     /**
      * Test get top interacted items.
+     *
+     * @return void
      */
-    public function testGetTopInteractedItems()
+    public function testGetTopInteractedItems(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -522,7 +544,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         ], $this->await($list, $loop));
     }
 
-    public function testInteractionContext()
+    public function testInteractionContext(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -578,13 +600,15 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      * @param LoopInterface         $loop
      * @param string                $when
      * @param string                $userUUID
+     *
+     * @return void
      */
     private function addInteractionWhen(
         InteractionRepository $repository,
         LoopInterface $loop,
         string $when,
         string $userUUID = 'user-1'
-    ) {
+    ): void {
         $promise = $repository->registerInteraction(
             $this->getDefaultRepositoryReference(),
             $userUUID,
@@ -608,6 +632,8 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
      * @param Origin|null              $origin
      * @param string                   $type
      * @param string|null              $context
+     *
+     * @return void
      */
     protected function addInteraction(
         InteractionRepository $repository,
@@ -618,7 +644,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
         Origin $origin = null,
         string $type = InteractionType::CLICK,
         ?string $context = null
-    ) {
+    ): void {
         $promise = $repository->registerInteraction(
             $repositoryReference ?? $this->getDefaultRepositoryReference(),
             $userUUID,
@@ -627,7 +653,7 @@ abstract class InteractionRepositoryTest extends BaseUnitTest
             $context,
             $origin ?? new Origin('h1', 'ip1', Origin::DESKTOP),
             $type,
-            $when ?? new DateTime()
+            new DateTime()
         );
 
         $this->await($promise, $loop);

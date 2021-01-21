@@ -38,6 +38,8 @@ class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {
@@ -85,6 +87,8 @@ class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
      * @param string          $name
      * @param Token           $godToken
      * @param OutputInterface $output
+     *
+     * @return void
      */
     protected function generateToken(
         AppUUID $appUUID,
@@ -92,7 +96,7 @@ class GenerateBasicTokensCommand extends CommandWithCommandBusAndGodToken
         string $name,
         Token $godToken,
         OutputInterface $output
-    ) {
+    ): void {
         $tokenId = Uuid::uuid4()->toString();
 
         $this->executeAndWait(new PutToken(

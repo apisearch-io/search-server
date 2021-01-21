@@ -25,6 +25,8 @@ class ClientCompilerPass extends RedisCompilerPass
 {
     /**
      * {@inheritdoc}
+     *
+     * @return void
      */
     public function process(ContainerBuilder $container)
     {

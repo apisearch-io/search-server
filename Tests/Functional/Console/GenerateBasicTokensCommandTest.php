@@ -28,8 +28,10 @@ trait GenerateBasicTokensCommandTest
 {
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testTokenCreation()
+    public function testTokenCreation(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:create-index',

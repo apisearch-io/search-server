@@ -199,13 +199,15 @@ class StandardFormatTransformer extends FormatTransformer
      * @param array  $attributes
      * @param array  $array
      * @param string $modifiers
+     *
+     * @return void
      */
     private function addItemFieldsToArray(
         array &$fields,
         array &$attributes,
         array $array,
         string $modifiers
-    ) {
+    ): void {
         $headers = \array_keys($fields);
         foreach ($array as $field => $value) {
             $fieldModifiers = $modifiers;
@@ -248,6 +250,8 @@ class StandardFormatTransformer extends FormatTransformer
      * @param array  $itemAsArray
      * @param string $field
      * @param string $value
+     *
+     * @return void
      */
     private function addItemFieldFromArray(
         array &$itemAsArray,

@@ -42,8 +42,10 @@ class GenerateCrontabCommandTest extends CommandTest
 
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testCrontabGeneration()
+    public function testCrontabGeneration(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:generate-crontab',

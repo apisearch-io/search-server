@@ -208,6 +208,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function setUpBeforeClass()
     {
@@ -219,6 +223,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
      */
     public static function tearDownAfterClass()
     {
@@ -227,6 +233,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
     /**
      * Reset scenario.
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function resetScenario()
     {
@@ -245,6 +255,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
     /**
      * Run server.
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     protected static function runApisearchServer()
     {
@@ -276,6 +290,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
     /**
      * Debug apisearch server.
+     *
+     * @return void
      */
     protected static function debugLastApisearchServer()
     {
@@ -291,6 +307,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Create a new kernel.
      *
      * @return KernelInterface
+     *
+     * @throws Exception
      */
     protected static function createNewKernel(): KernelInterface
     {
@@ -334,15 +352,19 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Index test data.
      *
-     * @param string $appId
-     * @param string $index
-     * @param string $path
+     * @param string|null $appId
+     * @param string|null $index
+     * @param string|null $path
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     protected static function indexTestingItems(
         string $appId = null,
         string $index = null,
         string $path = null
-    ) {
+    ): void {
         $items = Yaml::parse(\file_get_contents($path ?? static::getItemsFilePath()));
         $itemsInstances = [];
         foreach ($items['items'] as $item) {
@@ -377,8 +399,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
     /**
      * Clean all tests data.
+     *
+     * @return void
      */
-    public static function deleteEverything()
+    public static function deleteEverything(): void
     {
         static::safeDeleteIndex(self::$appId);
         static::safeDeleteIndex(self::$appId, self::$anotherIndex);
@@ -397,6 +421,8 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param array       $headers
      *
      * @return Result
+     *
+     * @throws Exception
      */
     abstract public function query(
         QueryModel $query,
@@ -411,11 +437,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Preflight CORS query.
      *
-     * @param Origin $origin
-     * @param string $appId
-     * @param string $index
+     * @param Origin      $origin
+     * @param string|null $appId
+     * @param string|null $index
      *
      * @return string
+     *
+     * @throws Exception
      */
     abstract public function getCORSPermissions(
         Origin $origin,
@@ -426,13 +454,15 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Export index.
      *
-     * @param string $format
-     * @param bool   $closeImmediately
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $format
+     * @param bool        $closeImmediately
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
      *
      * @return Item[]
+     *
+     * @throws Exception
      */
     abstract public function exportIndex(
         string $format,
@@ -449,9 +479,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param bool        $detached
      * @param bool        $deleteOldVersions
      * @param string|null $version
-     * @param string      $appId
-     * @param string      $index
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function importIndexByFeed(
         string $feed,
@@ -466,10 +498,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Delete using the bus.
      *
-     * @param ItemUUID[] $itemsUUID
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param ItemUUID[]  $itemsUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function deleteItems(
         array $itemsUUID,
@@ -479,10 +513,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
-     * @param QueryModel $query
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function deleteItemsByQuery(
         QueryModel $query,
@@ -494,10 +530,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Add items using the bus.
      *
-     * @param Item[] $items
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Item[]      $items
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public static function indexItems(
         array $items,
@@ -509,11 +547,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Update using the bus.
      *
-     * @param QueryModel $query
-     * @param Changes    $changes
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param Changes     $changes
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function updateItems(
         QueryModel $query,
@@ -526,9 +566,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Reset index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function resetIndex(
         string $appId = null,
@@ -539,10 +581,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Create index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
-     * @param Config $config
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     * @param Config|null $config
+     *
+     * @throws Exception
      */
     abstract public static function createIndex(
         string $appId = null,
@@ -554,11 +598,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Configure index using the bus.
      *
-     * @param Config $config
-     * @param bool   $forceReindex
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Config      $config
+     * @param bool        $forceReindex
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function configureIndex(
         Config $config,
@@ -570,9 +616,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
     /**
      * @param string|null $appId
-     * @param Token       $token
+     * @param Token|null  $token
      *
      * @return Index[]
+     *
+     * @throws Exception
      */
     abstract public function getIndices(
         string $appId = null,
@@ -584,7 +632,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @return Index|null
      */
-    protected function getPrincipalIndex(string $fieldToCheck = 'indexed_metadata.brand')
+    protected function getPrincipalIndex(string $fieldToCheck = 'indexed_metadata.brand'): ? Index
     {
         $indices = $this->getIndices(self::$appId);
         $indices = \array_filter($indices, function (Index $index) use ($fieldToCheck) {
@@ -599,9 +647,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Check index.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
      *
      * @return bool
      */
@@ -614,9 +662,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Delete index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
      */
     abstract public static function deleteIndex(
         string $appId = null,
@@ -627,15 +675,17 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Delete index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
      */
     public static function safeDeleteIndex(
         string $appId = null,
         string $index = null,
         Token $token = null
-    ) {
+    ): void {
         try {
             static::deleteIndex(
                 $appId,
@@ -650,9 +700,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Add token.
      *
-     * @param Token  $newToken
-     * @param string $appId
-     * @param Token  $token
+     * @param Token       $newToken
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public static function putToken(
         Token $newToken,
@@ -663,9 +715,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Delete token.
      *
-     * @param TokenUUID $tokenUUID
-     * @param string    $appId
-     * @param Token     $token
+     * @param TokenUUID   $tokenUUID
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public static function deleteToken(
         TokenUUID $tokenUUID,
@@ -676,10 +730,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Get tokens.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token|null  $token
      *
      * @return Token[]
+     *
+     * @throws Exception
      */
     abstract public static function getTokens(
         string $appId = null,
@@ -689,10 +745,12 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Get tokens.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token|null  $token
      *
      * @return Token[]
+     *
+     * @throws Exception
      */
     public static function getTokensById(
         string $appId = null,
@@ -710,8 +768,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Delete token.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public static function deleteTokens(
         string $appId = null,
@@ -721,18 +781,20 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $event
      * @param bool|null     $perDay
      *
      * @return array
+     *
+     * @throws Exception
      */
     abstract public function getUsage(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $event = null,
@@ -742,7 +804,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string[]      $types
@@ -750,11 +812,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param int           $page
      *
      * @return array
+     *
+     * @throws Exception
      */
     abstract public function getLogs(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         array $types = [],
@@ -768,9 +832,11 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param int         $position
      * @param string|null $context
      * @param Origin      $origin
-     * @param string      $appId
-     * @param string      $indexId
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
      */
     abstract public function click(
         ?string $userId,
@@ -779,7 +845,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?string $context,
         Origin $origin,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     );
 
@@ -793,11 +859,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string|null   $type
      * @param string|null   $count
      * @param string|null   $context
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     abstract public function getInteractions(
         bool $perDay,
@@ -810,7 +878,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?string $count = null,
         ?string $context = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     );
 
@@ -820,11 +888,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param DateTime|null $to
      * @param string|null   $userId
      * @param string|null   $platform
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     abstract public function getTopClicks(
         ?int $n = null,
@@ -833,7 +903,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         ?string $userId = null,
         ?string $platform = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     );
 
@@ -846,11 +916,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string|null   $count
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     abstract public function getSearches(
         bool $perDay,
@@ -862,7 +934,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         bool $excludeWithoutResults = false,
         ?string $count = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     );
 
@@ -874,9 +946,13 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return array
+     *
+     * @throws Exception
      */
     abstract public function getTopSearches(
         ?int $n = null,
@@ -887,33 +963,37 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
-    );
+    ): array;
 
     /**
      * Ping.
      *
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return bool
+     *
+     * @throws Exception
      */
     abstract public function ping(Token $token = null): bool;
 
     /**
      * Check health.
      *
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return array
+     *
+     * @throws Exception
      */
     abstract public function checkHealth(Token $token = null): array;
 
     /**
      * Create token by id and app_id.
      *
-     * @param string $tokenId
-     * @param string $appId
+     * @param string|null $tokenId
+     * @param string|null $appId
      *
      * @return Token
      */
@@ -949,7 +1029,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Get GOD token.
      *
-     * @param string $appId
+     * @param string|null $appId
      *
      * @return Token
      */
@@ -964,7 +1044,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     /**
      * Dispatch imperative event.
      *
-     * @param object $event
+     * @param $event
+     *
+     * @throws Exception
      */
     protected function dispatchImperative($event): void
     {
@@ -978,8 +1060,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Create import file.
      *
      * @param int $n
+     *
+     * @return void
      */
-    protected function createImportFile(int $n)
+    protected function createImportFile(int $n): void
     {
         @\unlink("/tmp/dump.$n.apisearch");
         $data = 'uid|type|title|link|image|categories|attributes'.PHP_EOL;
@@ -995,8 +1079,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      * Load massive index items.
      *
      * @param int $n
+     *
+     * @return void
      */
-    protected function loadMassiveIndexItems(int $n)
+    protected function loadMassiveIndexItems(int $n): void
     {
         $ri = $rj = \intval(\sqrt($n));
 

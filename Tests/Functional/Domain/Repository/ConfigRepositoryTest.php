@@ -38,8 +38,10 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test initial configuration repository state.
+     *
+     * @return void
      */
-    public function testInitialConfigRepositoryState()
+    public function testInitialConfigRepositoryState(): void
     {
         $configs = $this->findAllConfigs();
         $this->assertCount(3, $configs);
@@ -47,8 +49,10 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test index metadata.
+     *
+     * @return void
      */
-    public function testIndexMetadata()
+    public function testIndexMetadata(): void
     {
         $this->configureIndex(Config::createEmpty()
             ->addMetadataValue('key1', 'value1')
@@ -65,8 +69,10 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test new index.
+     *
+     * @return void
      */
-    public function testNewIndex()
+    public function testNewIndex(): void
     {
         $configurableIndexId = 'configurable-index';
         try {
@@ -101,6 +107,8 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test token persistence on new service creation.
+     *
+     * @return void
      */
     public function testNewServiceConfig()
     {

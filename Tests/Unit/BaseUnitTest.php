@@ -67,11 +67,13 @@ abstract class BaseUnitTest extends TestCase
     /**
      * @param int           $seconds
      * @param LoopInterface $loop
+     *
+     * @return void
      */
     protected function sleep(
         int $seconds,
         LoopInterface $loop
-    ) {
+    ): void {
         $this->await(
             async_sleep($seconds, $loop),
             $loop
@@ -81,11 +83,13 @@ abstract class BaseUnitTest extends TestCase
     /**
      * @param int           $microseconds
      * @param LoopInterface $loop
+     *
+     * @return void
      */
     protected function usleep(
         int $microseconds,
         LoopInterface $loop
-    ) {
+    ): void {
         $this->await(
             async_usleep($microseconds, $loop),
             $loop

@@ -24,8 +24,10 @@ trait ImportTest
 {
     /**
      * Test import.
+     *
+     * @return void
      */
-    public function testImport()
+    public function testImport(): void
     {
         $this->createImportFile(300);
         $this->importIndexByFeed('file:///tmp/dump.300.apisearch');

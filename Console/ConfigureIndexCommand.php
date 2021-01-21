@@ -73,6 +73,8 @@ class ConfigureIndexCommand extends CommandWithCommandBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {

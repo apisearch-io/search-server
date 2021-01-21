@@ -27,8 +27,10 @@ class CheckHealthMiddlewareTest extends ServiceFunctionalTest
 
     /**
      * Test health check.
+     *
+     * @return void
      */
-    public function testCheckHealth()
+    public function testCheckHealth(): void
     {
         $response = $this->checkHealth();
         $this->assertTrue(

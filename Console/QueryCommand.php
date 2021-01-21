@@ -36,6 +36,8 @@ class QueryCommand extends CommandWithQueryBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {

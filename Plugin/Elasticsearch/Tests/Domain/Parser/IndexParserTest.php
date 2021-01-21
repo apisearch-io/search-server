@@ -25,8 +25,10 @@ class IndexParserTest extends BaseUnitTest
 {
     /**
      * Test parser.
+     *
+     * @return void
      */
-    public function testParser()
+    public function testParser(): void
     {
         $this->assertEquals(
             [

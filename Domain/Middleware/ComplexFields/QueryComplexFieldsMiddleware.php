@@ -76,10 +76,14 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
     /**
      * @param QueryModel $query
-     * @param            $complexFields
+     * @param array      $complexFields
+     *
+     * @return void
      */
-    private function checkComplexFieldsInFields(QueryModel $query, $complexFields)
-    {
+    private function checkComplexFieldsInFields(
+        QueryModel $query,
+        array $complexFields
+    ): void {
         $fields = $query->getFields();
 
         /**
@@ -124,12 +128,14 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
     /**
      * @param QueryModel $query
-     * @param            $complexFields
+     * @param array      $complexFields
+     *
+     * @return void
      */
     private function checkComplexFieldsInFilters(
         QueryModel $query,
-        $complexFields
-    ) {
+        array $complexFields
+    ): void {
         foreach ($query->getFilters() as $filterName => $filter) {
             $field = \substr($filter->getField(), 17);
             if (\in_array($field, $complexFields)) {
@@ -158,12 +164,14 @@ class QueryComplexFieldsMiddleware extends ComplexFieldsMiddleware implements Di
 
     /**
      * @param QueryModel $query
-     * @param            $complexFields
+     * @param array      $complexFields
+     *
+     * @return void
      */
     private function checkComplexFieldsInAggregations(
         QueryModel $query,
-        $complexFields
-    ) {
+        array $complexFields
+    ): void {
         foreach ($query->getAggregations() as $filterName => $aggregation) {
             $field = \substr($aggregation->getField(), 17);
             if (\in_array($field, $complexFields)) {

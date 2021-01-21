@@ -22,8 +22,10 @@ trait IndicesTest
 {
     /**
      * Test indices fields.
+     *
+     * @return void
      */
-    public function testIndicesFields()
+    public function testIndicesFields(): void
     {
         $indices = $this->getIndices(self::$appId);
         $this->assertCount(2, $indices);

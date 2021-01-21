@@ -207,7 +207,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
             ],
         ];
 
-        $stopWordsLanguage = ElasticaLanguages::getStopwordsLanguageByIso($language);
+        $stopWordsLanguage = ElasticaLanguages::getStopWordsLanguageByIso($language);
         if (!\is_null($stopWordsLanguage)) {
             $defaultAnalyzerFilter[30] = 'stop_words';
             // $searchAnalyzerFilter[30] = 'stop_words';

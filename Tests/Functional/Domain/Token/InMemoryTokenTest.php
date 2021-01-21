@@ -30,6 +30,8 @@ class InMemoryTokenTest extends TokenTest
 
     /**
      * Truncate the table.
+     *
+     * @return void
      */
     protected function setUp()
     {

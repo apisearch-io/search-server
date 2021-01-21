@@ -27,11 +27,13 @@ class Type
      *
      * @param AbstractEndpoint $endpoint
      * @param string           $version
+     *
+     * @return void
      */
     public static function setEndpointType(
         AbstractEndpoint $endpoint,
         string $version
-    ) {
+    ): void {
         if ('6' == $version) {
             $endpoint->setType('item');
         }

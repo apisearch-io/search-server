@@ -22,7 +22,7 @@ use Elastica\ResultSet as ElasticaResultSet;
  */
 class ResultSet
 {
-    public static function getTotalHits(ElasticaResultSet $resultSet)
+    public static function getTotalHits(ElasticaResultSet $resultSet): int
     {
         $data = $resultSet
             ->getResponse()

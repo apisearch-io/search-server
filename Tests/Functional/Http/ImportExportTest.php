@@ -69,8 +69,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test requests counting and log.
+     *
+     * @return void
      */
-    public function testRequestsCountingAndLog()
+    public function testRequestsCountingAndLog(): void
     {
         $this->assertEquals(3, $this->getUsage()['admin']);
         $this->loadMassiveIndexItems(2500); // 50 iterations of 50
@@ -113,8 +115,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import export combination.
+     *
+     * @return void
      */
-    public function testImportExportSource()
+    public function testImportExportSource(): void
     {
         $this->resetScenario();
         $this->indexTestingItems();
@@ -129,8 +133,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import export combination.
+     *
+     * @return void
      */
-    public function testImportExportSourceStandard()
+    public function testImportExportSourceStandard(): void
     {
         $this->indexTestingItems();
         $standard = $this->exportIndex('standard');
@@ -149,8 +155,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import wrong file.
+     *
+     * @return void
      */
-    public function testImportFileDoesntExist()
+    public function testImportFileDoesntExist(): void
     {
         @\unlink('/tmp/dump.notfound');
         $this->expectException(InvalidFormatException::class);
@@ -159,8 +167,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import wrong file.
+     *
+     * @return void
      */
-    public function testImportFileWrongType()
+    public function testImportFileWrongType(): void
     {
         @\unlink('/tmp/dump.notfound');
         $this->expectException(InvalidFormatException::class);
@@ -170,8 +180,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import wrong file.
+     *
+     * @return void
      */
-    public function testImportFileWrongRows()
+    public function testImportFileWrongRows(): void
     {
         @\unlink('/tmp/dump.notfound');
         $this->expectException(InvalidFormatException::class);
@@ -181,8 +193,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import wrong file.
+     *
+     * @return void
      */
-    public function testImportNonExistingIndex()
+    public function testImportNonExistingIndex(): void
     {
         $this->expectException(ResourceNotAvailableException::class);
         $this->importIndexByFeed('file://'.__DIR__.'/dump.source.as', false, false, null, static::$anotherInexistentAppId, static::$appId);
@@ -190,8 +204,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import by stream.
+     *
+     * @return void
      */
-    public function testImportByStream()
+    public function testImportByStream(): void
     {
         $this->resetIndex();
         $loop = Factory::create();
@@ -257,8 +273,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import by version.
+     *
+     * @return void
      */
-    public function testImportByVersion()
+    public function testImportByVersion(): void
     {
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
         $source = $this->exportIndex('source');
@@ -282,8 +300,10 @@ class ImportExportTest extends CurlFunctionalTest
 
     /**
      * Test import by version.
+     *
+     * @return void
      */
-    public function testImportByCustomVersion()
+    public function testImportByCustomVersion(): void
     {
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
         $source = $this->exportIndex('source');

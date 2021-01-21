@@ -22,8 +22,10 @@ trait ImportExportIndexCommandTest
 {
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testIndexImportAndExport()
+    public function testIndexImportAndExport(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:create-index',

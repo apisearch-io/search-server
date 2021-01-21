@@ -33,13 +33,15 @@ class QueryMergerTest extends TestCase
      * @param array  $resultQuery
      *
      * @dataProvider dataQueryMerger
+     *
+     * @return void
      */
     public function testQueryMerger(
         array $baseQueryAsArray,
         array $mergeableQueryAsArray,
         string $type,
         array $resultQuery
-    ) {
+    ): void {
         $this->assertEquals(
             $resultQuery,
             QueryMerger::mergeQueries(

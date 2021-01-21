@@ -52,8 +52,10 @@ class UsageRegister implements EventSubscriberInterface
      * Register query event usage.
      *
      * @param DomainEventEnvelope $domainEventEnvelope
+     *
+     * @return void
      */
-    public function registerQueryEventUsage(DomainEventEnvelope $domainEventEnvelope)
+    public function registerQueryEventUsage(DomainEventEnvelope $domainEventEnvelope): void
     {
         /**
          * @var DomainEvent
@@ -68,8 +70,10 @@ class UsageRegister implements EventSubscriberInterface
      * Register admin event usage.
      *
      * @param DomainEventEnvelope $domainEventEnvelope
+     *
+     * @return void
      */
-    public function registerAdminEventUsage(DomainEventEnvelope $domainEventEnvelope)
+    public function registerAdminEventUsage(DomainEventEnvelope $domainEventEnvelope): void
     {
         /**
          * @var DomainEvent
@@ -85,11 +89,13 @@ class UsageRegister implements EventSubscriberInterface
      *
      * @param DomainEvent $event
      * @param string      $eventName
+     *
+     * @return void
      */
     public function registerEventUsage(
         DomainEvent $event,
         string $eventName
-    ) {
+    ): void {
         $today = new DateTime('now', new DateTimeZone('UTC'));
         $today->setTime(0, 0, 0);
 
