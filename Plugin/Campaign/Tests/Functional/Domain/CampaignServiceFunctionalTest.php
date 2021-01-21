@@ -42,6 +42,8 @@ class CampaignServiceFunctionalTest extends ServiceFunctionalTest implements Cam
      * @param string   $appId
      * @param string   $indexId
      * @param Token    $token
+     *
+     * @return void
      */
     public function putCampaign(
         Campaign $campaign,
@@ -69,6 +71,8 @@ class CampaignServiceFunctionalTest extends ServiceFunctionalTest implements Cam
      * @param string $appId
      * @param string $indexId
      * @param Token  $token
+     *
+     * @return void
      */
     public function deleteCampaigns(
         ?string $appId = null,
@@ -95,6 +99,8 @@ class CampaignServiceFunctionalTest extends ServiceFunctionalTest implements Cam
      * @param string      $appId
      * @param string      $indexId
      * @param Token       $token
+     *
+     * @return void
      */
     public function deleteCampaign(
         CampaignUID $campaignUID,

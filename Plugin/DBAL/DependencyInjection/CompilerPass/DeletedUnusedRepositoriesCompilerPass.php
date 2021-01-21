@@ -33,6 +33,8 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
 {
     /**
      * You can modify the container here before it is dumped to PHP code.
+     *
+     * @return void
      */
     public function process(ContainerBuilder $container)
     {
@@ -84,12 +86,14 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
      * @param ContainerBuilder $container
      * @param string[]         $repositories
      * @param string           $parameter
+     *
+     * @return void
      */
     private function deleteRepositoriesIfDisabled(
         ContainerBuilder $container,
         array $repositories,
         string $parameter
-    ) {
+    ): void {
         $enabled = $container->resolveEnvPlaceholders($container->getParameter($parameter));
         $enabled = \boolval($enabled);
         if (!$enabled) {

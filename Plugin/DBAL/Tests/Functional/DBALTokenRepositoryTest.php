@@ -25,7 +25,7 @@ class DBALTokenRepositoryTest extends TokenTest
     use DBALFunctionalTestTrait;
 
     /**
-     * Is distributed token respository.
+     * Is distributed token repository.
      */
     public function isDistributedTokenRepository(): bool
     {
@@ -34,6 +34,8 @@ class DBALTokenRepositoryTest extends TokenTest
 
     /**
      * Truncate the table.
+     *
+     * @return void
      */
     protected function setUp()
     {

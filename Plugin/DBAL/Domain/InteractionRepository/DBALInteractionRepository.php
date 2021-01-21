@@ -189,12 +189,14 @@ final class DBALInteractionRepository implements InteractionRepository
      * @param QueryBuilder      $queryBuilder
      * @param InteractionFilter $filter
      * @param array             $parameters
+     *
+     * @return void
      */
     private function applyFilterToQueryBuilder(
         QueryBuilder $queryBuilder,
         InteractionFilter $filter,
         array &$parameters
-    ) {
+    ): void {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();

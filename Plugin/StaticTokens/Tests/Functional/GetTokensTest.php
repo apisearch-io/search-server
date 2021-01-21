@@ -22,8 +22,10 @@ class GetTokensTest extends StaticTokensFunctionalTest
 {
     /**
      * Test count.
+     *
+     * @return void
      */
-    public function testCount()
+    public function testCount(): void
     {
         $this->assertCount(8, $this->getTokens());
     }

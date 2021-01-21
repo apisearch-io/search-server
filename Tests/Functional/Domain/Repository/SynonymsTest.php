@@ -26,8 +26,10 @@ trait SynonymsTest
 {
     /**
      * Test synonyms.
+     *
+     * @return void
      */
-    public function testSynonyms()
+    public function testSynonyms(): void
     {
         $this->configureIndex(Config::createEmpty()->addSynonym(Synonym::createByWords(['percebeiro', 'alfaguarra'])));
 

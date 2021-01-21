@@ -37,7 +37,7 @@ class CheckHealthEventsQueueMiddlewareDisabledTest extends ServiceFunctionalTest
         return $configuration;
     }
 
-    public function testHealthCheck()
+    public function testHealthCheck(): void
     {
         $data = $this->checkHealth();
         $this->assertArrayNotHasKey('amqp', $data['status']);

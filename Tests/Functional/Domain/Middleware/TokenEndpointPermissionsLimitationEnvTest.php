@@ -26,6 +26,8 @@ class TokenEndpointPermissionsLimitationEnvTest extends ServiceFunctionalTest
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
      */
     public static function setUpBeforeClass()
     {
@@ -41,8 +43,10 @@ class TokenEndpointPermissionsLimitationEnvTest extends ServiceFunctionalTest
      * @param array $endpoints
      *
      * @dataProvider dataAvailableEndpointsFail
+     *
+     * @return void
      */
-    public function testAvailableEndpointsFail(array $endpoints)
+    public function testAvailableEndpointsFail(array $endpoints): void
     {
         $masterToken = $this->createTokenByIdAndAppId('tok_master');
         $this->putToken($masterToken);
@@ -68,8 +72,10 @@ class TokenEndpointPermissionsLimitationEnvTest extends ServiceFunctionalTest
      * @param array $endpoints
      *
      * @dataProvider dataAvailableEndpoints
+     *
+     * @return void
      */
-    public function testAvailableEndpoints(array $endpoints)
+    public function testAvailableEndpoints(array $endpoints): void
     {
         $masterToken = $this->createTokenByIdAndAppId('tok_master');
         $this->putToken($masterToken);

@@ -38,6 +38,8 @@ abstract class CommandTest extends HttpFunctionalTest
     /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
      */
     public function setUp()
     {
@@ -64,8 +66,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index exists.
+     *
+     * @return void
      */
-    protected function assertExistsIndex()
+    protected function assertExistsIndex(): void
     {
         $this->assertTrue(
             $this->checkIndex()
@@ -74,8 +78,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index not exists.
+     *
+     * @return void
      */
-    protected function assertNotExistsIndex()
+    protected function assertNotExistsIndex(): void
     {
         $this->assertFalse(
             $this->checkIndex()
@@ -84,8 +90,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index exists.
+     *
+     * @return void
      */
-    protected function assertExistsEventsIndex()
+    protected function assertExistsEventsIndex(): void
     {
         $this->queryEvents(
             Query::createMatchAll()
@@ -94,8 +102,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index not exists.
+     *
+     * @return void
      */
-    protected function assertNotExistsEventsIndex()
+    protected function assertNotExistsEventsIndex(): void
     {
         try {
             $this->assertExistsEventsIndex();
@@ -107,8 +117,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index exists.
+     *
+     * @return void
      */
-    protected function assertExistsLogsIndex()
+    protected function assertExistsLogsIndex(): void
     {
         $this->queryLogs(
             Query::createMatchAll()
@@ -117,8 +129,10 @@ abstract class CommandTest extends HttpFunctionalTest
 
     /**
      * Assert index not exists.
+     *
+     * @return void
      */
-    protected function assertNotExistsLogsIndex()
+    protected function assertNotExistsLogsIndex(): void
     {
         try {
             $this->assertExistsLogsIndex();
@@ -132,8 +146,10 @@ abstract class CommandTest extends HttpFunctionalTest
      * Assert token is valid.
      *
      * @param string|null $token
+     *
+     * @return void
      */
-    protected function assertTokenExists(?string $token = null)
+    protected function assertTokenExists(?string $token = null): void
     {
         $this->assertTrue(
             $this->checkIndex(
@@ -151,8 +167,10 @@ abstract class CommandTest extends HttpFunctionalTest
      * Assert token does not exist.
      *
      * @param string|null $token
+     *
+     * @return void
      */
-    protected function assertTokenNotExists(?string $token = null)
+    protected function assertTokenNotExists(?string $token = null): void
     {
         $this->assertFalse(
             $this->checkIndex(

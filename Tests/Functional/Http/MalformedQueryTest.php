@@ -27,8 +27,10 @@ class MalformedQueryTest extends CurlFunctionalTest
      * Test malformed query.
      *
      * @dataProvider dataMalformedQuery
+     *
+     * @return void
      */
-    public function testMalformedQuery(string $query)
+    public function testMalformedQuery(string $query): void
     {
         $this->expectNotToPerformAssertions();
         try {

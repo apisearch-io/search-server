@@ -38,6 +38,8 @@ class DBALPluginBundle extends BaseBundle implements Plugin, StoragePlugin, Depe
      * Builds bundle.
      *
      * @param ContainerBuilder $container Container
+     *
+     * @return void
      */
     public function build(ContainerBuilder $container)
     {

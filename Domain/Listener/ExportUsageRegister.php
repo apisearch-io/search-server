@@ -47,8 +47,10 @@ class ExportUsageRegister implements EventSubscriberInterface
      * Register admin event usage.
      *
      * @param DomainEventEnvelope $domainEventEnvelope
+     *
+     * @return void
      */
-    public function registerImportExportEventUsage(DomainEventEnvelope $domainEventEnvelope)
+    public function registerImportExportEventUsage(DomainEventEnvelope $domainEventEnvelope): void
     {
         $this->registerEventUsage(
             $domainEventEnvelope,
@@ -63,12 +65,14 @@ class ExportUsageRegister implements EventSubscriberInterface
      * @param DomainEventEnvelope $domainEventEnvelope
      * @param string              $eventName
      * @param int                 $n
+     *
+     * @return void
      */
     private function registerEventUsage(
         DomainEventEnvelope $domainEventEnvelope,
         string $eventName,
         int $n
-    ) {
+    ): void {
         /**
          * @var DomainEvent
          */

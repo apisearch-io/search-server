@@ -26,8 +26,10 @@ class GetAppsTest extends HttpFunctionalTest
 
     /**
      * Test controller result.
+     *
+     * @return void
      */
-    public function testController()
+    public function testController(): void
     {
         $response = $this->request('admin_get_apps');
 

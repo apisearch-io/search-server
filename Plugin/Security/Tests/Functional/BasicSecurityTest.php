@@ -38,8 +38,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test seconds available.
+     *
+     * @return void
      */
-    public function testSecondsAvailableFailing()
+    public function testSecondsAvailableFailing(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -65,8 +67,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test seconds available.
+     *
+     * @return void
      */
-    public function testSecondsAvailableAccepted()
+    public function testSecondsAvailableAccepted(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -91,8 +95,10 @@ class BasicSecurityTest extends HttpFunctionalTest
      * @param array $referrers
      *
      * @dataProvider dataBadReferrers
+     *
+     * @return void
      */
-    public function testBadReferrers(array $referrers)
+    public function testBadReferrers(array $referrers): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -118,8 +124,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test bad referrers.
+     *
+     * @return array
      */
-    public function dataBadReferrers()
+    public function dataBadReferrers(): array
     {
         return [
             [['google.es']],
@@ -134,8 +142,10 @@ class BasicSecurityTest extends HttpFunctionalTest
      * @param array $referrers
      *
      * @dataProvider dataGoodReferrers
+     *
+     * @return void
      */
-    public function testGoodReferrers(array $referrers)
+    public function testGoodReferrers(array $referrers): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -156,8 +166,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test good referrers.
+     *
+     * @return array
      */
-    public function dataGoodReferrers()
+    public function dataGoodReferrers(): array
     {
         return [
             [[static::CURL_REFERER]],
@@ -170,8 +182,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test requests limit.
+     *
+     * @return void
      */
-    public function testRequestsLimit()
+    public function testRequestsLimit(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -214,8 +228,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test restricted fields.
+     *
+     * @return void
      */
-    public function testRestrictedFields()
+    public function testRestrictedFields(): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),
@@ -234,8 +250,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test restricted fields.
+     *
+     * @return void
      */
-    public function testAllowedFields()
+    public function testAllowedFields(): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),
@@ -252,8 +270,10 @@ class BasicSecurityTest extends HttpFunctionalTest
 
     /**
      * Test plugin is working with subqueries as well.
+     *
+     * @return void
      */
-    public function testRestrictedFieldsInSubqueries()
+    public function testRestrictedFieldsInSubqueries(): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),

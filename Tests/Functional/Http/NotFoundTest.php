@@ -25,8 +25,10 @@ class NotFoundTest extends CurlFunctionalTest
 {
     /**
      * Test not found on some non existing path.
+     *
+     * @return void
      */
-    public function testNotFoundResponse()
+    public function testNotFoundResponse(): void
     {
         $this->expectNotToPerformAssertions();
         try {

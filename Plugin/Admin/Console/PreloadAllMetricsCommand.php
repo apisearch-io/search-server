@@ -35,6 +35,8 @@ class PreloadAllMetricsCommand extends CommandWithCommandAndEventBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {

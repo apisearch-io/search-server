@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UserEncryptTest extends TestCase
 {
-    public function testUser()
+    public function testUser(): void
     {
         $userEncrypt = new UserEncrypt('xxxx');
         $this->assertNull($userEncrypt->getUUIDByInput(null, new Origin()));

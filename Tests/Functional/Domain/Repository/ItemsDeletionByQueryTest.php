@@ -25,8 +25,10 @@ trait ItemsDeletionByQueryTest
 {
     /**
      * Test item deletions by query.
+     *
+     * @return void
      */
-    public function testItemDeletionsByQuery()
+    public function testItemDeletionsByQuery(): void
     {
         $this->deleteItemsByQuery(Query::createMatchAll());
         $this->assertCount(0, $this->query(Query::createMatchAll())->getItems());
@@ -36,8 +38,10 @@ trait ItemsDeletionByQueryTest
 
     /**
      * Test item deletion with filter.
+     *
+     * @return void
      */
-    public function testItemDeletionByQueryWithFilter()
+    public function testItemDeletionByQueryWithFilter(): void
     {
         $this->deleteItemsByQuery(Query::createMatchAll()->filterByRange('cheap', 'price', [], ['0..1000']));
         $this->assertCount(2, $this->query(Query::createMatchAll())->getItems());
@@ -47,8 +51,10 @@ trait ItemsDeletionByQueryTest
 
     /**
      * Test item deletion with filter.
+     *
+     * @return void
      */
-    public function testItemDeletionByQueryLimit()
+    public function testItemDeletionByQueryLimit(): void
     {
         $this->deleteItemsByQuery(Query::create('', 1, 1)->filterByRange('cheap', 'price', [], ['0..1501']));
         $this->assertCount(1, $this->query(Query::createMatchAll())->getItems());
@@ -58,8 +64,10 @@ trait ItemsDeletionByQueryTest
 
     /**
      * Test item deletion with EXCLUDE filter.
+     *
+     * @return void
      */
-    public function testItemDeletionByExclude()
+    public function testItemDeletionByExclude(): void
     {
         $this->deleteItemsByQuery(Query::create('', 1, 1)->filterBy('but_pink', 'color', ['pink'], Filter::EXCLUDE));
         $this->assertCount(1, $this->query(Query::createMatchAll())->getItems());

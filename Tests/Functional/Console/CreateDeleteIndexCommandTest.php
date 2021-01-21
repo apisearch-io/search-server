@@ -24,8 +24,10 @@ trait CreateDeleteIndexCommandTest
 {
     /**
      * Test create index command.
+     *
+     * @return void
      */
-    public function testCreateIndexCommand()
+    public function testCreateIndexCommand(): void
     {
         $this->assertNotExistsIndex();
 
@@ -48,8 +50,10 @@ trait CreateDeleteIndexCommandTest
 
     /**
      * Test create index with synonyms.
+     *
+     * @return void
      */
-    public function testCreateIndexCommandWithSynonyms()
+    public function testCreateIndexCommandWithSynonyms(): void
     {
         $this->assertNotExistsIndex();
         static::runCommand([
@@ -83,8 +87,10 @@ trait CreateDeleteIndexCommandTest
 
     /**
      * Test create index with synonyms.
+     *
+     * @return void
      */
-    public function testCreateIndexCommandWithSynonymsInFile()
+    public function testCreateIndexCommandWithSynonymsInFile(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:create-index',
@@ -107,8 +113,10 @@ trait CreateDeleteIndexCommandTest
 
     /**
      * Create index with different shards and replicas.
+     *
+     * @return void
      */
-    public function testCreateIndexShardsReplicas()
+    public function testCreateIndexShardsReplicas(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:create-index',

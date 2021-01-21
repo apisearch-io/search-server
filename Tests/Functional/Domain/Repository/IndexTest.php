@@ -27,8 +27,10 @@ trait IndexTest
 {
     /**
      * Test some index scenarios.
+     *
+     * @return void
      */
-    public function testIndexItemWithWrongSearchableValues()
+    public function testIndexItemWithWrongSearchableValues(): void
     {
         $itemUUID = ItemUUID::createByComposedUUID('6~product');
         $item = Item::create(
@@ -70,8 +72,10 @@ trait IndexTest
 
     /**
      * Test some index scenarios.
+     *
+     * @return void
      */
-    public function testIndexEmptyArray()
+    public function testIndexEmptyArray(): void
     {
         $this->indexItems([]);
 
@@ -80,8 +84,10 @@ trait IndexTest
 
     /**
      * Test wrong field exception.
+     *
+     * @return void
      */
-    public function testWrongFieldException()
+    public function testWrongFieldException(): void
     {
         try {
             $this->indexItems([

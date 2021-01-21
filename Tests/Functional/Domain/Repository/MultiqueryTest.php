@@ -28,8 +28,10 @@ trait MultiqueryTest
 {
     /**
      * Test simple multiquery.
+     *
+     * @return void
      */
-    public function testSimpleMultiQuery()
+    public function testSimpleMultiQuery(): void
     {
         $query = Query::createMultiquery([
             'q1' => Query::create('alfaguarra')->identifyWith('123'),
@@ -50,8 +52,10 @@ trait MultiqueryTest
 
     /**
      * Test query on multiple indices.
+     *
+     * @return void
      */
-    public function testMultiQueryOnMultipleIndices()
+    public function testMultiQueryOnMultipleIndices(): void
     {
         static::safeDeleteIndex(self::$appId, self::$anotherIndex);
         static::safeDeleteIndex(self::$appId, self::$yetAnotherIndex);

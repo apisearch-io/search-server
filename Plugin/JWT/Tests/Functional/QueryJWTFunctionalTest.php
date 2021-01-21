@@ -55,8 +55,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test as admin.
+     *
+     * @return void
      */
-    public function testAsAdmin()
+    public function testAsAdmin(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([
@@ -72,8 +74,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test as user.
+     *
+     * @return void
      */
-    public function testAsUser()
+    public function testAsUser(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([
@@ -89,8 +93,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test as other.
+     *
+     * @return void
      */
-    public function testAsOther()
+    public function testAsOther(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([
@@ -106,8 +112,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test match all.
+     *
+     * @return void
      */
-    public function testMatchAll()
+    public function testMatchAll(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([
@@ -134,8 +142,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test not authenticated.
+     *
+     * @return void
      */
-    public function testNotAuthenticated()
+    public function testNotAuthenticated(): void
     {
         $query = Query::createMatchAll();
         $this->expectException(ForbiddenException::class);
@@ -144,8 +154,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test with bad bearer.
+     *
+     * @return void
      */
-    public function testWithBadBearer()
+    public function testWithBadBearer(): void
     {
         $query = Query::createMatchAll();
         $wrongBearer = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
@@ -157,8 +169,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test with bad encryption private key.
+     *
+     * @return void
      */
-    public function testWithBadEncodingPrivateKey()
+    public function testWithBadEncodingPrivateKey(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([
@@ -173,8 +187,10 @@ class QueryJWTFunctionalTest extends JWTFunctionalTest
 
     /**
      * Test with bad encryption hash.
+     *
+     * @return void
      */
-    public function testWithBadEncodingHash()
+    public function testWithBadEncodingHash(): void
     {
         $query = Query::createMatchAll();
         $jwtPayload = JWT::encode([

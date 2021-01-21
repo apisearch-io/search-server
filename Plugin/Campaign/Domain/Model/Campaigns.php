@@ -39,8 +39,10 @@ class Campaigns implements HttpTransportable
 
     /**
      * @param Campaign $campaign
+     *
+     * @return void
      */
-    public function putCampaign(Campaign $campaign)
+    public function putCampaign(Campaign $campaign): void
     {
         $this->campaigns[$campaign->getUid()->getUid()] = $campaign;
     }

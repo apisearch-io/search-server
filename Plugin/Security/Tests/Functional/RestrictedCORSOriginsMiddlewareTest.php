@@ -42,8 +42,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test no security.
+     *
+     * @return void
      */
-    public function testNoSecurity()
+    public function testNoSecurity(): void
     {
         $this->getCORSPermissions(new Origin('Whatever.com'));
         $this->assertEquals('Whatever.com', $this->getCORSPermissions(new Origin('Whatever.com')));
@@ -51,8 +53,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test allowed index.
+     *
+     * @return void
      */
-    public function testAllowedIndex()
+    public function testAllowedIndex(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
@@ -63,8 +67,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test not allowed index.
+     *
+     * @return void
      */
-    public function testNotAllowedIndex()
+    public function testNotAllowedIndex(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'domain1.com',
@@ -76,8 +82,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test allowed only one index.
+     *
+     * @return void
      */
-    public function testAllowedOnlyOneIndex()
+    public function testAllowedOnlyOneIndex(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
@@ -96,8 +104,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test allowed in both indices.
+     *
+     * @return void
      */
-    public function testAllowedInBothIndices()
+    public function testAllowedInBothIndices(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
@@ -115,8 +125,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test allowed in both indices and multiple domains allowed.
+     *
+     * @return void
      */
-    public function testAllowedInBothIndicesMultipleAllowed()
+    public function testAllowedInBothIndicesMultipleAllowed(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
@@ -136,8 +148,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test allowed in both indices and one empty.
+     *
+     * @return void
      */
-    public function testAllowedInBothIndicesOneEmpty()
+    public function testAllowedInBothIndicesOneEmpty(): void
     {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             'Whatever.com',
@@ -158,12 +172,14 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
      * @param bool   $allowed
      *
      * @dataProvider dataSecureDomainFormat
+     *
+     * @return void
      */
     public function testSecureDomainFormat(
         string $origin,
         string $domain,
         bool $allowed
-    ) {
+    ): void {
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             $domain,
         ]));
@@ -210,12 +226,14 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
      * @param bool   $allowed
      *
      * @dataProvider dataSecureDomainFormatAllIndices
+     *
+     * @return void
      */
     public function testSecureDomainFormatAllIndices(
         string $origin,
         string $domain,
         bool $allowed
-    ) {
+    ): void {
         static::resetScenario();
         $this->configureIndex(Config::createEmpty()->addMetadataValue('allowed_domains', [
             $domain,
@@ -254,8 +272,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test ips unsecured.
+     *
+     * @return void
      */
-    public function testBlockedIPSUnsecured()
+    public function testBlockedIPSUnsecured(): void
     {
         static::resetScenario();
         $this->configureIndex(Config::createEmpty()->addMetadataValue('blocked_ips', [
@@ -268,8 +288,10 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
 
     /**
      * Test secure by blocked ips.
+     *
+     * @return void
      */
-    public function testBlockedIPSSecured()
+    public function testBlockedIPSSecured(): void
     {
         static::resetScenario();
         $this->configureIndex(Config::createEmpty()->addMetadataValue('blocked_ips', [
@@ -292,12 +314,14 @@ class RestrictedCORSOriginsMiddlewareTest extends HttpFunctionalTest
      * @param bool  $allowed
      *
      * @dataProvider dataMixedSecurity
+     *
+     * @return void
      */
     public function testMixedSecurity(
         array $allowedOrigins,
         array $blockedIPs,
         bool $allowed
-    ) {
+    ): void {
         $this->configureIndex(Config::createEmpty()
             ->addMetadataValue('allowed_domains', $allowedOrigins)
             ->addMetadataValue('blocked_ips', $blockedIPs)

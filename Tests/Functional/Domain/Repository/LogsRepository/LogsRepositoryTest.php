@@ -52,8 +52,10 @@ trait LogsRepositoryTest
 
     /**
      * test logs.
+     *
+     * @return void
      */
-    public function testLogs()
+    public function testLogs(): void
     {
         $this->query(Query::create('Code da vinci')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::TABLET));
         $this->query(Query::create('Matutano'), null, null, null, [], Origin::createEmpty());
@@ -110,8 +112,10 @@ trait LogsRepositoryTest
 
     /**
      * Test type filter.
+     *
+     * @return void
      */
-    public function testTypeFilter()
+    public function testTypeFilter(): void
     {
         $this->assertCount(2, $this->getLogs(null, null, null, null, null, [LogMapper::EXCEPTION_WAS_CACHED]));
         $this->assertCount(3, $this->getLogs(null, null, null, null, null, [LogMapper::EXCEPTION_WAS_CACHED, LogMapper::TOKENS_WERE_DELETED]));
@@ -119,8 +123,10 @@ trait LogsRepositoryTest
 
     /**
      * Test pagination.
+     *
+     * @return void
      */
-    public function testPagination()
+    public function testPagination(): void
     {
         $this->assertCount(8, $this->getLogs(null, null, null, null, null, [], 0, 0));
         $this->assertCount(1, $this->getLogs(null, null, null, null, null, [], 1, 1));

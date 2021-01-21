@@ -24,8 +24,10 @@ trait ConfigureIndexCommandTest
 {
     /**
      * Test create index command.
+     *
+     * @return void
      */
-    public function testConfigureWithStaticSynonymsCommand()
+    public function testConfigureWithStaticSynonymsCommand(): void
     {
         $this->assertNotExistsIndex();
 
@@ -81,8 +83,10 @@ trait ConfigureIndexCommandTest
 
     /**
      * Test create index command.
+     *
+     * @return void
      */
-    public function testConfigureWithSynonymsFileCommand()
+    public function testConfigureWithSynonymsFileCommand(): void
     {
         $this->assertNotExistsIndex();
 

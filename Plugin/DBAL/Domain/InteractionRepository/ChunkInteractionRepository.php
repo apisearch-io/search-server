@@ -118,8 +118,10 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
 
     /**
      * Flush.
+     *
+     * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         $interactions = $this
             ->temporaryInteractionRepository

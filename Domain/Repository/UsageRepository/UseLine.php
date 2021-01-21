@@ -85,8 +85,10 @@ class UseLine
      * Increase by.
      *
      * @param int $n
+     *
+     * @return void
      */
-    public function increaseBy(int $n)
+    public function increaseBy(int $n): void
     {
         $this->n += $n;
     }

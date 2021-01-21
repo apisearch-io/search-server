@@ -47,8 +47,10 @@ class LoadMetadatIsOnlyDispatchedOnceTest extends ServiceFunctionalTest
 
     /**
      * Test scenario.
+     *
+     * @return void
      */
-    public function testScenario()
+    public function testScenario(): void
     {
         $this->indexItems([
             Item::createFromArray([

@@ -89,6 +89,8 @@ class AsyncScroll extends AsyncAdapter
      * @param string                  $indexName
      * @param int                     $chunkSize
      * @param string|null             $scrollId
+     *
+     * @return void
      */
     private function makeAtomicScroll(
         WritableStreamInterface $stream,
@@ -96,7 +98,7 @@ class AsyncScroll extends AsyncAdapter
         string $indexName,
         int $chunkSize,
         ?string $scrollId
-    ) {
+    ): void {
         $query = new Query();
         if (null === $scrollId) {
             $endpoint = new Search();
@@ -142,8 +144,10 @@ class AsyncScroll extends AsyncAdapter
      * Delete scroll context.
      *
      * @param string $scrollId
+     *
+     * @return void
      */
-    private function deleteScrollContext(string $scrollId)
+    private function deleteScrollContext(string $scrollId): void
     {
         $deleteScroll = new DeleteScroll();
         $body = ['scroll_id' => $scrollId];

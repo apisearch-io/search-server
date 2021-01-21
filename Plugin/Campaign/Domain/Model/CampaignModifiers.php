@@ -27,8 +27,10 @@ class CampaignModifiers implements HttpTransportable
 
     /**
      * @param Query $query
+     *
+     * @return void
      */
-    public function applyModifiersToQuery(Query $query)
+    public function applyModifiersToQuery(Query $query): void
     {
         if (\is_int($this->minScore)) {
             $query->setMinScore($this->minScore);

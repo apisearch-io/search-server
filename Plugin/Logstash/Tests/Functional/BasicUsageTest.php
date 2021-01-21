@@ -30,8 +30,10 @@ class BasicUsageTest extends LogstashFunctionalTest
 
     /**
      * Basic usage.
+     *
+     * @return void
      */
-    public function testBasicUsage()
+    public function testBasicUsage(): void
     {
         $redis = static::getStatic('redis.logstash_client_test');
         \usleep(100000);

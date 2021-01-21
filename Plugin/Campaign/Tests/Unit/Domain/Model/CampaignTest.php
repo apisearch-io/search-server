@@ -32,8 +32,10 @@ class CampaignTest extends TestCase
 {
     /**
      * Test from/to array.
+     *
+     * @return void
      */
-    public function testFromToArray()
+    public function testFromToArray(): void
     {
         $campaign = new Campaign(
             new CampaignUID('123'),

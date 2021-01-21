@@ -68,8 +68,10 @@ trait Transformers
      *
      * @param ElasticaQuery $mainQuery
      * @param Query         $query
+     *
+     * @return void
      */
-    private function addSuggest($mainQuery, $query)
+    private function addSuggest($mainQuery, $query): void
     {
         if ($query->areSuggestionsEnabled()) {
             $completitionText = new Suggest\Completion(
@@ -93,6 +95,8 @@ trait Transformers
      *
      * @param ElasticaQuery\BoolQuery $boolQuery
      * @param ItemUUID[]              $itemsPriorized
+     *
+     * @return void
      */
     private function promoteUUIDs(
         ElasticaQuery\BoolQuery $boolQuery,
@@ -117,8 +121,10 @@ trait Transformers
      * Highlight.
      *
      * @param ElasticaQuery $query
+     *
+     * @return void
      */
-    private function addHighlights(ElasticaQuery $query)
+    private function addHighlights(ElasticaQuery $query): void
     {
         $query->setHighlight([
             'fields' => [

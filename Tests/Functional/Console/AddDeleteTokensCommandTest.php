@@ -22,8 +22,10 @@ abstract class AddDeleteTokensCommandTest extends CommandTest
 {
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testTokenCreation()
+    public function testTokenCreation(): void
     {
         $this->assertTokenNotExists();
 
@@ -47,8 +49,10 @@ abstract class AddDeleteTokensCommandTest extends CommandTest
 
     /**
      * Test token creation with generated UUID.
+     *
+     * @return void
      */
-    public function testGeneratedTokenCreation()
+    public function testGeneratedTokenCreation(): void
     {
         $output = static::runCommand([
             'command' => 'apisearch-server:add-token',

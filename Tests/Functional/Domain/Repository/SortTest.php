@@ -27,8 +27,10 @@ trait SortTest
 {
     /**
      * Test sort by indexable metadata integer asc.
+     *
+     * @return void
      */
-    public function testSortByIndexableMetadataIntegerAsc()
+    public function testSortByIndexableMetadataIntegerAsc(): void
     {
         $result = $this->query(Query::createMatchAll()->sortBy(SortBy::byFieldsValues(['simple_int' => 'asc'])));
         $this->assertResults(
@@ -39,8 +41,10 @@ trait SortTest
 
     /**
      * Test sort by indexable metadata integer desc.
+     *
+     * @return void
      */
-    public function testSortByIndexableMetadataIntegerDesc()
+    public function testSortByIndexableMetadataIntegerDesc(): void
     {
         $result = $this->query(Query::createMatchAll()->sortBy(SortBy::byFieldsValues(['simple_int' => 'desc'])));
         $this->assertResults(
@@ -51,8 +55,10 @@ trait SortTest
 
     /**
      * Test sort by indexable metadata string asc.
+     *
+     * @return void
      */
-    public function testSortByIndexableMetadataStringAsc()
+    public function testSortByIndexableMetadataStringAsc(): void
     {
         $result = $this->query(Query::createMatchAll()->sortBy(SortBy::byFieldsValues(['simple_string' => 'asc'])));
         $this->assertResults(
@@ -63,8 +69,10 @@ trait SortTest
 
     /**
      * Test sort by indexable metadata string desc.
+     *
+     * @return void
      */
-    public function testSortByIndexableMetadataStringDesc()
+    public function testSortByIndexableMetadataStringDesc(): void
     {
         $result = $this->query(Query::createMatchAll()->sortBy(SortBy::byFieldsValues(['simple_string' => 'desc'])));
         $this->assertResults(
@@ -75,8 +83,10 @@ trait SortTest
 
     /**
      * Test sort by location.
+     *
+     * @return void
      */
-    public function testSortByLocationKmAsc()
+    public function testSortByLocationKmAsc(): void
     {
         $result = $this->query(Query::createLocated(new Coordinate(45.0, 45.0), '')->sortBy(SortBy::create()->byValue(SortBy::LOCATION_KM_ASC)));
         $this->assertResults(
@@ -91,8 +101,10 @@ trait SortTest
 
     /**
      * Test sort by location.
+     *
+     * @return void
      */
-    public function testSortByLocationKmDesc()
+    public function testSortByLocationKmDesc(): void
     {
         $result = $this->query(Query::createLocated(new Coordinate(45.0, 45.0), '')->sortBy(SortBy::create()->byValue(SortBy::LOCATION_MI_ASC)));
         $this->assertResults(
@@ -107,8 +119,10 @@ trait SortTest
 
     /**
      * Test random sort.
+     *
+     * @return void
      */
-    public function testRandomSort()
+    public function testRandomSort(): void
     {
         $this->expectNotToPerformAssertions();
         $iterations = 10;
@@ -127,16 +141,20 @@ trait SortTest
 
     /**
      * Return first item from random search.
+     *
+     * @return string
      */
-    private function generateFirstResultRandomSort()
+    private function generateFirstResultRandomSort(): string
     {
         return $this->query(Query::createMatchAll()->sortBy(SortBy::create()->byValue(SortBy::RANDOM)))->getFirstItem()->getId();
     }
 
     /**
      * Test by nested field and filter.
+     *
+     * @return void
      */
-    public function testNestedFieldAndFilter()
+    public function testNestedFieldAndFilter(): void
     {
         $this->markTestIncomplete('Should be tested deeper with complex fields');
         $result = $this->query(Query::createMatchAll()
@@ -171,8 +189,10 @@ trait SortTest
 
     /**
      * Test sort by function.
+     *
+     * @return void
      */
-    public function testSortByFunction()
+    public function testSortByFunction(): void
     {
         $result = $this->query(Query::createMatchAll()
             ->sortBy(SortBy::create()->byFunction(

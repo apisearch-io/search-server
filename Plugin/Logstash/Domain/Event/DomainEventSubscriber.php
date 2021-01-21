@@ -75,6 +75,8 @@ class DomainEventSubscriber implements EventSubscriberInterface
      * Handle event.
      *
      * @param DomainEventEnvelope $envelopedEvent
+     *
+     * @return void
      */
     public function handle(DomainEventEnvelope $envelopedEvent)
     {

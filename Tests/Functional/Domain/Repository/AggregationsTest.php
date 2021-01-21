@@ -29,8 +29,10 @@ trait AggregationsTest
 {
     /**
      * Test aggregation with several fields.
+     *
+     * @return void
      */
-    public function testAuthorMustAllAggregations()
+    public function testAuthorMustAllAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -48,8 +50,10 @@ trait AggregationsTest
 
     /**
      * Test basic aggregations.
+     *
+     * @return void
      */
-    public function testBasicAggregations()
+    public function testBasicAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -77,8 +81,10 @@ trait AggregationsTest
 
     /**
      * Test aggregations with null value.
+     *
+     * @return void
      */
-    public function testNullAggregation()
+    public function testNullAggregation(): void
     {
         $aggregations = $this->query(
             Query::createMatchAll()
@@ -94,8 +100,10 @@ trait AggregationsTest
 
     /**
      * Test disable aggregations.
+     *
+     * @return void
      */
-    public function testDisableAggregations()
+    public function testDisableAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -110,8 +118,10 @@ trait AggregationsTest
 
     /**
      * Test editorial.
+     *
+     * @return void
      */
-    public function testEditorialAggregations()
+    public function testEditorialAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -129,8 +139,10 @@ trait AggregationsTest
 
     /**
      * Test aggregation with one to many field.
+     *
+     * @return void
      */
-    public function testSimpleOneToManyAggregations()
+    public function testSimpleOneToManyAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -148,8 +160,10 @@ trait AggregationsTest
 
     /**
      * Test aggregation with several fields.
+     *
+     * @return void
      */
-    public function testAuthorAggregations()
+    public function testAuthorAggregations(): void
     {
         $aggregations = $this
             ->query(
@@ -167,8 +181,10 @@ trait AggregationsTest
 
     /**
      * Test aggregation with metadata format conversion.
+     *
+     * @return void
      */
-    public function testAggregationWithMetadataFormatConversion()
+    public function testAggregationWithMetadataFormatConversion(): void
     {
         $this->indexItems([Item::create(
             new ItemUUID('1', 'testing'),
@@ -205,8 +221,10 @@ trait AggregationsTest
 
     /**
      * Test leveled aggregations.
+     *
+     * @return void
      */
-    public function testLeveledAggregations()
+    public function testLeveledAggregations(): void
     {
         $aggregation = $this
             ->query(
@@ -243,8 +261,10 @@ trait AggregationsTest
 
     /**
      * Aggregate by date.
+     *
+     * @return void
      */
-    public function testDateRangeAggregations()
+    public function testDateRangeAggregations(): void
     {
         $this->assertCount(
             1,
@@ -265,8 +285,10 @@ trait AggregationsTest
 
     /**
      * Aggregate by price.
+     *
+     * @return void
      */
-    public function testRangeAggregations()
+    public function testRangeAggregations(): void
     {
         static::resetScenario();
         $counters = $this->query(Query::createMatchAll()
@@ -295,15 +317,17 @@ trait AggregationsTest
     /**
      * Test aggregation sort.
      *
-     * @param int   $firstId
-     * @param array $order
+     * @param int        $firstId
+     * @param array|null $order
      *
      * @dataProvider dataAggregationsSort
+     *
+     * @return void
      */
     public function testAggregationsSort(
         int $firstId,
         ? array $order
-    ) {
+    ): void {
         $query = Query::createMatchAll();
         \is_null($order)
             ? $query->aggregateBy('sortable', 'sortable_data', Filter::AT_LEAST_ONE)
@@ -320,8 +344,10 @@ trait AggregationsTest
 
     /**
      * data for testAggregationsSort.
+     *
+     * @return array
      */
-    public function dataAggregationsSort()
+    public function dataAggregationsSort(): array
     {
         return [
             ['3', null],
@@ -335,15 +361,17 @@ trait AggregationsTest
     /**
      * Test aggregation sort.
      *
-     * @param int   $firstId
-     * @param array $order
+     * @param int        $firstId
+     * @param array|null $order
      *
      * @dataProvider dataAggregationsSortComplex
+     *
+     * @return void
      */
     public function testAggregationsSortInComplexFields(
         int $firstId,
         ? array $order
-    ) {
+    ): void {
         $query = Query::createMatchAll();
         \is_null($order)
             ? $query->aggregateBy('category', 'category', Filter::AT_LEAST_ONE)
@@ -360,8 +388,10 @@ trait AggregationsTest
 
     /**
      * data for testAggregationsSort.
+     *
+     * @return array
      */
-    public function dataAggregationsSortComplex()
+    public function dataAggregationsSortComplex(): array
     {
         return [
             ['1', null],
@@ -374,8 +404,10 @@ trait AggregationsTest
 
     /**
      * Test aggregation limit.
+     *
+     * @return void
      */
-    public function testAggregationsLimit()
+    public function testAggregationsLimit(): void
     {
         $aggregations = $this
             ->query(
@@ -395,8 +427,10 @@ trait AggregationsTest
 
     /**
      * Test aggregation types.
+     *
+     * @return void
      */
-    public function testAggregationTypes()
+    public function testAggregationTypes(): void
     {
         $aggregations = $this
             ->query(

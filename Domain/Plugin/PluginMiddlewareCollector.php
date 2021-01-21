@@ -34,6 +34,8 @@ class PluginMiddlewareCollector
      * Add plugin middleware.
      *
      * @param PluginMiddleware $pluginMiddleware
+     *
+     * @return void
      */
     public function addPluginMiddleware(PluginMiddleware $pluginMiddleware)
     {

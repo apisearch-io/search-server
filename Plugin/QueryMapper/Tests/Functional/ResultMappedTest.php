@@ -22,8 +22,10 @@ class ResultMappedTest extends QueryMapperFunctionalTest
 {
     /**
      * Basic usage.
+     *
+     * @return void
      */
-    public function testBasicUsage()
+    public function testBasicUsage(): void
     {
         $result = $this->request('v1_query_all_indices', [
             'app_id' => self::$appId,

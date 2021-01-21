@@ -43,8 +43,10 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test initial configuration repository state.
+     *
+     * @return void
      */
-    public function testInitialMetadataRepositoryState()
+    public function testInitialMetadataRepositoryState(): void
     {
         $this->assertNull(
             $this->getRepository()->get(RepositoryReference::createFromComposed('A_B'), 'key1')
@@ -53,8 +55,10 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test set and get.
+     *
+     * @return void
      */
-    public function testSetAndGet()
+    public function testSetAndGet(): void
     {
         $repository = $this->getRepository();
         $repositoryReference = RepositoryReference::createFromComposed('A_B');
@@ -73,8 +77,10 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test metadata in indices results.
+     *
+     * @return void
      */
-    public function testMetadataInIndicesResult()
+    public function testMetadataInIndicesResult(): void
     {
         $repository = $this->getRepository();
         $repositoryReference = RepositoryReference::createFromComposed(static::$appId.'_'.static::$index);
@@ -86,6 +92,8 @@ abstract class MetadataRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test token persistence on new service creation.
+     *
+     * @return void
      */
     public function testNewServiceConfig()
     {

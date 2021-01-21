@@ -48,8 +48,10 @@ trait SearchesRepositoryTest
 
     /**
      * Load searches.
+     *
+     * @return void
      */
-    public function testLoadSearches()
+    public function testLoadSearches(): void
     {
         $this->expectNotToPerformAssertions();
         $this->query(Query::create('Code da vinci')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::TABLET));
@@ -89,8 +91,10 @@ trait SearchesRepositoryTest
      * Test basic.
      *
      * @group lol
+     *
+     * @return void
      */
-    public function testBasic()
+    public function testBasic(): void
     {
         $searches = $this->getSearches(false);
         $this->assertEquals(28, $searches);
@@ -101,8 +105,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test when.
+     *
+     * @return void
      */
-    public function testWhenFilter()
+    public function testWhenFilter(): void
     {
         $this->assertEquals(28, $this->getSearches(false, (new DateTime())->modify('-1 day')));
         $this->assertEquals(28, $this->getSearches(false, null, (new DateTime())->modify('+1 day')));
@@ -113,8 +119,10 @@ trait SearchesRepositoryTest
      * Test filter by user.
      *
      * We check that empty user means IP.
+     *
+     * @return void
      */
-    public function testFilterByUser()
+    public function testFilterByUser(): void
     {
         $this->assertEquals(9, $this->getSearches(false, null, null, 'u1'));
         $this->assertEquals(4, $this->getSearches(false, null, null, 'u2'));
@@ -125,8 +133,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test filter by platform.
+     *
+     * @return void
      */
-    public function testFilterByPlatform()
+    public function testFilterByPlatform(): void
     {
         $this->assertEquals(1, $this->getSearches(false, null, null, null, origin::PHONE));
         $this->assertEquals(2, $this->getSearches(false, null, null, null, origin::DESKTOP));
@@ -136,8 +146,10 @@ trait SearchesRepositoryTest
 
     /**
      * Filter by results.
+     *
+     * @return void
      */
-    public function testByResults()
+    public function testByResults(): void
     {
         $this->assertEquals(19, $this->getSearches(false, null, null, null, null, false, true));
         $this->assertEquals(9, $this->getSearches(false, null, null, null, null, true, false));
@@ -146,8 +158,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test filter by index.
+     *
+     * @return void
      */
-    public function testFilterByIndex()
+    public function testFilterByIndex(): void
     {
         $this->query(Query::create('Code da vinci'), static::$appId, static::$anotherIndex);
         $this->query(Query::create('Code da vinci'), static::$appId, static::$anotherIndex);
@@ -164,8 +178,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test filter by index.
+     *
+     * @return void
      */
-    public function testFilterByApp()
+    public function testFilterByApp(): void
     {
         $this->query(Query::create('Code da vinci'), static::$anotherAppId, static::$index);
         $this->query(Query::create('Code da vinci'), static::$anotherAppId, static::$index);
@@ -184,8 +200,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test get top searches.
+     *
+     * @return void
      */
-    public function testTopSearches()
+    public function testTopSearches(): void
     {
         $this->assertEquals([
             'Code da vinci' => 11,
@@ -239,8 +257,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test filter by user.
+     *
+     * @return void
      */
-    public function testFilterTopSearchesByUser()
+    public function testFilterTopSearchesByUser(): void
     {
         $this->assertEquals([
             'Code da vinci' => 2,
@@ -255,8 +275,10 @@ trait SearchesRepositoryTest
 
     /**
      * Test count unique users.
+     *
+     * @return void
      */
-    public function testCountUniqueUsers()
+    public function testCountUniqueUsers(): void
     {
         $searches = $this->getSearches(true, null, null, null, null, false, false, SearchesFilter::UNIQUE_USERS, self::$appId, self::$index);
         $this->assertCount(1, $searches);

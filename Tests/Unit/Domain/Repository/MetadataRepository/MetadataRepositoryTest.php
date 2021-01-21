@@ -36,8 +36,10 @@ abstract class MetadataRepositoryTest extends BaseUnitTest
 
     /**
      * Test get on empty repository.
+     *
+     * @return void
      */
-    public function testGetOnEmpty()
+    public function testGetOnEmpty(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);
@@ -47,8 +49,10 @@ abstract class MetadataRepositoryTest extends BaseUnitTest
 
     /**
      * Test get on existing value.
+     *
+     * @return void
      */
-    public function testGetOnExisting()
+    public function testGetOnExisting(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);
@@ -89,8 +93,10 @@ abstract class MetadataRepositoryTest extends BaseUnitTest
 
     /**
      * Test delete.
+     *
+     * @return void
      */
-    public function testDelete()
+    public function testDelete(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);
@@ -120,8 +126,10 @@ abstract class MetadataRepositoryTest extends BaseUnitTest
 
     /**
      * Test serializable objects.
+     *
+     * @return void
      */
-    public function testSerializableObjects()
+    public function testSerializableObjects(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);

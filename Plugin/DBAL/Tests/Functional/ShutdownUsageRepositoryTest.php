@@ -30,8 +30,10 @@ class ShutdownUsageRepositoryTest extends ServiceFunctionalTest
 
     /**
      * Test shutdown event.
+     *
+     * @return void
      */
-    public function testShutdownEvent()
+    public function testShutdownEvent(): void
     {
         $usage = $this->getUsageWithoutFlushing();
         $this->assertCount(0, $usage);

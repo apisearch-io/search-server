@@ -25,8 +25,10 @@ trait ExcludeReferencesTest
 {
     /**
      * Test family filter.
+     *
+     * @return void
      */
-    public function testExcludeProducts()
+    public function testExcludeProducts(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->excludeUUID(new ItemUUID('2', 'product'))),

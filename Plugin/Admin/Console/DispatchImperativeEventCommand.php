@@ -33,6 +33,8 @@ class DispatchImperativeEventCommand extends CommandWithEventBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {

@@ -51,11 +51,13 @@ trait ResultAssertionsTrait
      *
      * @param Result   $result
      * @param string[] $ids
+     *
+     * @return void
      */
     protected function assertResults(
         Result $result,
         array $ids
-    ) {
+    ): void {
         $lastIdFound = false;
         $inGroup = false;
         foreach ($ids as $id) {
@@ -106,12 +108,14 @@ trait ResultAssertionsTrait
      * @param Result $result
      * @param int    $position
      * @param string $id
+     *
+     * @return void
      */
     protected function assertNTypeElementId(
         Result $result,
         int $position,
         string $id
-    ) {
+    ): void {
         $elements = $result->getItems();
         if (!\array_key_exists($position, $elements)) {
             $this->fail("Element $position not found in results stack");
@@ -130,6 +134,8 @@ trait ResultAssertionsTrait
      * @param Result $result
      * @param string $id1
      * @param string $id2
+     *
+     * @return void
      */
     protected function assertId1MatchesBetterThanId2(
         Result $result,
@@ -158,8 +164,10 @@ trait ResultAssertionsTrait
      * Print item results with score.
      *
      * @param Result $result
+     *
+     * @return void
      */
-    protected function printItemResultsWithScore(Result $result)
+    protected function printItemResultsWithScore(Result $result): void
     {
         echo PHP_EOL;
         foreach ($result->getItems() as $item) {

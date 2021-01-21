@@ -29,13 +29,19 @@ class RequestsLimitTokenValidatorTest extends TestCase
     /**
      * Test format.
      *
+     * @param string   $data
+     * @param DateTime $now
+     * @param array    $result
+     *
      * @dataProvider dataFormat
+     *
+     * @return void
      */
     public function testFormat(
         string $data,
         DateTime $now,
         array $result
-    ) {
+    ): void {
         $redisWrapper = $this->prophesize(Client::class);
         $validator = new RequestsLimitTokenValidator($redisWrapper->reveal());
         $this->assertEquals(
@@ -49,8 +55,10 @@ class RequestsLimitTokenValidatorTest extends TestCase
 
     /**
      * Data format.
+     *
+     * @return array
      */
-    public function dataFormat()
+    public function dataFormat(): array
     {
         $now = new DateTime('2019-03-11 12:34:57', new DateTimeZone('UTC'));
         $secondsMissingYear = 25529104;

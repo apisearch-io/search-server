@@ -25,8 +25,10 @@ trait RepositoryResetTest
 {
     /**
      * Test reset repository.
+     *
+     * @return void
      */
-    public function testResetRepository()
+    public function testResetRepository(): void
     {
         $this->assertCount(
             5,
@@ -42,8 +44,10 @@ trait RepositoryResetTest
 
     /**
      * Test reset after field change.
+     *
+     * @return void
      */
-    public function testResetRepositoryAfterFieldChange()
+    public function testResetRepositoryAfterFieldChange(): void
     {
         $this->indexItems([
             Item::createFromArray([

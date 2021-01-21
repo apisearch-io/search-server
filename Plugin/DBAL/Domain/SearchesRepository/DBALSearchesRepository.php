@@ -181,12 +181,14 @@ final class DBALSearchesRepository implements SearchesRepository
      * @param QueryBuilder   $queryBuilder
      * @param SearchesFilter $filter
      * @param array          $parameters
+     *
+     * @return void
      */
     private function applyFilterToQueryBuilder(
         QueryBuilder $queryBuilder,
         SearchesFilter $filter,
         array &$parameters
-    ) {
+    ): void {
         $repositoryReference = $filter->getRepositoryReference();
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();

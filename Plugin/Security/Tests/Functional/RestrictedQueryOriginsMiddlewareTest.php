@@ -36,12 +36,14 @@ class RestrictedQueryOriginsMiddlewareTest extends HttpFunctionalTest
      * @param bool  $allowed
      *
      * @dataProvider dataMixedSecurity
+     *
+     * @return void
      */
     public function testMixedSecurity(
         array $allowedOrigins,
         array $blockedIPs,
         bool $allowed
-    ) {
+    ): void {
         $this->configureIndex(Config::createEmpty()
             ->addMetadataValue('allowed_domains', $allowedOrigins)
             ->addMetadataValue('blocked_ips', $blockedIPs)

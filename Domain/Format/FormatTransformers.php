@@ -31,8 +31,10 @@ class FormatTransformers
      * Add format transformer.
      *
      * @param FormatTransformer $formatTransformer
+     *
+     * @return void
      */
-    public function addFormatTransformer(FormatTransformer $formatTransformer)
+    public function addFormatTransformer(FormatTransformer $formatTransformer): void
     {
         $this->formatTransformers[$formatTransformer->getName()] = $formatTransformer;
     }

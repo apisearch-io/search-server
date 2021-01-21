@@ -24,8 +24,10 @@ class StaticTokensTest extends ServiceFunctionalTest
 {
     /**
      * Test readonly flag.
+     *
+     * @return void
      */
-    public function testReadOnlyFlag()
+    public function testReadOnlyFlag(): void
     {
         $tokens = $this->getTokensById();
 

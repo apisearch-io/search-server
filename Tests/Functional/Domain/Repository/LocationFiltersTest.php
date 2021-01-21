@@ -28,8 +28,10 @@ trait LocationFiltersTest
 {
     /**
      * Test location filter with a simple coordinate and a distance.
+     *
+     * @return void
      */
-    public function testLocationFilterCoordinateAndDistance()
+    public function testLocationFilterCoordinateAndDistance(): void
     {
         $this->assertResults(
             $this->query($this->createLocatedQuery()->filterUniverseByLocation(
@@ -106,8 +108,10 @@ trait LocationFiltersTest
 
     /**
      * Test location filter with a Square filter.
+     *
+     * @return void
      */
-    public function testLocationFilterSquare()
+    public function testLocationFilterSquare(): void
     {
         $this->assertResults(
             $this->query($this->createLocatedQuery()->filterUniverseByLocation(
@@ -148,8 +152,10 @@ trait LocationFiltersTest
 
     /**
      * Test location filter with a polygon filter.
+     *
+     * @return void
      */
-    public function testLocationFilterPolygon()
+    public function testLocationFilterPolygon(): void
     {
         $this->assertResults(
             $this->query($this->createLocatedQuery()->filterUniverseByLocation(

@@ -27,8 +27,10 @@ class LogFilterTest extends BaseUnitTest
 {
     /**
      * Test filter by repository reference.
+     *
+     * @return void
      */
-    public function testFilterByRepositoryReference()
+    public function testFilterByRepositoryReference(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = LogFilter::create($repositoryReference);
@@ -37,8 +39,10 @@ class LogFilterTest extends BaseUnitTest
 
     /**
      * Test filter by from.
+     *
+     * @return void
      */
-    public function testFilterFrom()
+    public function testFilterFrom(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -50,8 +54,10 @@ class LogFilterTest extends BaseUnitTest
 
     /**
      * Test filter by to.
+     *
+     * @return void
      */
-    public function testFilterTo()
+    public function testFilterTo(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $date = new DateTime();
@@ -63,8 +69,10 @@ class LogFilterTest extends BaseUnitTest
 
     /**
      * Test filter from types.
+     *
+     * @return void
      */
-    public function testFilterFromTypes()
+    public function testFilterFromTypes(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = LogFilter::create($repositoryReference);
@@ -79,8 +87,10 @@ class LogFilterTest extends BaseUnitTest
 
     /**
      * Test filter pagination.
+     *
+     * @return void
      */
-    public function testPagination()
+    public function testPagination(): void
     {
         $repositoryReference = RepositoryReference::createFromComposed('a_b');
         $filter = LogFilter::create($repositoryReference);

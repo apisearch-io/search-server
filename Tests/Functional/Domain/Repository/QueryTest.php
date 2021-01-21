@@ -29,8 +29,10 @@ trait QueryTest
 {
     /**
      * Test get match all.
+     *
+     * @return void
      */
-    public function testMatchAll()
+    public function testMatchAll(): void
     {
         $this->assertCount(5,
             $this
@@ -41,8 +43,10 @@ trait QueryTest
 
     /**
      * Test basic search.
+     *
+     * @return void
      */
-    public function testBasicSearch()
+    public function testBasicSearch(): void
     {
         $result = $this->query(Query::create('badal'));
         $this->assertNTypeElementId($result, 0, '5');
@@ -50,8 +54,10 @@ trait QueryTest
 
     /**
      * Test basic search.
+     *
+     * @return void
      */
-    public function testBasicSearchUsingSearchToken()
+    public function testBasicSearchUsingSearchToken(): void
     {
         $this->assertCount(
             5,
@@ -68,8 +74,10 @@ trait QueryTest
 
     /**
      * Test basic search with all results method call.
+     *
+     * @return void
      */
-    public function testAllResults()
+    public function testAllResults(): void
     {
         $results = $this
             ->query(Query::create('barcelona'))
@@ -81,8 +89,10 @@ trait QueryTest
 
     /**
      * Test search by reference.
+     *
+     * @return void
      */
-    public function testSearchByReference()
+    public function testSearchByReference(): void
     {
         $result = $this->query(Query::createByUUID(new ItemUUID('4', 'bike')));
         $this->assertCount(1, $result->getItems());
@@ -92,8 +102,10 @@ trait QueryTest
 
     /**
      * Test search by references.
+     *
+     * @return void
      */
-    public function testSearchByReferences()
+    public function testSearchByReferences(): void
     {
         $result = $this->query(Query::createByUUIDs([
             new ItemUUID('5', 'gum'),
@@ -113,8 +125,10 @@ trait QueryTest
 
     /**
      * Test accents.
+     *
+     * @return void
      */
-    public function testAccents()
+    public function testAccents(): void
     {
         $this->assertEquals(
             3,
@@ -135,8 +149,10 @@ trait QueryTest
 
     /**
      * Test specific cases.
+     *
+     * @return void
      */
-    public function testSpecificCases()
+    public function testSpecificCases(): void
     {
         $this->assertEquals(
             '3~book',
@@ -159,8 +175,10 @@ trait QueryTest
 
     /**
      * Test split words.
+     *
+     * @return void
      */
-    public function testSplitWords()
+    public function testSplitWords(): void
     {
         $this->assertEquals(
             '2~product',
@@ -184,8 +202,10 @@ trait QueryTest
 
     /**
      * Test false values.
+     *
+     * @return void
      */
-    public function testUselessValuesOnIndex()
+    public function testUselessValuesOnIndex(): void
     {
         $this->indexItems([
             Item::create(
@@ -328,8 +348,10 @@ trait QueryTest
 
     /**
      * Test min score.
+     *
+     * @return void
      */
-    public function testMinScore()
+    public function testMinScore(): void
     {
         $this->assertCount(
             5,
@@ -367,8 +389,10 @@ trait QueryTest
 
     /**
      * Search by strange character.
+     *
+     * @return void
      */
-    public function testSearchByStrangeCharacter()
+    public function testSearchByStrangeCharacter(): void
     {
         $this->assertCount(
             1,
@@ -378,8 +402,10 @@ trait QueryTest
 
     /**
      * Test select some fields.
+     *
+     * @return void
      */
-    public function testSelectOnlyDesiredFields()
+    public function testSelectOnlyDesiredFields(): void
     {
         $query = Query::createMatchAll()
             ->setFields([
@@ -451,8 +477,10 @@ trait QueryTest
 
     /**
      * Test repository reference.
+     *
+     * @return void
      */
-    public function testRepositoryReference()
+    public function testRepositoryReference(): void
     {
         $item = $this->query(Query::createMatchAll())->getFirstItem();
         $this->assertEquals(
@@ -477,8 +505,10 @@ trait QueryTest
 
     /**
      * Test query on multiple indices.
+     *
+     * @return void
      */
-    public function testQueryOnMultipleIndices()
+    public function testQueryOnMultipleIndices(): void
     {
         try {
             $this->deleteIndex(self::$appId, self::$anotherIndex);
@@ -509,8 +539,10 @@ trait QueryTest
      * - Item 2 indexes "a", but as is a stopwork, don't really indexes nothing
      *
      * - When searching for "a", we get the first item, because "Algas", after tokanization, we have an A.
+     *
+     * @return void
      */
-    public function testQueryWithLanguage()
+    public function testQueryWithLanguage(): void
     {
         $this->deleteIndex();
         $this->createIndex(self::$appId, self::$index, self::getGodToken(), new Config('es'));

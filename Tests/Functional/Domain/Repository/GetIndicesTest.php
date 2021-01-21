@@ -49,8 +49,10 @@ trait GetIndicesTest
 
     /**
      * Get shards and replicas values with allocation.
+     *
+     * @return void
      */
-    public function testShardsReplicasInGetIndicesAllocated()
+    public function testShardsReplicasInGetIndicesAllocated(): void
     {
         $appId = '26178621test-shards-and-replicas-allocated';
         $indexId = 'index-shards-and-replicas-allocated';
@@ -76,8 +78,10 @@ trait GetIndicesTest
 
     /**
      * Get shards and replicas values.
+     *
+     * @return void
      */
-    public function testShardsReplicasInGetIndicesNotAllocated()
+    public function testShardsReplicasInGetIndicesNotAllocated(): void
     {
         $appId = '26178621test-shards-and-replicas-not-allocated';
         $indexId = 'index-shards-and-replicas-not-allocated';
@@ -105,8 +109,10 @@ trait GetIndicesTest
      * Test get indices with deleted index.
      *
      * @group lol
+     *
+     * @return void
      */
-    public function testGetIndicesWithDeletedIndex()
+    public function testGetIndicesWithDeletedIndex(): void
     {
         $newIndexUUID = 'mynewindex';
         static::safeDeleteIndex(self::$appId, $newIndexUUID);

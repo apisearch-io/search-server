@@ -29,8 +29,10 @@ final class EventCollector
 
     /**
      * @param object $event
+     *
+     * @return void
      */
-    public function registerEvent($event)
+    public function registerEvent($event): void
     {
         $eventClass = $event instanceof DomainEventEnvelope
             ? \get_class($event->getDomainEvent())

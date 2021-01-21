@@ -29,8 +29,10 @@ trait RepositoryPermissionsTest
      * Test events requests without permissions.
      *
      * @dataProvider dataBadPermissions
+     *
+     * @return void
      */
-    public function testBadPermissions($appId, $index, $method, $data = null)
+    public function testBadPermissions($appId, $index, $method, $data = null): void
     {
         $this->expectException(ResourceNotAvailableException::class);
         if (\is_null($data)) {

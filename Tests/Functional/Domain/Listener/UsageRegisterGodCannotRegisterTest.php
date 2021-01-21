@@ -45,8 +45,10 @@ class UsageRegisterGodCannotRegisterTest extends ServiceFunctionalTest
 
     /**
      * Test simple.
+     *
+     * @return void
      */
-    public function testSimpleUsage()
+    public function testSimpleUsage(): void
     {
         $this->query(Query::createMatchAll());
         $this->query(Query::createMatchAll());

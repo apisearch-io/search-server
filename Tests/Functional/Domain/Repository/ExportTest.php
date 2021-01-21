@@ -25,8 +25,10 @@ trait ExportTest
 {
     /**
      * Test item export.
+     *
+     * @return void
      */
-    public function testIndexExport()
+    public function testIndexExport(): void
     {
         $data = $this->exportIndex('source');
         $this->assertCount(6, $data);
@@ -36,16 +38,20 @@ trait ExportTest
 
     /**
      * Test item export.
+     *
+     * @return void
      */
-    public function testIndexExportStandardFormat()
+    public function testIndexExportStandardFormat(): void
     {
         $this->assertCount(6, $this->exportIndex('standard'));
     }
 
     /**
      * Test item export with not found index.
+     *
+     * @return void
      */
-    public function testIndexExportAppNotFound()
+    public function testIndexExportAppNotFound(): void
     {
         $this->expectException(\Exception::class);
         $this->exportIndex('', false, static::$anotherInexistentAppId);
@@ -53,8 +59,10 @@ trait ExportTest
 
     /**
      * Test item export with not found index.
+     *
+     * @return void
      */
-    public function testIndexExportIndexNotFound()
+    public function testIndexExportIndexNotFound(): void
     {
         $this->expectException(\Exception::class);
         $this->exportIndex('', false, static::$appId, static::$yetAnotherIndex);
@@ -62,8 +70,10 @@ trait ExportTest
 
     /**
      * Test complete export.
+     *
+     * @return void
      */
-    public function testCompleteExport()
+    public function testCompleteExport(): void
     {
         $items = [];
         $itemsUUID = [];

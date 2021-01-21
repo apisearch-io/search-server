@@ -35,6 +35,8 @@ class EnabledRepositoriesCompilerPass implements CompilerPassInterface
 {
     /**
      * You can modify the container here before it is dumped to PHP code.
+     *
+     * @return void
      */
     public function process(ContainerBuilder $container)
     {
@@ -79,13 +81,15 @@ class EnabledRepositoriesCompilerPass implements CompilerPassInterface
      * @param string           $class
      * @param string           $emptyRepositoryClass
      * @param string           $parameter
+     *
+     * @return void
      */
     private function enableOrDisableRepository(
         ContainerBuilder $container,
         string $class,
         string $emptyRepositoryClass,
         string $parameter
-    ) {
+    ): void {
         $enabled = $container->resolveEnvPlaceholders($container->getParameter($parameter));
         $enabled = \boolval($enabled);
         if (!$enabled) {

@@ -22,8 +22,10 @@ trait QueryCommandTest
 {
     /**
      * Test query.
+     *
+     * @return void
      */
-    public function testQuery()
+    public function testQuery(): void
     {
         $this->assertNotExistsIndex();
 

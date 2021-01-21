@@ -128,8 +128,10 @@ final class ChunkUsageRepository implements UsageRepository, EventSubscriberInte
 
     /**
      * Flush lines.
+     *
+     * @return void
      */
-    public function flushLines()
+    public function flushLines(): void
     {
         $useLines = $this
             ->temporaryUsageRepository

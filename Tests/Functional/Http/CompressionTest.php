@@ -25,8 +25,10 @@ class CompressionTest extends CurlFunctionalTest
 {
     /**
      * Test gzip compression.
+     *
+     * @return void
      */
-    public function testGzipCompression()
+    public function testGzipCompression(): void
     {
         $this->query(Query::createMatchAll());
         $length1 = self::$lastResponse['length'];
@@ -46,8 +48,10 @@ class CompressionTest extends CurlFunctionalTest
 
     /**
      * Test deflate compression.
+     *
+     * @return void
      */
-    public function testDeflateCompression()
+    public function testDeflateCompression(): void
     {
         $this->query(Query::createMatchAll());
         $length1 = self::$lastResponse['length'];

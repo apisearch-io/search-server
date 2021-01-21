@@ -28,8 +28,10 @@ class QueryMappedTest extends QueryMapperFunctionalTest
 {
     /**
      * Basic usage.
+     *
+     * @return void
      */
-    public function testWithMappedQuery()
+    public function testWithMappedQuery(): void
     {
         $result = $this->query(
             Query::create(''),
@@ -48,8 +50,10 @@ class QueryMappedTest extends QueryMapperFunctionalTest
 
     /**
      * Test without mapped query.
+     *
+     * @return void
      */
-    public function testWithoutMappedQuery()
+    public function testWithoutMappedQuery(): void
     {
         try {
             $this->query(

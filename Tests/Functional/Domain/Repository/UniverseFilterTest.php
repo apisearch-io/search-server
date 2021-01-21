@@ -27,8 +27,10 @@ trait UniverseFilterTest
 {
     /**
      * Test filtering universe by type.
+     *
+     * @return void
      */
-    public function testFilterUniverseByType()
+    public function testFilterUniverseByType(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -41,8 +43,10 @@ trait UniverseFilterTest
 
     /**
      * Test filtering universe by ids.
+     *
+     * @return void
      */
-    public function testFilterUniverseById()
+    public function testFilterUniverseById(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -55,8 +59,10 @@ trait UniverseFilterTest
 
     /**
      * Test filtering universe by ids.
+     *
+     * @return void
      */
-    public function testFilterUniverse()
+    public function testFilterUniverse(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -71,8 +77,10 @@ trait UniverseFilterTest
 
     /**
      * Test filtering universe by range.
+     *
+     * @return void
      */
-    public function testFilterUniverserByRange()
+    public function testFilterUniverserByRange(): void
     {
         $result = $this->query(
             Query::createMatchAll()
@@ -95,8 +103,10 @@ trait UniverseFilterTest
 
     /**
      * Test filter universe by location.
+     *
+     * @return void
      */
-    public function testFilterUniverseByLocation()
+    public function testFilterUniverseByLocation(): void
     {
         $result = $this->query(
             Query::createMatchAll()

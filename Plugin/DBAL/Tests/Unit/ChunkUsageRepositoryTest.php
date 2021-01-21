@@ -63,8 +63,10 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
 
     /**
      * Test inserted rows.
+     *
+     * @return void
      */
-    public function testInsertedRows()
+    public function testInsertedRows(): void
     {
         $loop = Factory::create();
         $connection = DBALUsageRepositoryTest::createConnection($loop);

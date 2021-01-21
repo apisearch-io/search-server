@@ -27,6 +27,8 @@ class ElasticsearchPluginConfiguration extends BaseConfiguration
      * Configure the root node.
      *
      * @param ArrayNodeDefinition $rootNode Root node
+     *
+     * @return void
      */
     protected function setupTree(ArrayNodeDefinition $rootNode)
     {

@@ -38,8 +38,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testTokenCreation()
+    public function testTokenCreation(): void
     {
         $token = new Token(TokenUUID::createById('12345'), AppUUID::createById(self::$appId));
         $this->putToken($token);
@@ -60,8 +62,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test token without index permissions.
+     *
+     * @return void
      */
-    public function testTokenWithoutIndexPermissions()
+    public function testTokenWithoutIndexPermissions(): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),
@@ -82,9 +86,13 @@ abstract class TokenTest extends HttpFunctionalTest
     /**
      * Test token without endpoint permissions.
      *
+     * @param array $routes
+     *
      * @dataProvider dataTokenWithEndpointPermissionsFailing
+     *
+     * @return void
      */
-    public function testTokenWithEndpointPermissionsFailing(array $routes)
+    public function testTokenWithEndpointPermissionsFailing(array $routes): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),
@@ -106,9 +114,9 @@ abstract class TokenTest extends HttpFunctionalTest
     /**
      * Data for testTokenWithEndpointPermissionsFailing.
      *
-     * @return []
+     * @return array
      */
-    public function dataTokenWithEndpointPermissionsFailing()
+    public function dataTokenWithEndpointPermissionsFailing(): array
     {
         return [
             [['check_health']],
@@ -121,9 +129,13 @@ abstract class TokenTest extends HttpFunctionalTest
     /**
      * Test token without endpoint permissions.
      *
+     * @param array $routes
+     *
      * @dataProvider dataTokenWithEndpointPermissionsAccepted
+     *
+     * @return void
      */
-    public function testTokenWithEndpointPermissionsAccepted(array $routes)
+    public function testTokenWithEndpointPermissionsAccepted(array $routes): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -147,9 +159,9 @@ abstract class TokenTest extends HttpFunctionalTest
     /**
      * Data for testTokenWithEndpointPermissionsAccepted.
      *
-     * @return []
+     * @return array
      */
-    public function dataTokenWithEndpointPermissionsAccepted()
+    public function dataTokenWithEndpointPermissionsAccepted(): array
     {
         return [
             [[]],
@@ -171,8 +183,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test different app id.
+     *
+     * @return void
      */
-    public function testInvalidAppId()
+    public function testInvalidAppId(): void
     {
         $token = new Token(
             TokenUUID::createById('12345'),
@@ -190,8 +204,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test get tokens.
+     *
+     * @return void
      */
-    public function testGetTokens()
+    public function testGetTokens(): void
     {
         $tokenUUID = TokenUUID::createById('12345');
         $token = new Token(
@@ -220,8 +236,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test delete tokens.
+     *
+     * @return void
      */
-    public function testDeleteTokens()
+    public function testDeleteTokens(): void
     {
         $this->resetScenario();
         $this->putToken(new Token(
@@ -248,8 +266,10 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test update token permissions.
+     *
+     * @return void
      */
-    public function testUpdateTokenPermissions()
+    public function testUpdateTokenPermissions(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -276,9 +296,11 @@ abstract class TokenTest extends HttpFunctionalTest
     }
 
     /**
-     * Permissions in multiquery for valid token.
+     * Permissions in multi query for valid token.
+     *
+     * @return void
      */
-    public function testMultiqueryValidToken()
+    public function testMultiqueryValidToken(): void
     {
         $this->expectNotToPerformAssertions();
         $token = new Token(
@@ -304,13 +326,15 @@ abstract class TokenTest extends HttpFunctionalTest
     }
 
     /**
-     * Permissions in multiquery for invalid token.
+     * Permissions in multi query for invalid token.
      *
      * @param Query $query
      *
      * @dataProvider dataMultiqueryInvalidToken
+     *
+     * @return void
      */
-    public function testMultiqueryInvalidToken(Query $query)
+    public function testMultiqueryInvalidToken(Query $query): void
     {
         $token = new Token(
             TokenUUID::createById('token-multiquery'),
@@ -346,6 +370,8 @@ abstract class TokenTest extends HttpFunctionalTest
 
     /**
      * Test token persistence on new service creation.
+     *
+     * @return void
      */
     public function testNewServiceTokens()
     {
@@ -388,13 +414,9 @@ abstract class TokenTest extends HttpFunctionalTest
     }
 
     /**
-     * Get tokens from a given token.
-     *
      * @param KernelInterface $kernel
-     * @param string          $appId
-     * @param Token           $token
-     *
-     * @return Token[]
+     * @param string|null     $appId
+     * @param Token|null      $token
      */
     private function getTokensFromKernel(
         KernelInterface $kernel,

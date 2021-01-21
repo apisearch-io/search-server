@@ -62,6 +62,7 @@ use Apisearch\Server\Domain\Repository\LogRepository\LogFilter;
 use Apisearch\Server\Domain\Repository\LogRepository\LogWithText;
 use Clue\React\Block;
 use DateTime;
+use Exception;
 use Ramsey\Uuid\UuidFactory;
 use React\Promise\Deferred;
 
@@ -82,6 +83,8 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param array       $headers
      *
      * @return Result
+     *
+     * @throws Exception
      */
     public function query(
         QueryModel $query,
@@ -114,11 +117,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Preflight CORS query.
      *
-     * @param Origin $origin
-     * @param string $appId
-     * @param string $index
+     * @param Origin      $origin
+     * @param string|null $appId
+     * @param string|null $index
      *
      * @return string
+     *
+     * @throws Exception
      */
     public function getCORSPermissions(
         Origin $origin,
@@ -137,13 +142,15 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Export index.
      *
-     * @param string $format
-     * @param bool   $closeImmediately
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $format
+     * @param bool        $closeImmediately
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
      *
      * @return Item[]
+     *
+     * @throws Exception
      */
     public function exportIndex(
         string $format,
@@ -187,9 +194,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param bool        $detached
      * @param bool        $deleteOldVersions
      * @param string|null $version
-     * @param string      $appId
-     * @param string      $index
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function importIndexByFeed(
         string $feed,
@@ -220,10 +231,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete using the bus.
      *
-     * @param ItemUUID[] $itemsUUID
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param ItemUUID[]  $itemsUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function deleteItems(
         array $itemsUUID,
@@ -248,10 +263,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param QueryModel $query
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function deleteItemsByQuery(
         QueryModel $query,
@@ -278,10 +297,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add items using the bus.
      *
-     * @param Item[] $items
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Item[]      $items
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function indexItems(
         array $items,
@@ -308,11 +331,15 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Update using the bus.
      *
-     * @param QueryModel $query
-     * @param Changes    $changes
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param Changes     $changes
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function updateItems(
         QueryModel $query,
@@ -341,9 +368,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Reset index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function resetIndex(
         string $appId = null,
@@ -372,7 +403,9 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      *
      * @return array|Index[]
      *
-     * @param Token $token
+     * @param Token|null $token
+     *
+     * @throws Exception
      */
     public function getIndices(
         string $appId = null,
@@ -395,10 +428,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Create index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
-     * @param Config $config
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     * @param Config|null $config
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function createIndex(
         string $appId = null,
@@ -427,11 +464,15 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Configure index using the bus.
      *
-     * @param Config $config
-     * @param bool   $forceReindex
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Config      $config
+     * @param bool        $forceReindex
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function configureIndex(
         Config $config,
@@ -462,11 +503,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Check index.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
      *
      * @return bool
+     *
+     * @throws Exception
      */
     public function checkIndex(
         string $appId = null,
@@ -493,9 +536,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteIndex(
         string $appId = null,
@@ -522,9 +569,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add token.
      *
-     * @param Token  $newToken
-     * @param string $appId
-     * @param Token  $token
+     * @param Token       $newToken
+     * @param string|null $appId
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function putToken(
         Token $newToken,
@@ -547,9 +598,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete token.
      *
-     * @param TokenUUID $tokenUUID
-     * @param string    $appId
-     * @param Token     $token
+     * @param TokenUUID   $tokenUUID
+     * @param string|null $appId
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteToken(
         TokenUUID $tokenUUID,
@@ -572,10 +627,12 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Get tokens.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token |null $token
      *
      * @return Token[]
+     *
+     * @throws Exception
      */
     public static function getTokens(
         string $appId = null,
@@ -596,8 +653,12 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete all tokens.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteTokens(
         string $appId = null,
@@ -618,18 +679,20 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $event
      * @param bool|null     $perDay
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function getUsage(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $event = null,
@@ -640,7 +703,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         self::usleep(100000);
 
         return self::askQuery(new GetUsage(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -656,7 +719,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string[]      $types
@@ -664,11 +727,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param int           $page
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function getLogs(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         array $types = [],
@@ -676,7 +741,7 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         int $page = 0
     ): array {
         $appId = $appId ?? self::$appId;
-        $repositoryReference = RepositoryReference::createFromComposed("{$appId}_{$indexId}");
+        $repositoryReference = RepositoryReference::createFromComposed("{$appId}_{$index}");
 
         $logsWithText = self::askQuery(new GetLogs(
             $repositoryReference,
@@ -703,9 +768,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param int         $position
      * @param string|null $context
      * @param Origin      $origin
-     * @param string      $appId
-     * @param string      $indexId
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token |null $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function click(
         ?string $userId,
@@ -714,14 +783,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $context,
         Origin $origin,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
         $appId = $appId ?? self::$appId;
-        $indexId = $indexId ?? self::$index;
+        $index = $index ?? self::$index;
 
         self::executeCommand(new PostInteraction(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -748,11 +817,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $type
      * @param string|null   $count
      * @param string|null   $context
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token |null   $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getInteractions(
         bool $perDay,
@@ -765,14 +836,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $count = null,
         ?string $context = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
         $appId = $appId ?? self::$appId;
-        $indexId = $indexId ?? '';
+        $index = $index ?? '';
 
         return self::askQuery(new GetInteractions(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -796,11 +867,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param DateTime|null $to
      * @param string|null   $userId
      * @param string|null   $platform
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token |null   $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getTopClicks(
         ?int $n = null,
@@ -809,14 +882,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $userId = null,
         ?string $platform = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
         $appId = $appId ?? self::$appId;
-        $indexId = $indexId ?? '';
+        $index = $index ?? '';
 
         return self::askQuery(new GetTopInteractions(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -840,11 +913,13 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string|null   $count
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token |null   $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getSearches(
         bool $perDay,
@@ -856,14 +931,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         bool $excludeWithoutResults = false,
         ?string $count = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
         $appId = $appId ?? self::$appId;
-        $indexId = $indexId ?? '';
+        $index = $index ?? '';
 
         return self::askQuery(new GetSearches(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -881,16 +956,20 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param int|null
+     * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $platform
      * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return array
+     *
+     * @throws Exception
      */
     public function getTopSearches(
         ?int $n = null,
@@ -901,14 +980,14 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
-    ) {
+    ): array {
         $appId = $appId ?? self::$appId;
-        $indexId = $indexId ?? '';
+        $index = $index ?? '';
 
         return self::askQuery(new GetTopSearches(
-            RepositoryReference::createFromComposed("{$appId}_{$indexId}"),
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
             $token ??
             new Token(
                 TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
@@ -927,9 +1006,11 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Ping.
      *
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return bool
+     *
+     * @throws Exception
      */
     public function ping(Token $token = null): bool
     {
@@ -939,9 +1020,11 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Check health.
      *
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function checkHealth(Token $token = null): array
     {
@@ -954,8 +1037,12 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
      * Handle command asynchronously.
      *
      * @param mixed $command
+     *
+     * @return void
+     *
+     * @throws Exception
      */
-    protected static function executeCommand($command)
+    protected static function executeCommand($command): void
     {
         $promise = self::getStatic('drift.command_bus.test')->execute($command);
 
@@ -965,9 +1052,11 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Handle command asynchronously.
      *
-     * @param mixed $command
+     * @param mixed $query
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     protected static function askQuery($query)
     {

@@ -46,8 +46,10 @@ class TokenEndpointPermissionsLimitationTest extends HttpFunctionalTest
      * @param array $endpoints
      *
      * @dataProvider dataAvailableEndpointsFail
+     *
+     * @return void
      */
-    public function testAvailableEndpointsFail(array $endpoints)
+    public function testAvailableEndpointsFail(array $endpoints): void
     {
         $masterToken = $this->createTokenByIdAndAppId('tok_master');
         $this->putToken($masterToken);
@@ -73,8 +75,10 @@ class TokenEndpointPermissionsLimitationTest extends HttpFunctionalTest
      * @param array $endpoints
      *
      * @dataProvider dataAvailableEndpoints
+     *
+     * @return void
      */
-    public function testAvailableEndpoints(array $endpoints)
+    public function testAvailableEndpoints(array $endpoints): void
     {
         $masterToken = $this->createTokenByIdAndAppId('tok_master');
         $this->putToken($masterToken);
@@ -97,8 +101,10 @@ class TokenEndpointPermissionsLimitationTest extends HttpFunctionalTest
 
     /**
      * Test that god is unlimited.
+     *
+     * @return void
      */
-    public function testGodIsUnlimited()
+    public function testGodIsUnlimited(): void
     {
         $token = $this->createTokenByIdAndAppId('tok1');
         $token->setEndpoints(['v1_query']);
@@ -108,8 +114,10 @@ class TokenEndpointPermissionsLimitationTest extends HttpFunctionalTest
 
     /**
      * Test default endpoints when empty.
+     *
+     * @return void
      */
-    public function testDefaultEndpointsWhenEmpty()
+    public function testDefaultEndpointsWhenEmpty(): void
     {
         $masterToken = $this->createTokenByIdAndAppId('tok_master');
         $this->putToken($masterToken);

@@ -25,8 +25,10 @@ class EnvTest extends TestCase
 {
     /**
      * Test.
+     *
+     * @return void
      */
-    public function testDefaultBehavior()
+    public function testDefaultBehavior(): void
     {
         $_SERVER['A'] = 'A1';
         $this->assertEquals('A1', Env::get('A', 'A2'));

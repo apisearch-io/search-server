@@ -54,6 +54,8 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param array       $headers
      *
      * @return Result
+     *
+     * @throws Exception
      */
     public function query(
         QueryModel $query,
@@ -90,14 +92,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * Preflight CORS query.
-     *
-     * @param string $origin
-     * @param string $ip
-     * @param string $appId
-     * @param string $index
+     * @param Origin      $origin
+     * @param string|null $appId
+     * @param string|null $index
      *
      * @return string
+     *
+     * @throws Exception
      */
     public function getCORSPermissions(
         Origin $origin,
@@ -138,12 +139,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
 
     /**
      * Export index.
+
      *
-     * @param string $format
-     * @param bool   $closeImmediately
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string      $format
+     * @param bool        $closeImmediately
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
      *
      * @return Item[]
      */
@@ -164,9 +166,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param bool        $detached
      * @param bool        $deleteOldVersions
      * @param string|null $version
-     * @param string      $appId
-     * @param string      $index
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function importIndexByFeed(
         string $feed,
@@ -197,10 +203,14 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete using the bus.
      *
-     * @param ItemUUID[] $itemsUUID
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param ItemUUID[]  $itemsUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function deleteItems(
         array $itemsUUID,
@@ -222,10 +232,14 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param QueryModel $query
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function deleteItemsByQuery(
         QueryModel $query,
@@ -247,10 +261,14 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add items using the bus.
      *
-     * @param Item[] $items
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Item[]      $items
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function indexItems(
         array $items,
@@ -274,11 +292,15 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Update using the bus.
      *
-     * @param QueryModel $query
-     * @param Changes    $changes
-     * @param string     $appId
-     * @param string     $index
-     * @param Token      $token
+     * @param QueryModel  $query
+     * @param Changes     $changes
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function updateItems(
         QueryModel $query,
@@ -304,9 +326,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Reset index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function resetIndex(
         string $appId = null,
@@ -325,9 +351,11 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
 
     /**
      * @param string|null $appId
-     * @param Token       $token
+     * @param Token |null $token
      *
      * @return Index[]
+     *
+     * @throws Exception
      */
     public function getIndices(
         string $appId = null,
@@ -354,10 +382,14 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Create index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
-     * @param Config $config
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     * @param Config|null $config
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function createIndex(
         string $appId = null,
@@ -381,11 +413,15 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Configure index using the bus.
      *
-     * @param Config $config
-     * @param bool   $forceReindex
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param Config      $config
+     * @param bool        $forceReindex
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function configureIndex(
         Config $config,
@@ -411,11 +447,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Check index.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
      *
      * @return bool
+     *
+     * @throws Exception
      */
     public function checkIndex(
         string $appId = null,
@@ -444,9 +482,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete index using the bus.
      *
-     * @param string $appId
-     * @param string $index
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteIndex(
         string $appId = null,
@@ -466,9 +508,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Add token.
      *
-     * @param Token  $newToken
-     * @param string $appId
-     * @param Token  $token
+     * @param Token       $newToken
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function putToken(
         Token $newToken,
@@ -492,9 +538,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete token.
      *
-     * @param TokenUUID $tokenUUID
-     * @param string    $appId
-     * @param Token     $token
+     * @param TokenUUID   $tokenUUID
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteToken(
         TokenUUID $tokenUUID,
@@ -514,10 +564,12 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Get tokens.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token|null  $token
      *
      * @return Token[]
+     *
+     * @throws Exception
      */
     public static function getTokens(
         string $appId = null,
@@ -539,8 +591,12 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Delete token.
      *
-     * @param string $appId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public static function deleteTokens(
         string $appId = null,
@@ -558,30 +614,32 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string|null   $event
      * @param bool|null     $perDay
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function getUsage(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         ?string $event = null,
         ?bool $perDay = false
     ): array {
         $routeParameters = ['app_id' => $appId ?? static::$appId];
-        if ($indexId) {
-            $routeParameters['index_id'] = $indexId;
+        if ($index) {
+            $routeParameters['index_id'] = $index;
         }
 
         $response = static::request(
-            'v1_get_'.($indexId ? 'index_' : '').'usage'.($perDay ? '_per_day' : ''),
+            'v1_get_'.($index ? 'index_' : '').'usage'.($perDay ? '_per_day' : ''),
             $routeParameters,
             $token,
             [],
@@ -598,7 +656,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * @param string|null   $appId
      * @param Token|null    $token
-     * @param string|null   $indexId
+     * @param string|null   $index
      * @param DateTime|null $from
      * @param DateTime|null $to
      * @param string[]      $types
@@ -606,11 +664,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param int           $page
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function getLogs(
         string $appId = null,
         ?Token $token = null,
-        ?string $indexId = null,
+        ?string $index = null,
         ?DateTime $from = null,
         ?DateTime $to = null,
         array $types = [],
@@ -618,12 +678,12 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         int $page = 0
     ): array {
         $routeParameters = ['app_id' => $appId ?? static::$appId];
-        if ($indexId) {
-            $routeParameters['index_id'] = $indexId;
+        if ($index) {
+            $routeParameters['index_id'] = $index;
         }
 
         $response = static::request(
-            'v1_get_'.($indexId ? 'index_' : '').'logs',
+            'v1_get_'.($index ? 'index_' : '').'logs',
             $routeParameters,
             $token,
             [],
@@ -647,9 +707,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param int         $position
      * @param string|null $context
      * @param Origin      $origin
-     * @param string      $appId
-     * @param string      $indexId
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return void
+     *
+     * @throws Exception
      */
     public function click(
         ?string $userId,
@@ -658,12 +722,12 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $context,
         Origin $origin,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId ?? static::$index,
+            'index_id' => $index ?? static::$index,
             'item_id' => $itemId,
         ];
 
@@ -695,11 +759,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $type
      * @param string|null   $count
      * @param string|null   $context
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getInteractions(
         bool $perDay,
@@ -712,10 +778,10 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $count = null,
         ?string $context = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
-        $routeName = \is_null($indexId)
+        $routeName = \is_null($index)
             ? ((false === $perDay)
                 ? 'v1_get_interactions_all_indices'
                 : 'v1_get_interactions_all_indices_per_day')
@@ -725,7 +791,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
 
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId,
+            'index_id' => $index,
         ];
 
         $response = static::request(
@@ -754,11 +820,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param DateTime|null $to
      * @param string|null   $userId
      * @param string|null   $platform
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getTopClicks(
         ?int $n = null,
@@ -767,16 +835,16 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $userId = null,
         ?string $platform = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
-        $routeName = \is_null($indexId)
+        $routeName = \is_null($index)
             ? 'v1_get_top_clicks_all_indices'
             : 'v1_get_top_clicks';
 
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId,
+            'index_id' => $index,
         ];
 
         $response = static::request(
@@ -805,11 +873,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
      * @param string|null   $count
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getSearches(
         bool $perDay,
@@ -821,10 +891,10 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         bool $excludeWithoutResults = false,
         ?string $count = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
-        $routeName = \is_null($indexId)
+        $routeName = \is_null($index)
             ? ((false === $perDay)
                 ? 'v1_get_searches_all_indices'
                 : 'v1_get_searches_all_indices_per_day')
@@ -834,7 +904,7 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
 
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId,
+            'index_id' => $index,
         ];
 
         $response = static::request(
@@ -864,9 +934,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $userId
      * @param bool          $excludeWithResults
      * @param bool          $excludeWithoutResults
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return array
+     *
+     * @throws Exception
      */
     public function getTopSearches(
         ?int $n = null,
@@ -877,16 +951,16 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         bool $excludeWithResults = false,
         bool $excludeWithoutResults = false,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
-    ) {
-        $routeName = \is_null($indexId)
+    ): array {
+        $routeName = \is_null($index)
             ? 'v1_get_top_searches_all_indices'
             : 'v1_get_top_searches';
 
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId,
+            'index_id' => $index,
         ];
 
         $response = static::request(
@@ -915,11 +989,13 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param string|null   $userId
      * @param string|null   $platform
      * @param string|null   $context
-     * @param string        $appId
-     * @param string        $indexId
-     * @param Token         $token
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
      *
      * @return int|int[]
+     *
+     * @throws Exception
      */
     public function getMetrics(
         ?int $n = null,
@@ -929,16 +1005,16 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
         ?string $platform = null,
         ?string $context = null,
         string $appId = null,
-        string $indexId = null,
+        string $index = null,
         Token $token = null
     ) {
-        $routeName = \is_null($indexId)
+        $routeName = \is_null($index)
             ? 'v1_get_metrics_all_indices'
             : 'v1_get_metrics';
 
         $routeParameters = [
             'app_id' => $appId ?? static::$appId,
-            'index_id' => $indexId,
+            'index_id' => $index,
         ];
 
         $response = static::request(
@@ -960,9 +1036,11 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return bool
+     *
+     * @throws Exception
      */
     public function ping(Token $token = null): bool
     {
@@ -977,9 +1055,11 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     /**
      * Check health.
      *
-     * @param Token $token
+     * @param Token|null $token
      *
      * @return array
+     *
+     * @throws Exception
      */
     public function checkHealth(Token $token = null): array
     {
@@ -1003,6 +1083,8 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
      * @param array        $headers
      *
      * @return array
+     *
+     * @throws Exception
      */
     protected static function request(
         string $routeName,

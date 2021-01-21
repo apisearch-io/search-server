@@ -53,6 +53,8 @@ class ServerConfigurationCommand extends ApisearchFormattedCommand
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {
@@ -120,8 +122,10 @@ class ServerConfigurationCommand extends ApisearchFormattedCommand
 
     /**
      * @param OutputInterface $output
+     *
+     * @return void
      */
-    private static function printApisearchServer(OutputInterface $output)
+    private static function printApisearchServer(OutputInterface $output): void
     {
         $logo = '
      _____                                            _
@@ -142,11 +146,13 @@ class ServerConfigurationCommand extends ApisearchFormattedCommand
      *
      * @param OutputInterface $output
      * @param array           $array
+     *
+     * @return void
      */
     private static function printStringsArray(
         OutputInterface $output,
         array $array
-    ) {
+    ): void {
         \ksort($array);
         foreach ($array as $item => $value) {
             if (!\is_string($value)) {

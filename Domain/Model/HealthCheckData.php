@@ -45,16 +45,20 @@ final class HealthCheckData
 
     /**
      * @param bool $partialHealthy
+     *
+     * @return void
      */
-    public function setPartialHealth(bool $partialHealthy)
+    public function setPartialHealth(bool $partialHealthy): void
     {
         $this->healthy = $this->healthy && $partialHealthy;
     }
 
     /**
      * @param array $data
+     *
+     * @return void
      */
-    public function mergeData(array $data)
+    public function mergeData(array $data): void
     {
         $this->data = \array_merge_recursive($data, $this->data);
     }

@@ -30,11 +30,13 @@ class PingTest extends HttpFunctionalTest
      * @param int    $responseCode
      *
      * @dataProvider dataPing
+     *
+     * @return void
      */
     public function testPing(
         string $token,
         int $responseCode
-    ) {
+    ): void {
         try {
             $this->ping($this->createTokenByIdAndAppId($token));
             $this->assertTrue(200 === $responseCode);
@@ -60,8 +62,10 @@ class PingTest extends HttpFunctionalTest
 
     /**
      * Test that anyone can add health_check in token permissions.
+     *
+     * @return void
      */
-    public function testHealthCheckCantBeAddedInToken()
+    public function testHealthCheckCantBeAddedInToken(): void
     {
         $token = $this->createTokenByIdAndAppId('another_token');
         $token->setEndpoints(['ping', 'apisearch_ping']);

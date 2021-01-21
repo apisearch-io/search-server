@@ -31,8 +31,10 @@ class TokenValidators
      * Add token validator.
      *
      * @param TokenValidator $tokenValidator
+     *
+     * @return void
      */
-    public function addTokenValidator(TokenValidator $tokenValidator)
+    public function addTokenValidator(TokenValidator $tokenValidator): void
     {
         $this->tokenValidators[] = $tokenValidator;
     }

@@ -30,6 +30,8 @@ class HealthTest extends HttpFunctionalTest
      * @param int    $responseCode
      *
      * @dataProvider dataCheckHealth
+     *
+     * @return void
      */
     public function testCheckHealth(
         string $token,
@@ -70,8 +72,10 @@ class HealthTest extends HttpFunctionalTest
 
     /**
      * Test that anyone can add health_check in token permissions.
+     *
+     * @return void
      */
-    public function testHealthCheckCantBeAddedInToken()
+    public function testHealthCheckCantBeAddedInToken(): void
     {
         $token = $this->createTokenByIdAndAppId('another_token');
         $token->setEndpoints(['health_check', 'apisearch_health_check']);

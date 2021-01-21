@@ -52,11 +52,13 @@ final class JWTQueryFilter
     /**
      * @param QueryModel $query
      * @param array      $jwtPayload
+     *
+     * @return void
      */
     public function configureQueryByArrayAndJWTPayload(
         QueryModel $query,
         array $jwtPayload
-    ) {
+    ): void {
         $filters = $this->filters;
         $placeholders = \array_map(function (string $key) {
             return "{{{$key}}}";
@@ -95,13 +97,15 @@ final class JWTQueryFilter
      * @param array      $conditions
      * @param array      $placeholders
      * @param array      $placeholderValues
+     *
+     * @return void
      */
     private function applyConditionsToQuery(
         Query $query,
         array $conditions,
         array $placeholders,
         array $placeholderValues
-    ) {
+    ): void {
         foreach ($conditions as $conditionField => $conditionValues) {
             $conditionValues = \is_array($conditionValues) ? $conditionValues : [$conditionValues];
             $conditionValues = \array_map(function (string $conditionValue) use ($placeholders, $placeholderValues) {

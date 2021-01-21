@@ -63,11 +63,13 @@ abstract class ComplexFieldsMiddleware
     /**
      * @param Item  $item
      * @param array $complexFields
+     *
+     * @return void
      */
     protected function exportComplexFieldsItem(
         Item $item,
         array $complexFields
-    ) {
+    ): void {
         $metadata = $item->getMetadata();
         $indexedMetadata = $item->getIndexedMetadata();
 

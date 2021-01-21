@@ -34,8 +34,10 @@ class MatcherTest extends BaseUnitTest
 {
     /**
      * Test match by timestamp.
+     *
+     * @return void
      */
-    public function testByTimestamp()
+    public function testByTimestamp(): void
     {
         $query = Query::createMatchAll();
         $matcher = new Matcher();
@@ -71,8 +73,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by query match exact.
+     *
+     * @return void
      */
-    public function testByQueryMatchExact()
+    public function testByQueryMatchExact(): void
     {
         $this->assertTrue($this->queriesMatch('Marc', CampaignCriteria::MATCH_TYPE_EXACT, 'Marc'));
         $this->assertTrue($this->queriesMatch('MARC', CampaignCriteria::MATCH_TYPE_EXACT, 'Marc'));
@@ -88,8 +92,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by query match includes exact.
+     *
+     * @return void
      */
-    public function testByQueryMatchIncludesExact()
+    public function testByQueryMatchIncludesExact(): void
     {
         $this->assertTrue($this->queriesMatch('', CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT, ''));
         $this->assertTrue($this->queriesMatch('Hola, sóc el Marc', CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT, 'MARC'));
@@ -107,8 +113,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by query match similar.
+     *
+     * @return void
      */
-    public function testByQueryMatchSimilar()
+    public function testByQueryMatchSimilar(): void
     {
         $this->assertTrue($this->queriesMatch('', CampaignCriteria::MATCH_TYPE_SIMILAR, ''));
         $this->assertTrue($this->queriesMatch('morc', CampaignCriteria::MATCH_TYPE_SIMILAR, 'MARC'));
@@ -121,8 +129,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by query match includes similar.
+     *
+     * @return void
      */
-    public function testByQueryMatchIncludesSimilar()
+    public function testByQueryMatchIncludesSimilar(): void
     {
         $this->assertTrue($this->queriesMatch('', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, ''));
         $this->assertTrue($this->queriesMatch('Hola, sóc el morc', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC'));
@@ -139,8 +149,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by field filters match.
+     *
+     * @return void
      */
-    public function testByFieldFilterMatches()
+    public function testByFieldFilterMatches(): void
     {
         $this->assertTrue($this->filtersMatch(
             [Filter::create('category', ['1', '2'], Filter::MUST_ALL, Filter::TYPE_FIELD)],
@@ -232,8 +244,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test by field filters match.
+     *
+     * @return void
      */
-    public function testByRangeFilterMatches()
+    public function testByRangeFilterMatches(): void
     {
         $this->assertTrue($this->filtersMatch(
             [Filter::create('year', ['0..1000'], Filter::MUST_ALL, Filter::TYPE_RANGE)],
@@ -473,8 +487,10 @@ class MatcherTest extends BaseUnitTest
 
     /**
      * Test repository reference matches campaign.
+     *
+     * @return void
      */
-    public function testRepositoryReferenceMatchesCampaign()
+    public function testRepositoryReferenceMatchesCampaign(): void
     {
         $matcher = new Matcher();
 
@@ -545,6 +561,8 @@ class MatcherTest extends BaseUnitTest
      * @param string   $criteriaFiltersMode
      * @param string   $queryString
      * @param string   $exactMatchingQuery
+     *
+     * @return bool
      */
     private function filtersMatch(
         array $queryFilters,
@@ -553,7 +571,7 @@ class MatcherTest extends BaseUnitTest
         string $criteriaFiltersMode = Campaign::MATCH_CRITERIA_MODE_MUST_ALL,
         string $queryString = null,
         string $exactMatchingQuery = null
-    ) {
+    ): bool {
         $filters = [];
         foreach ($queryFilters as $queryFilter) {
             $filters[$queryFilter->getField()] = $queryFilter->toArray();

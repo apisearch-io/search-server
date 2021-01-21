@@ -22,8 +22,10 @@ trait FieldTypesTest
 {
     /**
      * Test field types.
+     *
+     * @return void
      */
-    public function testFieldTypes()
+    public function testFieldTypes(): void
     {
         $index = $this->getPrincipalIndex();
         $fields = $index->getFields();

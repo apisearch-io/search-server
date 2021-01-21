@@ -22,8 +22,10 @@ abstract class GetDeleteTokensCommandTest extends CommandTest
 {
     /**
      * Test token creation.
+     *
+     * @return void
      */
-    public function testPrintAndDeleteTokens()
+    public function testPrintAndDeleteTokens(): void
     {
         static::runCommand([
             'command' => 'apisearch-server:create-index',

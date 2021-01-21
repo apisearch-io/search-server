@@ -25,7 +25,7 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
 {
     use SecurityFunctionalTestTrait;
 
-    public function testHealthCheck()
+    public function testHealthCheck(): void
     {
         $response = $this->checkHealth();
         $this->assertTrue($response['status']['redis_security']);

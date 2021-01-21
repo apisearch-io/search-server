@@ -38,8 +38,10 @@ abstract class ConfigRepositoryTest extends BaseUnitTest
 
     /**
      * Test add and remove token.
+     *
+     * @return void
      */
-    public function testAddRemoveConfig()
+    public function testAddRemoveConfig(): void
     {
         $loop = Factory::create();
         $repository = $this->buildEmptyRepository($loop);

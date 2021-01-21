@@ -28,8 +28,10 @@ trait ErrorRecoveryTest
      *
      * This error is produced when we index an Item with a malformed field or a
      * different item format.
+     *
+     * @return void
      */
-    public function testAfterFatalError()
+    public function testAfterFatalError(): void
     {
         try {
             $this->indexItems([

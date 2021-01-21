@@ -37,6 +37,8 @@ class SearchRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $domainEventEnvelope
+     *
+     * @return void
      */
     public function registerSearch(DomainEventEnvelope $domainEventEnvelope)
     {

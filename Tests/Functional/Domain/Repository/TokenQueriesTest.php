@@ -28,8 +28,10 @@ trait TokenQueriesTest
 {
     /**
      * Test token queries.
+     *
+     * @return void
      */
-    public function testTokenQueries()
+    public function testTokenQueries(): void
     {
         /*
          * Base query

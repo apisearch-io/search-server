@@ -26,8 +26,10 @@ class GetTokensTest extends HttpFunctionalTest
 
     /**
      * Test controller result.
+     *
+     * @return void
      */
-    public function testController()
+    public function testController(): void
     {
         $this->putToken($this->createTokenByIdAndAppId('token1', static::$appId));
         $this->putToken($this->createTokenByIdAndAppId('token2', static::$appId));

@@ -25,8 +25,10 @@ trait StopwordsSteemerTest
 {
     /**
      * test finding without stopwords language.
+     *
+     * @return void
      */
-    public function testSearchWithoutStopwords()
+    public function testSearchWithoutStopwords(): void
     {
         $this->assertNotEmpty(
             $this->query(
@@ -38,8 +40,10 @@ trait StopwordsSteemerTest
 
     /**
      * test finding without stopwords language.
+     *
+     * @return void
      */
-    public function testSearchWithStopwords()
+    public function testSearchWithStopwords(): void
     {
         $this->configureIndex(new Config('es'));
 
@@ -55,8 +59,10 @@ trait StopwordsSteemerTest
 
     /**
      * Test finding with another language stopwords.
+     *
+     * @return void
      */
-    public function testSearchWithAnotherStopwords()
+    public function testSearchWithAnotherStopwords(): void
     {
         $this->configureIndex(new Config('en'));
 

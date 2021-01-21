@@ -40,8 +40,10 @@ abstract class DomainEvent
 
     /**
      * Mark occurred on as now.
+     *
+     * @return void
      */
-    protected function setNow()
+    protected function setNow(): void
     {
         $this->now = Carbon::now('UTC');
         $this->occurredOn = Now::epochTimeWithMicroseconds($this->now);

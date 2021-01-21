@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class EndpointNormalizerTest extends TestCase
 {
-    public function testNormalizeEndpoint()
+    public function testNormalizeEndpoint(): void
     {
         $this->assertEquals('apisearch_v1_endpoint', EndpointNormalizer::normalizeEndpoint('apisearch_v1_endpoint'));
         $this->assertEquals('apisearch_v1_endpoint', EndpointNormalizer::normalizeEndpoint('v1_endpoint'));

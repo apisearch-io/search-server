@@ -29,8 +29,10 @@ class GetCrontab
 
     /**
      * @param CrontabLine $line
+     *
+     * @return void
      */
-    public function addLine(CrontabLine $line)
+    public function addLine(CrontabLine $line): void
     {
         $this->lines[] = $line;
     }

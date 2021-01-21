@@ -44,12 +44,14 @@ class QueryBuilder
      * @param Query                   $query
      * @param ElasticaQuery           $mainQuery
      * @param ElasticaQuery\BoolQuery $boolQuery
+     *
+     * @return void
      */
     public function buildQuery(
         Query $query,
         ElasticaQuery &$mainQuery,
         ElasticaQuery\BoolQuery $boolQuery
-    ) {
+    ): void {
         $this->selectFields(
             $query,
             $mainQuery
@@ -120,6 +122,8 @@ class QueryBuilder
      *
      * @param Query         $query
      * @param ElasticaQuery $mainQuery
+     *
+     * @return void
      */
     private function selectFields(
         Query $query,
@@ -162,6 +166,8 @@ class QueryBuilder
      * @param string[]                $searchableFields
      * @param string|null             $filterToIgnore
      * @param bool                    $takeInAccountDefinedTermFilter
+     *
+     * @return void
      */
     private function addFilters(
         Query $query,
@@ -170,7 +176,7 @@ class QueryBuilder
         array $searchableFields,
         ? string $filterToIgnore,
         bool $takeInAccountDefinedTermFilter
-    ) {
+    ): void {
         foreach ($filters as $filterName => $filter) {
             $onlyAddDefinedTermFilter = (
                 empty($filter->getValues()) ||
@@ -197,6 +203,8 @@ class QueryBuilder
      * @param string[]                $searchableFields
      * @param bool                    $onlyAddDefinedTermFilter
      * @param bool                    $takeInAccountDefinedTermFilter
+     *
+     * @return void
      */
     private function addFilter(
         Query $query,
@@ -242,6 +250,8 @@ class QueryBuilder
      * @param bool                    $onlyAddDefinedTermFilter
      * @param bool                    $takeInAccountDefinedTermFilter
      * @param bool                    $imperativeFilter
+     *
+     * @return void
      */
     private function addFieldOrRangeFilter(
         ElasticaQuery\BoolQuery $boolQuery,
@@ -249,7 +259,7 @@ class QueryBuilder
         bool $onlyAddDefinedTermFilter,
         bool $takeInAccountDefinedTermFilter,
         bool $imperativeFilter = false
-    ) {
+    ): void {
         $boolQuery->addFilter(
             $this->createQueryFilterByApplicationType(
                 $filter,
@@ -547,6 +557,8 @@ class QueryBuilder
      * @param Filter[]           $universeFilters
      * @param Filter[]           $filters
      * @param string[]           $searchableFields
+     *
+     * @return void
      */
     private function addAggregations(
         Query $query,
@@ -555,7 +567,7 @@ class QueryBuilder
         array $universeFilters,
         array $filters,
         array $searchableFields
-    ) {
+    ): void {
         $globalAggregation = new ElasticaAggregation\GlobalAggregation('all');
         $universeAggregation = new ElasticaAggregation\Filter('universe');
         $aggregationBoolQuery = new ElasticaQuery\BoolQuery();
@@ -877,12 +889,14 @@ class QueryBuilder
      * @param ScoreStrategy                    $scoreStrategy
      * @param ElasticaQuery\FunctionScore      $functionScore
      * @param ElasticaQuery\AbstractQuery|null $filter
+     *
+     * @return void
      */
     private function addCustomFunctionScoreStrategy(
         ScoreStrategy $scoreStrategy,
         ElasticaQuery\FunctionScore $functionScore,
         ?ElasticaQuery\AbstractQuery $filter
-    ) {
+    ): void {
         $functionScore->addScriptScoreFunction(
             new Script($scoreStrategy->getConfigurationValue('function')),
             $filter,
@@ -896,12 +910,14 @@ class QueryBuilder
      * @param ScoreStrategy                    $scoreStrategy
      * @param ElasticaQuery\FunctionScore      $functionScore
      * @param ElasticaQuery\AbstractQuery|null $filter
+     *
+     * @return void
      */
     private function addWeightScoreStrategy(
         ScoreStrategy $scoreStrategy,
         ElasticaQuery\FunctionScore $functionScore,
         ?ElasticaQuery\AbstractQuery $filter
-    ) {
+    ): void {
         $functionScore->addWeightFunction(
             $scoreStrategy->getWeight(),
             $filter
@@ -914,12 +930,14 @@ class QueryBuilder
      * @param ScoreStrategy                    $scoreStrategy
      * @param ElasticaQuery\FunctionScore      $functionScore
      * @param ElasticaQuery\AbstractQuery|null $filter
+     *
+     * @return void
      */
     private function addBoostingFieldValueScoreStrategy(
         ScoreStrategy $scoreStrategy,
         ElasticaQuery\FunctionScore $functionScore,
         ?ElasticaQuery\AbstractQuery $filter
-    ) {
+    ): void {
         $functionScore->addFieldValueFactorFunction(
             Item::getPathByField(
                 (string) $scoreStrategy->getConfigurationValue('field')
@@ -938,12 +956,14 @@ class QueryBuilder
      * @param ScoreStrategy                    $scoreStrategy
      * @param ElasticaQuery\FunctionScore      $functionScore
      * @param ElasticaQuery\AbstractQuery|null $filter
+     *
+     * @return void
      */
     private function addDecayFunctionScoreStrategy(
         ScoreStrategy $scoreStrategy,
         ElasticaQuery\FunctionScore $functionScore,
         ?ElasticaQuery\AbstractQuery $filter
-    ) {
+    ): void {
         $functionScore->addDecayFunction(
             (string) $scoreStrategy->getConfigurationValue('type'),
             Item::getPathByField(

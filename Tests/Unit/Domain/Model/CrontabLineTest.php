@@ -25,8 +25,10 @@ class CrontabLineTest extends TestCase
 {
     /**
      * Test crontab line creation.
+     *
+     * @return void
      */
-    public function testCrontabLineCreation()
+    public function testCrontabLineCreation(): void
     {
         $crontabLine = new CrontabLine('1', '2', '*', '4', '10', 'command');
         $this->assertEquals('1 2 * 4 10 cd /var/www && command', $crontabLine->toString('/var/www'));
@@ -34,8 +36,10 @@ class CrontabLineTest extends TestCase
 
     /**
      * Test create from line.
+     *
+     * @return void
      */
-    public function testCreateFromLine()
+    public function testCreateFromLine(): void
     {
         $crontabLine = CrontabLine::fromLine('1 2 3 * *', 'command');
         $this->assertEquals('1 2 3 * * cd /var/www && command', $crontabLine->toString('/var/www'));
@@ -43,8 +47,10 @@ class CrontabLineTest extends TestCase
 
     /**
      * Test create from minutes interval.
+     *
+     * @return void
      */
-    public function testCreateFromMinutesInterval()
+    public function testCreateFromMinutesInterval(): void
     {
         $crontabLine = CrontabLine::fromMinutesInterval(35, 'command');
         $this->assertEquals('*/35 * * * * cd /var/www && command', $crontabLine->toString('/var/www'));

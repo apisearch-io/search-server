@@ -24,8 +24,10 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
 {
     /**
      * Test surrogate keys on query.
+     *
+     * @return void
      */
-    public function testSurrogateKeysOnQuery()
+    public function testSurrogateKeysOnQuery(): void
     {
         $this->query(Query::createMatchAll());
         $surrogateKey = static::$lastResponse['headers']['surrogate-key'][0];
@@ -78,8 +80,10 @@ class SurrogateKeysTest extends FastlyPluginFunctionalTest
 
     /**
      * Test other endpoints.
+     *
+     * @return void
      */
-    public function testOtherEndpoints()
+    public function testOtherEndpoints(): void
     {
         $this->resetIndex();
         $this->assertFalse(\array_key_exists('surrogate-key', static::$lastResponse['headers']));

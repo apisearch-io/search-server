@@ -28,8 +28,10 @@ class ExceptionMessagesTest extends ServiceFunctionalTest
 
     /**
      * Test wrong field exception.
+     *
+     * @return void
      */
-    public function testWrongFieldException()
+    public function testWrongFieldException(): void
     {
         try {
             $this->indexItems([

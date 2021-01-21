@@ -28,8 +28,10 @@ trait IndexConfigurationTest
 {
     /**
      * Test index check.
+     *
+     * @return void
      */
-    public function testSimpleReindex()
+    public function testSimpleReindex(): void
     {
         $this->assertCount(5, $this->query(Query::createMatchAll())->getItems());
         $this->configureIndex(Config::createEmpty());
@@ -38,8 +40,10 @@ trait IndexConfigurationTest
 
     /**
      * Test index check.
+     *
+     * @return void
      */
-    public function testConfigureIndexWithSynonyms()
+    public function testConfigureIndexWithSynonyms(): void
     {
         $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
         $this->assertCount(0, $this->query(Query::create('Flipencio'))->getItems());
@@ -60,8 +64,10 @@ trait IndexConfigurationTest
     /**
      * Test soft configuration, for example, changing a simple metadata. That
      * should not reindex.
+     *
+     * @return void
      */
-    public function testSoftConfigureIndex()
+    public function testSoftConfigureIndex(): void
     {
         $this->configureIndex(Config::createEmpty());
         $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
@@ -72,8 +78,10 @@ trait IndexConfigurationTest
 
     /**
      * Test force configuration reindex.
+     *
+     * @return void
      */
-    public function testConfigurationIndexWithForceReindex()
+    public function testConfigurationIndexWithForceReindex(): void
     {
         $this->configureIndex(Config::createEmpty());
         $remoteIndexUUID = $this->getPrincipalIndex()->getMetadataValue('remote_uuid');
@@ -84,8 +92,10 @@ trait IndexConfigurationTest
 
     /**
      * Test index check.
+     *
+     * @return void
      */
-    public function testIndexAndDeleteAfterConfigure()
+    public function testIndexAndDeleteAfterConfigure(): void
     {
         $this->configureIndex(Config::createEmpty());
         self::indexItems([

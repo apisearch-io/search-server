@@ -27,8 +27,10 @@ class ServerMemoryControlTest extends CurlFunctionalTest
 {
     /**
      * Test insane massive usage.
+     *
+     * @return void
      */
-    public function testMassiveUsage()
+    public function testMassiveUsage(): void
     {
         $this->loadMassiveIndexItems(10000);
 
@@ -68,6 +70,8 @@ class ServerMemoryControlTest extends CurlFunctionalTest
      * @param callable $callable
      * @param int      $calls
      * @param int      $acceptableWithoutIncrementing
+     *
+     * @return void
      */
     private function assertActionMemoryNTimes(
         callable $callable,
@@ -113,12 +117,14 @@ class ServerMemoryControlTest extends CurlFunctionalTest
      * @param string $serverPath
      * @param string $port
      * @param array  $arguments
+     *
+     * @return Process
      */
     protected static function runInsaneServer(
         string $serverPath,
         string $port,
         array $arguments = []
-    ) {
+    ): Process {
         $serverPath = \rtrim($serverPath, '/');
         $serverPath = \realpath($serverPath);
         $serverFile = "$serverPath/server";

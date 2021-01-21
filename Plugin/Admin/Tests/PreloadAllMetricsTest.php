@@ -34,11 +34,13 @@ class PreloadAllMetricsTest extends ServiceFunctionalTest
      * @param DateTime|null $to
      *
      * @dataProvider dataThisMonthPreloadedMetrics
+     *
+     * @return void
      */
     public function testThisMonthPreloadedMetrics(
         ?DateTime $from,
         ?DateTime $to
-    ) {
+    ): void {
         $this->get('apisearch_server.usage_lines_repository_test')->reset();
         $this->get('apisearch_server.metadata_repository_test')->reset();
 

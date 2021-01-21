@@ -25,8 +25,10 @@ trait HighlightTest
 {
     /**
      * Test that highlight.
+     *
+     * @return void
      */
-    public function testBasic()
+    public function testBasic(): void
     {
         $result = $this->query(
             Query::create('v')
@@ -41,8 +43,10 @@ trait HighlightTest
 
     /**
      * Test that highlight is not enabled when searchable_metadata is not stored.
+     *
+     * @return void
      */
-    public function testWithSearchableMetadataNotStored()
+    public function testWithSearchableMetadataNotStored(): void
     {
         $this->configureIndex(new Config(null, false));
 

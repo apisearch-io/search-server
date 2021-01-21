@@ -27,8 +27,10 @@ class FilteredQueriesTest extends StaticTokensFunctionalTest
 {
     /**
      * Test simple workflow.
+     *
+     * @return void
      */
-    public function testSimpleWorkflow()
+    public function testSimpleWorkflow(): void
     {
         $token = new Token(TokenUUID::createById('base_filtered_token'), AppUUID::createById(self::$appId));
         $this->assertCount(1, $this->query(

@@ -29,11 +29,13 @@ trait PHPUnitModifierTrait
      *
      * @throws ExpectationFailedException
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
     protected function assertArraysEquals(
         array $expected,
         array $actual
-    ) {
+    ): void {
         $this->assertEquals(
             [],
             \array_diff_key(

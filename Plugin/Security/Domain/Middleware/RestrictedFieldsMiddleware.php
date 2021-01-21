@@ -56,11 +56,13 @@ class RestrictedFieldsMiddleware implements PluginMiddleware
      *
      * @param ModelQuery $query
      * @param Token      $token
+     *
+     * @return void
      */
     private function makeRestrictionsInQuery(
         ModelQuery $query,
         Token $token
-    ) {
+    ): void {
         $restrictedFields = $token->getMetadataValue('restricted_fields', []);
         $allowedFields = $token->getMetadataValue('allowed_fields', []);
         $fields = $query->getFields();

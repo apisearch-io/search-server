@@ -34,6 +34,8 @@ class PrintTokensCommand extends CommandWithQueryBusAndGodToken
 
     /**
      * Configures the current command.
+     *
+     * @return void
      */
     protected function configure()
     {

@@ -46,12 +46,14 @@ class CampaignApplicator
      * @param RepositoryReference $repositoryReference
      * @param Query               $query
      * @param DateTime            $dateTime
+     *
+     * @return void
      */
     public function applyCampaigns(
         RepositoryReference $repositoryReference,
         Query $query,
         DateTime $dateTime
-    ) {
+    ): void {
         $campaigns = $this
             ->campaignRepository
             ->getCampaigns($repositoryReference);

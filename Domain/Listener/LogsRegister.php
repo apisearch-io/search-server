@@ -41,8 +41,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasCreated(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasCreated(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasCreated
@@ -56,8 +58,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasDeleted(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasDeleted(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasDeleted
@@ -71,8 +75,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasConfigured(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasConfigured(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasConfigured
@@ -86,8 +92,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasReset(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasReset(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasReset
@@ -101,8 +109,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasImported(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasImported(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasImported
@@ -121,8 +131,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logIndexWasExported(DomainEventEnvelope $eventEnvelope)
+    public function logIndexWasExported(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\IndexWasExported
@@ -136,8 +148,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logTokenWasPut(DomainEventEnvelope $eventEnvelope)
+    public function logTokenWasPut(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\TokenWasPut
@@ -152,8 +166,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logTokenWasDeleted(DomainEventEnvelope $eventEnvelope)
+    public function logTokenWasDeleted(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\TokenWasDeleted
@@ -168,8 +184,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logTokensWereDeleted(DomainEventEnvelope $eventEnvelope)
+    public function logTokensWereDeleted(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\TokensWereDeleted
@@ -183,8 +201,10 @@ class LogsRegister implements EventSubscriberInterface
 
     /**
      * @param DomainEventEnvelope $eventEnvelope
+     *
+     * @return void
      */
-    public function logExceptionWasCached(DomainEventEnvelope $eventEnvelope)
+    public function logExceptionWasCached(DomainEventEnvelope $eventEnvelope): void
     {
         /**
          * @var Event\ExceptionWasCached
@@ -201,12 +221,14 @@ class LogsRegister implements EventSubscriberInterface
      * @param RepositoryReference $repositoryReference
      * @param string              $type
      * @param array               $params
+     *
+     * @return void
      */
     public function logEvent(
         RepositoryReference $repositoryReference,
         string $type,
         array $params = []
-    ) {
+    ): void {
         $this
             ->logRepository
             ->log(

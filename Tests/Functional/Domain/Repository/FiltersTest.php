@@ -26,8 +26,10 @@ trait FiltersTest
 {
     /**
      * Filter by simple fields.
+     *
+     * @return void
      */
-    public function testFilterBySimpleFields()
+    public function testFilterBySimpleFields(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->filterByIds(['1'])),
@@ -47,8 +49,10 @@ trait FiltersTest
 
     /**
      * Filter by metadata fields.
+     *
+     * @return void
      */
-    public function testFilterBydataFields()
+    public function testFilterBydataFields(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->filterBy('i', 'field_integer', ['10'], Filter::MUST_ALL)),
@@ -88,8 +92,10 @@ trait FiltersTest
 
     /**
      * Test type filter.
+     *
+     * @return void
      */
-    public function testTypeFilter()
+    public function testTypeFilter(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->filterByTypes(['product'])),
@@ -125,8 +131,10 @@ trait FiltersTest
 
     /**
      * Test filter by price range.
+     *
+     * @return void
      */
-    public function testPriceRangeFilter()
+    public function testPriceRangeFilter(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->filterByRange('price', 'price', [], ['1000..2000'])),
@@ -176,8 +184,10 @@ trait FiltersTest
 
     /**
      * Test filter by rangde dates.
+     *
+     * @return void
      */
-    public function testDateRangeFilter()
+    public function testDateRangeFilter(): void
     {
         $this->assertCount(
             4,
@@ -234,8 +244,10 @@ trait FiltersTest
 
     /**
      * Test filter by rangde dates.
+     *
+     * @return void
      */
-    public function testUniverseDateRangeFilter()
+    public function testUniverseDateRangeFilter(): void
     {
         $this->assertCount(
             4,
@@ -300,8 +312,10 @@ trait FiltersTest
 
     /**
      * Filter by strange character.
+     *
+     * @return void
      */
-    public function testFilterByStrangeCharacter()
+    public function testFilterByStrangeCharacter(): void
     {
         $this->assertCount(
             1,
@@ -311,8 +325,10 @@ trait FiltersTest
 
     /**
      * Test exclude filter.
+     *
+     * @return void
      */
-    public function testExcludeFilter()
+    public function testExcludeFilter(): void
     {
         $this->assertResults(
             $this->query(Query::createMatchAll()->filterBy('color', 'color', ['yellow'], Filter::EXCLUDE, false)),

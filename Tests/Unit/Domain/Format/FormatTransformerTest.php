@@ -38,13 +38,15 @@ abstract class FormatTransformerTest extends BaseUnitTest
      * @param Item   $optimizedItem
      *
      * @dataProvider dataExportItem
+     *
+     * @return void
      */
     public function testTransformItem(
         Item $item,
         array $header,
         string $expectedLine,
         Item $optimizedItem
-    ) {
+    ): void {
         $formatter = $this->getFormatTransformer();
         $line = $formatter->itemToLine($item);
         $this->assertSame($expectedLine, $line);
@@ -276,12 +278,14 @@ abstract class FormatTransformerTest extends BaseUnitTest
      * @param string $expectedLine
      *
      * @dataProvider dataAlternativeExportItem
+     *
+     * @return void
      */
     public function testAlternativeTransformItem(
         Item $item,
         array $header,
         string $expectedLine
-    ) {
+    ): void {
         $formatter = $this->getFormatTransformer();
         $line = $formatter->itemToLine($item);
         $this->assertSame($expectedLine, $line);

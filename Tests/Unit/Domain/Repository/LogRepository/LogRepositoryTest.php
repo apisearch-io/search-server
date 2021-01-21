@@ -48,8 +48,10 @@ abstract class LogRepositoryTest extends BaseUnitTest
 
     /**
      * Test empty.
+     *
+     * @return void
      */
-    public function testEmpty()
+    public function testEmpty(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -61,8 +63,10 @@ abstract class LogRepositoryTest extends BaseUnitTest
 
     /**
      * Test empty.
+     *
+     * @return void
      */
-    public function testSimple()
+    public function testSimple(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -77,8 +81,10 @@ abstract class LogRepositoryTest extends BaseUnitTest
 
     /**
      * Test filter by datetime.
+     *
+     * @return void
      */
-    public function testFilterByDateTime()
+    public function testFilterByDateTime(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -122,8 +128,10 @@ abstract class LogRepositoryTest extends BaseUnitTest
 
     /**
      * Test filter by types.
+     *
+     * @return void
      */
-    public function testFilterByTypes()
+    public function testFilterByTypes(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);
@@ -142,7 +150,7 @@ abstract class LogRepositoryTest extends BaseUnitTest
         ])), $loop));
     }
 
-    public function testPagination()
+    public function testPagination(): void
     {
         $loop = Factory::create();
         $repository = $this->getEmptyRepository($loop);

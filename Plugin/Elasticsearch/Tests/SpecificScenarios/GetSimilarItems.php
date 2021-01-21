@@ -25,7 +25,7 @@ use Apisearch\Result\Result;
  */
 trait GetSimilarItems
 {
-    public function testSimilarItemsSimple()
+    public function testSimilarItemsSimple(): void
     {
         static::indexItems([
             Item::create(ItemUUID::createByComposedUUID('10~element'), [], ['data1' => 'dataA', 'data2' => 'dataA', 'data3' => 'dataA', 'data4' => 'dataA', 'data5' => 'dataA']),
