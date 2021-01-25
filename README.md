@@ -55,10 +55,8 @@ Some first steps for you!
 
 or
 
-- [Download and install Apisearch](http://docs.apisearch.io/#download-and-install-apisearch)
-- [Create your first application](http://docs.apisearch.io/#create-your-first-application)
-- [Import some items](http://docs.apisearch.io/#import-some-items)
-- [Create your first search bar](http://docs.apisearch.io/#create-my-first-search-bar)
+- [Download and install Apisearch](https://docs.apisearch.io/#/download)
+- [Create your first application](https://docs.apisearch.io/#/first-example)
 
 Take a tour using these links.
 
