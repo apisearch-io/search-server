@@ -15,39 +15,32 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Http\Listener;
 
-use Apisearch\Exception\UnsupportedContentTypeException;
+use Apisearch\Exception\PayloadTooLargeException;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 /**
- * Class ContentTypeValidationOverHTTP.
+ * Class PayloadTooLargeChecker.
  */
-final class ContentTypeValidationOverHTTP implements EventSubscriberInterface
+class PayloadTooLargeChecker implements EventSubscriberInterface
 {
     /**
      * @param RequestEvent $event
      *
      * @return PromiseInterface
      */
-    public function validateContentTypeOnKernelRequest(RequestEvent $event): PromiseInterface
+    public function validatePayloadTooLarge(RequestEvent $event): PromiseInterface
     {
         return resolve($event)
             ->then(function (RequestEvent $event) {
                 $request = $event->getRequest();
-
-                if (!\in_array($request->getMethod(), [
-                    Request::METHOD_GET,
-                    Request::METHOD_HEAD,
-                    Request::METHOD_OPTIONS,
-                ])
-                    && $request->attributes->has('json')
-                    && ('json' !== $request->getContentType())
-                    && !empty($request->getContent())
+                if (
+                    \intval($request->headers->get('Content-Length')) > 0 &&
+                    empty($request->getContent())
                 ) {
-                    throw UnsupportedContentTypeException::createUnsupportedContentTypeException();
+                    throw PayloadTooLargeException::create();
                 }
             });
     }
@@ -59,7 +52,7 @@ final class ContentTypeValidationOverHTTP implements EventSubscriberInterface
     {
         return [
             RequestEvent::class => [
-                ['validateContentTypeOnKernelRequest', 16],
+                ['validatePayloadTooLarge', 32],
             ],
         ];
     }

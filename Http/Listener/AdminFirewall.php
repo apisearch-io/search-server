@@ -47,8 +47,6 @@ final class AdminFirewall implements EventSubscriberInterface
     }
 
     /**
-     * Validate hand written firewall.
-     *
      * @param RequestEvent $event
      *
      * @return PromiseInterface

@@ -32,8 +32,8 @@ trait ExportTest
     {
         $data = $this->exportIndex('source');
         $this->assertCount(6, $data);
-        $this->assertNotContains('category_data', $data[1]);
-        $this->assertNotContains('category_id', $data[1]);
+        $this->assertStringNotContainsString('category_data', $data[1]);
+        $this->assertStringNotContainsString('category_id', $data[1]);
     }
 
     /**

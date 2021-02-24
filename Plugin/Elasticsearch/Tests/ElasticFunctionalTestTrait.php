@@ -30,7 +30,7 @@ trait ElasticFunctionalTestTrait
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $config = static::getElasticsearchConfig();
         if (\array_key_exists('host', $config)) {

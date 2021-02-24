@@ -41,7 +41,7 @@ abstract class CommandTest extends HttpFunctionalTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         try {
             static::deleteIndex(self::$appId, self::$index);

@@ -3,5 +3,6 @@
 /_.env
 /.env
 /.php_cs.cache
+/.phpunit.result.cache
 /.deploy/*
 !/.deploy/.keep

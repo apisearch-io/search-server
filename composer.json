@@ -22,8 +22,8 @@
     "symfony/event-dispatcher" : "^5.0",
     "symfony/dotenv" : "^5.0",
 
-    "drift/http-kernel": "0.1.13",
-    "drift/server": "0.1.16",
+    "drift/http-kernel": "^0.1.13",
+    "drift/server": "^0.1.16",
     "drift/react-functions": "0.1.*, >=0.1.1",
     "drift/react-streams": "0.1.*",
     "drift/command-bus-bundle": "0.1.*, >=0.1.7",
@@ -35,6 +35,7 @@
 
     "react/promise": "^2.0",
     "react/mysql": "^0.5.0",
+    "react/filesystem": "^0.1.2",
     "clue/buzz-react": "^2.0",
     "clue/mq-react": "^1.0",
     "clue/reactphp-csv": "^1.0",

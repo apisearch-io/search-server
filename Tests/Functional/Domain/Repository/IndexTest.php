@@ -103,7 +103,7 @@ trait IndexTest
             ]);
             $this->fail('An exception should be thrown');
         } catch (InvalidFormatException $exception) {
-            $this->assertContains('failed to parse', $exception->getMessage());
+            $this->assertStringContainsString('failed to parse', $exception->getMessage());
         }
 
         try {
@@ -129,7 +129,7 @@ trait IndexTest
             ]);
             $this->fail('An exception should be thrown');
         } catch (InvalidFormatException $exception) {
-            $this->assertContains('failed to parse', $exception->getMessage());
+            $this->assertStringContainsString('failed to parse', $exception->getMessage());
         }
 
         static::resetScenario();
