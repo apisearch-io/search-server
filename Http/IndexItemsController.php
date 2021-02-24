@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\Item;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\IndexItems;
+use Apisearch\Server\Domain\Exception\EmptyBodyException;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,10 @@ final class IndexItemsController extends ControllerWithCommandBus
             InvalidFormatException::itemRepresentationNotValid($request->getContent()),
             []
         );
+
+        if (empty($itemsAsArray)) {
+            throw EmptyBodyException::create();
+        }
 
         return $this
             ->execute(new IndexItems(

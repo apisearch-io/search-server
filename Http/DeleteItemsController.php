@@ -19,6 +19,7 @@ use Apisearch\Exception\InvalidFormatException;
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Command\DeleteItems;
+use Apisearch\Server\Domain\Exception\EmptyBodyException;
 use React\Promise\PromiseInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,10 @@ final class DeleteItemsController extends ControllerWithCommandBus
             InvalidFormatException::itemUUIDRepresentationNotValid($request->getContent()),
             []
         );
+
+        if (empty($itemsUUIDAsArray)) {
+            throw EmptyBodyException::create();
+        }
 
         return $this
             ->execute(new DeleteItems(
