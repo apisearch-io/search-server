@@ -47,7 +47,7 @@ class ExceptionMessagesTest extends ServiceFunctionalTest
             ]);
             $this->fail('An exception should be thrown');
         } catch (InvalidFormatException $exception) {
-            $this->assertContains('failed to parse field', $exception->getMessage());
+            $this->assertStringContainsString('failed to parse field', $exception->getMessage());
         }
     }
 }

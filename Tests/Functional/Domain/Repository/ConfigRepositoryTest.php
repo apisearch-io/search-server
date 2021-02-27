@@ -147,9 +147,9 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
             '--with-metadata' => true,
         ]);
 
-        $this->assertContains('configurable-index', $output);
-        $this->assertContains('value3', $output);
-        $this->assertContains('value4', $output);
+        $this->assertStringContainsString('configurable-index', $output);
+        $this->assertStringContainsString('value3', $output);
+        $this->assertStringContainsString('value4', $output);
 
         /**
          * New service.
@@ -161,9 +161,9 @@ abstract class ConfigRepositoryTest extends ServiceFunctionalTest
         ]);
         \sleep(2);
         $output = $process->getOutput();
-        $this->assertContains('configurable-index', $output);
-        $this->assertContains('value3', $output);
-        $this->assertContains('value4', $output);
+        $this->assertStringContainsString('configurable-index', $output);
+        $this->assertStringContainsString('value3', $output);
+        $this->assertStringContainsString('value4', $output);
     }
 
     /**

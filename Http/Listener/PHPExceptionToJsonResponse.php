@@ -31,8 +31,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 final class PHPExceptionToJsonResponse implements EventSubscriberInterface
 {
     /**
-     * When controller gets exception.
-     *
      * @param ExceptionEvent $event
      *
      * @return PromiseInterface

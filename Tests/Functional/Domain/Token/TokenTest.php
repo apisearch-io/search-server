@@ -400,7 +400,7 @@ abstract class TokenTest extends HttpFunctionalTest
             'apisearch-server:print-tokens',
             'app-id' => $appUUID->composeUUID(),
         ]);
-        $this->assertContains('multiservice-token', $output);
+        $this->assertStringContainsString('multiservice-token', $output);
 
         /**
          * New service.
@@ -410,7 +410,7 @@ abstract class TokenTest extends HttpFunctionalTest
             $appUUID->composeUUID(),
         ]);
         \sleep(1);
-        $this->assertContains('multiservice-token', $process->getOutput());
+        $this->assertStringContainsString('multiservice-token', $process->getOutput());
     }
 
     /**

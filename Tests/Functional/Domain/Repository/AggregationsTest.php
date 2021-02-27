@@ -317,7 +317,7 @@ trait AggregationsTest
     /**
      * Test aggregation sort.
      *
-     * @param int        $firstId
+     * @param string     $firstId
      * @param array|null $order
      *
      * @dataProvider dataAggregationsSort
@@ -325,7 +325,7 @@ trait AggregationsTest
      * @return void
      */
     public function testAggregationsSort(
-        int $firstId,
+        string $firstId,
         ? array $order
     ): void {
         $query = Query::createMatchAll();
@@ -361,7 +361,7 @@ trait AggregationsTest
     /**
      * Test aggregation sort.
      *
-     * @param int        $firstId
+     * @param string     $firstId
      * @param array|null $order
      *
      * @dataProvider dataAggregationsSortComplex
@@ -369,7 +369,7 @@ trait AggregationsTest
      * @return void
      */
     public function testAggregationsSortInComplexFields(
-        int $firstId,
+        string $firstId,
         ? array $order
     ): void {
         $query = Query::createMatchAll();

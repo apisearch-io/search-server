@@ -29,7 +29,7 @@ class TokenEndpointPermissionsLimitationEnvTest extends ServiceFunctionalTest
      *
      * @return void
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $_ENV['APISEARCH_TOKEN_ENDPOINT_PERMISSIONS_LIMITATION'] = \implode(',', [
             'v1_query_all_indices',

@@ -213,7 +213,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @throws Exception
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         static::runApisearchServer();
@@ -226,7 +226,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @return void
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::deleteEverything();
     }
@@ -267,7 +267,7 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
         }
 
         /*
-         * Let's wait for oldest process
+         * Let's wait for oldest process to finish
          */
         \sleep(2);
         if (static::$lastServer instanceof Process) {
@@ -281,9 +281,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
 
         static::$lastServer = static::runServer(
             $serverPath,
-            static::HTTP_TEST_SERVICE_PORT, static::quietServer() ? [
+            static::HTTP_TEST_SERVICE_PORT, \array_merge(static::quietServer() ? [
                 '--quiet',
-            ] : []
+            ] : [], static::serverConfiguration())
         );
         \sleep(2);
     }
@@ -347,6 +347,14 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     protected static function quietServer(): bool
     {
         return true;
+    }
+
+    /**
+     * @return string[]
+     */
+    protected static function serverConfiguration(): array
+    {
+        return [];
     }
 
     /**

@@ -33,7 +33,7 @@ class InMemoryTokenTest extends TokenTest
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->get('apisearch_server.tokens_repository_test')->reset();
 

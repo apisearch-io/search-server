@@ -79,35 +79,35 @@ trait LogsRepositoryTest
         $this->assertCount(2, $this->getLogs(self::$appId, null, static::$index));
 
         $logs = $this->getLogs();
-        $this->assertContains('not found', $logs[0]['text']);
+        $this->assertStringContainsString('not found', $logs[0]['text']);
         $this->assertEquals('404', $logs[0]['code']);
 
-        $this->assertContains('not found', $logs[1]['text']);
-        $this->assertContains('404', $logs[1]['code']);
+        $this->assertStringContainsString('not found', $logs[1]['text']);
+        $this->assertStringContainsString('404', $logs[1]['code']);
 
-        $this->assertContains('was created', $logs[2]['text']);
-        $this->assertContains(self::$index, $logs[2]['text']);
-        $this->assertContains('200', $logs[2]['code']);
+        $this->assertStringContainsString('was created', $logs[2]['text']);
+        $this->assertStringContainsString(self::$index, $logs[2]['text']);
+        $this->assertStringContainsString('200', $logs[2]['code']);
 
-        $this->assertContains('was created', $logs[3]['text']);
-        $this->assertContains(self::$anotherIndex, $logs[3]['text']);
-        $this->assertContains('200', $logs[3]['code']);
+        $this->assertStringContainsString('was created', $logs[3]['text']);
+        $this->assertStringContainsString(self::$anotherIndex, $logs[3]['text']);
+        $this->assertStringContainsString('200', $logs[3]['code']);
 
-        $this->assertContains('were deleted', $logs[4]['text']);
-        $this->assertContains('tokens', $logs[4]['text']);
-        $this->assertContains('200', $logs[4]['code']);
+        $this->assertStringContainsString('were deleted', $logs[4]['text']);
+        $this->assertStringContainsString('tokens', $logs[4]['text']);
+        $this->assertStringContainsString('200', $logs[4]['code']);
 
-        $this->assertContains('was created', $logs[5]['text']);
-        $this->assertContains('token ', $logs[5]['text']);
-        $this->assertContains('200', $logs[5]['code']);
+        $this->assertStringContainsString('was created', $logs[5]['text']);
+        $this->assertStringContainsString('token ', $logs[5]['text']);
+        $this->assertStringContainsString('200', $logs[5]['code']);
 
-        $this->assertContains('was deleted', $logs[6]['text']);
-        $this->assertContains('token ', $logs[6]['text']);
-        $this->assertContains('200', $logs[6]['code']);
+        $this->assertStringContainsString('was deleted', $logs[6]['text']);
+        $this->assertStringContainsString('token ', $logs[6]['text']);
+        $this->assertStringContainsString('200', $logs[6]['code']);
 
-        $this->assertContains('was configured', $logs[7]['text']);
-        $this->assertContains(self::$anotherIndex, $logs[7]['text']);
-        $this->assertContains('200', $logs[7]['code']);
+        $this->assertStringContainsString('was configured', $logs[7]['text']);
+        $this->assertStringContainsString(self::$anotherIndex, $logs[7]['text']);
+        $this->assertStringContainsString('200', $logs[7]['code']);
     }
 
     /**

@@ -48,10 +48,10 @@ trait QueryCommandTest
             'index' => self::$index,
         ]);
 
-        $this->assertContains('* / 1 / 10', $content);
-        $this->assertContains('[Number of hits] 750', $content);
-        $this->assertContains('mw0002400465~album - 15th Anniversary Collection', $content);
-        $this->assertContains('mw0002138578~album - Kelopuu: Pohjolan Molli', $content);
+        $this->assertStringContainsString('* / 1 / 10', $content);
+        $this->assertStringContainsString('[Number of hits] 750', $content);
+        $this->assertStringContainsString('mw0002400465~album - 15th Anniversary Collection', $content);
+        $this->assertStringContainsString('mw0002138578~album - Kelopuu: Pohjolan Molli', $content);
 
         $content2 = static::runCommand([
             'command' => 'apisearch-server:query',
@@ -60,10 +60,10 @@ trait QueryCommandTest
             'query' => 'Into',
         ]);
 
-        $this->assertContains('Into / 1 / 10', $content2);
-        $this->assertContains('[Number of hits] 7', $content2);
-        $this->assertContains('Into a Real Thing', $content2);
-        $this->assertContains('Riding the Light Into the Birds Eye', $content2);
+        $this->assertStringContainsString('Into / 1 / 10', $content2);
+        $this->assertStringContainsString('[Number of hits] 7', $content2);
+        $this->assertStringContainsString('Into a Real Thing', $content2);
+        $this->assertStringContainsString('Riding the Light Into the Birds Eye', $content2);
 
         $content3 = static::runCommand([
             'command' => 'apisearch-server:query',
@@ -74,10 +74,10 @@ trait QueryCommandTest
             '--size' => 2,
         ]);
 
-        $this->assertContains('Into / 1 / 2', $content3);
-        $this->assertContains('[Number of hits] 7', $content3);
-        $this->assertContains('Into Your Ears', $content3);
-        $this->assertNotContains('Into a Real Thing', $content3);
+        $this->assertStringContainsString('Into / 1 / 2', $content3);
+        $this->assertStringContainsString('[Number of hits] 7', $content3);
+        $this->assertStringContainsString('Into Your Ears', $content3);
+        $this->assertStringNotContainsString('Into a Real Thing', $content3);
 
         $content3 = static::runCommand([
             'command' => 'apisearch-server:query',
@@ -89,10 +89,10 @@ trait QueryCommandTest
             '--format' => 'lines',
         ]);
 
-        $this->assertContains('Into / 2 / 2', $content3);
-        $this->assertContains('[Number of hits] 7', $content3);
-        $this->assertNotContains('Into Your Ears', $content3);
-        $this->assertContains('Into a Real Thing', $content3);
+        $this->assertStringContainsString('Into / 2 / 2', $content3);
+        $this->assertStringContainsString('[Number of hits] 7', $content3);
+        $this->assertStringNotContainsString('Into Your Ears', $content3);
+        $this->assertStringContainsString('Into a Real Thing', $content3);
 
         \ob_start();
         static::runCommand([

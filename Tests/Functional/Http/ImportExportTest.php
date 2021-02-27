@@ -99,18 +99,18 @@ class ImportExportTest extends CurlFunctionalTest
         ]);
 
         $this->assertCount(5, $logs);
-        $this->assertContains('exported', $logs[0]['text']);
-        $this->assertContains(self::$index, $logs[0]['text']);
-        $this->assertContains('imported', $logs[1]['text']);
-        $this->assertContains('9911', $logs[1]['text']);
-        $this->assertContains(self::$index, $logs[1]['text']);
-        $this->assertContains('exported', $logs[2]['text']);
-        $this->assertContains(self::$index, $logs[2]['text']);
-        $this->assertContains('exported', $logs[3]['text']);
-        $this->assertContains(self::$index, $logs[3]['text']);
-        $this->assertContains('imported', $logs[4]['text']);
-        $this->assertNotContains('9911', $logs[4]['text']);
-        $this->assertContains(self::$index, $logs[4]['text']);
+        $this->assertStringContainsString('exported', $logs[0]['text']);
+        $this->assertStringContainsString(self::$index, $logs[0]['text']);
+        $this->assertStringContainsString('imported', $logs[1]['text']);
+        $this->assertStringContainsString('9911', $logs[1]['text']);
+        $this->assertStringContainsString(self::$index, $logs[1]['text']);
+        $this->assertStringContainsString('exported', $logs[2]['text']);
+        $this->assertStringContainsString(self::$index, $logs[2]['text']);
+        $this->assertStringContainsString('exported', $logs[3]['text']);
+        $this->assertStringContainsString(self::$index, $logs[3]['text']);
+        $this->assertStringContainsString('imported', $logs[4]['text']);
+        $this->assertStringNotContainsString('9911', $logs[4]['text']);
+        $this->assertStringContainsString(self::$index, $logs[4]['text']);
     }
 
     /**
@@ -174,7 +174,7 @@ class ImportExportTest extends CurlFunctionalTest
     {
         @\unlink('/tmp/dump.notfound');
         $this->expectException(InvalidFormatException::class);
-        $this->expectExceptionMessageRegExp('~Only .+? is allowed~');
+        $this->expectExceptionMessageMatches('~Only .+? is allowed~');
         $this->importIndexByFeed('another:///tmp/dump.notfound');
     }
 
@@ -187,7 +187,7 @@ class ImportExportTest extends CurlFunctionalTest
     {
         @\unlink('/tmp/dump.notfound');
         $this->expectException(InvalidFormatException::class);
-        $this->expectExceptionMessageRegExp('~.*Rows should have exactly.*~');
+        $this->expectExceptionMessageMatches('~.*Rows should have exactly.*~');
         $this->importIndexByFeed('file://'.__DIR__.'/dump.wrong.as');
     }
 
