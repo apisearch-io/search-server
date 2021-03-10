@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Domain\Repository\MetadataRepository;
 
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\ImperativeEvent\LoadAllMetadata;
 use Apisearch\Server\Domain\ImperativeEvent\LoadMetadata;
 use Drift\HttpKernel\AsyncKernelEvents;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
@@ -175,6 +176,16 @@ abstract class MetadataRepository implements EventSubscriberInterface
     }
 
     /**
+     * On Load all metadata event.
+     *
+     * @return PromiseInterface
+     */
+    public function onLoadAllMetadataEvent(): PromiseInterface
+    {
+        return $this->forceLoadAllMetadata();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
@@ -185,6 +196,9 @@ abstract class MetadataRepository implements EventSubscriberInterface
             ],
             LoadMetadata::class => [
                 ['onLoadMetadataEvent', 0],
+            ],
+            LoadAllMetadata::class => [
+                ['onLoadAllMetadataEvent', 0],
             ],
         ];
     }
