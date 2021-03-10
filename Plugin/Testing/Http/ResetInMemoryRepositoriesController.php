@@ -30,28 +30,28 @@ use React\Promise\PromiseInterface;
  */
 class ResetInMemoryRepositoriesController
 {
-    private InMemoryRepository $repository;
-    private InMemoryUsageRepository $usageRepository;
-    private InMemoryMetadataRepository $metadataRepository;
-    private InMemoryTokenRepository $tokenRepository;
-    private InMemoryInteractionRepository $interactionRepository;
-    private InMemoryLogRepository $logRepository;
+    private ?InMemoryRepository $repository;
+    private ?InMemoryUsageRepository $usageRepository;
+    private ?InMemoryMetadataRepository $metadataRepository;
+    private ?InMemoryTokenRepository $tokenRepository;
+    private ?InMemoryInteractionRepository $interactionRepository;
+    private ?InMemoryLogRepository $logRepository;
 
     /**
-     * @param InMemoryRepository            $repository
-     * @param InMemoryUsageRepository       $usageRepository
-     * @param InMemoryMetadataRepository    $metadataRepository
-     * @param InMemoryTokenRepository       $tokenRepository
-     * @param InMemoryInteractionRepository $interactionRepository
-     * @param InMemoryLogRepository         $logRepository
+     * @param InMemoryRepository|null            $repository
+     * @param InMemoryUsageRepository|null       $usageRepository
+     * @param InMemoryMetadataRepository|null    $metadataRepository
+     * @param InMemoryTokenRepository|null       $tokenRepository
+     * @param InMemoryInteractionRepository|null $interactionRepository
+     * @param InMemoryLogRepository|null         $logRepository
      */
     public function __construct(
-        InMemoryRepository $repository,
-        InMemoryUsageRepository $usageRepository,
-        InMemoryMetadataRepository $metadataRepository,
-        InMemoryTokenRepository $tokenRepository,
-        InMemoryInteractionRepository $interactionRepository,
-        InMemoryLogRepository $logRepository
+        ?InMemoryRepository $repository,
+        ?InMemoryUsageRepository $usageRepository,
+        ?InMemoryMetadataRepository $metadataRepository,
+        ?InMemoryTokenRepository $tokenRepository,
+        ?InMemoryInteractionRepository $interactionRepository,
+        ?InMemoryLogRepository $logRepository
     ) {
         $this->repository = $repository;
         $this->usageRepository = $usageRepository;
@@ -68,12 +68,12 @@ class ResetInMemoryRepositoriesController
     {
         return
             all([
-                $this->repository->reset(),
-                $this->usageRepository->reset(),
-                $this->metadataRepository->reset(),
-                $this->tokenRepository->reset(),
-                $this->interactionRepository->reset(),
-                $this->logRepository->reset(),
+                $this->repository ? $this->repository->reset() : null,
+                $this->usageRepository ? $this->usageRepository->reset() : null,
+                $this->metadataRepository ? $this->metadataRepository->reset() : null,
+                $this->tokenRepository ? $this->tokenRepository->reset() : null,
+                $this->interactionRepository ? $this->interactionRepository->reset() : null,
+                $this->logRepository ? $this->logRepository->reset() : null,
             ])
             ->then(function () {
                 return new Response();

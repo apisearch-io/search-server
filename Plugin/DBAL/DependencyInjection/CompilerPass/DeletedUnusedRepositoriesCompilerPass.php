@@ -23,6 +23,8 @@ use Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository;
+use Apisearch\Server\Domain\Repository\MetadataRepository\DiskMetadataRepository;
+use Apisearch\Server\Domain\Repository\MetadataRepository\InMemoryMetadataRepository;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -80,6 +82,14 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
             ],
             'apisearch_server.logs_repository_enabled'
         );
+
+        $this->deleteRepositories(
+            $container,
+            [
+                DiskMetadataRepository::class,
+                InMemoryMetadataRepository::class,
+            ]
+        );
     }
 
     /**
@@ -100,6 +110,21 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
             foreach ($repositories as $repositoryId) {
                 $container->removeDefinition($repositoryId);
             }
+        }
+    }
+
+    /**
+     * @param ContainerBuilder $container
+     * @param string[]         $repositories
+     *
+     * @return void
+     */
+    private function deleteRepositories(
+        ContainerBuilder $container,
+        array $repositories
+    ): void {
+        foreach ($repositories as $repositoryId) {
+            $container->removeDefinition($repositoryId);
         }
     }
 }
