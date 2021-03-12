@@ -168,6 +168,11 @@ class ElasticaWrapper implements AsyncRequestAccessor
             50 => 'asciifolding',
         ];
 
+        $exactSearchAnalyzerFilter = [
+            5 => 'lowercase',
+            50 => 'asciifolding',
+        ];
+
         $indexConfiguration = [
             'number_of_shards' => $config->getShards(),
             'number_of_replicas' => $config->getReplicas(),
@@ -184,6 +189,11 @@ class ElasticaWrapper implements AsyncRequestAccessor
                         'tokenizer' => 'standard',
                         'filter' => [],
                     ],
+                    'exact_search_analyzer' => [
+                        'type' => 'custom',
+                        'tokenizer' => 'keyword',
+                        'filter' => [],
+                    ],
                 ],
                 'filter' => [
                     'ngram_filter' => [
@@ -195,22 +205,13 @@ class ElasticaWrapper implements AsyncRequestAccessor
                         ],
                     ],
                 ],
-                'normalizer' => [
-                    'exact_matching_normalizer' => [
-                        'type' => 'custom',
-                        'filter' => [
-                            'lowercase',
-                            'asciifolding',
-                        ],
-                    ],
-                ],
             ],
         ];
 
         $stopWordsLanguage = ElasticaLanguages::getStopWordsLanguageByIso($language);
         if (!\is_null($stopWordsLanguage)) {
             $defaultAnalyzerFilter[30] = 'stop_words';
-            // $searchAnalyzerFilter[30] = 'stop_words';
+            $exactSearchAnalyzerFilter[30] = 'stop_words';
             $indexConfiguration['analysis']['filter']['stop_words'] = [
                 'type' => 'stop',
                 'stopwords' => $stopWordsLanguage,
@@ -229,6 +230,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $synonyms = $config->getSynonyms();
         if (!empty($synonyms)) {
             $defaultAnalyzerFilter[40] = 'synonym';
+            $exactSearchAnalyzerFilter[40] = 'synonym';
             $indexConfiguration['analysis']['filter']['synonym'] = [
                 'type' => 'synonym',
                 'synonyms' => \array_map(function (Synonym $synonym) {
@@ -241,6 +243,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         \ksort($searchAnalyzerFilter, SORT_NUMERIC);
         $indexConfiguration['analysis']['analyzer']['default']['filter'] = \array_values($defaultAnalyzerFilter);
         $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = \array_values($searchAnalyzerFilter);
+        $indexConfiguration['analysis']['analyzer']['exact_search_analyzer']['filter'] = \array_values($exactSearchAnalyzerFilter);
 
         return ['settings' => $indexConfiguration];
     }
@@ -338,8 +341,9 @@ class ElasticaWrapper implements AsyncRequestAccessor
                 'dynamic' => true,
             ],
             'exact_matching_metadata' => [
-                'type' => 'keyword',
-                'normalizer' => 'exact_matching_normalizer',
+                'type' => 'text',
+                'analyzer' => 'exact_search_analyzer',
+                'search_analyzer' => 'exact_search_analyzer',
             ],
             'suggest' => [
                 'type' => 'completion',

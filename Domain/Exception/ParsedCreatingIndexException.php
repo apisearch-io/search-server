@@ -22,8 +22,6 @@ use Apisearch\Exception\ResourceExistsException;
  */
 class ParsedCreatingIndexException
 {
-    public static $status;
-
     /**
      * Index is not available.
      *
