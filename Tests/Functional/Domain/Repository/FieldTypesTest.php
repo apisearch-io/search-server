@@ -42,6 +42,6 @@ trait FieldTypesTest
         $this->assertEquals('completion', $fields['suggest']);
         $this->assertEquals('keyword', $fields['uuid.id']);
         $this->assertEquals('keyword', $fields['uuid.type']);
-        $this->assertEquals('keyword', $fields['exact_matching_metadata']);
+        $this->assertEquals('text', $fields['exact_matching_metadata']);
     }
 }

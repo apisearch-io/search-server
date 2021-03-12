@@ -173,6 +173,7 @@ items:
             description: Código de Hernando
         exact_matching_metadata:
             - engonga
+            - composed word
         suggest:
             - Engonga
             - bar
@@ -264,6 +265,7 @@ items:
                 - "anotherboosting"
         exact_matching_metadata:
             - Vinci
+            - another composed word
         suggest:
             - Barcelona
             - Badalona
