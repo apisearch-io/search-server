@@ -36,6 +36,7 @@ use function Drift\React\wait_for_stream_listeners;
 use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
 use Elastica\ResultSet as ElasticaResultSet;
 use React\EventLoop\LoopInterface;
+use function React\Promise\all;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
 use React\Stream\DuplexStreamInterface;
@@ -93,8 +94,8 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         Query $query
     ): PromiseInterface {
         return (\count($query->getSubqueries()) > 0)
-            ? $this->makeMultiQuery($repositoryReference, $query)
-            : $this->makeSimpleQuery($repositoryReference, $query);
+            ? $this->makeMultipleQueryOrMatchExclusiveText($repositoryReference, $query)
+            : $this->makeSimpleQueryOrMatchExclusiveText($repositoryReference, $query);
     }
 
     /**
@@ -157,12 +158,39 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
     }
 
     /**
-     * Make simple query.
-     *
      * @param RepositoryReference $repositoryReference
      * @param Query               $query
      *
-     * @return PromiseInterface
+     * @return PromiseInterface<Result>
+     */
+    private function makeSimpleQueryOrMatchExclusiveText(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        if (true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)) {
+            return $this->makeSimpleQuery($repositoryReference, $query);
+        }
+
+        return $this
+            ->queryMatchesExclusiveExactMatchingMetadata(
+                $repositoryReference,
+                $query
+            )
+            ->then(function (bool $matches) use ($query, $repositoryReference) {
+                if ($matches) {
+                    $query = clone $query;
+                    $query->setSearchableFields(['exact_matching_metadata']);
+                }
+
+                return $this->makeSimpleQuery($repositoryReference, $query);
+            });
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface<Result>
      */
     private function makeSimpleQuery(
         RepositoryReference $repositoryReference,
@@ -194,6 +222,44 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
     }
 
     /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface<Result>
+     */
+    private function makeMultipleQueryOrMatchExclusiveText(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        if (true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)) {
+            return $this->makeMultiQuery($repositoryReference, $query);
+        }
+
+        return
+            all(\array_map(function (Query $query) use ($repositoryReference) {
+                return $this
+                    ->queryMatchesExclusiveExactMatchingMetadata(
+                        $repositoryReference,
+                        $query
+                    )
+                    ->then(function (bool $matches) use ($query, $repositoryReference) {
+                        if ($matches) {
+                            $query = clone $query;
+                            $query->setSearchableFields(['exact_matching_metadata']);
+                        }
+
+                        return $query;
+                    });
+            }, $query->getSubqueries()))
+            ->then(function (array $queries) use ($repositoryReference) {
+                return $this->makeMultiQuery(
+                    $repositoryReference,
+                    Query::createMultiquery($queries)
+                );
+            });
+    }
+
+    /**
      * Make multi query.
      *
      * @param RepositoryReference $repositoryReference
@@ -206,9 +272,9 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         Query $query
     ): PromiseInterface {
         $searches = [];
-        $repositoryReferencies = [];
+        $repositoryReferences = [];
         foreach ($query->getSubqueries() as $name => $subquery) {
-            $repositoryReferencies[] = $this->getRepositoryReferenceIndexSpecific(
+            $repositoryReferences[] = $this->getRepositoryReferenceIndexSpecific(
                 $repositoryReference,
                 $subquery->getIndexUUID()
             );
@@ -220,14 +286,14 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                 $subquery->areResultsEnabled()
                     ? $subquery->getSize()
                     : 0,
-                $name
+                \strval($name)
             );
         }
 
         return $this
             ->elasticaWrapper
             ->multisearch(
-                $repositoryReferencies,
+                $repositoryReferences,
                 $searches
             )
             ->then(function (ElasticaMultiResultSet $multiResultSet) use ($query) {
@@ -235,6 +301,35 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
                     $query,
                     $multiResultSet
                 );
+            });
+    }
+
+    /**
+     * @param RepositoryReference $repositoryReference
+     * @param Query               $query
+     *
+     * @return PromiseInterface<bool>
+     */
+    private function queryMatchesExclusiveExactMatchingMetadata(
+        RepositoryReference $repositoryReference,
+        Query $query
+    ): PromiseInterface {
+        return $this
+            ->elasticaWrapper
+            ->simpleSearch($repositoryReference, new Search(
+                $this->createElasticaQueryByModelQuery(Query::create($query->getQueryText(), 1, 1)
+                    ->setSearchableFields(['exact_matching_metadata'])
+                    ->disableResults()
+                    ->disableAggregations()
+                    ->disableHighlights()
+                    ->disableSuggestions()), 0, 0))
+            ->then(function (ElasticaResultSet $resultSet) use ($query, $repositoryReference) {
+                $result = $this->elasticaResultSetToResult(
+                    $query,
+                    $resultSet
+                );
+
+                return $result->getTotalHits() > 0;
             });
     }
 

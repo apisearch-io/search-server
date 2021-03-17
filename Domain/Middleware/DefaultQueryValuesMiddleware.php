@@ -15,18 +15,17 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
+use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Query\Query;
 use Drift\CommandBus\Middleware\DiscriminableMiddleware;
+use React\Promise\PromiseInterface;
 
 /**
  * Class DefaultQueryValuesMiddleware.
  */
 final class DefaultQueryValuesMiddleware implements DiscriminableMiddleware
 {
-    /**
-     * @var int
-     */
-    private $defaultNumberOfSuggestions;
+    private int $defaultNumberOfSuggestions;
 
     /**
      * @param int $defaultNumberOfSuggestions
@@ -40,11 +39,12 @@ final class DefaultQueryValuesMiddleware implements DiscriminableMiddleware
      * @param Query    $query
      * @param callable $next
      *
-     * @return mixed
+     * @return PromiseInterface<Result>
      */
-    public function execute($query, callable $next)
+    public function execute(Query $query, callable $next): PromiseInterface
     {
         $queryModel = $query->getQuery();
+
         if ($queryModel->areSuggestionsEnabled()) {
             $numberOfSuggestionsField = 'number_of_suggestions';
             $queryModel->setMetadataValue(

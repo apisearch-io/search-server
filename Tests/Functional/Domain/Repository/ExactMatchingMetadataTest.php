@@ -23,13 +23,13 @@ use Apisearch\Query\Query;
 trait ExactMatchingMetadataTest
 {
     /**
-     * Test metadata.
-     *
      * @return void
      */
     public function testSpecialWords(): void
     {
-        $item = $this->query(Query::create('Vinci'))->getItems()[0];
+        $items = $this->query(Query::create('Vinci'))->getItems();
+        $this->assertCount(2, $items);
+        $item = $items[0];
         $this->assertSame(
             '5',
             $item->getUUID()->getId()
@@ -52,5 +52,56 @@ trait ExactMatchingMetadataTest
             '3',
             $item->getUUID()->getId()
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function testExclusiveExactMatching()
+    {
+        $result = $this->query(Query::create('Vinc')->setMetadataValue('exclusive_exact_matching_metadata', true));
+        $items = $result->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('3', $items[0]->getId());
+
+        $result = $this->query(Query::create('Vinci')->setMetadataValue('exclusive_exact_matching_metadata', true));
+        $items = $result->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('5', $items[0]->getId());
+
+        $result = $this->query(Query::create('another composed wor')->setMetadataValue('exclusive_exact_matching_metadata', true));
+        $this->assertCount(2, $result->getItems());
+
+        $result = $this->query(Query::create('another composed word')->setMetadataValue('exclusive_exact_matching_metadata', true));
+        $items = $result->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('5', $items[0]->getId());
+    }
+
+    /**
+     * @return void
+     */
+    public function testExclusiveExactMatchingMultiQuery()
+    {
+        $result = $this->query(Query::createMultiquery([
+            Query::create('Vinc'),
+            Query::create('Vinci'),
+            Query::create('another composed wor'),
+            Query::create('another composed word'),
+        ])->setMetadataValue('exclusive_exact_matching_metadata', true));
+
+        $items = $result->getSubresults()[0]->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('3', $items[0]->getId());
+
+        $items = $result->getSubresults()[1]->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('5', $items[0]->getId());
+
+        $this->assertCount(2, $result->getSubresults()[2]->getItems());
+
+        $items = $result->getSubresults()[3]->getItems();
+        $this->assertCount(1, $items);
+        $this->assertEquals('5', $items[0]->getId());
     }
 }
