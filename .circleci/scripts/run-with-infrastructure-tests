@@ -1,0 +1,23 @@
+until $(curl --output /dev/null --silent --fail "http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow&timeout=10s"); do
+    echo "$(date) - can't connect to 127.0.0.1:9200"
+    sleep 1;
+done
+
+until $(curl --output /dev/null --silent --fail "http://apisearch.elasticsearch.7.0:9200/_cluster/health?wait_for_status=yellow&timeout=10s"); do
+    echo "$(date) - can't connect to apisearch.elasticsearch.7.0:9200"
+    sleep 1;
+done
+
+while ! nc -z 127.0.0.1 5672;
+do
+  echo "$(date) - can't connect to 127.0.0.1:5672"
+  sleep 1;
+done;
+
+while ! nc -z 127.0.0.1 6379;
+do
+  echo "$(date) - can't connect to 127.0.0.1:6379"
+  sleep 1;
+done;
+
+php vendor/bin/phpunit --testsuite with-infrastructure

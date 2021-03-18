@@ -16,11 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\Testing\Console;
 
 use Apisearch\Model\ItemUUID;
-use Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository;
-use Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository;
-use Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\Origin;
+use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
+use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
+use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use function Clue\React\Block\awaitAll;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Command\Command;
@@ -36,21 +36,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateMetricsCommand extends Command
 {
     protected static $defaultName = 'generator:metrics';
-    private DBALSearchesRepository $searchesRepository;
-    private DBALUsageRepository $usageRepository;
-    private DBALInteractionRepository $interactionRepository;
+    private SearchesRepository $searchesRepository;
+    private UsageRepository $usageRepository;
+    private InteractionRepository $interactionRepository;
     private LoopInterface $loop;
 
     /**
-     * @param DBALSearchesRepository    $searchesRepository
-     * @param DBALUsageRepository       $usageRepository
-     * @param DBALInteractionRepository $interactionRepository
-     * @param LoopInterface             $loop
+     * @param SearchesRepository    $searchesRepository
+     * @param UsageRepository       $usageRepository
+     * @param InteractionRepository $interactionRepository
+     * @param LoopInterface         $loop
      */
     public function __construct(
-        DBALSearchesRepository $searchesRepository,
-        DBALUsageRepository $usageRepository,
-        DBALInteractionRepository $interactionRepository,
+        SearchesRepository $searchesRepository,
+        UsageRepository $usageRepository,
+        InteractionRepository $interactionRepository,
         LoopInterface $loop
     ) {
         parent::__construct();

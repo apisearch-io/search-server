@@ -90,8 +90,6 @@ trait SearchesRepositoryTest
     /**
      * Test basic.
      *
-     * @group lol
-     *
      * @return void
      */
     public function testBasic(): void

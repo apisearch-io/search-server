@@ -1510,16 +1510,16 @@
         },
         {
             "name": "drift/dbal",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/reactphp-dbal.git",
-                "reference": "3b180d292fabf7c5c76b5b7a942692e5f51ca34f"
+                "reference": "3be598cd8e49b4f5949f03161cf0e80b4411654f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/reactphp-dbal/zipball/3b180d292fabf7c5c76b5b7a942692e5f51ca34f",
-                "reference": "3b180d292fabf7c5c76b5b7a942692e5f51ca34f",
+                "url": "https://api.github.com/repos/driftphp/reactphp-dbal/zipball/3be598cd8e49b4f5949f03161cf0e80b4411654f",
+                "reference": "3be598cd8e49b4f5949f03161cf0e80b4411654f",
                 "shasum": ""
             },
             "require": {
@@ -1558,9 +1558,9 @@
             "description": "DBAL for ReactPHP on top of Doctrine",
             "support": {
                 "issues": "https://github.com/driftphp/reactphp-dbal/issues",
-                "source": "https://github.com/driftphp/reactphp-dbal/tree/0.1.3"
+                "source": "https://github.com/driftphp/reactphp-dbal/tree/0.1.4"
             },
-            "time": "2021-03-04T16:30:04+00:00"
+            "time": "2021-03-18T17:54:59+00:00"
         },
         {
             "name": "drift/dbal-bundle",

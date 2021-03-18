@@ -57,8 +57,8 @@ abstract class ControllerWithQueryBus extends BaseController
     protected function getDateRangeFromRequest(Request $request): array
     {
         $query = $request->query;
-        $from = $query->get('from');
-        $to = $query->get('to');
+        $from = \strval($query->get('from'));
+        $to = \strval($query->get('to'));
 
         return DateTimeFormatter::normalizeRange($from, $to);
     }

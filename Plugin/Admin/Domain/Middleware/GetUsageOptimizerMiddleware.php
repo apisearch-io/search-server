@@ -63,7 +63,7 @@ class GetUsageOptimizerMiddleware implements PluginMiddleware
         }
 
         if (
-            $getUsage->getFrom()->format('Ymd') === (new DateTime('15 days ago'))->format('Ymd') &&
+            $getUsage->getFrom()->format('Ymd') === (new DateTime('14 days ago'))->format('Ymd') &&
             null !== $getUsage->getTo() &&
             $getUsage->getTo()->format('Ymd') === (new DateTime('tomorrow'))->format('Ymd') &&
             $getUsage->isPerDay() &&

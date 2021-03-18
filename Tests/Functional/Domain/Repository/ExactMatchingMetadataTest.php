@@ -84,11 +84,12 @@ trait ExactMatchingMetadataTest
     public function testExclusiveExactMatchingMultiQuery()
     {
         $result = $this->query(Query::createMultiquery([
-            Query::create('Vinc'),
-            Query::create('Vinci'),
-            Query::create('another composed wor'),
+            Query::create('Vinc')->setMetadataValue('exclusive_exact_matching_metadata', true),
+            Query::create('Vinci')->setMetadataValue('exclusive_exact_matching_metadata', true),
+            Query::create('another composed wor')->setMetadataValue('exclusive_exact_matching_metadata', true),
+            Query::create('another composed word')->setMetadataValue('exclusive_exact_matching_metadata', true),
             Query::create('another composed word'),
-        ])->setMetadataValue('exclusive_exact_matching_metadata', true));
+        ]));
 
         $items = $result->getSubresults()[0]->getItems();
         $this->assertCount(1, $items);
@@ -103,5 +104,7 @@ trait ExactMatchingMetadataTest
         $items = $result->getSubresults()[3]->getItems();
         $this->assertCount(1, $items);
         $this->assertEquals('5', $items[0]->getId());
+
+        $this->assertCount(2, $result->getSubresults()[4]->getItems());
     }
 }

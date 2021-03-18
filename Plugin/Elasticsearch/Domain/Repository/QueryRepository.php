@@ -167,7 +167,10 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         RepositoryReference $repositoryReference,
         Query $query
     ): PromiseInterface {
-        if (true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)) {
+        if (
+            '' === $query->getQueryText() ||
+            true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)
+        ) {
             return $this->makeSimpleQuery($repositoryReference, $query);
         }
 
@@ -231,12 +234,15 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         RepositoryReference $repositoryReference,
         Query $query
     ): PromiseInterface {
-        if (true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)) {
-            return $this->makeMultiQuery($repositoryReference, $query);
-        }
-
         return
             all(\array_map(function (Query $query) use ($repositoryReference) {
+                if (
+                    '' === $query->getQueryText() ||
+                    true !== ($query->getMetadata()['exclusive_exact_matching_metadata'] ?? null)
+                ) {
+                    return $query;
+                }
+
                 return $this
                     ->queryMatchesExclusiveExactMatchingMetadata(
                         $repositoryReference,

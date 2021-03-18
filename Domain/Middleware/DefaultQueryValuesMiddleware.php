@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Domain\Middleware;
 
+use Apisearch\Query\Query as QueryModel;
 use Apisearch\Result\Result;
 use Apisearch\Server\Domain\Query\Query;
 use Drift\CommandBus\Middleware\DiscriminableMiddleware;
@@ -45,6 +46,24 @@ final class DefaultQueryValuesMiddleware implements DiscriminableMiddleware
     {
         $queryModel = $query->getQuery();
 
+        if (!empty($queryModel->getSubqueries())) {
+            foreach ($queryModel->getSubqueries() as $subquery) {
+                $this->setQueryDefaultValues($subquery);
+            }
+        } else {
+            $this->setQueryDefaultValues($queryModel);
+        }
+
+        return $next($query);
+    }
+
+    /**
+     * Set default values to a query.
+     *
+     * @param QueryModel $queryModel
+     */
+    private function setQueryDefaultValues(QueryModel $queryModel)
+    {
         if ($queryModel->areSuggestionsEnabled()) {
             $numberOfSuggestionsField = 'number_of_suggestions';
             $queryModel->setMetadataValue(
@@ -52,8 +71,6 @@ final class DefaultQueryValuesMiddleware implements DiscriminableMiddleware
                 $queryModel->getMetadata()[$numberOfSuggestionsField] ?? $this->defaultNumberOfSuggestions
             );
         }
-
-        return $next($query);
     }
 
     /**

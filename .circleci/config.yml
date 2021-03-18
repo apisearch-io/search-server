@@ -12,18 +12,7 @@ jobs:
         docker:
             -   image: circleci/php:7.4.4-cli
             -   image: redis:4-alpine
-            -   image: docker.elastic.co/elasticsearch/elasticsearch:6.1.4
-                name: apisearch.elasticsearch.6.1
-                environment:
-                    ES_JAVA_OPTS: -Xms256m -Xmx256m
-                    discovery.type: single-node
-                    action.auto_create_index: -apisearch*,+*
-            -   image: docker.elastic.co/elasticsearch/elasticsearch:6.8.0
-                name: apisearch.elasticsearch.6.8
-                environment:
-                    ES_JAVA_OPTS: -Xms256m -Xmx256m
-                    discovery.type: single-node
-                    action.auto_create_index: -apisearch*,+*
+            -   image: rabbitmq:3-alpine
             -   image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
                 name: apisearch.elasticsearch.7.0
                 environment:
@@ -54,7 +43,7 @@ jobs:
             -   run:
                     name: Run tests
                     command: |
-                        php vendor/bin/phpunit --testsuite with-infrastructure
+                        sh .circleci/scripts/run-with-infrastructure-tests
 
 
     without-infrastructure:

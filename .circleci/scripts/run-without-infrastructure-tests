@@ -1,6 +1,3 @@
-#!/bin/bash
-
-cd /var/www
-apk add git
-composer install -n --no-suggest
-php vendor/bin/phpunit --testsuite domain
+apk add bash
+composer install -n --dev
+php vendor/bin/phpunit --testsuite without-infrastructure

@@ -108,8 +108,6 @@ trait GetIndicesTest
     /**
      * Test get indices with deleted index.
      *
-     * @group lol
-     *
      * @return void
      */
     public function testGetIndicesWithDeletedIndex(): void
