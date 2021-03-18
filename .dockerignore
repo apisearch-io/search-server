@@ -1,4 +1,5 @@
 .env
+._env
 .env.dist
 .formatter.yml
 .git

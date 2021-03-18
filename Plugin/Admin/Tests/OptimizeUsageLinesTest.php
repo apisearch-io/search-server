@@ -54,8 +54,13 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
         $usage = $response['body'];
 
         $this->assertEquals([
-            'admin' => 10,
-            'query' => 30,
+            'data' => [
+                'admin' => 10,
+                'query' => 30,
+            ],
+            'days' => 2,
+            'from' => \strval($today - 1),
+            'to' => \strval($today + 1),
         ], $usage);
     }
 

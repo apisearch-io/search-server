@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Apisearch\Search\Domain\Middleware;
+namespace Apisearch\Server\Tests\Functional\Infrastructure;
 
 use Apisearch\Server\Tests\Functional\ServiceFunctionalTest;
 

@@ -117,9 +117,10 @@ final class DBALSearchesRepository implements SearchesRepository
             $groupBy[] = 's.time';
         }
 
-        $queryBuilder
-            ->select(\implode(', ', $fields))
-            ->groupBy(\implode(', ', $groupBy));
+        $queryBuilder->select(\implode(', ', $fields));
+        if (!empty($groupBy)) {
+            $queryBuilder->groupBy(\implode(', ', $groupBy));
+        }
 
         $parameters = [];
         $this->applyFilterToQueryBuilder($queryBuilder, $filter, $parameters);

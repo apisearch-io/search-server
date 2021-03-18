@@ -32,6 +32,7 @@ class PreloadAllMetricsTest extends ServiceFunctionalTest
     /**
      * @param DateTime|null $from
      * @param DateTime|null $to
+     * @param string        $days
      *
      * @dataProvider dataThisMonthPreloadedMetrics
      *
@@ -39,10 +40,13 @@ class PreloadAllMetricsTest extends ServiceFunctionalTest
      */
     public function testThisMonthPreloadedMetrics(
         ?DateTime $from,
-        ?DateTime $to
+        ?DateTime $to,
+        string $days
     ): void {
         $this->get('apisearch_server.usage_lines_repository_test')->reset();
         $this->get('apisearch_server.metadata_repository_test')->reset();
+        $resultFrom = ($from ?? new DateTime('first day of this month'))->format('Ymd');
+        $resultTo = ($to ?? new DateTime('first day of next month'))->format('Ymd');
 
         $today = (new DateTime())->format('Ymd');
         $this->query(Query::createMatchAll());
@@ -60,32 +64,52 @@ class PreloadAllMetricsTest extends ServiceFunctionalTest
         $this->dispatchImperative(new LoadMetadata(RepositoryReference::createFromComposed(self::$appId.'_'.self::$index)));
 
         $usage = $this->getUsage(self::$appId, null, self::$index, $from, $to, null, true);
-        $this->assertEquals([$today => [
-            'query' => 3,
-            'admin' => 1,
-        ]], $usage);
+        $this->assertEquals([
+            'data' => [$today => [
+                'query' => 3,
+                'admin' => 1,
+            ]],
+            'days' => $days,
+            'from' => $resultFrom,
+            'to' => $resultTo,
+        ], $usage);
         $this->query(Query::createMatchAll());
         static::indexTestingItems();
         $usage = $this->getUsage(self::$appId, null, self::$index, $from, $to, null, true);
-        $this->assertEquals([$today => [
-            'query' => 3,
-            'admin' => 1,
-        ]], $usage);
+        $this->assertEquals([
+            'data' => [$today => [
+                'query' => 3,
+                'admin' => 1,
+            ]],
+            'days' => $days,
+            'from' => $resultFrom,
+            'to' => $resultTo,
+        ], $usage);
 
         self::executeCommand(new PreloadAllMetrics());
 
         $usage = $this->getUsage(self::$appId, null, self::$index, $from, $to, null, true);
-        $this->assertEquals([$today => [
-            'query' => 3,
-            'admin' => 1,
-        ]], $usage);
+        $this->assertEquals([
+            'data' => [$today => [
+                'query' => 3,
+                'admin' => 1,
+            ]],
+            'days' => $days,
+            'from' => $resultFrom,
+            'to' => $resultTo,
+        ], $usage);
 
         $this->dispatchImperative(new LoadMetadata(RepositoryReference::createFromComposed(self::$appId.'_'.self::$index)));
         $usage = $this->getUsage(self::$appId, null, self::$index, $from, $to, null, true);
-        $this->assertEquals([$today => [
-            'query' => 4,
-            'admin' => 2,
-        ]], $usage);
+        $this->assertEquals([
+            'data' => [$today => [
+                'query' => 4,
+                'admin' => 2,
+            ]],
+            'days' => $days,
+            'from' => $resultFrom,
+            'to' => $resultTo,
+        ], $usage);
     }
 
     /**
@@ -94,8 +118,8 @@ class PreloadAllMetricsTest extends ServiceFunctionalTest
     public function dataThisMonthPreloadedMetrics(): array
     {
         return [
-            [null, null], // This month
-            [new DateTime('15 days ago'), new DateTime('tomorrow')], // Last 15 days
+            [null, null, \strval(\date('t'))], // This month
+            [new DateTime('14 days ago'), new DateTime('tomorrow'), '15'], // Last 15 days
         ];
     }
 }

@@ -58,7 +58,7 @@ class GetUsageController extends ControllerWithQueryBusAsGod
                     [
                         'data' => $usage,
                         'from' => $from->format('Ymd'),
-                        'to' => $from->format('Ymd'),
+                        'to' => $to->format('Ymd'),
                         'days' => $days,
                     ],
                     200, [

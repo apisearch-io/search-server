@@ -552,7 +552,7 @@ abstract class FullRepositoryTest extends BaseUnitTest
      * @return RepositoryReference
      */
     private function createRepositoryReference(
-        string $appId = 'app1',
+        ?string $appId = 'app1',
         ?string $indexId = 'index1'
     ): RepositoryReference {
         return \is_null($indexId)

@@ -568,7 +568,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
     ): PromiseInterface {
         $endpoint = new CreateIndex();
         $endpoint->setBody($this->getImmutableIndexConfiguration($config));
-        Polyfill\Type::setEndpointType($endpoint, $this->elasticsearchVersion);
 
         return $this
             ->client
@@ -628,7 +627,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
     public function deleteIndexByName(string $indexName): PromiseInterface
     {
         $endpoint = new DeleteIndex();
-        Polyfill\Type::setEndpointType($endpoint, $this->elasticsearchVersion);
 
         return $this
             ->client
@@ -883,7 +881,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
     ): PromiseInterface {
         $endpoint = new PutMapping();
         $endpoint->setBody($this->getIndexMapping($config));
-        Polyfill\Type::setEndpointType($endpoint, $this->elasticsearchVersion);
 
         return $this
             ->client
@@ -920,7 +917,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $endpoint->setParams([
             'refresh' => $refresh,
         ]);
-        Polyfill\Type::setEndpointType($endpoint, $this->elasticsearchVersion);
 
         return $this
             ->client

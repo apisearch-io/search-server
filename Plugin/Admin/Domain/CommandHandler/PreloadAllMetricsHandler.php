@@ -57,7 +57,7 @@ class PreloadAllMetricsHandler
     public function handle(PreloadAllMetrics $preloadAllMetrics): PromiseInterface
     {
         return all([
-            $this->preloadLastNDaysUsages(15, MetricsPreloadKeys::LAST_15_DAYS_USAGES_ALL),
+            $this->preloadLastNDaysUsages(14, MetricsPreloadKeys::LAST_15_DAYS_USAGES_ALL),
             $this->preloadCurrentMonth(),
         ]);
     }
@@ -75,7 +75,7 @@ class PreloadAllMetricsHandler
         $from = (new DateTime('today'))->modify('-'.$days.' days');
         $to = (new DateTime('tomorrow'));
 
-        return all(\array_map(function (RepositoryReference $repositoryReference) use ($from, $to, $days, $key) {
+        return all(\array_map(function (RepositoryReference $repositoryReference) use ($from, $to, $key) {
             return $this->preloadPerIntervalKeyAndRepositoryReference(
                 $repositoryReference,
                 $from,
@@ -133,7 +133,7 @@ class PreloadAllMetricsHandler
                         'data' => $usages,
                         'from' => $from->format('Ymd'),
                         'to' => $to->format('Ymd'),
-                        'days' => ($to->diff($from)->days - 1),
+                        'days' => ($to->diff($from)->days),
                     ]);
             });
     }

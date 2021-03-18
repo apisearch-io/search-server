@@ -170,5 +170,7 @@ class InMemoryLogRepository implements TemporaryLogRepository, ResetableReposito
     public function reset(): PromiseInterface
     {
         $this->logs = [];
+
+        return resolve();
     }
 }

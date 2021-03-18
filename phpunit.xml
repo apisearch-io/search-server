@@ -46,13 +46,17 @@
         <testsuite name="without-infrastructure">
             <directory>Tests/</directory>
             <directory>Plugin/</directory>
+            <exclude>Tests/Functional/Infrastructure</exclude>
             <exclude>Plugin/Elasticsearch/</exclude>
+            <exclude>Plugin/Campaign/</exclude>
             <exclude>Plugin/Logstash</exclude>
             <exclude>Plugin/Security</exclude>
         </testsuite>
 
         <testsuite name="with-infrastructure">
+            <directory>Tests/Functional/Infrastructure</directory>
             <directory>Plugin/Elasticsearch/</directory>
+            <directory>Plugin/Campaign/</directory>
             <directory>Plugin/Logstash</directory>
             <directory>Plugin/Security</directory>
         </testsuite>

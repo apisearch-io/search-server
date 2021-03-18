@@ -123,9 +123,10 @@ final class DBALInteractionRepository implements InteractionRepository
             $groupBy[] = 'i.time';
         }
 
-        $queryBuilder
-            ->select(\implode(', ', $fields))
-            ->groupBy(\implode(', ', $groupBy));
+        $queryBuilder->select(\implode(', ', $fields));
+        if (!empty($groupBy)) {
+            $queryBuilder->groupBy(\implode(', ', $groupBy));
+        }
 
         $parameters = [];
         $this->applyFilterToQueryBuilder($queryBuilder, $filter, $parameters);
