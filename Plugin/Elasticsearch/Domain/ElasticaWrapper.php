@@ -205,6 +205,15 @@ class ElasticaWrapper implements AsyncRequestAccessor
                         ],
                     ],
                 ],
+                'normalizer' => [
+                    'indexed_exact_matching_metadata' => [
+                        'type' => 'custom',
+                        'char_filter' => [],
+                        'filter' => [
+                            'lowercase',
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -343,12 +352,14 @@ class ElasticaWrapper implements AsyncRequestAccessor
             'exact_matching_metadata' => [
                 'type' => 'text',
                 'analyzer' => 'exact_search_analyzer',
-                'search_analyzer' => 'exact_search_analyzer',
+            ],
+            'indexed_exact_matching_metadata' => [
+                'type' => 'keyword',
+                'normalizer' => 'indexed_exact_matching_metadata',
             ],
             'suggest' => [
                 'type' => 'completion',
                 'analyzer' => 'search_analyzer',
-                'search_analyzer' => 'search_analyzer',
             ],
         ];
 
@@ -1116,7 +1127,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
      * Makes calls to the elasticsearch server with usage official client Endpoint based on this index.
      *
      * @param AbstractEndpoint $endpoint
-     * @param string           $index
+     * @param string|null      $index
      *
      * @return PromiseInterface
      */

@@ -16,6 +16,7 @@ declare(strict_types=1);
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
 use Apisearch\Query\Query;
+use Apisearch\Query\SortBy;
 
 /**
  * Class ExactMatchingMetadataTest.
@@ -23,88 +24,58 @@ use Apisearch\Query\Query;
 trait ExactMatchingMetadataTest
 {
     /**
+     * @param string      $query
+     * @param int         $numberOfResults
+     * @param string|null $firstResultId
+     * @param string|null $secondResultId
+     *
      * @return void
+     *
+     * @dataProvider dataProgressiveExactMatchingMultiQuery
      */
-    public function testSpecialWords(): void
-    {
-        $items = $this->query(Query::create('Vinci'))->getItems();
-        $this->assertCount(2, $items);
-        $item = $items[0];
-        $this->assertSame(
-            '5',
-            $item->getUUID()->getId()
+    public function testProgressiveExactMatchingMultiQuery(
+        string $query,
+        int $numberOfResults,
+        string $firstResultId = null,
+        string $secondResultId = null
+    ) {
+        $result = $this->query(Query::create($query)
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
         );
 
-        $item = $this->query(Query::create('vinci'))->getItems()[0];
-        $this->assertSame(
-            '5',
-            $item->getUUID()->getId()
-        );
-
-        $item = $this->query(Query::create('vinc'))->getItems()[0];
-        $this->assertSame(
-            '3',
-            $item->getUUID()->getId()
-        );
-
-        $item = $this->query(Query::create('engonga'))->getItems()[0];
-        $this->assertSame(
-            '3',
-            $item->getUUID()->getId()
-        );
+        $items = $result->getItems();
+        $this->assertCount($numberOfResults, $items);
+        if ($firstResultId) {
+            $this->assertEquals($firstResultId, $items[0]->getId());
+        }
+        if ($secondResultId) {
+            $this->assertEquals($secondResultId, $items[1]->getId());
+        }
     }
 
-    /**
-     * @return void
-     */
-    public function testExclusiveExactMatching()
+    public function dataProgressiveExactMatchingMultiQuery()
     {
-        $result = $this->query(Query::create('Vinc')->setMetadataValue('exclusive_exact_matching_metadata', true));
-        $items = $result->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('3', $items[0]->getId());
-
-        $result = $this->query(Query::create('Vinci')->setMetadataValue('exclusive_exact_matching_metadata', true));
-        $items = $result->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('5', $items[0]->getId());
-
-        $result = $this->query(Query::create('another composed wor')->setMetadataValue('exclusive_exact_matching_metadata', true));
-        $this->assertCount(2, $result->getItems());
-
-        $result = $this->query(Query::create('another composed word')->setMetadataValue('exclusive_exact_matching_metadata', true));
-        $items = $result->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('5', $items[0]->getId());
-    }
-
-    /**
-     * @return void
-     */
-    public function testExclusiveExactMatchingMultiQuery()
-    {
-        $result = $this->query(Query::createMultiquery([
-            Query::create('Vinc')->setMetadataValue('exclusive_exact_matching_metadata', true),
-            Query::create('Vinci')->setMetadataValue('exclusive_exact_matching_metadata', true),
-            Query::create('another composed wor')->setMetadataValue('exclusive_exact_matching_metadata', true),
-            Query::create('another composed word')->setMetadataValue('exclusive_exact_matching_metadata', true),
-            Query::create('another composed word'),
-        ]));
-
-        $items = $result->getSubresults()[0]->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('3', $items[0]->getId());
-
-        $items = $result->getSubresults()[1]->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('5', $items[0]->getId());
-
-        $this->assertCount(2, $result->getSubresults()[2]->getItems());
-
-        $items = $result->getSubresults()[3]->getItems();
-        $this->assertCount(1, $items);
-        $this->assertEquals('5', $items[0]->getId());
-
-        $this->assertCount(2, $result->getSubresults()[4]->getItems());
+        return [
+            ['branda subwha', 2, '4', '5'],
+            ['subw branda subwha', 2, '4', '5'],
+            ['brandA subwhatever', 2, '4', '5'],
+            ['brandA', 2, '4', '5'],
+            ['brandA subwhateverA', 1, '5'],
+            ['brandA subwhateverB', 1, '4'],
+            ['branda subwhateverb', 1, '4'],
+            ['brandA subwhateverb', 1, '4'],
+            ['branda subwhateverB', 1, '4'],
+            ['branda subwhateverb alamo', 1, '4'],
+            ['alamo branda subwhateverb alamo', 1, '4'],
+            ['alamo branda subwhateverb', 1, '4'],
+            ['alamo subwhateverb brandA', 1, '4'],
+            ['subwhateverb álam brandA', 1, '4'],
+            ['branda subwhateverb NOEXISTE', 0],
+            ['subwhateverb NOEXISTE', 0],
+            ['subwhateverb', 3, '2'],
+            ['subwhateverb cod', 1, '3'],
+            ['subwhatever cod', 4],
+        ];
     }
 }

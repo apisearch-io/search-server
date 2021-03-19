@@ -234,6 +234,14 @@ class QueryBuilder
             return;
         }
 
+        if ('indexed_metadata.exact_matching_metadata_max_frequency' === $filter->getField()) {
+            $boolQuery->addMust(
+                $this->createExactMatchingMetadataFrequencyFilter($filter)
+            );
+
+            return;
+        }
+
         $this->addFieldOrRangeFilter(
             $boolQuery,
             $filter,
@@ -411,8 +419,13 @@ class QueryBuilder
         $value,
         bool $checkNested = true
     ): ? ElasticaQuery\AbstractQuery {
+        $filterField = $filter->getField();
+        $filterField = ('indexed_metadata.indexed_exact_matching_metadata' === $filterField)
+            ? 'indexed_exact_matching_metadata'
+            : $filterField;
+
         return $this->createMultipleTermFilter(
-            $filter->getField(),
+            $filterField,
             $value,
             $checkNested
         );
@@ -546,6 +559,28 @@ class QueryBuilder
                     \array_values($locationRangeData)
                 );
         }
+    }
+
+    /**
+     * @param Filter $filter
+     *
+     * @return ElasticaQuery\AbstractQuery
+     */
+    private function createExactMatchingMetadataFrequencyFilter(Filter $filter): ElasticaQuery\AbstractQuery
+    {
+        $bool = new ElasticaQuery\BoolQuery();
+
+        foreach ($filter->getValues() as $value) {
+            $constantScore = new ElasticaQuery\ConstantScore();
+            $constantScore->setBoost(1);
+            $constantScore->setFilter(new ElasticaQuery\Term([
+                'indexed_exact_matching_metadata' => $value,
+            ]));
+
+            $bool->addShould($constantScore);
+        }
+
+        return $bool;
     }
 
     /**

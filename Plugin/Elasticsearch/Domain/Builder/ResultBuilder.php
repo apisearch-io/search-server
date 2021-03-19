@@ -42,6 +42,10 @@ class ResultBuilder
         unset($resultAggregations['meta']);
         foreach ($resultAggregations as $aggregationName => $resultAggregation) {
             $queryAggregation = $query->getAggregation($aggregationName);
+            if (\is_null($queryAggregation)) {
+                continue;
+            }
+
             $relatedFilter = $query->getFilter($aggregationName);
             $relatedFilterValues = $relatedFilter instanceof Filter
                 ? $relatedFilter->getValues()

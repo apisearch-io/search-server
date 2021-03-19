@@ -191,6 +191,10 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
     private function createItemDocument(Item $item): ElasticaDocument
     {
         $uuid = $item->getUUID();
+        $indexedMetadata = $item->getIndexedMetadata();
+        $indexedExactMatchingMetadata = $indexedMetadata['exact_matching_metadata'] ?? [];
+        unset($indexedMetadata['exact_matching_metadata']);
+
         $itemDocument = [
             'uuid' => [
                 'id' => $uuid->getId(),
@@ -204,9 +208,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
             'metadata' => $this->filterElementRecursively(
                 $item->getMetadata()
             ),
-            'indexed_metadata' => $this->filterElementRecursively(
-                $item->getIndexedMetadata()
-            ),
+            'indexed_metadata' => $this->filterElementRecursively($indexedMetadata),
             'searchable_metadata' => $this->filterSearchableElementRecursively(
                 $item->getSearchableMetadata(),
                 false
@@ -217,6 +219,7 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
                     false
                 )
             ),
+            'indexed_exact_matching_metadata' => \array_values($indexedExactMatchingMetadata),
             'suggest' => \array_values(
                 $this->filterSearchableElementRecursively(
                     $item->getSuggest(),
