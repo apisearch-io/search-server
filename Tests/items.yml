@@ -113,6 +113,11 @@ items:
             boosting:
                 - "boosting"
                 - "anotherboosting"
+            exact_brand: "tralaraA composed2"
+            exact_subbrand: "subwhateverB"
+        exact_matching_metadata:
+            - "tralaraA composed2"
+            - "subwhateverB"
         suggest:
             - barce
 
@@ -171,9 +176,13 @@ items:
         searchable_metadata:
             title: Code da vinci
             description: Código de Hernando
+            exact_brand: "tralaraA composed"
+            exact_subbrand: "subwhateverB"
         exact_matching_metadata:
             - engonga
             - composed word
+            - "tralaraA composed"
+            - "subwhateverB"
         suggest:
             - Engonga
             - bar
@@ -218,6 +227,11 @@ items:
                 - {id: 4, category: 4, rank: 9}
         searchable_metadata:
             title: álamo
+            exact_brand: "brandA"
+            exact_subbrand: "subwhateverB"
+        exact_matching_metadata:
+            - "brandA"
+            - "subwhateverB"
         suggest:
             - Eleuterio
             - barce
@@ -263,9 +277,13 @@ items:
             boosting:
                 - "boosting"
                 - "anotherboosting"
+            exact_brand: "brandA"
+            exact_subbrand: "subwhateverA"
         exact_matching_metadata:
             - Vinci
             - another composed word
+            - "brandA"
+            - "subwhateverA"
         suggest:
             - Barcelona
             - Badalona

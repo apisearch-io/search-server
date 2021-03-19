@@ -28,10 +28,7 @@ use function React\Promise\reject;
  */
 final class CheckIndexAvailabilityMiddleware implements DiscriminableMiddleware
 {
-    /**
-     * @var AppRepository
-     */
-    private $appRepository;
+    private AppRepository $appRepository;
 
     /**
      * @param AppRepository $appRepository
@@ -44,13 +41,13 @@ final class CheckIndexAvailabilityMiddleware implements DiscriminableMiddleware
     /**
      * Execute middleware.
      *
-     * @param mixed    $command
-     * @param callable $next
+     * @param ExportIndex $command
+     * @param callable    $next
      *
      * @return PromiseInterface
      */
     public function execute(
-        $command,
+        ExportIndex $command,
         $next
     ): PromiseInterface {
         /**
