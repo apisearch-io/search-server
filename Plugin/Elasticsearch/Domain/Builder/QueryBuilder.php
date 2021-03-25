@@ -394,7 +394,9 @@ class QueryBuilder
                 );
 
             case Filter::TYPE_RANGE:
+            case Filter::TYPE_RANGE_WITH_MIN_MAX:
             case Filter::TYPE_DATE_RANGE:
+            case Filter::TYPE_DATE_RANGE_WITH_MIN_MAX:
                 return $this->createRangeFilter(
                     $filter,
                     $value
@@ -616,16 +618,22 @@ class QueryBuilder
         );
         $universeAggregation->setFilter($aggregationBoolQuery);
         $globalAggregation->addAggregation($universeAggregation);
+        $elasticaAggregations = [];
 
         foreach ($aggregations as $aggregation) {
             $filterType = $aggregation->getFilterType();
             switch ($filterType) {
                 case Filter::TYPE_RANGE:
                 case Filter::TYPE_DATE_RANGE:
-                    $elasticaAggregation = $this->createRangeAggregation($aggregation);
+                    $elasticaAggregations[] = $this->createRangeAggregation($aggregation);
+                    break;
+                case Filter::TYPE_RANGE_WITH_MIN_MAX:
+                case Filter::TYPE_DATE_RANGE_WITH_MIN_MAX:
+                    $elasticaAggregations[] = $this->createRangeMinAggregation($aggregation);
+                    $elasticaAggregations[] = $this->createRangeMaxAggregation($aggregation);
                     break;
                 default:
-                    $elasticaAggregation = $this->createAggregation($aggregation);
+                    $elasticaAggregations[] = $this->createAggregation($aggregation);
                     break;
             }
 
@@ -643,8 +651,10 @@ class QueryBuilder
             );
 
             $filteredAggregation->setFilter($boolQuery);
-            $filteredAggregation->addAggregation($elasticaAggregation);
             $universeAggregation->addAggregation($filteredAggregation);
+            foreach ($elasticaAggregations as $elasticaAggregation) {
+                $filteredAggregation->addAggregation($elasticaAggregation);
+            }
         }
 
         $elasticaQuery->addAggregation($globalAggregation);
@@ -686,7 +696,7 @@ class QueryBuilder
             : ElasticaAggregation\Range::class;
 
         $rangeAggregation = new $rangeClass($aggregation->getName());
-        $rangeAggregation->setKeyedResponse();
+        $rangeAggregation->setKeyed();
         $rangeAggregation->setField($aggregation->getField());
         foreach ($aggregation->getSubgroup() as $range) {
             list($from, $to) = Range::stringToArray($range);
@@ -694,6 +704,32 @@ class QueryBuilder
         }
 
         return $rangeAggregation;
+    }
+
+    /**
+     * @param QueryAggregation $aggregation
+     *
+     * @return ElasticaAggregation\AbstractAggregation
+     */
+    private function createRangeMinAggregation(QueryAggregation $aggregation): ElasticaAggregation\AbstractAggregation
+    {
+        $minAggregation = new ElasticaAggregation\Min('min');
+        $minAggregation->setField($aggregation->getField());
+
+        return $minAggregation;
+    }
+
+    /**
+     * @param QueryAggregation $aggregation
+     *
+     * @return ElasticaAggregation\AbstractAggregation
+     */
+    private function createRangeMaxAggregation(QueryAggregation $aggregation): ElasticaAggregation\AbstractAggregation
+    {
+        $minAggregation = new ElasticaAggregation\Max('max');
+        $minAggregation->setField($aggregation->getField());
+
+        return $minAggregation;
     }
 
     /**
@@ -789,7 +825,7 @@ class QueryBuilder
             $specificFuzziness = $fuzziness[$filterFieldWithoutWeight] ?? false;
 
             $match = $specificFuzziness
-                ? new ElasticaQuery\Match($filterFieldWithoutWeight)
+                ? new ElasticaQuery\MatchQuery($filterFieldWithoutWeight)
                 : new ElasticaQuery\MatchPhrase($filterFieldWithoutWeight);
 
             $match->setFieldQuery($filterFieldWithoutWeight, $queryString);

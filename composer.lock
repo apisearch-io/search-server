@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d5e6df6776ce33968d81dd83e4bb1e33",
+    "content-hash": "adf5e1762540b9af8c6bd9f34c0926c7",
     "packages": [
         {
             "name": "apisearch-io/apisearch-bundle",
@@ -60,27 +60,27 @@
         },
         {
             "name": "apisearch-io/php-client",
-            "version": "0.1.36",
+            "version": "0.1.37",
             "source": {
                 "type": "git",
                 "url": "https://github.com/apisearch-io/php-client.git",
-                "reference": "a7cbcfcd7aeb899ec5198199afb28cb5ccb2c33e"
+                "reference": "42306e345a56297a54ec88b0ef8a1eb5b65c7d76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/a7cbcfcd7aeb899ec5198199afb28cb5ccb2c33e",
-                "reference": "a7cbcfcd7aeb899ec5198199afb28cb5ccb2c33e",
+                "url": "https://api.github.com/repos/apisearch-io/php-client/zipball/42306e345a56297a54ec88b0ef8a1eb5b65c7d76",
+                "reference": "42306e345a56297a54ec88b0ef8a1eb5b65c7d76",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "nesbot/carbon": "^1.22 || ^2.0",
-                "php": "^7.4 | ^8.0",
+                "php": "^7.2 | ^7.3 | ^7.4 | ^8.0",
                 "symfony/event-dispatcher": "^3.4 || ^4.0 || ^5.0",
                 "symfony/yaml": "^3.4 || ^4.0 || ^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9"
+                "phpunit/phpunit": "^7 | ^9"
             },
             "type": "library",
             "autoload": {
@@ -101,9 +101,9 @@
             "description": "PHP Library for Apisearch",
             "support": {
                 "issues": "https://github.com/apisearch-io/php-client/issues",
-                "source": "https://github.com/apisearch-io/php-client/tree/0.1.36"
+                "source": "https://github.com/apisearch-io/php-client/tree/0.1.37"
             },
-            "time": "2021-02-27T17:52:58+00:00"
+            "time": "2021-03-25T11:36:06+00:00"
         },
         {
             "name": "bunny/bunny",
@@ -347,81 +347,6 @@
                 }
             ],
             "time": "2020-08-21T14:09:44+00:00"
-        },
-        {
-            "name": "clue/buzz-react",
-            "version": "v2.9.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/clue/reactphp-buzz.git",
-                "reference": "eb180b5e0db00a3febaa458289706b8ca80ffe2a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/clue/reactphp-buzz/zipball/eb180b5e0db00a3febaa458289706b8ca80ffe2a",
-                "reference": "eb180b5e0db00a3febaa458289706b8ca80ffe2a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3",
-                "psr/http-message": "^1.0",
-                "react/event-loop": "^1.0 || ^0.5",
-                "react/http-client": "^0.5.10",
-                "react/promise": "^2.2.1 || ^1.2.1",
-                "react/promise-stream": "^1.0 || ^0.1.2",
-                "react/socket": "^1.1",
-                "react/stream": "^1.0 || ^0.7",
-                "ringcentral/psr7": "^1.2"
-            },
-            "require-dev": {
-                "clue/block-react": "^1.0",
-                "clue/http-proxy-react": "^1.3",
-                "clue/reactphp-ssh-proxy": "^1.0",
-                "clue/socks-react": "^1.0",
-                "phpunit/phpunit": "^9.0 || ^5.7 || ^4.8.35",
-                "react/http": "^0.8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Clue\\React\\Buzz\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Christian Lück",
-                    "email": "christian@clue.engineering"
-                }
-            ],
-            "description": "Simple, async PSR-7 HTTP client for concurrently processing any number of HTTP requests, built on top of ReactPHP",
-            "homepage": "https://github.com/clue/reactphp-buzz",
-            "keywords": [
-                "async",
-                "http",
-                "http client",
-                "psr-7",
-                "reactphp"
-            ],
-            "support": {
-                "issues": "https://github.com/clue/reactphp-buzz/issues",
-                "source": "https://github.com/clue/reactphp-buzz/tree/v2.9.0"
-            },
-            "funding": [
-                {
-                    "url": "https://clue.engineering/support",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/clue",
-                    "type": "github"
-                }
-            ],
-            "abandoned": "react/http",
-            "time": "2020-07-03T10:43:43+00:00"
         },
         {
             "name": "clue/mq-react",
@@ -2066,26 +1991,25 @@
         },
         {
             "name": "elasticsearch/elasticsearch",
-            "version": "v7.11.0",
+            "version": "v7.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/elastic/elasticsearch-php.git",
-                "reference": "277cd5e182827c59c23e146a836a30470c0f879d"
+                "reference": "25522ef4f16adcf49d7a1db149f2fcf010655b7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/277cd5e182827c59c23e146a836a30470c0f879d",
-                "reference": "277cd5e182827c59c23e146a836a30470c0f879d",
+                "url": "https://api.github.com/repos/elastic/elasticsearch-php/zipball/25522ef4f16adcf49d7a1db149f2fcf010655b7f",
+                "reference": "25522ef4f16adcf49d7a1db149f2fcf010655b7f",
                 "shasum": ""
             },
             "require": {
                 "ext-json": ">=1.3.7",
                 "ezimuel/ringphp": "^1.1.2",
-                "php": "^7.1 || ^8.0",
+                "php": "^7.3 || ^8.0",
                 "psr/log": "~1.0"
             },
             "require-dev": {
-                "cpliakas/git-wrapper": "~2.0 || ~3.0",
                 "doctrine/inflector": "^1.3",
                 "ext-yaml": "*",
                 "ext-zip": "*",
@@ -2094,7 +2018,8 @@
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.3",
                 "squizlabs/php_codesniffer": "^3.4",
                 "symfony/finder": "~4.0",
-                "symfony/yaml": "~4.0"
+                "symfony/yaml": "~4.0",
+                "symplify/git-wrapper": "~9.0"
             },
             "suggest": {
                 "ext-curl": "*",
@@ -2129,9 +2054,9 @@
             ],
             "support": {
                 "issues": "https://github.com/elastic/elasticsearch-php/issues",
-                "source": "https://github.com/elastic/elasticsearch-php/tree/v7.11.0"
+                "source": "https://github.com/elastic/elasticsearch-php/tree/v7.12.0"
             },
-            "time": "2021-02-11T11:04:51+00:00"
+            "time": "2021-03-23T18:08:45+00:00"
         },
         {
             "name": "evenement/evenement",
@@ -3972,55 +3897,6 @@
             "time": "2020-12-04T12:57:33+00:00"
         },
         {
-            "name": "react/http-client",
-            "version": "v0.5.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/reactphp/http-client.git",
-                "reference": "f16ab55150ec369f8f9b5db64972f248691093b0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/http-client/zipball/f16ab55150ec369f8f9b5db64972f248691093b0",
-                "reference": "f16ab55150ec369f8f9b5db64972f248691093b0",
-                "shasum": ""
-            },
-            "require": {
-                "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
-                "php": ">=5.3.0",
-                "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3",
-                "react/promise": "^2.1 || ^1.2.1",
-                "react/socket": "^1.0 || ^0.8.4",
-                "react/stream": "^1.0 || ^0.7.1",
-                "ringcentral/psr7": "^1.2"
-            },
-            "require-dev": {
-                "clue/block-react": "^1.2",
-                "phpunit/phpunit": "^7.0 || ^6.4 || ^5.7 || ^4.8.35",
-                "react/promise-stream": "^1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "React\\HttpClient\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Event-driven, streaming HTTP client for ReactPHP",
-            "keywords": [
-                "http"
-            ],
-            "support": {
-                "issues": "https://github.com/reactphp/http-client/issues",
-                "source": "https://github.com/reactphp/http-client/tree/v0.5.10"
-            },
-            "abandoned": "react/http",
-            "time": "2020-01-14T08:36:16+00:00"
-        },
-        {
             "name": "react/mysql",
             "version": "v0.5.4",
             "source": {
@@ -4434,16 +4310,16 @@
         },
         {
             "name": "ruflin/elastica",
-            "version": "7.1.0",
+            "version": "7.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ruflin/Elastica.git",
-                "reference": "ec22ea0797c4087514e720af428fa5fc189c59a3"
+                "reference": "8ecc5cdadd5bf0b69c1eb20e56246a940b43bdb7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/ec22ea0797c4087514e720af428fa5fc189c59a3",
-                "reference": "ec22ea0797c4087514e720af428fa5fc189c59a3",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/8ecc5cdadd5bf0b69c1eb20e56246a940b43bdb7",
+                "reference": "8ecc5cdadd5bf0b69c1eb20e56246a940b43bdb7",
                 "shasum": ""
             },
             "require": {
@@ -4462,8 +4338,8 @@
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow using IAM authentication with Amazon ElasticSearch Service",
-                "egeloen/http-adapter": "Allow using httpadapter transport",
-                "guzzlehttp/guzzle": "Allow using guzzle 6 as the http transport",
+                "egeloen/http-adapter": "Allow using httpadapter as transport",
+                "guzzlehttp/guzzle": "Allow using guzzle as transport",
                 "monolog/monolog": "Logging request"
             },
             "type": "library",
@@ -4495,9 +4371,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ruflin/Elastica/issues",
-                "source": "https://github.com/ruflin/Elastica/tree/7.1.0"
+                "source": "https://github.com/ruflin/Elastica/tree/7.1.1"
             },
-            "time": "2021-02-15T10:32:48+00:00"
+            "time": "2021-03-24T14:35:48+00:00"
         },
         {
             "name": "symfony/cache",
@@ -8691,16 +8567,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.3",
+            "version": "9.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "27241ac75fc37ecf862b6e002bf713b6566cbe41"
+                "reference": "c73c6737305e779771147af66c96ca6a7ed8a741"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/27241ac75fc37ecf862b6e002bf713b6566cbe41",
-                "reference": "27241ac75fc37ecf862b6e002bf713b6566cbe41",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c73c6737305e779771147af66c96ca6a7ed8a741",
+                "reference": "c73c6737305e779771147af66c96ca6a7ed8a741",
                 "shasum": ""
             },
             "require": {
@@ -8778,7 +8654,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.4"
             },
             "funding": [
                 {
@@ -8790,7 +8666,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-17T07:30:34+00:00"
+            "time": "2021-03-23T07:16:29+00:00"
         },
         {
             "name": "sebastian/cli-parser",

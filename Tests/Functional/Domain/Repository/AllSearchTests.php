@@ -36,10 +36,11 @@ trait AllSearchTests
     use AggregationsTest;
     use UniverseFilterTest;
     use FiltersTest;
+    use RangeFiltersTest;
+    use LocationFiltersTest;
     use ExcludeReferencesTest;
     use ExactMatchingMetadataTest;
     use DeletionTest;
-    use LocationFiltersTest;
     use SortTest;
     use SuggestTest;
     use StopwordsSteemerTest;

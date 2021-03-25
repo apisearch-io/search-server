@@ -36,7 +36,6 @@
     "react/promise": "^2.0",
     "react/mysql": "^0.5.0",
     "react/filesystem": "^0.1.2",
-    "clue/buzz-react": "^2.0",
     "clue/mq-react": "^1.0",
     "clue/reactphp-csv": "^1.0",
 

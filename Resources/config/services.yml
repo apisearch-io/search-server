@@ -19,7 +19,6 @@ services:
     #
     # Aux services
     #
-    React\HttpClient\Client:
     React\Http\Browser:
 
     #

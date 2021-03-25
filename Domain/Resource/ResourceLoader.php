@@ -17,8 +17,7 @@ namespace Apisearch\Server\Domain\Resource;
 
 use Apisearch\Exception\InvalidFormatException;
 use React\Filesystem\Filesystem;
-use React\HttpClient\Client as HTTPClient;
-use React\HttpClient\Response as HTTPResponse;
+use React\Http\Browser;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
 use function React\Promise\reject;
@@ -29,18 +28,18 @@ use React\Stream\ReadableStreamInterface;
  */
 class ResourceLoader
 {
-    private HTTPClient $client;
+    private Browser $browser;
     private Filesystem $filesystem;
 
     /**
-     * @param HTTPClient $client
+     * @param Browser    $browser
      * @param Filesystem $filesystem
      */
     public function __construct(
-        HTTPClient $client,
+        Browser $browser,
         Filesystem $filesystem
     ) {
-        $this->client = $client;
+        $this->browser = $browser;
         $this->filesystem = $filesystem;
     }
 
@@ -102,18 +101,11 @@ class ResourceLoader
      */
     private function processHTTPResource(string $path): PromiseInterface
     {
-        $deferred = new Deferred();
-        $request = $this->client->request('GET', $path);
-        $request->on('response', function (HTTPResponse $response) use ($deferred) {
-            $deferred->resolve($response);
-        });
-
-        $request->on('error', function (\Throwable $throwable) use ($deferred) {
-            $deferred->reject(new InvalidFormatException('Invalid import file - '.$throwable->getMessage()));
-        });
-
-        $request->end();
-
-        return $deferred->promise();
+        return $this
+            ->browser
+            ->requestStreaming('GET', $path)
+            ->otherwise(function (\Throwable $throwable) {
+                throw new InvalidFormatException('Invalid import file - '.$throwable->getMessage());
+            });
     }
 }
