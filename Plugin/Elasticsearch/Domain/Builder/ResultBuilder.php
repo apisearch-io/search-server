@@ -46,19 +46,37 @@ class ResultBuilder
                 continue;
             }
 
+            $metadata = [];
             $relatedFilter = $query->getFilter($aggregationName);
             $relatedFilterValues = $relatedFilter instanceof Filter
                 ? $relatedFilter->getValues()
                 : [];
 
+            /*
+             * Min-Max aggregation
+             */
+            if (isset($resultAggregation['min']) && isset($resultAggregation['max'])) {
+                $metadata['min'] = $resultAggregation['min']['value'] ?? null;
+                $metadata['max'] = $resultAggregation['max']['value'] ?? null;
+            }
+
             $aggregation = new ResultAggregation(
                 $aggregationName,
                 $queryAggregation->getApplicationType(),
                 $resultAggregation['doc_count'],
-                $relatedFilterValues
+                $relatedFilterValues,
+                $metadata
             );
 
             $aggregations->addAggregation($aggregationName, $aggregation);
+
+            if (!isset($resultAggregation[$aggregationName])) {
+                continue;
+            }
+
+            /**
+             * Buckets based aggregation.
+             */
             $buckets = isset($resultAggregation[$aggregationName]['buckets'])
                 ? $resultAggregation[$aggregationName]['buckets']
                 : $resultAggregation[$aggregationName][$aggregationName]['buckets'];

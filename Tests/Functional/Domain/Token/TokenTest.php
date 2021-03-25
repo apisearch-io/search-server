@@ -275,7 +275,7 @@ abstract class TokenTest extends HttpFunctionalTest
         $token = new Token(
             TokenUUID::createById('token-multiquery'),
             AppUUID::createById(static::$appId),
-            [IndexUUID::createById(self::$anotherIndex)]
+            [IndexUUID::createById(self::$anotherIndex)],
         );
         $this->putToken($token);
 
@@ -284,6 +284,29 @@ abstract class TokenTest extends HttpFunctionalTest
             $this->fail('Token without permissions. Exception of InvalidTokenException should have been cached here');
         } catch (InvalidTokenException $exception) {
             // Silent pass
+        }
+
+        $token = new Token(
+            TokenUUID::createById('token-multiquery'),
+            AppUUID::createById(static::$appId),
+            [IndexUUID::createById(self::$index)]
+        );
+        $this->putToken($token);
+        $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
+
+        $token = new Token(
+            TokenUUID::createById('token-multiquery'),
+            AppUUID::createById(static::$appId),
+            [IndexUUID::createById(self::$index)],
+            ['v1_check_index']
+        );
+        $this->putToken($token);
+
+        try {
+            $this->query(Query::createMatchAll(), static::$appId, static::$index, $token);
+            $this->fail('Exception expected');
+        } catch (InvalidTokenException $exception) {
+            // Good catch
         }
 
         $token = new Token(
