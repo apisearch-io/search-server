@@ -517,7 +517,10 @@ class QueryBuilder
         }
 
         if (Range::INFINITE !== $to) {
-            $rangeData['lt'] = $to;
+            $to = \strval($to);
+            $trimmedTo = \rtrim(\strval($to), ']');
+            $inclusiveTo = (\strlen($to) > \strlen($trimmedTo));
+            $rangeData[($inclusiveTo ? 'lte' : 'lt')] = $trimmedTo;
         }
 
         $rangeClass = ElasticaQuery\Range::class;

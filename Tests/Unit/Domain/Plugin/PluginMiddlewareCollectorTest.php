@@ -19,12 +19,15 @@ use Apisearch\Server\Domain\Plugin\PluginMiddleware;
 use Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * Class PluginMiddlewareCollectorTest.
  */
 class PluginMiddlewareCollectorTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * Test subscribed to all.
      *
