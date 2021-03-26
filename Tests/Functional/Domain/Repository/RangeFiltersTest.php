@@ -143,7 +143,7 @@ trait RangeFiltersTest
     }
 
     /**
-     * @group lol
+     * Test min-max aggregation in range.
      */
     public function testRangeWithMinAndMax()
     {
@@ -155,10 +155,40 @@ trait RangeFiltersTest
 
         $this->assertEquals(7, $priceMinMax->getMetadata()['min']);
         $this->assertEquals(2000, $priceMinMax->getMetadata()['max']);
+
+        $priceMinMax = $this->query(
+            Query::createMatchAll()
+                ->disableResults()
+                ->filterBy('price', 'price', [7], Filter::MUST_ALL, false)
+                ->aggregateByRange('price_min_max', 'price', ['..'], Filter::AT_LEAST_ONE, Filter::TYPE_RANGE_WITH_MIN_MAX)
+        )->getAggregation('price_min_max');
+
+        $this->assertEquals(7, $priceMinMax->getMetadata()['min']);
+        $this->assertEquals(2000, $priceMinMax->getMetadata()['max']);
+
+        $priceMinMax = $this->query(
+            Query::createMatchAll()
+                ->disableResults()
+                ->filterUniverseBy('price', [7], Filter::MUST_ALL)
+                ->aggregateByRange('price_min_max', 'price', ['..'], Filter::AT_LEAST_ONE, Filter::TYPE_RANGE_WITH_MIN_MAX)
+        )->getAggregation('price_min_max');
+
+        $this->assertEquals(7, $priceMinMax->getMetadata()['min']);
+        $this->assertEquals(7, $priceMinMax->getMetadata()['max']);
+
+        $priceMinMax = $this->query(
+            Query::createMatchAll()
+                ->disableResults()
+                ->filterUniverseByRange('price', ['500..1501'], Filter::MUST_ALL)
+                ->aggregateByRange('price_min_max', 'price', ['..'], Filter::AT_LEAST_ONE, Filter::TYPE_RANGE_WITH_MIN_MAX)
+        )->getAggregation('price_min_max');
+
+        $this->assertEquals(700, $priceMinMax->getMetadata()['min']);
+        $this->assertEquals(1500, $priceMinMax->getMetadata()['max']);
     }
 
     /**
-     * @group lol
+     * Test min-max aggregation in time range.
      */
     public function testDateRangeWithMinAndMax()
     {
