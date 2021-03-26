@@ -622,6 +622,7 @@ class QueryBuilder
 
         foreach ($aggregations as $aggregation) {
             $filterType = $aggregation->getFilterType();
+            $withFilters = true;
             switch ($filterType) {
                 case Filter::TYPE_RANGE:
                 case Filter::TYPE_DATE_RANGE:
@@ -629,6 +630,7 @@ class QueryBuilder
                     break;
                 case Filter::TYPE_RANGE_WITH_MIN_MAX:
                 case Filter::TYPE_DATE_RANGE_WITH_MIN_MAX:
+                    $withFilters = false;
                     $elasticaAggregations[] = $this->createRangeMinAggregation($aggregation);
                     $elasticaAggregations[] = $this->createRangeMaxAggregation($aggregation);
                     break;
@@ -637,24 +639,26 @@ class QueryBuilder
                     break;
             }
 
-            $filteredAggregation = new ElasticaAggregation\Filter($aggregation->getName());
+            $builtAggregation = new ElasticaAggregation\Filter($aggregation->getName());
             $boolQuery = new ElasticaQuery\BoolQuery();
-            $this->addFilters(
-                $query,
-                $boolQuery,
-                $filters,
-                $searchableFields,
-                $aggregation->getApplicationType() & Filter::AT_LEAST_ONE
-                    ? $aggregation->getName()
-                    : null,
-                true
-            );
-
-            $filteredAggregation->setFilter($boolQuery);
-            $universeAggregation->addAggregation($filteredAggregation);
-            foreach ($elasticaAggregations as $elasticaAggregation) {
-                $filteredAggregation->addAggregation($elasticaAggregation);
+            if ($withFilters) {
+                $this->addFilters(
+                    $query,
+                    $boolQuery,
+                    $filters,
+                    $searchableFields,
+                    $aggregation->getApplicationType() & Filter::AT_LEAST_ONE
+                        ? $aggregation->getName()
+                        : null,
+                    true
+                );
             }
+
+            $builtAggregation->setFilter($boolQuery);
+            foreach ($elasticaAggregations as $elasticaAggregation) {
+                $builtAggregation->addAggregation($elasticaAggregation);
+            }
+            $universeAggregation->addAggregation($builtAggregation);
         }
 
         $elasticaQuery->addAggregation($globalAggregation);
