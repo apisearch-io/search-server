@@ -147,6 +147,11 @@ trait UniverseFilterTest
 
         $this->assertCount(
             3,
+            $this->buildCreatedAtUniverseFilteredResult('..2020-03-03]')->getItems()
+        );
+
+        $this->assertCount(
+            3,
             $this->buildCreatedAtUniverseFilteredResult('..2020-03-03T23:59:59Z')->getItems()
         );
 
@@ -170,6 +175,30 @@ trait UniverseFilterTest
             $this->query(Query::createMatchAll()
                 ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
                 ->filterByDateRange('created_at', 'created_at', [], ['2020-03-03..2020-04-04'], Filter::AT_LEAST_ONE, false)
+            )->getItems()
+        );
+
+        $this->assertCount(
+            1,
+            $this->query(Query::createMatchAll()
+                ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04]'], Filter::AT_LEAST_ONE)
+                ->filterByDateRange('created_at', 'created_at', [], ['2020-03-03..2020-04-04'], Filter::AT_LEAST_ONE, false)
+            )->getItems()
+        );
+
+        $this->assertCount(
+            1,
+            $this->query(Query::createMatchAll()
+                ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04'], Filter::AT_LEAST_ONE)
+                ->filterByDateRange('created_at', 'created_at', [], ['2020-03-03..2020-04-04]'], Filter::AT_LEAST_ONE, false)
+            )->getItems()
+        );
+
+        $this->assertCount(
+            2,
+            $this->query(Query::createMatchAll()
+                ->filterUniverseByDateRange('created_at', ['2020-02-02..2020-04-04]'], Filter::AT_LEAST_ONE)
+                ->filterByDateRange('created_at', 'created_at', [], ['2020-03-03..2020-04-04]'], Filter::AT_LEAST_ONE, false)
             )->getItems()
         );
     }
