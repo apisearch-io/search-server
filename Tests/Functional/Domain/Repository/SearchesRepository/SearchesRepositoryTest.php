@@ -82,9 +82,9 @@ trait SearchesRepositoryTest
         $this->query(Query::create('badalona')->byUser(new User('u1')), null, null, null, [], new Origin('', '', Origin::DESKTOP));
         $this->query(Query::create('No results 2')->byUser(new User('u2')), null, null, null, [], new Origin('', '', Origin::TABLET));
         $this->query(Query::create('Code da vinci')->byUser(new User('u2')), null, null, null, [], Origin::createEmpty());
-        self::usleep(100000);
+        self::usleep(200000);
         $this->dispatchImperative(new FlushSearches());
-        self::usleep(100000);
+        self::usleep(200000);
     }
 
     /**

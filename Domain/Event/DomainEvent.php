@@ -89,6 +89,16 @@ abstract class DomainEvent
     }
 
     /**
+     * @return self
+     */
+    public function withoutRepositoryReference(): self
+    {
+        $this->repositoryReference = RepositoryReference::create();
+
+        return $this;
+    }
+
+    /**
      * Get repository reference.
      *
      * @return RepositoryReference

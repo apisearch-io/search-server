@@ -30,6 +30,7 @@ use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
+use Apisearch\Server\Domain\Helper\Str;
 use Apisearch\Server\Domain\Model\InternalVersionUUID;
 use Apisearch\Server\Domain\Model\ServerQuery;
 use Apisearch\Server\Domain\Repository\Repository\QueryRepository as QueryRepositoryInterface;
@@ -288,6 +289,8 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         Query $query
     ): PromiseInterface {
         $queryText = $query->getQueryText();
+        $queryText = Str::toAscii($queryText);
+        $queryText = \trim($queryText);
 
         if (
             ('' === $queryText) ||
@@ -299,7 +302,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
 
         // We compose all possible word combinations
         $words = \explode(' ', $queryText);
-        $words = \array_filter($words, fn ($word) => !empty($word));
+        $words = \array_values(\array_filter($words, fn ($word) => !empty($word)));
         $maxWords = $query->getMetadata()['max_characters_progressive_exact_matching_metadata'] ?? 3;
         $numWords = \count($words);
         $partialWords = [];

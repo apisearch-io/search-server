@@ -17,11 +17,13 @@ namespace Apisearch\Plugin\DBAL\Domain\SearchesRepository;
 
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\Origin;
+use Apisearch\Server\Domain\Repository\SearchesRepository\PersistentSearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
-use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use DateTime;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
@@ -31,7 +33,7 @@ use function React\Promise\resolve;
 /**
  * Class DBALSearchesRepository.
  */
-final class DBALSearchesRepository implements SearchesRepository
+final class DBALSearchesRepository implements PersistentSearchesRepository
 {
     private Connection $connection;
     private string $tableName;
@@ -83,7 +85,10 @@ final class DBALSearchesRepository implements SearchesRepository
                 'host' => $origin->getHost(),
                 'platform' => $origin->getPlatform(),
                 'time' => $when->format('Ymd'),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -133,6 +138,9 @@ final class DBALSearchesRepository implements SearchesRepository
                 return $perDay
                     ? $this->formatResultsPerDay($result->fetchAllRows())
                     : \intval($result->fetchFirstRow()['count']);
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
@@ -173,6 +181,9 @@ final class DBALSearchesRepository implements SearchesRepository
                 }
 
                 return $formattedRows;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 

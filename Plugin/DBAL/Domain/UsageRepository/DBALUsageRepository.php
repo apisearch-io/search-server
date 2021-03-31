@@ -17,9 +17,11 @@ namespace Apisearch\Plugin\DBAL\Domain\UsageRepository;
 
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use DateTime;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
@@ -83,7 +85,10 @@ final class DBALUsageRepository implements UsageRepository
                 'index_uuid' => $indexUUID instanceof IndexUUID ? $indexUUID->composeUUID() : null,
                 'time' => $when->format('Ymd'),
                 'n' => $n,
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -153,6 +158,9 @@ final class DBALUsageRepository implements UsageRepository
                 return $perDay
                     ? $this->formatResultsPerDay($result->fetchAllRows())
                     : $this->formatResults($result->fetchAllRows());
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
@@ -201,6 +209,9 @@ final class DBALUsageRepository implements UsageRepository
                             $this->connection->insert($this->tableName, $row);
                         }
                     });
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 

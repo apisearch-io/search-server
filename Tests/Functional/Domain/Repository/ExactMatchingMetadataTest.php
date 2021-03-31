@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Tests\Functional\Domain\Repository;
 
+use Apisearch\Config\Config;
+use Apisearch\Config\Synonym;
 use Apisearch\Query\Query;
 use Apisearch\Query\SortBy;
 
@@ -32,6 +34,8 @@ trait ExactMatchingMetadataTest
      * @return void
      *
      * @dataProvider dataProgressiveExactMatchingMultiQuery
+     *
+     * @group ex
      */
     public function testProgressiveExactMatchingMultiQuery(
         string $query,
@@ -39,6 +43,14 @@ trait ExactMatchingMetadataTest
         string $firstResultId = null,
         string $secondResultId = null
     ) {
+        $this->configureIndex(Config::createEmpty()
+            ->addSynonym(Synonym::createByWords([
+                'SubwhateverA',
+                'SynonymX',
+                'SynonymZ',
+            ]))
+        );
+
         $result = $this->query(Query::create($query)
             ->setMetadataValue('progressive_exact_matching_metadata', true)
             ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
@@ -76,6 +88,12 @@ trait ExactMatchingMetadataTest
             ['subwhateverb', 3, '2'],
             ['subwhateverb cod', 1, '3'],
             ['subwhatever cod', 4],
+
+            // Strange characters
+            ['bránda sübwhatëvërB', 1, '4'],
+            ['bránda    sübwhatëvërB', 1, '4'],
+            ['   bránda    sübwhatëvërB   ', 1, '4'],
+            ['   bránda sübwhatëvërB   ', 1, '4'],
         ];
     }
 }

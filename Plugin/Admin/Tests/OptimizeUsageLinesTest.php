@@ -46,10 +46,11 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
             'to' => (new DateTime())->modify('+1 day')->format('Ymd'),
         ]);
 
-        $today = \intval((new \DateTime())->format('Ymd'));
+        $yesterday = \intval((new \DateTime())->modify('yesterday')->format('Ymd'));
+        $tomorrow = \intval((new \DateTime())->modify('tomorrow')->format('Ymd'));
         $response = $this->request('admin_get_usage', [], null, [], [
-            'from' => $today - 1,
-            'to' => $today + 1,
+            'from' => $yesterday,
+            'to' => $tomorrow,
         ]);
         $usage = $response['body'];
 
@@ -59,8 +60,8 @@ class OptimizeUsageLinesTest extends HttpFunctionalTest
                 'query' => 30,
             ],
             'days' => 2,
-            'from' => \strval($today - 1),
-            'to' => \strval($today + 1),
+            'from' => \strval($yesterday),
+            'to' => \strval($tomorrow),
         ], $usage);
     }
 

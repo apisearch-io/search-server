@@ -62,9 +62,9 @@ final class ExceptionsMiddleware
                     (int) $throwable->getLine()
                 )));
 
-                if ($command instanceof WithRepositoryReference) {
-                    $event->withRepositoryReference($command->getRepositoryReference());
-                }
+                ($command instanceof WithRepositoryReference)
+                    ? $event->withRepositoryReference($command->getRepositoryReference())
+                    : $event->withoutRepositoryReference();
 
                 return $this
                     ->eventBus

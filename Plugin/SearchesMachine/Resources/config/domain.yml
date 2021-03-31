@@ -1,0 +1,27 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            string $godToken: "%apisearch_server.god_token%"
+            int $minutesIntervalBetweenProcessing: "%apisearch_plugin.searches_machine.minutes_interval_between_processing%"
+            string $redisKey: "%apisearch_plugin.searches_machine.redis_key%"
+
+    Apisearch\Plugin\SearchesMachine\Console\:
+        resource: '../../Console/'
+        tags: ["console.command"]
+
+    Apisearch\Plugin\SearchesMachine\Domain\:
+        resource: '../../Domain/'
+
+    Apisearch\Plugin\SearchesMachine\Domain\CommandHandler\:
+        resource: '../../Domain/CommandHandler/'
+        tags: ["command_handler"]
+
+    Apisearch\Plugin\SearchesMachine\Domain\Middleware\:
+        resource: '../../Domain/Middleware/'
+        tags: [ "apisearch_plugin.middleware" ]
+
+
+    Apisearch\Server\Domain\Repository\SearchesRepository\PersistentSearchesRepository:
+        alias: Apisearch\Plugin\SearchesMachine\Domain\Repository\RedisSearchesRepository

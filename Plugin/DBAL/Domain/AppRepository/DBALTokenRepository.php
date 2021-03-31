@@ -19,9 +19,11 @@ use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\Token;
 use Apisearch\Model\TokenUUID;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\TokenRepository;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Drift\DBAL\Connection;
 use React\Promise\PromiseInterface;
 
@@ -80,7 +82,10 @@ final class DBALTokenRepository extends TokenRepository
                         $token
                     ))),
                 ]
-            );
+            )
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -100,7 +105,10 @@ final class DBALTokenRepository extends TokenRepository
             ->delete($this->table, [
                 'app_uuid' => $repositoryReference->getAppUUID()->composeUUID(),
                 'token_uuid' => $this->encrypter->encrypt($tokenUUID->composeUUID()),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -116,7 +124,10 @@ final class DBALTokenRepository extends TokenRepository
             ->connection
             ->delete($this->table, [
                 'app_uuid' => $repositoryReference->getAppUUID()->composeUUID(),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -135,6 +146,9 @@ final class DBALTokenRepository extends TokenRepository
                         \json_decode($this->encrypter->decrypt($result['content']), true)
                     );
                 }, $results);
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
