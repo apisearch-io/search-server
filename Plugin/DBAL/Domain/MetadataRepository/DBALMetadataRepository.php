@@ -16,9 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Domain\MetadataRepository;
 
 use Apisearch\Model\HttpTransportable;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Drift\DBAL\Connection;
 use React\Promise\PromiseInterface;
 
@@ -73,7 +75,10 @@ final class DBALMetadataRepository extends MetadataRepository
             ], [
                 'val' => $this->encrypter->encrypt(\json_encode($value)),
                 'factory' => $objectNamespace,
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -89,7 +94,10 @@ final class DBALMetadataRepository extends MetadataRepository
             ->delete($this->table, [
                 'repository_reference_uuid' => $repositoryReference->compose(),
                 '`key`' => $key,
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -111,6 +119,9 @@ final class DBALMetadataRepository extends MetadataRepository
                 }
 
                 return $formattedRows;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
@@ -133,6 +144,9 @@ final class DBALMetadataRepository extends MetadataRepository
                 }
 
                 return $formattedMetadata;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 

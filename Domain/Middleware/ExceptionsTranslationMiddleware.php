@@ -42,6 +42,10 @@ final class ExceptionsTranslationMiddleware
         return $next($command)
             ->otherwise(function (Exception $exception) use ($command) {
                 $message = $exception->getMessage();
+                if (!\is_string($message)) {
+                    return;
+                }
+
                 $message = $this->translations[$message] ?? $message;
                 $exceptionType = \get_class($exception);
 

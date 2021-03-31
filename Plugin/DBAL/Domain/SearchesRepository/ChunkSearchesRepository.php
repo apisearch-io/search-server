@@ -18,6 +18,7 @@ namespace Apisearch\Plugin\DBAL\Domain\SearchesRepository;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
 use Apisearch\Server\Domain\Model\Origin;
+use Apisearch\Server\Domain\Repository\SearchesRepository\PersistentSearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\TemporarySearchesRepository;
@@ -34,17 +35,17 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 final class ChunkSearchesRepository implements SearchesRepository, EventSubscriberInterface
 {
     private TemporarySearchesRepository $temporarySearchesRepository;
-    private DBALSearchesRepository $persistentSearchesRepository;
+    private PersistentSearchesRepository $persistentSearchesRepository;
     private LoopInterface $loop;
 
     /**
-     * @param TemporarySearchesRepository $temporarySearchesRepository
-     * @param DBALSearchesRepository      $persistentSearchesRepository
-     * @param LoopInterface               $loop
+     * @param TemporarySearchesRepository  $temporarySearchesRepository
+     * @param PersistentSearchesRepository $persistentSearchesRepository
+     * @param LoopInterface                $loop
      */
     public function __construct(
         TemporarySearchesRepository $temporarySearchesRepository,
-        DBALSearchesRepository $persistentSearchesRepository,
+        PersistentSearchesRepository $persistentSearchesRepository,
         LoopInterface $loop
     ) {
         $this->temporarySearchesRepository = $temporarySearchesRepository;

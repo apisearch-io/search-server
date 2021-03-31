@@ -82,6 +82,9 @@ services:
         tags:
             - { name: "periodic_timer", interval: "%apisearch_plugin.dbal.loop_push_interval%", method: "flush" }
 
+    Apisearch\Server\Domain\Repository\SearchesRepository\PersistentSearchesRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository
+
     Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository:
         alias: Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository
 

@@ -17,11 +17,16 @@ namespace Apisearch\Plugin\Testing\Console;
 
 use Apisearch\Model\ItemUUID;
 use Apisearch\Repository\RepositoryReference;
+use Apisearch\Server\Domain\ImperativeEvent\FlushInteractions;
+use Apisearch\Server\Domain\ImperativeEvent\FlushSearches;
+use Apisearch\Server\Domain\ImperativeEvent\FlushUsageLines;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
+use function Clue\React\Block\await;
 use function Clue\React\Block\awaitAll;
+use Drift\EventBus\Bus\EventBus;
 use React\EventLoop\LoopInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\LogicException;
@@ -36,24 +41,28 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GenerateMetricsCommand extends Command
 {
     protected static $defaultName = 'generator:metrics';
+    private EventBus $bus;
     private SearchesRepository $searchesRepository;
     private UsageRepository $usageRepository;
     private InteractionRepository $interactionRepository;
     private LoopInterface $loop;
 
     /**
+     * @param EventBus              $bus
      * @param SearchesRepository    $searchesRepository
      * @param UsageRepository       $usageRepository
      * @param InteractionRepository $interactionRepository
      * @param LoopInterface         $loop
      */
     public function __construct(
+        EventBus $bus,
         SearchesRepository $searchesRepository,
         UsageRepository $usageRepository,
         InteractionRepository $interactionRepository,
         LoopInterface $loop
     ) {
         parent::__construct();
+        $this->bus = $bus;
         $this->searchesRepository = $searchesRepository;
         $this->usageRepository = $usageRepository;
         $this->interactionRepository = $interactionRepository;
@@ -72,6 +81,7 @@ class GenerateMetricsCommand extends Command
             ->addArgument('index', InputArgument::REQUIRED)
             ->addOption('days', '', InputOption::VALUE_OPTIONAL, '', 90)
             ->addOption('users', '', InputOption::VALUE_OPTIONAL, '', 100)
+            ->addOption('contexts', '', InputOption::VALUE_OPTIONAL, '', 1)
         ;
     }
 
@@ -93,8 +103,9 @@ class GenerateMetricsCommand extends Command
     {
         $appId = $input->getArgument('app');
         $indexId = $input->getArgument('index');
-        $days = $input->getOption('days');
-        $users = $input->getOption('users');
+        $days = \intval($input->getOption('days'));
+        $users = \intval($input->getOption('users'));
+        $contexts = \intval($input->getOption('contexts'));
 
         $from = (new \DateTime("$days days ago"));
         $fromAsString = (int) $from->format('Ymd');
@@ -122,6 +133,7 @@ class GenerateMetricsCommand extends Command
                     'user_'.\rand(1, $users),
                     ItemUUID::createByComposedUUID('item~'.\rand(1, 500)),
                     \rand(1, 10),
+                    'context-'.\rand(1, $contexts),
                     $this->generateOrigin(),
                     $this->generateType(),
                     $from
@@ -141,7 +153,15 @@ class GenerateMetricsCommand extends Command
             $from = clone $from;
             $from = $from->modify('+1 day');
             $fromAsString = (int) $from->format('Ymd');
+
+            awaitAll([
+                $this->bus->dispatch(new FlushSearches()),
+                $this->bus->dispatch(new FlushInteractions()),
+                $this->bus->dispatch(new FlushUsageLines()),
+            ], $this->loop);
         }
+
+        await(\sleep(1, $this->loop), $this->loop);
 
         return 0;
     }

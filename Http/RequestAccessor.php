@@ -36,7 +36,7 @@ final class RequestAccessor
      * @param Request                $request
      * @param string                 $field
      * @param TransportableException $exception
-     * @param array                  $default
+     * @param array|null             $default
      *
      * @return array
      */

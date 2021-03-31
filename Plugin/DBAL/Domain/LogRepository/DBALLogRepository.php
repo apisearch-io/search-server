@@ -17,12 +17,14 @@ namespace Apisearch\Plugin\DBAL\Domain\LogRepository;
 
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\LogRepository\Log;
 use Apisearch\Server\Domain\Repository\LogRepository\LogFilter;
 use Apisearch\Server\Domain\Repository\LogRepository\LogRepository;
 use Apisearch\Server\Domain\Repository\LogRepository\LogWithText;
 use DateTime;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
@@ -83,7 +85,10 @@ final class DBALLogRepository implements LogRepository
                 'n' => $n,
                 'type' => $type,
                 'params' => \json_encode($params),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -126,6 +131,9 @@ final class DBALLogRepository implements LogRepository
                 }
 
                 return $logs;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 

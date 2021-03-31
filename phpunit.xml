@@ -51,6 +51,7 @@
             <exclude>Plugin/Campaign/</exclude>
             <exclude>Plugin/Logstash</exclude>
             <exclude>Plugin/Security</exclude>
+            <exclude>Plugin/SearchesMachine</exclude>
         </testsuite>
 
         <testsuite name="with-infrastructure">
@@ -59,6 +60,7 @@
             <directory>Plugin/Campaign/</directory>
             <directory>Plugin/Logstash</directory>
             <directory>Plugin/Security</directory>
+            <directory>Plugin/SearchesMachine</directory>
         </testsuite>
     </testsuites>
 </phpunit>

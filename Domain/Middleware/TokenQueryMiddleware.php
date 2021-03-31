@@ -45,7 +45,6 @@ final class TokenQueryMiddleware implements DiscriminableMiddleware
     {
         $token = $query->getToken();
         $parameters = $query->getParameters();
-
         $queryAsArray = $query
             ->getQuery()
             ->toArray();

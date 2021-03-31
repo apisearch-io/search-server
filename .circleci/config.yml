@@ -32,7 +32,7 @@ jobs:
                     name: Install dependencies
                     command: |
                         sudo docker-php-ext-install pcntl
-                        sudo apt install -y git
+                        sudo apt install -y git bash
 
             -   run:
                     name: Load dev dependencies

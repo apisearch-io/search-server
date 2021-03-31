@@ -16,9 +16,11 @@ declare(strict_types=1);
 namespace Apisearch\Plugin\DBAL\Domain\AppRepository;
 
 use Apisearch\Config\Config;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Plugin\DBAL\Domain\Encrypter\Encrypter;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\AppRepository\ConfigRepository;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Drift\DBAL\Connection;
 use React\Promise\PromiseInterface;
 
@@ -63,7 +65,10 @@ final class DBALConfigRepository extends ConfigRepository
                 [
                     'content' => $this->encrypter->encrypt(\json_encode($config->toArray())),
                 ]
-            );
+            )
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -75,7 +80,10 @@ final class DBALConfigRepository extends ConfigRepository
             ->connection
             ->delete($this->table, [
                 'repository_reference_uuid' => $repositoryReference->compose(),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -102,6 +110,9 @@ final class DBALConfigRepository extends ConfigRepository
                 }
 
                 return $resultsWithKey;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 }

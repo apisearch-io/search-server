@@ -18,11 +18,13 @@ namespace Apisearch\Plugin\DBAL\Domain\InteractionRepository;
 use Apisearch\Model\AppUUID;
 use Apisearch\Model\IndexUUID;
 use Apisearch\Model\ItemUUID;
+use Apisearch\Plugin\DBAL\Domain\DBALException;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\Origin;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
 use DateTime;
+use Doctrine\DBAL\Exception as ExternalDBALException;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Drift\DBAL\Connection;
 use Drift\DBAL\Result;
@@ -89,7 +91,10 @@ final class DBALInteractionRepository implements InteractionRepository
                 'platform' => $origin->getPlatform(),
                 'type' => $type,
                 'time' => $when->format('Ymd'),
-            ]);
+            ])
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            });
     }
 
     /**
@@ -139,6 +144,9 @@ final class DBALInteractionRepository implements InteractionRepository
                 return $perDay
                     ? $this->formatResultsPerDay($result->fetchAllRows())
                     : \intval($result->fetchFirstRow()['count']);
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
@@ -181,6 +189,9 @@ final class DBALInteractionRepository implements InteractionRepository
                 }
 
                 return $formattedRows;
+            })
+            ->otherwise(function (ExternalDBALException $exception) {
+                throw new DBALException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
             });
     }
 
