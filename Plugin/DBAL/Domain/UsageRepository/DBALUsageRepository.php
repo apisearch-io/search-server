@@ -75,7 +75,7 @@ final class DBALUsageRepository implements UsageRepository
     ): PromiseInterface {
         $appUUID = $repositoryReference->getAppUUID();
         $indexUUID = $repositoryReference->getIndexUUID();
-        $when->setTime(0, 0, 0);
+        $when->setTime(0, 0);
 
         return $this
             ->connection

@@ -92,6 +92,22 @@ trait ScoreStrategyTest
             $result,
             ['3', '2', '1', '4', '5']
         );
+
+        $result = $this->query(
+            Query::createMatchAll()
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty(ScoreStrategies::MULTIPLY)
+                        ->addScoreStrategy(ScoreStrategy::createWeightFunction(
+                            2,
+                            Filter::create('id', ['4'], Filter::MUST_ALL, Filter::TYPE_FIELD)
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['4', '{2', '1', '4', '5}']
+        );
     }
 
     /**
