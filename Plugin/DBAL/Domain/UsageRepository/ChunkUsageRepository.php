@@ -24,6 +24,7 @@ use DateTime;
 use Drift\DBAL\Connection;
 use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -129,28 +130,36 @@ final class ChunkUsageRepository implements UsageRepository, EventSubscriberInte
     /**
      * Flush lines.
      *
-     * @return void
+     * @return PromiseInterface
      */
-    public function flushLines(): void
+    public function flushLines(): PromiseInterface
     {
         $useLines = $this
             ->temporaryUsageRepository
             ->getAndResetUseLines();
 
+        $finished = new Deferred();
+
         $this
             ->loop
-            ->futureTick(function () use ($useLines) {
-                return Queue::all(5, $useLines, function ($useLine) {
-                    return $this
-                        ->persistentUsageRepository
-                        ->registerEvent(
-                            RepositoryReference::createFromComposed("{$useLine->getAppUUID()}_{$useLine->getIndexUUID()}"),
-                            $useLine->getEvent(),
-                            $useLine->getWhen(),
-                            $useLine->getN()
-                        );
-                });
+            ->futureTick(function () use ($useLines, $finished) {
+                return
+                    Queue::all(5, $useLines, function ($useLine) {
+                        return $this
+                            ->persistentUsageRepository
+                            ->registerEvent(
+                                RepositoryReference::createFromComposed("{$useLine->getAppUUID()}_{$useLine->getIndexUUID()}"),
+                                $useLine->getEvent(),
+                                $useLine->getWhen(),
+                                $useLine->getN()
+                            );
+                    })
+                    ->then(function () use ($finished) {
+                        $finished->resolve();
+                    });
             });
+
+        return $finished->promise();
     }
 
     /**

@@ -26,6 +26,7 @@ use Clue\React\Mq\Queue;
 use DateTime;
 use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -111,35 +112,40 @@ final class ChunkSearchesRepository implements SearchesRepository, EventSubscrib
     /**
      * Flush.
      *
-     * @return void
+     * @return PromiseInterface
      */
-    public function flush(): void
+    public function flush(): PromiseInterface
     {
         $searches = $this
             ->temporarySearchesRepository
             ->getAndResetSearches();
 
-        $this->loop->futureTick(function () use ($searches) {
-            return Queue::all(5, $searches, function ($search) {
-                /*
-                 * @var Search $search
-                 */
-                return $this
-                    ->persistentSearchesRepository
-                    ->registerSearch(
-                        RepositoryReference::createFromComposed("{$search->getAppUUID()}_{$search->getIndexUUID()}"),
-                        $search->getUser(),
-                        $search->getText(),
-                        $search->getNumberOfResults(),
-                        new Origin(
-                            $search->getHost(),
-                            $search->getIp(),
-                            $search->getPlatform()
-                        ),
-                        $search->getWhen()
-                    );
-            });
+        $finished = new Deferred();
+
+        $this->loop->futureTick(function () use ($searches, $finished) {
+            return
+                Queue::all(5, $searches, function ($search) {
+                    return $this
+                        ->persistentSearchesRepository
+                        ->registerSearch(
+                            RepositoryReference::createFromComposed("{$search->getAppUUID()}_{$search->getIndexUUID()}"),
+                            $search->getUser(),
+                            $search->getText(),
+                            $search->getNumberOfResults(),
+                            new Origin(
+                                $search->getHost(),
+                                $search->getIp(),
+                                $search->getPlatform()
+                            ),
+                            $search->getWhen()
+                        );
+                })
+                ->then(function () use ($finished) {
+                    $finished->resolve();
+                });
         });
+
+        return $finished->promise();
     }
 
     /**

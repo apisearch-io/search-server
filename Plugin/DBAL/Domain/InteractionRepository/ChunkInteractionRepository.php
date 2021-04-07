@@ -26,6 +26,7 @@ use Clue\React\Mq\Queue;
 use DateTime;
 use Drift\HttpKernel\AsyncKernelEvents;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -119,37 +120,42 @@ final class ChunkInteractionRepository implements InteractionRepository, EventSu
     /**
      * Flush.
      *
-     * @return void
+     * @return PromiseInterface
      */
-    public function flush(): void
+    public function flush(): PromiseInterface
     {
         $interactions = $this
             ->temporaryInteractionRepository
             ->getAndResetInteractions();
 
-        $this->loop->futureTick(function () use ($interactions) {
-            return Queue::all(5, $interactions, function ($interaction) {
-                /*
-                 * @var Interaction $interaction
-                 */
-                return $this
-                    ->persistentInteractionRepository
-                    ->registerInteraction(
-                        RepositoryReference::createFromComposed("{$interaction->getAppUUID()}_{$interaction->getIndexUUID()}"),
-                        $interaction->getUser(),
-                        ItemUUID::createByComposedUUID($interaction->getItemUUID()),
-                        $interaction->getPosition(),
-                        $interaction->getContext(),
-                        new Origin(
-                            $interaction->getHost(),
-                            $interaction->getIp(),
-                            $interaction->getPlatform()
-                        ),
-                        $interaction->getType(),
-                        $interaction->getWhen()
-                    );
-            });
+        $finished = new Deferred();
+
+        $this->loop->futureTick(function () use ($interactions, $finished) {
+            return
+                Queue::all(5, $interactions, function ($interaction) {
+                    return $this
+                        ->persistentInteractionRepository
+                        ->registerInteraction(
+                            RepositoryReference::createFromComposed("{$interaction->getAppUUID()}_{$interaction->getIndexUUID()}"),
+                            $interaction->getUser(),
+                            ItemUUID::createByComposedUUID($interaction->getItemUUID()),
+                            $interaction->getPosition(),
+                            $interaction->getContext(),
+                            new Origin(
+                                $interaction->getHost(),
+                                $interaction->getIp(),
+                                $interaction->getPlatform()
+                            ),
+                            $interaction->getType(),
+                            $interaction->getWhen()
+                        );
+                })
+                ->then(function () use ($finished) {
+                    $finished->resolve();
+                });
         });
+
+        return $finished->promise();
     }
 
     /**
