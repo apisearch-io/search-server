@@ -46,6 +46,9 @@ final class QueryController extends ControllerWithQueryBus
         $requestAttributes = $request->attributes;
         $queryModel = RequestAccessor::extractQuery($request);
         $origin = $this->createOriginByRequest($request);
+        $userId = $queryModel->getUser()
+            ? $queryModel->getUser()->getId()
+            : null;
 
         $parameters = \array_merge(
             $requestAttributes->all(),
@@ -65,7 +68,7 @@ final class QueryController extends ControllerWithQueryBus
                 RequestAccessor::getTokenFromRequest($request),
                 $queryModel,
                 $origin,
-                $userEncrypt->getUUIDByInput($requestQuery->get('user_id'), $origin),
+                $userEncrypt->getUUIDByInput($userId, $origin),
                 $parameters
             ))
             ->then(function (Result $result) use ($requestAttributes, $request) {

@@ -71,7 +71,6 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
             ? 'v1_query_all_indices'
             : 'v1_query';
 
-        $parameters['user_id'] = $query->getUser() ? $query->getUser()->getId() : null;
         $headers['Origin'] = $origin->getHost();
         $headers['Remote_Addr'] = $origin->getIp();
         $headers['User_Agent'] = $this->getUserAgentByPlatform($origin->getPlatform());
