@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "506927ca3a242924d2793941efc5ea4e",
+    "content-hash": "5fabebea4cf232c2e4d62ed1551ed901",
     "packages": [
         {
             "name": "apisearch-io/apisearch-bundle",
@@ -1391,16 +1391,16 @@
         },
         {
             "name": "drift/console-bridge",
-            "version": "0.1.1",
+            "version": "0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/console-bridge.git",
-                "reference": "708ba7bf179c618c579d3e064878d6dfd81508df"
+                "reference": "e865708714958613cbec47fd1fa7fe3236b91ee5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/console-bridge/zipball/708ba7bf179c618c579d3e064878d6dfd81508df",
-                "reference": "708ba7bf179c618c579d3e064878d6dfd81508df",
+                "url": "https://api.github.com/repos/driftphp/console-bridge/zipball/e865708714958613cbec47fd1fa7fe3236b91ee5",
+                "reference": "e865708714958613cbec47fd1fa7fe3236b91ee5",
                 "shasum": ""
             },
             "require": {
@@ -1429,9 +1429,9 @@
             "description": "Console bridge for DriftPHP",
             "support": {
                 "issues": "https://github.com/driftphp/console-bridge/issues",
-                "source": "https://github.com/driftphp/console-bridge/tree/0.1.1"
+                "source": "https://github.com/driftphp/console-bridge/tree/0.1.2"
             },
-            "time": "2021-01-22T23:35:33+00:00"
+            "time": "2021-04-08T16:35:24+00:00"
         },
         {
             "name": "drift/dbal",
@@ -1922,22 +1922,22 @@
         },
         {
             "name": "drift/server",
-            "version": "0.1.22",
+            "version": "0.1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/driftphp/server.git",
-                "reference": "b7b5f9b6fb9fb65e205999711bb51f198af61d1e"
+                "reference": "72d48d5992f8396486938825338aedd0aab7712b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/driftphp/server/zipball/b7b5f9b6fb9fb65e205999711bb51f198af61d1e",
-                "reference": "b7b5f9b6fb9fb65e205999711bb51f198af61d1e",
+                "url": "https://api.github.com/repos/driftphp/server/zipball/72d48d5992f8396486938825338aedd0aab7712b",
+                "reference": "72d48d5992f8396486938825338aedd0aab7712b",
                 "shasum": ""
             },
             "require": {
                 "clue/zlib-react": "^0.2.2",
-                "drift/console-bridge": "0.1.*",
-                "drift/event-loop-utils": "0.1.*",
+                "drift/console-bridge": "^0.1.2",
+                "drift/event-loop-utils": "^0.1.0",
                 "ext-pcntl": "*",
                 "php": "^7.4 || ^8.0",
                 "react/event-loop": "^1.0",
@@ -1950,13 +1950,13 @@
             },
             "require-dev": {
                 "drift/http-kernel": "0.1.*, >=0.1.15",
+                "ext-curl": "*",
                 "ext-fileinfo": "*",
                 "laminas/laminas-diactoros": "^2",
                 "phpunit/phpunit": "^9",
                 "symfony/config": "^5.0",
                 "symfony/framework-bundle": "^5.0",
-                "symfony/process": "^5.0",
-                "vimeo/psalm": "^4"
+                "symfony/process": "^5.0"
             },
             "suggest": {
                 "drift/event-bus-bundle": "*",
@@ -1985,9 +1985,9 @@
             "description": "ReactPHP based server for DriftPHP",
             "support": {
                 "issues": "https://github.com/driftphp/server/issues",
-                "source": "https://github.com/driftphp/server/tree/0.1.22"
+                "source": "https://github.com/driftphp/server/tree/0.1.23"
             },
-            "time": "2021-02-05T18:48:02+00:00"
+            "time": "2021-04-08T16:43:11+00:00"
         },
         {
             "name": "elasticsearch/elasticsearch",
