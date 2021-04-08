@@ -36,7 +36,7 @@ class AdminPluginConfiguration extends BaseConfiguration
             ->addDefaultsIfNotSet()
                 ->children()
                     ->integerNode('minutes_interval_between_preload_all_metrics')
-                        ->defaultValue(300)
+                        ->defaultValue(60)
                     ->end()
                 ->end()
             ->end();

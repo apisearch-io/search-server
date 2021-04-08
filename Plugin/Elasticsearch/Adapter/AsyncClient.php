@@ -32,28 +32,23 @@ use function RingCentral\Psr7\stream_for;
  */
 class AsyncClient implements AsyncRequestAccessor
 {
-    /**
-     * @var Browser
-     */
-    private $browser;
+    private Browser $browser;
+    private string $elasticsearchEndpoint;
+    private string $elasticsearchAuthorizationToken;
 
     /**
-     * @var string
-     */
-    private $elasticsearchEndpoint;
-
-    /**
-     * AsyncClient constructor.
-     *
-     * @param string  $elasticsearchEndpoint
      * @param Browser $browser
+     * @param string  $elasticsearchEndpoint
+     * @param string  $elasticsearchAuthorizationToken
      */
     public function __construct(
         Browser $browser,
-        string $elasticsearchEndpoint
+        string $elasticsearchEndpoint,
+        string $elasticsearchAuthorizationToken
     ) {
         $this->browser = $browser;
         $this->elasticsearchEndpoint = $elasticsearchEndpoint;
+        $this->elasticsearchAuthorizationToken = $elasticsearchAuthorizationToken;
     }
 
     /**
@@ -100,10 +95,13 @@ class AsyncClient implements AsyncRequestAccessor
             ->request(
                 $method,
                 $fullPath,
-                [
+                \array_filter([
                     'Content-Type' => $contentType,
                     'Content-Length' => \strlen($data),
-                ],
+                    'Authorization' => !empty($this->elasticsearchAuthorizationToken)
+                        ? "Basic {$this->elasticsearchAuthorizationToken}"
+                        : false,
+                ]),
                 stream_for($data)
             )
             ->then(function (PSR7Response $response) {

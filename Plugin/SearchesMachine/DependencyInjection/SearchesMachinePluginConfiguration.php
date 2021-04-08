@@ -49,7 +49,7 @@ class SearchesMachinePluginConfiguration extends BaseConfiguration
                         ->defaultValue('searches_list')
                     ->end()
                     ->integerNode('minutes_interval_between_processing')
-                        ->defaultValue(300)
+                        ->defaultValue(60)
                     ->end()
                 ->end()
             ->end();

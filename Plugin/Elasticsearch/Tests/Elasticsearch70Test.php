@@ -30,6 +30,8 @@ class Elasticsearch70Test extends ServiceRepositoryTest
         return [
             'host' => 'http://apisearch.elasticsearch.7.0',
             'version' => '7',
+            'user' => 'elastic',
+            'password' => 'elasticsearch_password',
         ];
     }
 }
