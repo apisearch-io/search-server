@@ -91,10 +91,16 @@ class ElasticsearchPluginExtension extends BaseExtension
     {
         $host = (string) Env::get('ELASTICSEARCH_HOST', $config['host']);
         $port = (string) Env::get('ELASTICSEARCH_PORT', $config['port']);
+        $user = (string) Env::get('ELASTICSEARCH_USER', $config['user']);
+        $password = (string) Env::get('ELASTICSEARCH_PASSWORD', $config['password']);
         $endpoint = "$host:$port";
+        $authorizationToken = (!empty($user) && !empty($password))
+            ? \base64_encode("$user:$password")
+            : '';
 
         return [
             'apisearch_plugin.elasticsearch.endpoint' => $endpoint,
+            'apisearch_plugin.elasticsearch.authorization_token' => $authorizationToken,
             'apisearch_plugin.elasticsearch.version' => (string) Env::get('ELASTICSEARCH_VERSION', $config['version']),
             'apisearch_plugin.elasticsearch.refresh_on_write' => (bool) Env::get('ELASTICSEARCH_REFRESH_ON_WRITE', $config['refresh_on_write']),
         ];

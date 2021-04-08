@@ -47,6 +47,12 @@ class ElasticsearchPluginConfiguration extends BaseConfiguration
                 ->scalarNode('port')
                     ->defaultValue('9200')
                 ->end()
+                ->scalarNode('user')
+                    ->defaultValue('')
+                ->end()
+                ->scalarNode('password')
+                    ->defaultValue('')
+                ->end()
             ->end();
     }
 }
