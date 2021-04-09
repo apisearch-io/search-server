@@ -73,8 +73,10 @@ class AsyncClient implements AsyncRequestAccessor
         array $query = [],
         $contentType = Request::DEFAULT_CONTENT_TYPE
     ): PromiseInterface {
-        if (\is_array($data)) {
+        $withData = !empty($data);
+        if (\is_array($data) && !empty($data)) {
             $data = \json_encode($data);
+            $withData = true;
         }
 
         $fullPath = \sprintf('%s/%s?%s',
@@ -97,12 +99,12 @@ class AsyncClient implements AsyncRequestAccessor
                 $fullPath,
                 \array_filter([
                     'Content-Type' => $contentType,
-                    'Content-Length' => \strlen($data),
+                    'Content-Length' => ($withData ? \strlen($data) : false),
                     'Authorization' => !empty($this->elasticsearchAuthorizationToken)
                         ? "Basic {$this->elasticsearchAuthorizationToken}"
                         : false,
                 ]),
-                stream_for($data)
+                ($withData ? stream_for($data) : '')
             )
             ->then(function (PSR7Response $response) {
                 return new Response(
@@ -136,7 +138,7 @@ class AsyncClient implements AsyncRequestAccessor
      * Makes calls to the elasticsearch server with usage official client Endpoint based on this index.
      *
      * @param AbstractEndpoint $endpoint
-     * @param string           $index
+     * @param string|null      $index
      *
      * @return PromiseInterface
      */
