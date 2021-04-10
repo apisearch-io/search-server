@@ -94,6 +94,7 @@ class EventBusCompilerPass implements CompilerPassInterface
                 'user' => $container->getParameter('apisearch_server.async_events_amqp_user'),
                 'password' => $container->getParameter('apisearch_server.async_events_amqp_password'),
                 'vhost' => $container->getParameter('apisearch_server.async_events_amqp_vhost'),
+                'ssl' => ($container->getParameter('apisearch_server.async_events_amqp_ssl') ? [] : ''),
             ];
 
             EventBusBuilder::createAsyncBus(

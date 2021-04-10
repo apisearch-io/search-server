@@ -146,6 +146,10 @@ class ApisearchServerExtension extends BaseExtension
                 'AMQP_VHOST',
                 $config['async_events']['amqp']['vhost']
             ),
+            'apisearch_server.async_events_amqp_ssl' => Env::get(
+                'AMQP_SSL',
+                $config['async_events']['amqp']['ssl']
+            ),
 
             /*
              * Limitations
