@@ -99,6 +99,14 @@ apisearch_v1_update_items_by_query:
         tags: [catalog]
         json: true
 
+apisearch_v1_patch_items:
+    path: /v1/{app_id}/indices/{index_id}/items
+    methods: ["PATCH"]
+    controller: Apisearch\Server\Http\PatchItemsController
+    defaults:
+        tags: [catalog]
+        json: true
+
 apisearch_v1_delete_items:
     path: /v1/{app_id}/indices/{index_id}/items
     methods: ["DELETE"]
@@ -134,6 +142,46 @@ apisearch_v1_import_index_by_stream:
     path: /v1/{app_id}/indices/{index_id}/import/by-stream
     methods: ["PUT"]
     controller: Apisearch\Server\Http\ImportIndexByStreamController
+    defaults:
+        tags: [catalog]
+
+#
+# Item API
+#
+apisearch_v1_get_item:
+    path: /v1/{app_id}/indices/{index_id}/items/{itemComposedUUID}
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetItemController
+    defaults:
+        tags: [query]
+
+apisearch_v1_head_item:
+    path: /v1/{app_id}/indices/{index_id}/items/{itemComposedUUID}
+    methods: ["HEAD"]
+    controller: Apisearch\Server\Http\HeadItemController
+    defaults:
+        tags: [query]
+
+apisearch_v1_put_item:
+    path: /v1/{app_id}/indices/{index_id}/items/{itemComposedUUID}
+    methods: ["PUT"]
+    controller: Apisearch\Server\Http\PutItemController
+    defaults:
+        tags: [catalog]
+        json: true
+
+apisearch_v1_patch_item:
+    path: /v1/{app_id}/indices/{index_id}/items/{itemComposedUUID}
+    methods: ["PATCH"]
+    controller: Apisearch\Server\Http\PatchItemController
+    defaults:
+        tags: [catalog]
+        json: true
+
+apisearch_v1_delete_item:
+    path: /v1/{app_id}/indices/{index_id}/items/{itemComposedUUID}
+    methods: ["DELETE"]
+    controller: Apisearch\Server\Http\PatchItemController
     defaults:
         tags: [catalog]
 

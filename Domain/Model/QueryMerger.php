@@ -57,34 +57,34 @@ class QueryMerger
      * Merge queries.
      *
      * @param array  $baseQuery
-     * @param array  $mergeableQuery
+     * @param array  $queryToMerge
      * @param string $type
      *
      * @return array
      */
     public static function mergeQueries(
         array $baseQuery,
-        array $mergeableQuery,
+        array $queryToMerge,
         string $type
     ): array {
-        if (empty($mergeableQuery)) {
+        if (empty($queryToMerge)) {
             return $baseQuery;
         }
 
         if (empty($baseQuery)) {
-            return $mergeableQuery;
+            return $queryToMerge;
         }
 
         if (self::FORCE === $type) {
             return \array_merge(
                 $baseQuery,
-                $mergeableQuery
+                $queryToMerge
             );
         }
 
         if (self::BASE === $type) {
             return \array_merge(
-                $mergeableQuery,
+                $queryToMerge,
                 $baseQuery
             );
         }
@@ -93,14 +93,14 @@ class QueryMerger
 
         return \array_merge(
             \array_diff_key(\array_merge(
-                $mergeableQuery,
+                $queryToMerge,
                 $baseQuery
             ), $fieldsKeys),
             \array_merge(
                 $baseQuery,
                 \array_merge_recursive(
                     \array_intersect_key($baseQuery, \array_fill_keys(self::MERGE_FIELDS, true)),
-                    \array_intersect_key($mergeableQuery, \array_fill_keys(self::MERGE_FIELDS, true))
+                    \array_intersect_key($queryToMerge, \array_fill_keys(self::MERGE_FIELDS, true))
                 )
             )
         );

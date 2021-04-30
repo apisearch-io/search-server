@@ -572,6 +572,83 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
+     * @param ItemUUID    $itemUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    abstract public function headItem(
+        ItemUUID $itemUUID,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
+     * @param ItemUUID    $itemUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @return Item
+     *
+     * @throws Exception
+     */
+    abstract public function getItem(
+        ItemUUID $itemUUID,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) : Item;
+
+    /**
+     * @param Item $item
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    abstract public function putItem(
+        Item $item,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
+     * @param Item $item
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    abstract public function patchItem(
+        Item $item,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
+     * @param ItemUUID $itemUUID
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    abstract public function deleteItem(
+        ItemUUID $itemUUID,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
      * Reset index using the bus.
      *
      * @param string|null $appId
