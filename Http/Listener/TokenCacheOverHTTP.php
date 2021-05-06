@@ -41,8 +41,9 @@ final class TokenCacheOverHTTP implements EventSubscriberInterface
             ->then(function (ResponseEvent $event) {
                 $response = $event->getResponse();
                 $request = $event->getRequest();
-                $query = $request->query;
-                $token = $query->get(Http::TOKEN_FIELD, '');
+                $response->headers->set('Server', 'Apisearch/DriftPHP');
+                $attributes = $request->attributes;
+                $token = $attributes->get(Http::TOKEN_FIELD, '');
 
                 if (
                     $request->isMethod(Request::METHOD_GET) &&
