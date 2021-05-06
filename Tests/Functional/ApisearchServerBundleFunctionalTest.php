@@ -1002,16 +1002,19 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      *
      * @param string|null $tokenId
      * @param string|null $appId
+     * @param int|null    $ttl
      *
      * @return Token
      */
     protected function createTokenByIdAndAppId(
         string $tokenId,
-        string $appId = null
+        string $appId = null,
+        int $ttl = null
     ): Token {
         return new Token(
             TokenUUID::createById($tokenId),
-            AppUUID::createById($appId ?? self::$appId)
+            AppUUID::createById($appId ?? self::$appId),
+            [], [], [], $ttl ?? 0
         );
     }
 
