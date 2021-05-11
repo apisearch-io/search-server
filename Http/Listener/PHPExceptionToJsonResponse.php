@@ -15,9 +15,7 @@ declare(strict_types=1);
 
 namespace Apisearch\Server\Http\Listener;
 
-use Apisearch\Exception\ResourceNotAvailableException;
 use Apisearch\Exception\TransportableException;
-use Exception;
 use React\Promise\PromiseInterface;
 use function React\Promise\resolve;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -41,38 +39,25 @@ final class PHPExceptionToJsonResponse implements EventSubscriberInterface
             ->then(function (ExceptionEvent $event) {
                 $throwable = $event->getThrowable();
 
-                if ($throwable instanceof Exception) {
-                    $throwable = $this->toOwnException($throwable);
-                }
-
+                $responseMessage = $serverMessage = $throwable->getMessage();
                 $exceptionErrorCode = $throwable instanceof TransportableException
                     ? $throwable::getTransportableHTTPError()
                     : 500;
 
-                $event->stopPropagation();
-                $event->setResponse(new JsonResponse([
-                    'message' => $throwable->getMessage(),
+                if ($throwable instanceof NotFoundHttpException) {
+                    $serverMessage = 'Route not found';
+                    $exceptionErrorCode = 404;
+                }
+
+                $response = new JsonResponse([
+                    'message' => $responseMessage,
                     'code' => $exceptionErrorCode,
-                ], $exceptionErrorCode));
+                ], $exceptionErrorCode);
+
+                $response->headers->set('x-server-message', $serverMessage);
+                $event->setResponse($response);
+                $event->stopPropagation();
             });
-    }
-
-    /**
-     * To own exceptions.
-     *
-     * @param Exception $exception
-     *
-     * @return Exception
-     */
-    private function toOwnException(Exception $exception): Exception
-    {
-        if ($exception instanceof NotFoundHttpException) {
-            \preg_match('~No route found for "(.*)"~', $exception->getMessage(), $match);
-
-            return ResourceNotAvailableException::routeNotAvailable($match[1] ?? $exception->getMessage());
-        }
-
-        return $exception;
     }
 
     /**
@@ -82,7 +67,7 @@ final class PHPExceptionToJsonResponse implements EventSubscriberInterface
     {
         return [
             ExceptionEvent::class => [
-                ['onKernelException', 0],
+                ['onKernelException', 1],
             ],
         ];
     }
