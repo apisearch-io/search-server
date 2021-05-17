@@ -13,7 +13,7 @@
 
 declare(strict_types=1);
 
-namespace Plugin\Campaign\Tests\Unit\Domain;
+namespace Apisearch\Plugin\Campaign\Tests\Unit\Domain;
 
 use Apisearch\Model\IndexUUID;
 use Apisearch\Plugin\Campaign\Domain\Matcher;
@@ -69,6 +69,17 @@ class MatcherTest extends BaseUnitTest
 
         $campaign = new Campaign(new CampaignUID('1'), (new DateTime())->modify('+1 day'), (new DateTime())->modify('-1 day'), IndexUUID::createById(''), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
         $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
+    }
+
+    /**
+     * Test by query match exact.
+     *
+     * @return void
+     */
+    public function testByQueryMatchNoMatch(): void
+    {
+        $this->assertTrue($this->queriesMatch('Marc', CampaignCriteria::MATCH_TYPE_NONE, 'Marc'));
+        $this->assertTrue($this->queriesMatch('Another', CampaignCriteria::MATCH_TYPE_NONE, 'Marc'));
     }
 
     /**
@@ -145,6 +156,18 @@ class MatcherTest extends BaseUnitTest
         $this->assertFalse($this->queriesMatch('mrk', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC'));
         $this->assertFalse($this->queriesMatch('Hola, sóc el mrk', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC'));
         $this->assertFalse($this->queriesMatch('Hola ark, sóc el mrk', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC'));
+    }
+
+    public function testByQueryMatchWithSeveralValues()
+    {
+        $this->assertTrue($this->queriesMatch('marc', CampaignCriteria::MATCH_TYPE_EXACT, 'MARC, Àlex'));
+        $this->assertTrue($this->queriesMatch('ÀLEX', CampaignCriteria::MATCH_TYPE_EXACT, 'MARC, Àlex'));
+        $this->assertTrue($this->queriesMatch('Hola, sóc el morc', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC, Àlex'));
+        $this->assertTrue($this->queriesMatch('Hola, sóc el alex', CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR, 'MARC, alex'));
+        $this->assertTrue($this->queriesMatch('Hola, sóc el alex', CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT, 'MARC, alex'));
+        $this->assertTrue($this->queriesMatch('Hola, sóc el alex', CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT, 'aleX, not found'));
+
+        $this->assertFalse($this->queriesMatch('Hola, sóc el alex', CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT, 'MARC, not found'));
     }
 
     /**
@@ -239,6 +262,36 @@ class MatcherTest extends BaseUnitTest
                 Filter::create('category', ['2', '3'], Filter::MUST_ALL, Filter::TYPE_FIELD),
                 Filter::create('carrier', ['2', '3'], Filter::MUST_ALL, Filter::TYPE_FIELD),
             ]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2'], Filter::MUST_ALL, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3', '4'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2', '10'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3', '4'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2', '3'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3', '4'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+        ));
+
+        $this->assertTrue($this->filtersMatch(
+            [Filter::create('category', ['2', '3', '4'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)],
+            [Filter::create('category', ['2', '3', '4'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
         ));
     }
 
@@ -496,33 +549,77 @@ class MatcherTest extends BaseUnitTest
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC,DEF'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertTrue($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('ABC'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertFalse($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('EFG'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('EFG'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
 
         $this->assertFalse($matcher->repositoryReferenceMatchesCampaign(
             RepositoryReference::createFromComposed('123_ABC,CDE'),
-            $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('HIJ'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
+            new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById('HIJ'), [], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]))
         ));
+    }
+
+    public function testComposedMatch()
+    {
+        $query = Query::createMatchAll();
+        $matcher = new Matcher();
+        $now = new DateTime();
+
+        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [
+            new CampaignCriteria(
+                CampaignCriteria::MATCH_TYPE_NONE,
+                '',
+                [Filter::create('category', ['2', '3'], Filter::MUST_ALL, Filter::TYPE_FIELD)]
+            ),
+        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
+        $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
+
+        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [
+            new CampaignCriteria(
+                CampaignCriteria::MATCH_TYPE_NONE,
+                null,
+                [Filter::create('category', ['2', '3'], Filter::MUST_ALL, Filter::TYPE_FIELD)]
+            ),
+        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
+        $this->assertFalse($matcher->queryMatchesCampaign($query, $campaign, $now));
+
+        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [
+            new CampaignCriteria(
+                CampaignCriteria::MATCH_TYPE_NONE,
+                null,
+                []
+            ),
+        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
+        $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
+
+        $query = Query::createMatchAll()->filterBy('category', 'category', ['2']);
+        $campaign = new Campaign(new CampaignUID('1'), null, null, IndexUUID::createById(''), [
+            new CampaignCriteria(
+                CampaignCriteria::MATCH_TYPE_NONE,
+                null,
+                [Filter::create('indexed_metadata.category', ['2', '3'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD)]
+            ),
+        ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [], CampaignModifiers::createFromArray([]));
+        $this->assertTrue($matcher->queryMatchesCampaign($query, $campaign, $now));
     }
 
     /**
@@ -555,12 +652,12 @@ class MatcherTest extends BaseUnitTest
     }
 
     /**
-     * @param Filter[] $queryFilters
-     * @param Filter[] $criteriaFilters
-     * @param Filter[] $anotherCriteriaFilters
-     * @param string   $criteriaFiltersMode
-     * @param string   $queryString
-     * @param string   $exactMatchingQuery
+     * @param Filter[]    $queryFilters
+     * @param Filter[]    $criteriaFilters
+     * @param Filter[]    $anotherCriteriaFilters
+     * @param string      $criteriaFiltersMode
+     * @param string|null $queryString
+     * @param string|null $exactMatchingQuery
      *
      * @return bool
      */

@@ -125,40 +125,50 @@ class Matcher
     ): bool {
         $queryMatches = true;
 
-        if (!\is_null($criteria->getQueryText())) {
-            $queryText = \trim(\strtolower($query->getQueryText()));
-            $criteriaText = \trim(\strtolower($criteria->getQueryText()));
+        if (
+            (CampaignCriteria::MATCH_TYPE_NONE !== $criteria->getMatchType()) &&
+            null !== $criteria->getQueryText()
+        ) {
+            $partialQueryMatches = false;
+            $queryText = \trim(\strtolower($query->getQueryText() ?? ''));
+            $criteriaText = \trim(\strtolower($criteria->getQueryText() ?? ''));
+            $criteriaTextSplit = \explode(',', $criteriaText);
 
-            $queryMatches = ('' === $queryText || '' === $criteriaText)
-                ? $queryText === $criteriaText
-                :
+            foreach ($criteriaTextSplit as $criteriaWord) {
+                $criteriaWord = \trim($criteriaWord);
+                $partialQueryMatches |= ('' === $queryText || '' === $criteriaWord)
+                    ? $queryText === $criteriaWord
+                    :
                     (
                         CampaignCriteria::MATCH_TYPE_EXACT === $criteria->getMatchType() &&
-                        $criteriaText === $queryText
+                        $criteriaWord === $queryText
                     ) ||
                     (
                         CampaignCriteria::MATCH_TYPE_INCLUDES_EXACT === $criteria->getMatchType() &&
                         (
-                            $criteriaText === $queryText ||
-                            str_contains($queryText, $criteriaText)
+                            $criteriaWord === $queryText ||
+                            str_contains($queryText, $criteriaWord)
                         )
                     ) ||
                     (
                         CampaignCriteria::MATCH_TYPE_SIMILAR === $criteria->getMatchType() &&
                         (
-                            $criteriaText === $queryText ||
-                            \levenshtein($queryText, $criteriaText) <= 1
+                            $criteriaWord === $queryText ||
+                            \levenshtein($queryText, $criteriaWord) <= 1
                         )
                     ) ||
                     (
                         CampaignCriteria::MATCH_TYPE_INCLUDES_SIMILAR === $criteria->getMatchType() &&
                         (
-                            $criteriaText === $queryText ||
-                            \count(\array_filter(\explode(' ', $queryText), function (string $word) use ($criteriaText) {
-                                return \levenshtein(\trim($word), $criteriaText) <= 1;
+                            $criteriaWord === $queryText ||
+                            \count(\array_filter(\explode(' ', $queryText), function (string $word) use ($criteriaWord) {
+                                return \levenshtein(\trim($word), $criteriaWord) <= 1;
                             })) > 0
                         )
                     );
+            }
+
+            $queryMatches = $partialQueryMatches;
         }
 
         return
@@ -215,13 +225,27 @@ class Matcher
         }
 
         foreach ($query->getFilters() as $queryFilter) {
+            if ('' === $queryFilter->getField()) {
+                continue;
+            }
+
             if (
                 Filter::TYPE_FIELD === $queryFilter->getFilterType() &&
-                $queryFilter->getField() === $filter->getField() &&
-                \count(\array_intersect(
-                    $queryFilter->getValues(),
-                    $filter->getValues()
-                )) === $filterValuesCount
+                (
+                    $queryFilter->getField() === $filter->getField() ||
+                    $queryFilter->getField() === 'indexed_metadata.'.$filter->getField()
+                ) &&
+                (
+                    Filter::AT_LEAST_ONE === $filter->getApplicationType()
+                        ? (\count(\array_intersect(
+                            $queryFilter->getValues(),
+                            $filter->getValues()
+                        )) > 0)
+                        : (\count(\array_intersect(
+                            $queryFilter->getValues(),
+                            $filter->getValues()
+                        )) === $filterValuesCount)
+                )
             ) {
                 return true;
             }
