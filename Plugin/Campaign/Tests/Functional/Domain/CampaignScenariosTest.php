@@ -47,7 +47,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     2,
                     false
                 ),
@@ -88,7 +90,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     2,
                     false
                 ),
@@ -173,7 +177,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('relevance', ['0..1000'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                    [
+                        Filter::create('relevance', ['0..1000'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                    ],
                     10,
                     false
                 ),
@@ -191,7 +197,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     3,
                     false
                 ),
@@ -209,7 +217,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('id', ['4'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('id', ['4'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     5,
                     false
                 ),
@@ -245,7 +255,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     2,
                     false
                 ),
@@ -280,7 +292,9 @@ trait CampaignScenariosTest
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('brand', [1], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('brand', [1], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     2,
                     false
                 ),
@@ -373,5 +387,65 @@ trait CampaignScenariosTest
 
         $result = $this->query(Query::create('a')->setMinScore(0));
         $this->assertCount(3, $result->getItems());
+    }
+
+    public function testCampaignWithMultipleFilters()
+    {
+        $campaign1 = new Campaign(
+            new CampaignUID('123'),
+            null, null, IndexUUID::createById(self::$index),
+            [
+                new CampaignCriteria(
+                    CampaignCriteria::MATCH_TYPE_EXACT,
+                    'Matutano'
+                ),
+            ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
+            new CampaignBoostingFilter(
+                [
+                    Filter::create('price', ['0..10'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                ],
+                100,
+                false
+            ),
+        ],
+            CampaignModifiers::createFromArray([])
+        );
+
+        $this->putCampaign($campaign1);
+        $result = $this->query(Query::create('Matutano'));
+
+        $this->assertResults(
+            $result,
+            ['5', '2', '!1', '!3', '!4']
+        );
+
+        $campaign1 = new Campaign(
+            new CampaignUID('123'),
+            null, null, IndexUUID::createById(self::$index),
+            [
+                new CampaignCriteria(
+                    CampaignCriteria::MATCH_TYPE_EXACT,
+                    'Matutano'
+                ),
+            ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
+            new CampaignBoostingFilter(
+                [
+                    Filter::create('price', ['0..1000'], Filter::MUST_ALL, Filter::TYPE_RANGE),
+                    Filter::create('simple_int', ['7', '8948394839'], Filter::AT_LEAST_ONE, Filter::TYPE_FIELD),
+                ],
+                200,
+                false
+            ),
+        ],
+            CampaignModifiers::createFromArray([])
+        );
+
+        $this->putCampaign($campaign1);
+        $result = $this->query(Query::create('Matutano'));
+
+        $this->assertResults(
+            $result,
+            ['1', '2', '!5', '!3', '!4']
+        );
     }
 }

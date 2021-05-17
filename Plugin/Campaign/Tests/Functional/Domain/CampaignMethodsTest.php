@@ -26,10 +26,10 @@ use Apisearch\Plugin\Campaign\Domain\Model\CampaignUID;
 interface CampaignMethodsTest
 {
     /**
-     * @param Campaign $campaign
-     * @param string   $appId
-     * @param string   $indexId
-     * @param Token    $token
+     * @param Campaign    $campaign
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function putCampaign(
         Campaign $campaign,
@@ -39,9 +39,9 @@ interface CampaignMethodsTest
     );
 
     /**
-     * @param string $appId
-     * @param string $indexId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function deleteCampaigns(
         ?string $appId = null,
@@ -51,9 +51,9 @@ interface CampaignMethodsTest
 
     /**
      * @param CampaignUID $campaignUID
-     * @param string      $appId
-     * @param string      $indexId
-     * @param Token       $token
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function deleteCampaign(
         CampaignUID $campaignUID,
@@ -63,9 +63,9 @@ interface CampaignMethodsTest
     );
 
     /**
-     * @param string $appId
-     * @param string $indexId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      *
      * @return Campaigns
      */

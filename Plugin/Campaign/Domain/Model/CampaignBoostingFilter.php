@@ -22,39 +22,39 @@ use Apisearch\Query\Filter;
  */
 class CampaignBoostingFilter
 {
-    private Filter $filter;
+    private array $filters = [];
     private float  $boostingFactor;
     private bool   $matchMainQuery;
 
     /**
-     * @param Filter $filter
-     * @param float  $boostingFactor
-     * @param bool   $matchMainQuery
+     * @param Filter[] $filters
+     * @param float    $boostingFactor
+     * @param bool     $matchMainQuery
      */
     public function __construct(
-        Filter $filter,
+        array $filters,
         float $boostingFactor,
         bool $matchMainQuery
     ) {
-        $this->filter = $filter;
+        $this->filters = $filters;
         $this->boostingFactor = $boostingFactor;
         $this->matchMainQuery = $matchMainQuery;
     }
 
     /**
-     * @return Filter
+     * @return Filter[]
      */
-    public function getFilter(): Filter
+    public function getFilters(): array
     {
-        return $this->filter;
+        return $this->filters;
     }
 
     /**
-     * @param Filter $filter
+     * @param Filter[] $filters
      */
-    public function setFilter(Filter $filter): void
+    public function setFilters(array $filters): void
     {
-        $this->filter = $filter;
+        $this->filters = $filters;
     }
 
     /**

@@ -46,7 +46,9 @@ class CampaignTest extends TestCase
                 ),
             ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
                 new CampaignBoostingFilter(
-                    Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    [
+                        Filter::create('simple_string', ['hola'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                    ],
                     2,
                     false
                 ),

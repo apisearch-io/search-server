@@ -777,12 +777,10 @@ class QueryBuilder
                 );
         }
 
-        $match = $this->setScoreStrategies(
+        return $this->setScoreStrategies(
             $query,
             $match
         );
-
-        return $match;
     }
 
     /**
@@ -896,14 +894,20 @@ class QueryBuilder
          * @var ScoreStrategy
          */
         foreach ($scoreStrategiesArray as $scoreStrategy) {
-            $filter = $scoreStrategy->getFilter() instanceof Filter
-                ? $this->createQueryFilterByApplicationType(
-                    $scoreStrategy->getFilter(),
-                    false,
-                    false,
-                    false
-                )
-                : null;
+            $filters = $scoreStrategy->getFilters() ?: [$scoreStrategy->getFilter()];
+            $mustAllFilter = null;
+
+            if ($filters !== [null]) {
+                $mustAllFilter = new ElasticaQuery\BoolQuery();
+                foreach ($filters as $filter) {
+                    $mustAllFilter->addMust($this->createQueryFilterByApplicationType(
+                        $filter,
+                        false,
+                        false,
+                        false
+                    ));
+                }
+            }
 
             $field = Item::getPathByField(
                 (string) $scoreStrategy->getConfigurationValue('field')
@@ -928,7 +932,7 @@ class QueryBuilder
                         $nestedFunctionQuery instanceof ElasticaQuery\FunctionScore
                             ? $nestedFunctionQuery
                             : $newQuery,
-                        $filter
+                        $mustAllFilter
                     );
                     break;
                 case ScoreStrategy::DECAY:
@@ -937,14 +941,14 @@ class QueryBuilder
                         $nestedFunctionQuery instanceof ElasticaQuery\FunctionScore
                             ? $nestedFunctionQuery
                             : $newQuery,
-                        $filter
+                        $mustAllFilter
                     );
                     break;
                 case ScoreStrategy::CUSTOM_FUNCTION:
                     $this->addCustomFunctionScoreStrategy(
                         $scoreStrategy,
                         $newQuery,
-                        $filter
+                        $mustAllFilter
                     );
                     break;
 
@@ -952,7 +956,7 @@ class QueryBuilder
                     $this->addWeightScoreStrategy(
                         $scoreStrategy,
                         $newQuery,
-                        $filter
+                        $mustAllFilter
                     );
                     break;
             }
@@ -1210,13 +1214,20 @@ class QueryBuilder
             $functionQuery = new ElasticaQuery\BoolQuery();
             $constantQuery->setBoost($scoreStrategy->getWeight());
             $constantQuery->setFilter($functionQuery);
+            $filters = $scoreStrategy->getFilters() ?: [$scoreStrategy->getFilter()];
 
-            $this->addFieldOrRangeFilter(
-                $functionQuery,
-                $scoreStrategy->getFilter(),
-                false,
-                false
-            );
+            if ($filters !== [null]) {
+                foreach ($filters as $filter) {
+                    $partialFilter = new ElasticaQuery\BoolQuery();
+                    $functionQuery->addMust($partialFilter);
+                    $this->addFieldOrRangeFilter(
+                        $partialFilter,
+                        $filter,
+                        false,
+                        false
+                    );
+                }
+            }
 
             $parentBoolQuery->addShould($constantQuery);
         }
