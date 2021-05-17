@@ -30,12 +30,10 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
     use CampaignScenariosTest;
 
     /**
-     * @param Campaign $campaign
-     * @param string   $appId
-     * @param string   $indexId
-     * @param Token    $token
-     *
-     * @return void
+     * @param Campaign    $campaign
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function putCampaign(
         Campaign $campaign,
@@ -43,7 +41,7 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        $result = $this->request(
+        $this->request(
             'v1_campaigns_put_campaign',
             [
                 'campaign_id' => $campaign->getUid()->composeUID(),
@@ -56,18 +54,16 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
     }
 
     /**
-     * @param string $appId
-     * @param string $indexId
-     * @param Token  $token
-     *
-     * @return void
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function deleteCampaigns(
         ?string $appId = null,
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        $result = $this->request(
+        $this->request(
             'v1_campaigns_delete_campaigns',
             [
                 'app_id' => $appId ?? static::$appId,
@@ -79,11 +75,9 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
 
     /**
      * @param CampaignUID $campaignUID
-     * @param string      $appId
-     * @param string      $indexId
-     * @param Token       $token
-     *
-     * @return void
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      */
     public function deleteCampaign(
         CampaignUID $campaignUID,
@@ -91,7 +85,7 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
         ?string $indexId = null,
         ?Token $token = null
     ) {
-        $result = $this->request(
+        $this->request(
             'v1_campaigns_delete_campaign',
             [
                 'campaign_id' => $campaignUID->composeUID(),
@@ -103,9 +97,9 @@ class CampaignHttpFunctionalTest extends HttpFunctionalTest implements CampaignM
     }
 
     /**
-     * @param string $appId
-     * @param string $indexId
-     * @param Token  $token
+     * @param string|null $appId
+     * @param string|null $indexId
+     * @param Token|null  $token
      *
      * @return Campaigns
      */

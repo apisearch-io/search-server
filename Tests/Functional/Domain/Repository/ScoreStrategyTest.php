@@ -478,4 +478,87 @@ trait ScoreStrategyTest
             ['5', '!1', '!4', '!2', '!3']
         );
     }
+
+    public function testMultiFilterInWeightFilterFunction()
+    {
+        $result = $this->query(
+            Query::create('coloryellow')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightMultiFilterFunction(
+                            20,
+                            [
+                                Filter::create('color', ['blue'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                                Filter::create('color', ['yellow'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            ],
+                            true
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['3', '5', '!1', '!2', '!4']
+        );
+
+        $result = $this->query(
+            Query::create('coloryellow')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightMultiFilterFunction(
+                            20,
+                            [
+                                Filter::create('color', ['red'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                                Filter::create('color', ['yellow'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            ],
+                            true
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '3', '!1', '!2', '!4']
+        );
+
+        $result = $this->query(
+            Query::create('colorred')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightMultiFilterFunction(
+                            20,
+                            [
+                                Filter::create('color', ['red'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                                Filter::create('color', ['yellow'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            ],
+                            false
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['5', '!3', '!1', '!2', '!4']
+        );
+
+        $result = $this->query(
+            Query::create('colorred')
+                ->setScoreStrategies(
+                    ScoreStrategies::createEmpty()
+                        ->addScoreStrategy(ScoreStrategy::createWeightMultiFilterFunction(
+                            20,
+                            [
+                                Filter::create('color', ['blue'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                                Filter::create('color', ['yellow'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                            ],
+                            false
+                        ))
+                )
+        );
+
+        $this->assertResults(
+            $result,
+            ['3', '5', '!1', '!2', '!4']
+        );
+    }
 }

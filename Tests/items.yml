@@ -178,6 +178,7 @@ items:
             description: Código de Hernando
             exact_brand: "tralaraA composed"
             exact_subbrand: "subwhateverB"
+            color: "coloryellow"
         exact_matching_metadata:
             - engonga
             - composed word
@@ -279,6 +280,8 @@ items:
                 - "anotherboosting"
             exact_brand: "brandA"
             exact_subbrand: "subwhateverA"
+            color: "coloryellow"
+            color_2: "colorred"
         exact_matching_metadata:
             - Vinci
             - another composed word

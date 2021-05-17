@@ -172,7 +172,9 @@ class Campaign implements HttpTransportable
             'match_criteria_mode' => $this->getMatchCriteriaMode(),
             'boosting_filters' => \array_map(function (CampaignBoostingFilter $boostingFilter) {
                 return [
-                    'filter' => $boostingFilter->getFilter()->toArray(),
+                    'filters' => \array_map(function (Filter $filter) {
+                        return $filter->toArray();
+                    }, $boostingFilter->getFilters()),
                     'factor' => $boostingFilter->getBoostingFactor(),
                     'matching_main_query' => $boostingFilter->isMatchMainQuery(),
                 ];
@@ -190,8 +192,8 @@ class Campaign implements HttpTransportable
     {
         return new Campaign(
             new CampaignUID($array['uid']),
-            $array['from'] ? DateTime::createFromFormat('U', \strval($array['from'])) : null,
-            $array['to'] ? DateTime::createFromFormat('U', \strval($array['to'])) : null,
+            isset($array['from']) ? DateTime::createFromFormat('U', \strval($array['from'])) : null,
+            isset($array['to']) ? DateTime::createFromFormat('U', \strval($array['to'])) : null,
             IndexUUID::createFromArray($array['index_uuid']),
             \array_map(function (array $criteria) {
                 return new CampaignCriteria(
@@ -203,12 +205,14 @@ class Campaign implements HttpTransportable
             $array['match_criteria_mode'] ?? self::MATCH_CRITERIA_MODE_MUST_ALL,
             \array_map(function (array $boostingFilter) {
                 return new CampaignBoostingFilter(
-                    Filter::createFromArray($boostingFilter['filter']),
+                    \array_map(function (array $filterAsArray) {
+                        return Filter::createFromArray($filterAsArray);
+                    }, $boostingFilter['filters'] ?? []),
                     $boostingFilter['factor'],
                     $boostingFilter['matching_main_query'],
                 );
             }, $array['boosting_filters'] ?? []),
-            CampaignModifiers::createFromArray($array['modifiers'])
+            CampaignModifiers::createFromArray($array['modifiers'] ?? [])
         );
     }
 }

@@ -70,19 +70,21 @@ class ComplexFieldsInCampaignMiddleware extends ComplexFieldsMiddleware implemen
         }
 
         foreach ($campaign->getBoostingFilters() as $boostingFilter) {
-            $filter = $boostingFilter->getFilter();
-            $field = $filter->getField();
-            if (\in_array($field, $complexFields)) {
-                $filter = Filter::create(
-                    $field.'_id',
-                    $filter->getValues(),
-                    $filter->getApplicationType(),
-                    $filter->getFilterType(),
-                    $filter->getFilterTerms()
-                );
+            $filters = \array_map(function (Filter $filter) use ($complexFields) {
+                $field = $filter->getField();
+                if (\in_array($field, $complexFields)) {
+                    return Filter::create(
+                        $field.'_id',
+                        $filter->getValues(),
+                        $filter->getApplicationType(),
+                        $filter->getFilterType(),
+                        $filter->getFilterTerms()
+                    );
+                }
 
-                $boostingFilter->setFilter($filter);
-            }
+                return $filter;
+            }, $boostingFilter->getFilters());
+            $boostingFilter->setFilters($filters);
         }
 
         return $next($command);

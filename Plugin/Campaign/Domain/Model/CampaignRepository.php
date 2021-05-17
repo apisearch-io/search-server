@@ -17,7 +17,6 @@ namespace Apisearch\Plugin\Campaign\Domain\Model;
 
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
-use Drift\EventBus\Bus\EventBus;
 use React\Promise\PromiseInterface;
 
 /**
@@ -26,16 +25,13 @@ use React\Promise\PromiseInterface;
 final class CampaignRepository
 {
     private MetadataRepository $metadataRepository;
-    private EventBus $eventBus;
 
     /**
      * @param MetadataRepository $metadataRepository
-     * @param EventBus           $eventBus
      */
-    public function __construct(MetadataRepository $metadataRepository, EventBus $eventBus)
+    public function __construct(MetadataRepository $metadataRepository)
     {
         $this->metadataRepository = $metadataRepository;
-        $this->eventBus = $eventBus;
     }
 
     /**
@@ -55,12 +51,14 @@ final class CampaignRepository
      */
     public function getRawCampaigns(RepositoryReference $repositoryReference): array
     {
-        return $this
+        return \array_map(function (array $campaignAsArray) {
+            return Campaign::createFromArray($campaignAsArray);
+        }, $this
             ->metadataRepository
             ->get(
                 $repositoryReference,
                 'campaigns'
-            ) ?? [];
+            ) ?? []);
     }
 
     /**
@@ -73,7 +71,11 @@ final class CampaignRepository
         RepositoryReference $repositoryReference,
         CampaignUID $campaignUID
     ): ? Campaign {
-        return $this->getCampaigns($repositoryReference)[$campaignUID->composeUID()] ?? null;
+        $campaigns = $this->getCampaigns($repositoryReference);
+
+        return $campaigns[$campaignUID->composeUID()]
+            ? Campaign::createFromArray($campaignUID[$campaignUID->composeUID()])
+            : null;
     }
 
     /**
@@ -88,10 +90,13 @@ final class CampaignRepository
     ): PromiseInterface {
         $campaigns = $this->getRawCampaigns($repositoryReference);
         $campaigns[$campaign->getUid()->composeUID()] = $campaign;
+        $campaignsAsArray = \array_map(function (Campaign $campaign) {
+            return $campaign->toArray();
+        }, $campaigns);
 
         return $this
             ->metadataRepository
-            ->set($repositoryReference, 'campaigns', $campaigns);
+            ->set($repositoryReference, 'campaigns', $campaignsAsArray);
     }
 
     /**
@@ -106,10 +111,13 @@ final class CampaignRepository
     ): PromiseInterface {
         $campaigns = $this->getRawCampaigns($repositoryReference);
         unset($campaigns[$campaignUID->composeUID()]);
+        $campaignsAsArray = \array_map(function (Campaign $campaign) {
+            return $campaign->toArray();
+        }, $campaigns);
 
         return $this
             ->metadataRepository
-            ->set($repositoryReference, 'campaigns', $campaigns);
+            ->set($repositoryReference, 'campaigns', $campaignsAsArray);
     }
 
     /**
