@@ -34,25 +34,27 @@ trait ExactMatchingMetadataTest
      * @return void
      *
      * @dataProvider dataProgressiveExactMatchingMultiQuery
-     *
-     * @group ex
      */
     public function testProgressiveExactMatchingMultiQuery(
         string $query,
         int $numberOfResults,
-        string $firstResultId = null,
-        string $secondResultId = null
+        ?string $firstResultId = null,
+        ?string $secondResultId = null,
+        ?bool $allowFuzzy = false
     ) {
         $this->configureIndex(Config::createEmpty()
             ->addSynonym(Synonym::createByWords([
                 'SubwhateverA',
                 'SynonymX',
                 'SynonymZ',
+                'Lavidaesunatombola',
+                'nobita nobi',
             ]))
         );
 
         $result = $this->query(Query::create($query)
             ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', $allowFuzzy)
             ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
         );
 
@@ -69,11 +71,11 @@ trait ExactMatchingMetadataTest
     public function dataProgressiveExactMatchingMultiQuery()
     {
         return [
+            ['brandA subwhateverA', 1, '5'],
             ['branda subwha', 2, '4', '5'],
             ['subw branda subwha', 2, '4', '5'],
             ['brandA subwhatever', 2, '4', '5'],
             ['brandA', 2, '4', '5'],
-            ['brandA subwhateverA', 1, '5'],
             ['brandA subwhateverB', 1, '4'],
             ['branda subwhateverb', 1, '4'],
             ['brandA subwhateverb', 1, '4'],
@@ -94,6 +96,23 @@ trait ExactMatchingMetadataTest
             ['bránda    sübwhatëvërB', 1, '4'],
             ['   bránda    sübwhatëvërB   ', 1, '4'],
             ['   bránda sübwhatëvërB   ', 1, '4'],
+
+            // Synonyms + typos
+            ['brand SynonymX subwhatever', 1, '5'],
+            ['brand SynonymZ subwhatever', 1, '5'],
+            ['brand Lavidaesunatombola subwhatever', 1, '5'],
+            ['brand Lavidaesunatombol subwhatever', 1, '5', null, true],
+            ['brand Lavidaesunatombol subwhatever', 4, null, null, false],
+            ['brand Lavidaesunacombola subwhatever', 1, '5', null, true],
+            ['brand Lavidaesunacombola subwhatever', 4, null, null, false],
+            ['brand nobita nobi subwhatever', 1, '5'],
+            ['brand nobita novi subwhatever', 1, '5', null, true],
+            ['brand nobita novi subwhatever', 4, null, null, false],
+            ['brand nobita nob subwhatever', 1, '5', null, true],
+            ['brand nobita nob subwhatever', 4, null, null, false],
+
+            ['nobita nob NOEXISTE', 0, null, null, true],
+            ['nobita nob NOEXISTE', 1, null, null, false],
         ];
     }
 }

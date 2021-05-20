@@ -6,7 +6,6 @@ services:
         bind:
             string $elasticsearchEndpoint: '%apisearch_plugin.elasticsearch.endpoint%'
             string $elasticsearchAuthorizationToken: '%apisearch_plugin.elasticsearch.authorization_token%'
-            string $elasticsearchVersion: '%apisearch_plugin.elasticsearch.version%'
             bool $refreshOnWrite: '%apisearch_plugin.elasticsearch.refresh_on_write%'
 
     Apisearch\Plugin\Elasticsearch\:

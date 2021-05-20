@@ -62,23 +62,19 @@ use React\Stream\ReadableStreamInterface;
 class ElasticaWrapper implements AsyncRequestAccessor
 {
     private AsyncClient $client;
-    private string $elasticsearchVersion;
     private LoopInterface $loop;
 
     /**
      * Construct.
      *
      * @param AsyncClient   $client
-     * @param string        $elasticsearchVersion
      * @param LoopInterface $loop
      */
     public function __construct(
         AsyncClient $client,
-        string $elasticsearchVersion,
         LoopInterface $loop
     ) {
         $this->client = $client;
-        $this->elasticsearchVersion = $elasticsearchVersion;
         $this->loop = $loop;
     }
 
@@ -173,11 +169,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
             50 => 'asciifolding',
         ];
 
-        $indexedExactSearchAnalyzerFilter = [
-            5 => 'lowercase',
-            50 => 'asciifolding',
-        ];
-
         $indexConfiguration = [
             'number_of_shards' => $config->getShards(),
             'number_of_replicas' => $config->getReplicas(),
@@ -208,13 +199,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
                         'token_chars' => [
                             'letter',
                         ],
-                    ],
-                ],
-                'normalizer' => [
-                    'indexed_exact_matching_metadata' => [
-                        'type' => 'custom',
-                        'char_filter' => [],
-                        'filter' => [],
                     ],
                 ],
             ],
@@ -256,7 +240,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $indexConfiguration['analysis']['analyzer']['default']['filter'] = \array_values($defaultAnalyzerFilter);
         $indexConfiguration['analysis']['analyzer']['search_analyzer']['filter'] = \array_values($searchAnalyzerFilter);
         $indexConfiguration['analysis']['analyzer']['exact_search_analyzer']['filter'] = \array_values($exactSearchAnalyzerFilter);
-        $indexConfiguration['analysis']['normalizer']['indexed_exact_matching_metadata']['filter'] = \array_values($indexedExactSearchAnalyzerFilter);
 
         return ['settings' => $indexConfiguration];
     }
@@ -356,10 +339,6 @@ class ElasticaWrapper implements AsyncRequestAccessor
             'exact_matching_metadata' => [
                 'type' => 'text',
                 'analyzer' => 'exact_search_analyzer',
-            ],
-            'indexed_exact_matching_metadata' => [
-                'type' => 'keyword',
-                'normalizer' => 'indexed_exact_matching_metadata',
             ],
             'suggest' => [
                 'type' => 'completion',

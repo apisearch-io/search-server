@@ -192,8 +192,6 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
     {
         $uuid = $item->getUUID();
         $indexedMetadata = $item->getIndexedMetadata();
-        $indexedExactMatchingMetadata = $indexedMetadata['exact_matching_metadata'] ?? [];
-        unset($indexedMetadata['exact_matching_metadata']);
 
         $itemDocument = [
             'uuid' => [
@@ -213,13 +211,10 @@ class ItemRepository extends WithElasticaWrapper implements ItemRepositoryInterf
                 $item->getSearchableMetadata(),
                 false
             ),
-            'exact_matching_metadata' => \array_values(
-                $this->filterSearchableElementRecursively(
-                    $item->getExactMatchingMetadata(),
-                    false
-                )
+            'exact_matching_metadata' => $this->filterSearchableElementRecursively(
+                $item->getExactMatchingMetadata(),
+                true
             ),
-            'indexed_exact_matching_metadata' => \array_values($indexedExactMatchingMetadata),
             'suggest' => \array_values(
                 $this->filterSearchableElementRecursively(
                     $item->getSuggest(),
