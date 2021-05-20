@@ -234,9 +234,9 @@ class QueryBuilder
             return;
         }
 
-        if ('indexed_metadata.exact_matching_metadata_max_frequency' === $filter->getField()) {
-            $boolQuery->addMust(
-                $this->createExactMatchingMetadataFrequencyFilter($filter)
+        if ('indexed_metadata.exact_matching_tokenized' === $filter->getField()) {
+            $boolQuery->addFilter(
+                $this->createExactMatchingMetadataFilter($query)
             );
 
             return;
@@ -257,7 +257,6 @@ class QueryBuilder
      * @param Filter                  $filter
      * @param bool                    $onlyAddDefinedTermFilter
      * @param bool                    $takeInAccountDefinedTermFilter
-     * @param bool                    $imperativeFilter
      *
      * @return void
      */
@@ -265,15 +264,14 @@ class QueryBuilder
         ElasticaQuery\BoolQuery $boolQuery,
         Filter $filter,
         bool $onlyAddDefinedTermFilter,
-        bool $takeInAccountDefinedTermFilter,
-        bool $imperativeFilter = false
+        bool $takeInAccountDefinedTermFilter
     ): void {
         $boolQuery->addFilter(
             $this->createQueryFilterByApplicationType(
                 $filter,
                 $onlyAddDefinedTermFilter,
                 $takeInAccountDefinedTermFilter,
-                $imperativeFilter
+                false
             )
         );
     }
@@ -422,9 +420,6 @@ class QueryBuilder
         bool $checkNested = true
     ): ? ElasticaQuery\AbstractQuery {
         $filterField = $filter->getField();
-        $filterField = ('indexed_metadata.indexed_exact_matching_metadata' === $filterField)
-            ? 'indexed_exact_matching_metadata'
-            : $filterField;
 
         return $this->createMultipleTermFilter(
             $filterField,
@@ -567,25 +562,26 @@ class QueryBuilder
     }
 
     /**
-     * @param Filter $filter
-     *
-     * @return ElasticaQuery\AbstractQuery
+     * @param Query $query
      */
-    private function createExactMatchingMetadataFrequencyFilter(Filter $filter): ElasticaQuery\AbstractQuery
+    public function createExactMatchingMetadataFilter(Query $query)
     {
-        $bool = new ElasticaQuery\BoolQuery();
+        $metadata = $query->getMetadata();
+        $words = $metadata['exact_matching_tokenized_words'];
+        $allowFuzzy = $metadata['exact_matching_tokenized_allow_fuzzy'];
+        $boolQuery = new ElasticaQuery\BoolQuery();
+        $class = $allowFuzzy ? ElasticaQuery\MatchQuery::class : ElasticaQuery\MatchPhrase::class;
+        foreach ($words as $word) {
+            $matchQueryBody = ['query' => $word];
+            if ($allowFuzzy) {
+                $matchQueryBody['fuzziness'] = 'AUTO';
+            }
 
-        foreach ($filter->getValues() as $value) {
-            $constantScore = new ElasticaQuery\ConstantScore();
-            $constantScore->setBoost(1);
-            $constantScore->setFilter(new ElasticaQuery\Term([
-                'indexed_exact_matching_metadata' => $value,
-            ]));
-
-            $bool->addShould($constantScore);
+            $matchQuery = new $class('exact_matching_metadata', $matchQueryBody);
+            $boolQuery->addMust($matchQuery);
         }
 
-        return $bool;
+        return $boolQuery;
     }
 
     /**

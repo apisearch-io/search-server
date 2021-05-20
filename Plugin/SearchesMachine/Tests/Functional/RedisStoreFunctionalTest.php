@@ -74,7 +74,6 @@ class RedisStoreFunctionalTest extends SearchesMachineFunctionalTest
     }
 
     /**
-     * @group lol
      */
     public function testMassiveUsage()
     {

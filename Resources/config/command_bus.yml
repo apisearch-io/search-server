@@ -8,7 +8,6 @@ command_bus:
             - Apisearch\Server\Domain\Plugin\PluginMiddlewareCollector
             - Apisearch\Server\Domain\Middleware\ComplexFields\IndexComplexFieldsMiddleware
             - Apisearch\Server\Domain\Middleware\ComplexFields\ResetOrDeleteIndexComplexFieldsMiddleware
-            - Apisearch\Server\Domain\Middleware\CompleteItemsOnIndexMiddleware
 
     query_bus:
         middlewares:

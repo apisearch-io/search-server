@@ -26,7 +26,6 @@ use Apisearch\Plugin\Elasticsearch\Domain\Parser\IndexParser;
 use Apisearch\Plugin\Elasticsearch\Domain\Polyfill;
 use Apisearch\Plugin\Elasticsearch\Domain\Search;
 use Apisearch\Plugin\Elasticsearch\Domain\WithElasticaWrapper;
-use Apisearch\Query\Filter;
 use Apisearch\Query\Query;
 use Apisearch\Repository\RepositoryReference;
 use Apisearch\Result\Result;
@@ -36,6 +35,10 @@ use Apisearch\Server\Domain\Model\ServerQuery;
 use Apisearch\Server\Domain\Repository\Repository\QueryRepository as QueryRepositoryInterface;
 use function Drift\React\wait_for_stream_listeners;
 use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
+use Elastica\Query\BoolQuery;
+use Elastica\Query\ConstantScore;
+use Elastica\Query\MatchQuery;
+use Elastica\ResultSet;
 use Elastica\ResultSet as ElasticaResultSet;
 use React\EventLoop\LoopInterface;
 use function React\Promise\all;
@@ -170,7 +173,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         Query $query
     ): PromiseInterface {
         return $this
-            ->queryCheckExactMatchingMetadataRelatedModifiers($repositoryReference, $query)
+            ->queryCheckExactMatchingFilters($repositoryReference, $query)
             ->then(function (Query $query) use ($repositoryReference) {
                 return $this->makeSimpleQuery($repositoryReference, $query);
             });
@@ -223,7 +226,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
     ): PromiseInterface {
         return
             all(\array_map(function (Query $query) use ($repositoryReference) {
-                return $this->queryCheckExactMatchingMetadataRelatedModifiers($repositoryReference, $query);
+                return $this->queryCheckExactMatchingFilters($repositoryReference, $query);
             }, $query->getSubqueries()))
             ->then(function (array $queries) use ($repositoryReference) {
                 return $this->makeMultiQuery(
@@ -278,32 +281,98 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
             });
     }
 
-    /**
-     * @param RepositoryReference $repositoryReference
-     * @param Query               $query
-     *
-     * @return PromiseInterface<Query>
-     */
-    private function queryCheckExactMatchingMetadataRelatedModifiers(
+    private function queryCheckExactMatchingFilters(
         RepositoryReference $repositoryReference,
         Query $query
     ): PromiseInterface {
-        $queryText = $query->getQueryText();
-        $queryText = Str::toAscii($queryText);
-        $queryText = \trim($queryText);
-
-        if (
-            ('' === $queryText) ||
-            (\strlen($queryText) < ($query->getMetadata()['min_characters_progressive_exact_matching_metadata'] ?? 0)) ||
-            (false === ($query->getMetadata()['progressive_exact_matching_metadata'] ?? false))
-        ) {
+        $queryMetadata = $query->getMetadata();
+        if (false === \boolval($queryMetadata['progressive_exact_matching_metadata'] ?? false)) {
             return resolve($query);
         }
 
-        // We compose all possible word combinations
+        $queryText = $query->getQueryText();
+        if (empty($queryText)) {
+            return resolve($query);
+        }
+
+        $minCharacters = \intval($queryMetadata['min_characters_progressive_exact_matching_metadata'] ?? 3);
+        if (\strlen($queryText) < $minCharacters) {
+            return resolve($query);
+        }
+
+        $queryText = Str::toAscii($queryText);
+        $queryText = \trim($queryText);
+
         $words = \explode(' ', $queryText);
-        $words = \array_values(\array_filter($words, fn ($word) => !empty($word)));
-        $maxWords = $query->getMetadata()['max_characters_progressive_exact_matching_metadata'] ?? 3;
+        $words = \array_values(\array_unique(\array_filter($words, fn ($word) => !empty($word))));
+        $maxWords = $queryMetadata['max_words_progressive_exact_matching_metadata'] ?? 3;
+        $partialWords = $this->createPartialWords($words, $maxWords);
+
+        $allowFuzzy = $queryMetadata['fuzzy_progressive_exact_matching_metadata'] ?? false;
+        $boolQuery = $this->createBoolQueryByWords($partialWords, $allowFuzzy);
+        $elasticaQuery = new \Elastica\Query($boolQuery);
+        $elasticaQuery->setSource([false]);
+        $search = new Search(
+            $elasticaQuery,
+            0, 1
+        );
+
+        return $this
+            ->elasticaWrapper
+            ->simpleSearch($repositoryReference, $search)
+            ->then(function (ResultSet $resultSet) use ($query, $boolQuery, $queryText, $partialWords, $allowFuzzy) {
+                if ($resultSet->getTotalHits() > 0) {
+                    $firstResult = $resultSet->getResults()[0];
+                    $score = $firstResult->getScore();
+                    $matchedQueries = $firstResult->getParam('matched_queries');
+                    $newMatchingWords = \array_intersect($partialWords, $matchedQueries);
+                    $newQueryText = $this->cleanQueryTextFromMatchedPartialWords($queryText, $newMatchingWords);
+
+                    $newQueryAsArray = $query->toArray();
+                    $newQueryAsArray['q'] = $newQueryText;
+                    $query = Query::createFromArray($newQueryAsArray);
+
+                    $query->filterBy('exact_matching_tokenized', 'exact_matching_tokenized', ['']);
+                    $query->setMetadataValue('exact_matching_tokenized_min_score', \intval($score));
+                    $query->setMetadataValue('exact_matching_tokenized_words', $newMatchingWords);
+                    $query->setMetadataValue('exact_matching_tokenized_allow_fuzzy', $allowFuzzy);
+                }
+
+                return $query;
+            });
+    }
+
+    private function createBoolQueryByWords(array $words, bool $allowFuzzy): BoolQuery
+    {
+        $boolQuery = new BoolQuery();
+        foreach ($words as $word) {
+            $class = MatchQuery::class;
+            $matchQueryBody = [
+                'query' => $word,
+                '_name' => $word,
+            ];
+
+            if ($allowFuzzy) {
+                $matchQueryBody['fuzziness'] = '1';
+            }
+
+            $matchQuery = new $class('exact_matching_metadata', $matchQueryBody);
+            $constantScore = new ConstantScore($matchQuery);
+            $constantScore->setBoost(1);
+            $boolQuery->addShould($constantScore);
+        }
+
+        return $boolQuery;
+    }
+
+    /**
+     * @param array $words
+     * @param int   $maxWords
+     *
+     * @return array
+     */
+    private function createPartialWords(array $words, int $maxWords): array
+    {
         $numWords = \count($words);
         $partialWords = [];
 
@@ -318,70 +387,22 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
             }
         }
 
-        $specialQueryAsArray = [];
-        $specialQueryAsArray['universal_filters'] = \array_map(function (Filter $filter) {
-            return $filter->toArray();
-        }, $query->getUniverseFilters());
+        return $partialWords;
+    }
 
-        $specialQuery = Query::createFromArray($specialQueryAsArray);
-        $specialQuery->filterBy(
-            'exact_matching_metadata_max_frequency',
-            'exact_matching_metadata_max_frequency',
-            $partialWords,
-            Filter::AT_LEAST_ONE,
-            false
-        );
+    /**
+     * @param string   $queryText
+     * @param string[] $matchedPartialWords
+     *
+     * @return string
+     */
+    private function cleanQueryTextFromMatchedPartialWords(string $queryText, array $matchedPartialWords): string
+    {
+        foreach ($matchedPartialWords as $word) {
+            $queryText = \str_replace($word, '', $queryText);
+        }
 
-        return $this
-            ->elasticaWrapper
-            ->simpleSearch(
-                $this->getRepositoryReferenceIndexSpecific(
-                    $repositoryReference,
-                    $query->getIndexUUID()
-                ),
-                new Search(
-                    $this->createElasticaQueryByModelQuery($specialQuery),
-                    0, 1
-                )
-            )
-            ->then(function (ElasticaResultSet $resultSet) use ($query) {
-                $result = $this->elasticaResultSetToResult(
-                    $query,
-                    $resultSet
-                );
-
-                return $result->getFirstItem();
-            })
-            ->then(function (?Item $firstItem) use ($query, $partialWords, $queryText) {
-                if (
-                    !\is_null($firstItem) &&
-                    $firstItem->getScore() > 0
-                ) {
-                    $foundWords = \array_intersect(
-                        \array_map(fn ($str) => \strtolower($str), $firstItem->getExactMatchingMetadata()),
-                        \array_map(fn ($str) => \strtolower($str), $partialWords)
-                    );
-
-                    $newQueryText = \str_replace(
-                        \array_values($foundWords),
-                        \array_fill(0, \count($foundWords), ''),
-                        \strtolower($queryText)
-                    );
-
-                    $newQueryAsArray = $query->toArray();
-                    $newQueryAsArray['q'] = \trim($newQueryText);
-                    $query = Query::createFromArray($newQueryAsArray);
-                    $query->filterBy(
-                        'indexed_exact_matching_metadata',
-                        'indexed_exact_matching_metadata',
-                        $foundWords,
-                        Filter::MUST_ALL,
-                        false
-                    );
-                }
-
-                return $query;
-            });
+        return \trim($queryText);
     }
 
     /**
