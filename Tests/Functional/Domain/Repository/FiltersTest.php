@@ -188,4 +188,34 @@ trait FiltersTest
             ['?1', '?2', '?3', '?4', '?5']
         );
     }
+
+    /**
+     * Test filter by uuid field
+     *
+     * @group lol
+     */
+    public function testByUUIDField()
+    {
+        $this->assertResults(
+            $this->query(Query::createFromArray([
+                'filters' => [[
+                    'name' => 'x',
+                    'field' => 'uuid',
+                    'values' => ['4~bike']
+                ]]
+            ])),
+            ['4', '!2', '!3', '!1', '!5']
+        );
+
+        $this->assertResults(
+            $this->query(Query::createFromArray([
+                'filters' => [[
+                    'name' => 'x',
+                    'field' => 'indexed_metadata.uuid',
+                    'values' => ['4~bike']
+                ]]
+            ])),
+            ['4', '!2', '!3', '!1', '!5']
+        );
+    }
 }

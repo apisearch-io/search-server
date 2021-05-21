@@ -49,7 +49,7 @@ class SearchesMachineProcessor
     }
 
     /**
-     * @return PromiseInterface
+     * @return PromiseInterface<int>
      */
     public function ingestAndProcessSearchesFromRedis(): PromiseInterface
     {
@@ -83,9 +83,12 @@ class SearchesMachineProcessor
                             $search->getWhen()
                         );
                 })
-                    ->then(function () {
-                        return $this->redisClient->del($this->redisKey);
-                    });
+                ->then(function () {
+                    return $this->redisClient->del($this->redisKey);
+                })
+                ->then(function() use ($searches) {
+                    return count($searches);
+                });
             });
     }
 }

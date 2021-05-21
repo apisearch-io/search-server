@@ -20,4 +20,5 @@ namespace Apisearch\Plugin\SearchesMachine\Domain\Command;
  */
 class ProcessSearchesMachine
 {
+    public int $totalFlushed = 0;
 }
