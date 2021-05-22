@@ -47,7 +47,13 @@ class ProcessSearchMachineCommand extends CommandWithCommandBusAndGodToken
      */
     protected function runCommand(InputInterface $input, OutputInterface $output)
     {
-        $this->executeAndWait(new ProcessSearchesMachine());
+        try {
+            $command = new ProcessSearchesMachine();
+            $this->executeAndWait($command);
+            self::printMessage($output, 'Search Machine', "Processed and stored {$command->totalFlushed} words");
+        } catch (\Throwable $throwable) {
+            self::printMessageFail($output, 'Search Machine', $throwable->getMessage());
+        }
 
         return 0;
     }
