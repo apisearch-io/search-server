@@ -29,6 +29,10 @@ class SearchTree
         string $text,
         Search $search
     ) {
+        if (empty($text)) {
+            return;
+        }
+
         if (1 === \strlen($text)) {
             if (!isset($this->treesOrLeaves[$text])) {
                 $this->treesOrLeaves[$text] = $search;

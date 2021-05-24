@@ -53,6 +53,9 @@ class ProcessSearchMachineCommand extends CommandWithCommandBusAndGodToken
             self::printMessage($output, 'Search Machine', "Processed and stored {$command->totalFlushed} words");
         } catch (\Throwable $throwable) {
             self::printMessageFail($output, 'Search Machine', $throwable->getMessage());
+            if ($throwable->getPrevious() instanceof \Throwable) {
+                self::printMessageFail($output, 'Search Machine', $throwable->getPrevious()->getMessage());
+            }
         }
 
         return 0;
