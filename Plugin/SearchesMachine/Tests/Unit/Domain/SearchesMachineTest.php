@@ -68,6 +68,7 @@ class SearchesMachineTest extends TestCase
         return [
             [
                 [
+                    ['u1', 'a1', 'i1', '', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 't', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'te', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'tex', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
@@ -80,6 +81,7 @@ class SearchesMachineTest extends TestCase
 
             [
                 [
+                    ['u1', 'a1', 'i1', '', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 't', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'te', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'tex', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
@@ -102,6 +104,7 @@ class SearchesMachineTest extends TestCase
                     ['u1', 'a1', 'i1', 'te', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'tex', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'text', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
+                    ['u1', 'a1', 'i1', '', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u2', 'a1', 'i1', 'p', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'tex', 10, true, '0.0.0.0', 'localhost', 'p1', $now],
                     ['u1', 'a1', 'i1', 'te', 10, true, '0.0.0.0', 'localhost', 'p1', $now],

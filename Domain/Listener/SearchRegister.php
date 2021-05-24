@@ -18,6 +18,7 @@ namespace Apisearch\Server\Domain\Listener;
 use Apisearch\Server\Domain\Event\QueryWasMade;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesRepository;
 use Drift\HttpKernel\Event\DomainEventEnvelope;
+use React\EventLoop\LoopInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -26,13 +27,19 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class SearchRegister implements EventSubscriberInterface
 {
     private SearchesRepository $searchesRepository;
+    private LoopInterface $loop;
 
     /**
      * @param SearchesRepository $searchesRepository
+     * @param LoopInterface      $loop
      */
-    public function __construct(SearchesRepository $searchesRepository)
+    public function __construct(
+        SearchesRepository $searchesRepository,
+        LoopInterface $loop
+    )
     {
         $this->searchesRepository = $searchesRepository;
+        $this->loop = $loop;
     }
 
     /**
@@ -59,15 +66,20 @@ class SearchRegister implements EventSubscriberInterface
         }
 
         $this
-            ->searchesRepository
-            ->registerSearch(
-                $queryWasMade->getRepositoryReference(),
-                $userId,
-                $queryWasMade->getQueryText(),
-                \count($queryWasMade->getItemsUUID()),
-                $origin,
-                $today
-            );
+            ->loop
+            ->futureTick(function() use ($queryWasMade, $userId, $origin, $today) {
+                $this
+                    ->searchesRepository
+                    ->registerSearch(
+                        $queryWasMade->getRepositoryReference(),
+                        $userId,
+                        $queryWasMade->getQueryText(),
+                        \count($queryWasMade->getItemsUUID()),
+                        $origin,
+                        $today
+                    );
+            });
+
     }
 
     /**
