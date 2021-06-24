@@ -245,7 +245,10 @@ class DiskRepository extends InMemoryRepository implements FullRepository
      */
     private function saveToDisk(): PromiseInterface
     {
-        @\unlink($this->file);
+        if (\file_exists($this->file)) {
+            \unlink($this->file);
+        }
+
         \touch($this->file);
         \file_put_contents($this->file, \serialize($this->indices));
 
@@ -259,7 +262,11 @@ class DiskRepository extends InMemoryRepository implements FullRepository
      */
     private function loadFromDisk(): PromiseInterface
     {
-        $content = @\file_get_contents($this->file);
+        $content = false;
+        if (\file_exists($this->file)) {
+            $content = \file_get_contents($this->file);
+        }
+
         if (!\is_string($content)) {
             $this->indices = [];
 

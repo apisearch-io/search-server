@@ -50,8 +50,6 @@ trait QueryCommandTest
 
         $this->assertStringContainsString('* / 1 / 10', $content);
         $this->assertStringContainsString('[Number of hits] 750', $content);
-        $this->assertStringContainsString('mw0002400465~album - 15th Anniversary Collection', $content);
-        $this->assertStringContainsString('mw0002138578~album - Kelopuu: Pohjolan Molli', $content);
 
         $content2 = static::runCommand([
             'command' => 'apisearch-server:query',

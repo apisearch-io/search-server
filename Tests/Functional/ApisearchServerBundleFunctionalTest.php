@@ -45,13 +45,14 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
+\error_reporting(E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
 \set_error_handler(function ($code, $message, $file, $line, $context = null) {
     if (0 == \error_reporting()) {
         return;
     }
 
     throw new ErrorException($message, $code);
-});
+}, E_ALL ^ E_DEPRECATED ^ E_USER_DEPRECATED);
 
 /**
  * Class ApisearchServerBundleFunctionalTest.
@@ -149,6 +150,9 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
                 'translator' => false,
                 'php_errors' => [
                     'log' => false,
+                ],
+                'router' => [
+                    'utf8' => true,
                 ],
             ],
             'apisearch_server' => [
@@ -1076,7 +1080,10 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
      */
     protected function createImportFile(int $n): void
     {
-        @\unlink("/tmp/dump.$n.apisearch");
+        if (\file_exists("/tmp/dump.$n.apisearch")) {
+            \unlink("/tmp/dump.$n.apisearch");
+        }
+
         $data = 'uid|type|title|link|image|categories|attributes'.PHP_EOL;
         $row = 'album|Julie & Carol at Lincoln Center|http://www.allmusic.com/album/julie-carol-at-lincoln-center-mw0000270036|http://cdn-s3.allmusic.com/release-covers/500/0001/149/0001149773.jpg|id##MA0000004432~~name##Stage & Screen~~slug##MA0000004432 && id##MA0000011877~~name##Vocal~~slug##MA0000011877|[in]rating=3 %% [in]year=1989 %% [i]auther=id##julie-andrews-mn0000314113~~name##Julie Andrews~~slug##julie-andrews-mn0000314113~~img##http://cps-static.rovicorp.com/3/JPG_400/MI0001/400/MI0001400285.jpg?partner=allrovi.com'.PHP_EOL;
         for ($i = 0; $i < $n; ++$i) {

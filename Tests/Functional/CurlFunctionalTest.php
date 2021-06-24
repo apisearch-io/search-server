@@ -166,6 +166,7 @@ abstract class CurlFunctionalTest extends HttpFunctionalTest
 
         \curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $response = \curl_exec($ch);
+
         if (false === $response) {
             throw new ConnectionException('Apisearch returned an internal error code [500]');
         }
@@ -194,7 +195,6 @@ abstract class CurlFunctionalTest extends HttpFunctionalTest
 
             $responseHeaders[$parts[0]] = \trim($parts[1]);
         }
-
         $result = [
             'code' => $responseCode,
             'body' => \json_decode($content, true) ?? $content,

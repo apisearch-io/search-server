@@ -32,7 +32,9 @@ class DiskMetadataRepositoryTest extends MetadataRepositoryTest
     public function buildEmptyRepository(LoopInterface $loop): MetadataRepository
     {
         $path = '/tmp/apisearch.metadata.repository';
-        @\unlink($path);
+        if (\file_exists($path)) {
+            \unlink($path);
+        }
 
         return new DiskMetadataRepository($path);
     }

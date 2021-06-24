@@ -10,7 +10,7 @@ general:
 jobs:
     with-infrastructure:
         docker:
-            -   image: circleci/php:7.4.4-cli
+            -   image: circleci/php:8.0-cli
             -   image: redis:4-alpine
             -   image: rabbitmq:3-alpine
             -   image: docker.elastic.co/elasticsearch/elasticsearch:7.0.0
@@ -21,7 +21,7 @@ jobs:
                     action.auto_create_index: -apisearch*,+*
                     ELASTIC_PASSWORD: elasticsearch_password
                     xpack.security.enabled: 'true'
-            -   image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+            -   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
                 environment:
                     ES_JAVA_OPTS: -Xms256m -Xmx256m
                     discovery.type: single-node
@@ -40,7 +40,7 @@ jobs:
                     name: Load dev dependencies
                     command: |
                         sudo composer selfupdate
-                        composer install -n --no-suggest
+                        composer install -n --no-suggest --ignore-platform-reqs
 
             -   run:
                     name: Run tests
