@@ -27,6 +27,7 @@ use Apisearch\Plugin\SearchesMachine\SearchesMachinePluginBundle;
 use Apisearch\Plugin\Security\SecurityPluginBundle;
 use Apisearch\Plugin\StaticTokens\StaticTokensPluginBundle;
 use Apisearch\Plugin\Testing\TestingPluginBundle;
+use Apisearch\Plugin\Tor\TorPluginBundle;
 use Apisearch\Server\DependencyInjection\Env;
 use Apisearch\Server\Domain\Plugin\Plugin;
 use Mmoreram\BaseBundle\BaseBundle;
@@ -90,6 +91,7 @@ class ApisearchPluginsBundle extends BaseBundle implements DependentBundleInterf
             'campaigns' => CampaignPluginBundle::class,
             'jwt' => JWTPluginBundle::class,
             'searches_machine' => SearchesMachinePluginBundle::class,
+            'tor' => TorPluginBundle::class,
         ];
 
         $combined = \array_combine(

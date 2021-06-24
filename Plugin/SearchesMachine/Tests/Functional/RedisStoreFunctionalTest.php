@@ -73,8 +73,6 @@ class RedisStoreFunctionalTest extends SearchesMachineFunctionalTest
         $this->assertEquals(2, \count($storedSearches));
     }
 
-    /**
-     */
     public function testMassiveUsage()
     {
         $this->flushRedis();

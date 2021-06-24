@@ -156,7 +156,7 @@ class ElasticaWrapper implements AsyncRequestAccessor
         $defaultAnalyzerFilter = [
             5 => 'lowercase',
             20 => 'asciifolding',
-            50 => 'ngram_filter',
+            50 => 'edge_ngram_filter',
         ];
 
         $searchAnalyzerFilter = [
@@ -192,13 +192,10 @@ class ElasticaWrapper implements AsyncRequestAccessor
                     ],
                 ],
                 'filter' => [
-                    'ngram_filter' => [
+                    'edge_ngram_filter' => [
                         'type' => 'edge_ngram',
                         'min_gram' => 1,
                         'max_gram' => 20,
-                        'token_chars' => [
-                            'letter',
-                        ],
                     ],
                 ],
             ],

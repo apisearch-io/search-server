@@ -1,0 +1,21 @@
+services:
+
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            array $sources: "%apisearch_plugin.tor.sources%"
+
+
+    Apisearch\Plugin\Tor\Http\Listener\:
+        resource: '../../Http/Listener/'
+
+    Apisearch\Plugin\Tor\Domain\Ips:
+    Apisearch\Plugin\Tor\Domain\Listener\GetAndPopulateTorIps:
+        tags:
+            - { name: "periodic_timer", interval: "%apisearch_plugin.tor.populate_interval%", method: "getAndPopulateTorIps" }
+
+    Apisearch\Plugin\Tor\Domain\HttpIpProvider:
+    Apisearch\Plugin\Tor\Domain\IpProvider:
+        alias: Apisearch\Plugin\Tor\Domain\HttpIpProvider
+

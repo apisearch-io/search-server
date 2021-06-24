@@ -36,8 +36,7 @@ class SearchRegister implements EventSubscriberInterface
     public function __construct(
         SearchesRepository $searchesRepository,
         LoopInterface $loop
-    )
-    {
+    ) {
         $this->searchesRepository = $searchesRepository;
         $this->loop = $loop;
     }
@@ -67,7 +66,7 @@ class SearchRegister implements EventSubscriberInterface
 
         $this
             ->loop
-            ->futureTick(function() use ($queryWasMade, $userId, $origin, $today) {
+            ->futureTick(function () use ($queryWasMade, $userId, $origin, $today) {
                 $this
                     ->searchesRepository
                     ->registerSearch(
@@ -79,7 +78,6 @@ class SearchRegister implements EventSubscriberInterface
                         $today
                     );
             });
-
     }
 
     /**

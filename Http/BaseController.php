@@ -68,6 +68,6 @@ abstract class BaseController
      */
     private function getRemoteAddrFromHeaderBag(HeaderBag $headers): string
     {
-        return $headers->get('HTTP_X_FORWARDED_FOR', $headers->get('REMOTE_ADDR', $headers->get('HTTP_CLIENT_IP', '')));
+        return RemoteAddr::getRemoteAddrFromHeaderBag($headers);
     }
 }
