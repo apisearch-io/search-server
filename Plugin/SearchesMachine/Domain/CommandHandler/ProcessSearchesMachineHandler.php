@@ -44,7 +44,7 @@ class ProcessSearchesMachineHandler
         return $this
             ->searchesMachineProcessor
             ->ingestAndProcessSearchesFromRedis()
-            ->then(function(int $searchesFlushed) use ($processSearchMachine) {
+            ->then(function (int $searchesFlushed) use ($processSearchMachine) {
                 $processSearchMachine->totalFlushed = $searchesFlushed;
             });
     }

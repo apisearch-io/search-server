@@ -190,7 +190,7 @@ trait FiltersTest
     }
 
     /**
-     * Test filter by uuid field
+     * Test filter by uuid field.
      *
      * @group lol
      */
@@ -201,8 +201,8 @@ trait FiltersTest
                 'filters' => [[
                     'name' => 'x',
                     'field' => 'uuid',
-                    'values' => ['4~bike']
-                ]]
+                    'values' => ['4~bike'],
+                ]],
             ])),
             ['4', '!2', '!3', '!1', '!5']
         );
@@ -212,8 +212,8 @@ trait FiltersTest
                 'filters' => [[
                     'name' => 'x',
                     'field' => 'indexed_metadata.uuid',
-                    'values' => ['4~bike']
-                ]]
+                    'values' => ['4~bike'],
+                ]],
             ])),
             ['4', '!2', '!3', '!1', '!5']
         );

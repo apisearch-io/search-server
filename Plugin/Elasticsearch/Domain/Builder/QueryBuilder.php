@@ -420,7 +420,7 @@ class QueryBuilder
         bool $checkNested = true
     ): ? ElasticaQuery\AbstractQuery {
         $filterField = $filter->getField();
-        $filterField = in_array($filterField, ['indexed_metadata.uuid', 'uuid'])
+        $filterField = \in_array($filterField, ['indexed_metadata.uuid', 'uuid'])
             ? '_id'
             : $filterField;
 

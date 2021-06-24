@@ -86,8 +86,8 @@ class SearchesMachineProcessor
                 ->then(function () {
                     return $this->redisClient->del($this->redisKey);
                 })
-                ->then(function() use ($searches) {
-                    return count($searches);
+                ->then(function () use ($searches) {
+                    return \count($searches);
                 });
             });
     }
