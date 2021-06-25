@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
+    "php": "^7.4 | ^8.0",
     "ext-json": "*",
     "ext-openssl": "*",
 
@@ -38,8 +38,9 @@
     "react/filesystem": "^0.1.2",
     "clue/mq-react": "^1.0",
     "clue/reactphp-csv": "^1.0",
+    "wyrihaximus/react-child-process-pool": "1.6.0",
 
-    "mmoreram/base-bundle": "^2.0",
+    "mmoreram/base-bundle": "^2.4",
     "mmoreram/symfony-bundle-dependencies": "^2.0",
 
     "apisearch-io/php-client": "0.1.*, >=0.1.38",

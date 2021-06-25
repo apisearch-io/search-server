@@ -18,6 +18,8 @@ framework:
     secret: false
     php_errors:
         log: false
+    router:
+        utf8: true
 
 apisearch:
     load_commands: false

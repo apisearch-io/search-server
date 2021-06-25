@@ -1,12 +1,12 @@
-FROM driftphp/base
+FROM driftphp/base-php8
 WORKDIR /var/www
 COPY . .
 
 RUN apk add git
-RUN composer install -n --prefer-dist --no-dev --no-suggest && \
+RUN composer install -n --prefer-dist --no-dev --no-suggest --ignore-platform-reqs && \
     composer dump-autoload -n --no-dev --optimize
 
-FROM driftphp/base
+FROM driftphp/base-php8
 RUN apk add openssh
 RUN ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N “”
 WORKDIR /var/www

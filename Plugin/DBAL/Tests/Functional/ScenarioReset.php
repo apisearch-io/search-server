@@ -41,7 +41,10 @@ class ScenarioReset
         $interactionTableName = $container->getParameter('apisearch_plugin.dbal.interactions_table');
         $searchesTableName = $container->getParameter('apisearch_plugin.dbal.searches_table');
         $logTableName = $container->getParameter('apisearch_plugin.dbal.logs_table');
-        @\unlink('/tmp/apisearch.repository');
+
+        if (\file_exists('/tmp/apisearch.repository')) {
+            \unlink('/tmp/apisearch.repository');
+        }
 
         return all([
             $mainConnection

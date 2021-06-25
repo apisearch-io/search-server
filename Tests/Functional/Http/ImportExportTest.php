@@ -81,7 +81,10 @@ class ImportExportTest extends CurlFunctionalTest
         \usleep(100000);
         $this->assertEquals(54, $this->getUsage()['admin']);
 
-        @\unlink('/tmp/dump.apisearch');
+        if (\file_exists('/tmp/dump.apisearch')) {
+            \unlink('/tmp/dump.apisearch');
+        }
+
         $this->resetIndex();
         $this->assertEquals(55, $this->getUsage()['admin']);
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
@@ -123,7 +126,11 @@ class ImportExportTest extends CurlFunctionalTest
         $this->resetScenario();
         $this->indexTestingItems();
         $source = $this->exportIndex('source');
-        @\unlink('/tmp/dump.apisearch');
+
+        if (\file_exists('/tmp/dump.apisearch')) {
+            \unlink('/tmp/dump.apisearch');
+        }
+
         $this->resetIndex();
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
         $this->importIndexByFeed('file:///tmp/dump.apisearch', false, false, '1334');
@@ -142,7 +149,11 @@ class ImportExportTest extends CurlFunctionalTest
         $standard = $this->exportIndex('standard');
         $source = $this->exportIndex('source');
         $this->assertNotEquals($standard, $source);
-        @\unlink('/tmp/dump.apisearch');
+
+        if (\file_exists('/tmp/dump.apisearch')) {
+            \unlink('/tmp/dump.apisearch');
+        }
+
         $this->resetIndex();
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
         $this->importIndexByFeed('file:///tmp/dump.apisearch');
@@ -160,7 +171,10 @@ class ImportExportTest extends CurlFunctionalTest
      */
     public function testImportFileDoesntExist(): void
     {
-        @\unlink('/tmp/dump.notfound');
+        if (\file_exists('/tmp/dump.notfound')) {
+            \unlink('/tmp/dump.notfound');
+        }
+
         $this->expectException(InvalidFormatException::class);
         $this->importIndexByFeed('file:///tmp/dump.notfound');
     }
@@ -172,7 +186,10 @@ class ImportExportTest extends CurlFunctionalTest
      */
     public function testImportFileWrongType(): void
     {
-        @\unlink('/tmp/dump.notfound');
+        if (\file_exists('/tmp/dump.notfound')) {
+            \unlink('/tmp/dump.notfound');
+        }
+
         $this->expectException(InvalidFormatException::class);
         $this->expectExceptionMessageMatches('~Only .+? is allowed~');
         $this->importIndexByFeed('another:///tmp/dump.notfound');
@@ -185,7 +202,10 @@ class ImportExportTest extends CurlFunctionalTest
      */
     public function testImportFileWrongRows(): void
     {
-        @\unlink('/tmp/dump.notfound');
+        if (\file_exists('/tmp/dump.notfound')) {
+            \unlink('/tmp/dump.notfound');
+        }
+
         $this->expectException(InvalidFormatException::class);
         $this->expectExceptionMessageMatches('~.*Rows should have exactly.*~');
         $this->importIndexByFeed('file://'.__DIR__.'/dump.wrong.as');
@@ -280,12 +300,20 @@ class ImportExportTest extends CurlFunctionalTest
     {
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
         $source = $this->exportIndex('source');
-        @\unlink('/tmp/dump.apisearch');
+
+        if (\file_exists('/tmp/dump.apisearch')) {
+            \unlink('/tmp/dump.apisearch');
+        }
+
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
         $this->resetIndex();
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsReducedFilePath());
         $sourceReduced = $this->exportIndex('source');
-        @\unlink('/tmp/dump.reduced.apisearch');
+
+        if (\file_exists('/tmp/dump.reduced.apisearch')) {
+            \unlink('/tmp/dump.reduced.apisearch');
+        }
+
         \file_put_contents('/tmp/dump.reduced.apisearch', \implode("\n", $sourceReduced)."\n");
         $this->resetIndex();
 
@@ -307,12 +335,20 @@ class ImportExportTest extends CurlFunctionalTest
     {
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsFilePath());
         $source = $this->exportIndex('source');
-        @\unlink('/tmp/dump.apisearch');
+
+        if (\file_exists('/tmp/dump.apisearch')) {
+            \unlink('/tmp/dump.apisearch');
+        }
+
         \file_put_contents('/tmp/dump.apisearch', \implode("\n", $source)."\n");
         $this->resetIndex();
         $this->indexTestingItems(self::$appId, self::$index, self::getItemsReducedFilePath());
         $sourceReduced = $this->exportIndex('source');
-        @\unlink('/tmp/dump.reduced.apisearch');
+
+        if (\file_exists('/tmp/dump.reduced.apisearch')) {
+            \unlink('/tmp/dump.reduced.apisearch');
+        }
+
         \file_put_contents('/tmp/dump.reduced.apisearch', \implode("\n", $sourceReduced)."\n");
         $this->resetIndex();
 

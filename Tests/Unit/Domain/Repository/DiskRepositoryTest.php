@@ -32,7 +32,10 @@ class DiskRepositoryTest extends FullRepositoryTest
     {
         $loop = $loop ?? Factory::create();
         $path = '/tmp/apisearch.repository';
-        @\unlink($path);
+
+        if (\file_exists($path)) {
+            \unlink($path);
+        }
 
         return new DiskRepository($path, $loop);
     }
