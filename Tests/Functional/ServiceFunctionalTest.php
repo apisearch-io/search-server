@@ -37,6 +37,7 @@ use Apisearch\Server\Domain\Command\DeleteTokens;
 use Apisearch\Server\Domain\Command\ImportIndexByFeed;
 use Apisearch\Server\Domain\Command\IndexItems;
 use Apisearch\Server\Domain\Command\PostInteraction;
+use Apisearch\Server\Domain\Command\PostPurchase;
 use Apisearch\Server\Domain\Command\PutToken;
 use Apisearch\Server\Domain\Command\ResetIndex;
 use Apisearch\Server\Domain\Command\UpdateItems;
@@ -51,6 +52,7 @@ use Apisearch\Server\Domain\Query\GetCORSPermissions;
 use Apisearch\Server\Domain\Query\GetIndices;
 use Apisearch\Server\Domain\Query\GetInteractions;
 use Apisearch\Server\Domain\Query\GetLogs;
+use Apisearch\Server\Domain\Query\GetPurchases;
 use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTokens;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
@@ -60,6 +62,7 @@ use Apisearch\Server\Domain\Query\Ping;
 use Apisearch\Server\Domain\Query\Query;
 use Apisearch\Server\Domain\Repository\LogRepository\LogFilter;
 use Apisearch\Server\Domain\Repository\LogRepository\LogWithText;
+use Apisearch\Server\Domain\Repository\PurchaseRepository\PurchaseFilter;
 use Clue\React\Block;
 use DateTime;
 use Exception;
@@ -858,6 +861,86 @@ abstract class ServiceFunctionalTest extends ApisearchServerBundleFunctionalTest
             $type,
             $count,
             $context
+        ));
+    }
+
+    /**
+     * @param string|null $userId
+     * @param string[]    $itemsId
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    public function purchase(
+        ?string $userId,
+        array $itemsId,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $appId = $appId ?? self::$appId;
+        $index = $index ?? self::$index;
+
+        self::executeCommand(new PostPurchase(
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $userId,
+            \array_map(function (string $itemId) {
+                return ItemUUID::createByComposedUUID($itemId);
+            }, $itemsId)
+        ));
+
+        $this->dispatchImperative(new FlushInteractions());
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $itemId
+     * @param string|null   $count
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return int|int[]
+     *
+     * @throws Exception
+     */
+    public function getPurchases(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $itemId = null,
+        ?string $count = PurchaseFilter::LINES,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $appId = $appId ?? self::$appId;
+        $index = $index ?? '';
+
+        return self::askQuery(new GetPurchases(
+            RepositoryReference::createFromComposed("{$appId}_{$index}"),
+            $token ??
+            new Token(
+                TokenUUID::createById(self::getParameterStatic('apisearch_server.god_token')),
+                AppUUID::createById($appId)
+            ),
+            $from,
+            $to,
+            $perDay,
+            $userId,
+            $itemId,
+            $count
         ));
     }
 

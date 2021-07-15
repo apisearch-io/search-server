@@ -34,7 +34,7 @@ class ChunkInteractionRepositoryTest extends InteractionRepositoryTest
         $repository = new ChunkInteractionRepository(
             new InMemoryInteractionRepository(),
             DBALInteractionRepositoryTest::createEmptyRepository(
-                DBALInteractionRepositoryTest::createConnection($loop)
+                DBALConnectionFactory::create($loop)
             ),
             $loop
         );

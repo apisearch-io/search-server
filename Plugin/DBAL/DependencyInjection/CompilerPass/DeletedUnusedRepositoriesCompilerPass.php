@@ -19,6 +19,7 @@ use Apisearch\Plugin\DBAL\Domain\AppRepository\DBALTokenRepository;
 use Apisearch\Plugin\DBAL\Domain\InteractionRepository\ChunkInteractionRepository;
 use Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository;
 use Apisearch\Plugin\DBAL\Domain\LogRepository\DBALLogRepository;
+use Apisearch\Plugin\DBAL\Domain\PurchaseRepository\DBALPurchaseRepository;
 use Apisearch\Plugin\DBAL\Domain\SearchesRepository\ChunkSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\SearchesRepository\DBALSearchesRepository;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\ChunkUsageRepository;
@@ -81,6 +82,14 @@ class DeletedUnusedRepositoriesCompilerPass implements CompilerPassInterface
                 DBALLogRepository::class,
             ],
             'apisearch_server.logs_repository_enabled'
+        );
+
+        $this->deleteRepositoriesIfDisabled(
+            $container,
+            [
+                DBALPurchaseRepository::class,
+            ],
+            'apisearch_server.purchases_repository_enabled'
         );
 
         $this->deleteRepositories(

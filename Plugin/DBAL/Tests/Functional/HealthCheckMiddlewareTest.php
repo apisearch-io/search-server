@@ -57,6 +57,8 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
             'search_lines' => 1,
             'tokens' => 0,
             'logs' => 6,
+            'purchases' => 0,
+            'purchase_lines' => 0,
         ], $response['info']['dbal']);
 
         $this->click('555', 'product~1', 1, null, Origin::createEmpty());
@@ -67,6 +69,8 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
         $this->dispatchImperative(new FlushInteractions());
         $this->dispatchImperative(new FlushUsageLines());
         $this->dispatchImperative(new FlushSearches());
+        $this->purchase('123', ['123~a', '123~b']);
+        $this->purchase('345', ['123~a']);
 
         $response = $this->checkHealth();
         $this->assertTrue($response['status']['dbal']);
@@ -78,6 +82,8 @@ class HealthCheckMiddlewareTest extends ServiceFunctionalTest
             'search_lines' => 3,
             'tokens' => 1,
             'logs' => 6,
+            'purchases' => 2,
+            'purchase_lines' => 3,
         ], $response['info']['dbal']);
     }
 }

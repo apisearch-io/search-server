@@ -198,6 +198,10 @@ class ApisearchServerExtension extends BaseExtension
                 'APISEARCH_LOGS_REPOSITORY_ENABLED',
                 $config['repositories']['logs_repository_enabled']
             ),
+            'apisearch_server.purchases_repository_enabled' => Env::get(
+                'APISEARCH_PURCHASES_REPOSITORY_ENABLED',
+                $config['repositories']['purchases_repository_enabled']
+            ),
             'apisearch_server.metadata_disk_repository_path' => $config['repositories']['metadata_disk_path'],
 
             /*

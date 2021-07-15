@@ -128,6 +128,8 @@ class DisableRepositoriesTest extends ServiceFunctionalTest
             'search_lines' => 0,
             'tokens' => 0,
             'logs' => 0,
+            'purchases' => 0,
+            'purchase_lines' => 0,
         ], $response['info']['dbal']);
     }
 

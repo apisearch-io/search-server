@@ -18,11 +18,8 @@ namespace Apisearch\Plugin\DBAL\Tests\Unit;
 use Apisearch\Plugin\DBAL\Domain\UsageRepository\DBALUsageRepository;
 use Apisearch\Server\Domain\Repository\UsageRepository\UsageRepository;
 use Apisearch\Server\Tests\Unit\Domain\Repository\UsageRepository\UsageRepositoryTest;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
-use Drift\DBAL\Credentials;
-use Drift\DBAL\Driver\SQLite\SQLiteDriver;
 use Drift\DBAL\Result;
 use React\EventLoop\LoopInterface;
 use React\Promise\PromiseInterface;
@@ -38,29 +35,7 @@ class DBALUsageRepositoryTest extends UsageRepositoryTest
     public function getEmptyRepository(LoopInterface $loop): UsageRepository
     {
         return static::createEmptyRepository(
-            static::createConnection($loop)
-        );
-    }
-
-    /**
-     * Create connection.
-     *
-     * @param LoopInterface $loop
-     *
-     * @return Connection
-     */
-    public static function createConnection(LoopInterface $loop): Connection
-    {
-        return Connection::createConnected(
-            new SQLiteDriver($loop),
-            new Credentials(
-                '',
-                '',
-                'root',
-                'root',
-                ':memory:'
-            ),
-            new SqlitePlatform()
+            DBALConnectionFactory::create($loop)
         );
     }
 

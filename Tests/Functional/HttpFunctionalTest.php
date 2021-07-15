@@ -814,6 +814,95 @@ abstract class HttpFunctionalTest extends ApisearchServerBundleFunctionalTest
     }
 
     /**
+     * @param string|null $userId
+     * @param string[]    $itemsId
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    public function purchase(
+        ?string $userId,
+        array $itemsId,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $index ?? static::$index,
+        ];
+
+        static::request(
+            'v1_post_purchase',
+            $routeParameters,
+            $token,
+            [],
+            [
+                'items_id' => \implode(',', $itemsId),
+                'user_id' => $userId,
+            ]
+        );
+    }
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $itemId
+     * @param string|null   $count
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return int|int[]
+     *
+     * @throws Exception
+     */
+    public function getPurchases(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $itemId = null,
+        ?string $count = null,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    ) {
+        $routeName = \is_null($index)
+            ? ((false === $perDay)
+                ? 'v1_get_purchases_all_indices'
+                : 'v1_get_purchases_all_indices_per_day')
+            : ((false === $perDay)
+                ? 'v1_get_purchases'
+                : 'v1_get_purchases_per_day');
+
+        $routeParameters = [
+            'app_id' => $appId ?? static::$appId,
+            'index_id' => $index,
+        ];
+
+        $response = static::request(
+            $routeName,
+            $routeParameters,
+            $token,
+            [],
+            [
+                'from' => $from ? $from->format('Ymd') : null,
+                'to' => $to ? $to->format('Ymd') : null,
+                'user_id' => $userId,
+                'item_id' => $itemId,
+                'count' => $count,
+            ]
+        );
+
+        return $response['body']['data'];
+    }
+
+    /**
      * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to

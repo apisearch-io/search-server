@@ -39,7 +39,7 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
         $repository = new ChunkUsageRepository(
             new InMemoryUsageRepository(),
             DBALUsageRepositoryTest::createEmptyRepository(
-                DBALUsageRepositoryTest::createConnection($loop)
+                DBALConnectionFactory::create($loop)
             ),
             $loop
         );
@@ -69,7 +69,7 @@ class ChunkUsageRepositoryTest extends UsageRepositoryTest
     public function testInsertedRows(): void
     {
         $loop = Factory::create();
-        $connection = DBALUsageRepositoryTest::createConnection($loop);
+        $connection = DBALConnectionFactory::create($loop);
         $repository = new ChunkUsageRepository(
             new InMemoryUsageRepository(),
             DBALUsageRepositoryTest::createEmptyRepository($connection),

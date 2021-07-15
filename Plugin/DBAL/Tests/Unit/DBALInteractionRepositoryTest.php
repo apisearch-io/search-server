@@ -18,11 +18,8 @@ namespace Apisearch\Plugin\DBAL\Tests\Unit;
 use Apisearch\Plugin\DBAL\Domain\InteractionRepository\DBALInteractionRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
 use Apisearch\Server\Tests\Unit\Domain\Repository\InteractionRepository\InteractionRepositoryTest;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
-use Drift\DBAL\Credentials;
-use Drift\DBAL\Driver\SQLite\SQLiteDriver;
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 
@@ -39,29 +36,7 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
     public function getEmptyRepository(LoopInterface $loop): InteractionRepository
     {
         return static::createEmptyRepository(
-            static::createConnection($loop)
-        );
-    }
-
-    /**
-     * Create connection.
-     *
-     * @param LoopInterface $loop
-     *
-     * @return Connection
-     */
-    public static function createConnection(LoopInterface $loop): Connection
-    {
-        return Connection::createConnected(
-            new SQLiteDriver($loop),
-            new Credentials(
-                '',
-                '',
-                'root',
-                'root',
-                ':memory:'
-            ),
-            new SqlitePlatform()
+            DBALConnectionFactory::create($loop)
         );
     }
 
@@ -111,7 +86,7 @@ class DBALInteractionRepositoryTest extends InteractionRepositoryTest
     public function testPositionIsSaved(): void
     {
         $loop = Factory::create();
-        $connection = $this->createConnection($loop);
+        $connection = DBALConnectionFactory::create($loop);
         $repository = $this->createEmptyRepository($connection);
         $this->addInteraction($repository, $loop);
         $interactions = $this->await($connection->findBy('interactions'), $loop);

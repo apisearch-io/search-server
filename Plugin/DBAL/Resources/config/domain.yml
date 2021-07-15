@@ -10,12 +10,15 @@ services:
             string $interactionsTable: "%apisearch_plugin.dbal.interactions_table%"
             string $searchLinesTable: "%apisearch_plugin.dbal.searches_table%"
             string $logsTable: "%apisearch_plugin.dbal.logs_table%"
+            string $purchasesTable: "%apisearch_plugin.dbal.purchases_table%"
+            string $purchaseItemsTable: "%apisearch_plugin.dbal.purchase_items_table%"
 
             bool $tokensRepositoryEnabled: "%apisearch_server.tokens_repository_enabled%"
             bool $interactionsRepositoryEnabled: "%apisearch_server.interactions_repository_enabled%"
             bool $searchesRepositoryEnabled: "%apisearch_server.searches_repository_enabled%"
             bool $usageLinesRepositoryEnabled: "%apisearch_server.usage_lines_repository_enabled%"
             bool $logsRepositoryEnabled: "%apisearch_server.logs_repository_enabled%"
+            bool $purchasesRepositoryEnabled: "%apisearch_server.purchases_repository_enabled%"
 
 
     Apisearch\Plugin\DBAL\Domain\Encrypter\EmptyEncrypter:
@@ -94,3 +97,10 @@ services:
     Apisearch\Plugin\DBAL\Domain\LogRepository\DBALLogRepository:
     Apisearch\Server\Domain\Repository\LogRepository\LogRepository:
         alias: Apisearch\Plugin\DBAL\Domain\LogRepository\DBALLogRepository
+
+    #
+    # Purchase Repository
+    #
+    Apisearch\Plugin\DBAL\Domain\PurchaseRepository\DBALPurchaseRepository:
+    Apisearch\Server\Domain\Repository\PurchaseRepository\PurchaseRepository:
+        alias: Apisearch\Plugin\DBAL\Domain\PurchaseRepository\DBALPurchaseRepository
