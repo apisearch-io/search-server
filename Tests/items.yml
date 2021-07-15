@@ -233,6 +233,12 @@ items:
         exact_matching_metadata:
             - "brandA"
             - "subwhateverB"
+            - "exact1"
+            - "exact1 specific"
+            - "exact2"
+            - "exact3 more specific"
+            - "exact4"
+            - "exact5"
         suggest:
             - Eleuterio
             - barce
@@ -287,6 +293,12 @@ items:
             - another composed word
             - "brandA"
             - "subwhateverA"
+            - "exact1"
+            - "exact2"
+            - "exact2 more specific"
+            - "exact3"
+            - "exact4 more specific"
+            - "exact5 more specific"
         suggest:
             - Barcelona
             - Badalona
