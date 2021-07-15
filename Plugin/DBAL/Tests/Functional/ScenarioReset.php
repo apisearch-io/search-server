@@ -41,6 +41,8 @@ class ScenarioReset
         $interactionTableName = $container->getParameter('apisearch_plugin.dbal.interactions_table');
         $searchesTableName = $container->getParameter('apisearch_plugin.dbal.searches_table');
         $logTableName = $container->getParameter('apisearch_plugin.dbal.logs_table');
+        $purchaseTableName = $container->getParameter('apisearch_plugin.dbal.purchases_table');
+        $purchaseItemTableName = $container->getParameter('apisearch_plugin.dbal.purchase_items_table');
 
         if (\file_exists('/tmp/apisearch.repository')) {
             \unlink('/tmp/apisearch.repository');
@@ -82,8 +84,21 @@ class ScenarioReset
                 ->otherwise(function (TableNotFoundException $_) {
                     // Silent pass
                 }),
+            $mainConnection
+                ->dropTable($purchaseTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
+            $mainConnection
+                ->dropTable($purchaseItemTableName)
+                ->otherwise(function (TableNotFoundException $_) {
+                    // Silent pass
+                }),
         ])
-            ->then(function () use ($mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName, $interactionTableName, $searchesTableName, $logTableName) {
+            ->then(function () use (
+                $mainConnection, $tokensTableName, $indexConfigTableName, $usageTableName, $metadataTableName,
+                $interactionTableName, $searchesTableName, $logTableName, $purchaseTableName, $purchaseItemTableName
+            ) {
                 return all([
                     $mainConnection->createTable($tokensTableName, [
                         'token_uuid' => 'string',
@@ -166,6 +181,26 @@ class ScenarioReset
 
                         return $connection->executeSchema($schema);
                     })($mainConnection, $logTableName),
+
+                    (function ($connection, $purchasesTableName, $purchaseItemsTableName) {
+                        $schema = new Schema();
+                        $table = $schema->createTable($purchasesTableName);
+                        $table->addColumn('id', 'integer', ['length' => 11, 'autoincrement' => true]);
+                        $table->addColumn('app_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('index_uuid', 'string', ['length' => 50]);
+                        $table->addColumn('user_uuid', 'string', ['length' => 25]);
+                        $table->addColumn('time', 'integer', ['length' => 8]);
+                        $table->setPrimaryKey(['id']);
+
+                        $connection->executeSchema($schema);
+
+                        $schema = new Schema();
+                        $table = $schema->createTable($purchaseItemsTableName);
+                        $table->addColumn('purchase_id', 'string', ['length' => 50]);
+                        $table->addColumn('item_uuid', 'string', ['length' => 50]);
+
+                        return $connection->executeSchema($schema);
+                    })($mainConnection, $purchaseTableName, $purchaseItemTableName),
                 ]);
             });
     }

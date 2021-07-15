@@ -74,6 +74,10 @@ class MetricsTest extends HttpFunctionalTest
         $this->click('u1', '4~it', 1, null, new Origin('a.com', '0.0.0.1', origin::TABLET));
         $this->click('u1', '3~it', 1, null, new Origin('a.com', '0.0.0.1', origin::TABLET));
 
+        $this->purchase('u1', ['1~it', '2~it']);
+        $this->purchase('u1', ['3~it', '2~it']);
+        $this->purchase('u2', ['6~it']);
+
         self::usleep(100000);
         $this->dispatchImperative(new FlushSearches());
         self::usleep(100000);
@@ -126,6 +130,14 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'purchases' => [
+                $timeKey => 3,
+            ],
+            'total_purchases' => 3,
+            'unique_users_purchases' => [
+                $timeKey => 2,
+            ],
+            'total_unique_users_purchases' => 2,
             'from' => (new DateTime('first day of this month'))->format('Ymd'),
             'to' => (new DateTime('first day of next month'))->format('Ymd'),
             'days' => \intval(\date('t')),
@@ -164,6 +176,14 @@ class MetricsTest extends HttpFunctionalTest
                 'Stylestep' => 1,
             ],
             'top_searches_without_results' => [],
+            'purchases' => [
+                $timeKey => 2,
+            ],
+            'total_purchases' => 2,
+            'unique_users_purchases' => [
+                $timeKey => 1,
+            ],
+            'total_unique_users_purchases' => 1,
             'from' => (new DateTime('first day of this month'))->format('Ymd'),
             'to' => (new DateTime('first day of next month'))->format('Ymd'),
             'days' => \intval(\date('t')),
@@ -205,6 +225,14 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'purchases' => [
+                $timeKey => 3,
+            ],
+            'total_purchases' => 3,
+            'unique_users_purchases' => [
+                $timeKey => 2,
+            ],
+            'total_unique_users_purchases' => 2,
             'from' => (new DateTime('first day of this month'))->format('Ymd'),
             'to' => (new DateTime('first day of next month'))->format('Ymd'),
             'days' => \intval(\date('t')),
@@ -213,21 +241,21 @@ class MetricsTest extends HttpFunctionalTest
         $metrics = $this->getMetrics(null, null, null, null, 'non-existing');
         $this->assertEquals(
             $this->getEmptyMetricsArray(null, null),
-            $metrics
+            $this->removePurchaseMetrics($metrics)
         );
 
         $from = (new \DateTime())->modify('+1 day');
         $metrics = $this->getMetrics(null, $from);
         $this->assertEquals(
             $this->getEmptyMetricsArray($from, null),
-            $metrics
+            $this->removePurchaseMetrics($metrics)
         );
 
         $to = (new \DateTime())->modify('-1 day');
         $metrics = $this->getMetrics(null, null, $to);
         $this->assertEquals(
             $this->getEmptyMetricsArray(null, $to),
-            $metrics
+            $this->removePurchaseMetrics($metrics)
         );
 
         $from = (new \DateTime())->modify('-1 day');
@@ -253,10 +281,16 @@ class MetricsTest extends HttpFunctionalTest
         );
 
         $metrics = $this->getMetrics(null, null, null, null, null, null, self::$appId, self::$yetAnotherIndex);
-        $this->assertEquals($this->getEmptyMetricsArray(null, null), $metrics);
+        $this->assertEquals(
+            $this->getEmptyMetricsArray(null, null),
+            $this->removePurchaseMetrics($metrics)
+        );
 
         $metrics = $this->getMetrics(null, null, null, null, null, null, self::$anotherInexistentAppId, self::$yetAnotherIndex);
-        $this->assertEquals($this->getEmptyMetricsArray(null, null), $metrics);
+        $this->assertEquals(
+            $this->getEmptyMetricsArray(null, null),
+            $this->removePurchaseMetrics($metrics)
+        );
     }
 
     /**
@@ -291,6 +325,21 @@ class MetricsTest extends HttpFunctionalTest
             'to' => $to->format('Ymd'),
             'days' => \intval((clone $to)->diff($from)->days),
         ];
+    }
+
+    /**
+     * @param array $metrics
+     *
+     * @return array
+     */
+    private function removePurchaseMetrics(array $metrics): array
+    {
+        unset($metrics['purchases']);
+        unset($metrics['total_purchases']);
+        unset($metrics['unique_users_purchases']);
+        unset($metrics['total_unique_users_purchases']);
+
+        return $metrics;
     }
 
     /**
@@ -345,6 +394,14 @@ class MetricsTest extends HttpFunctionalTest
             'top_searches_without_results' => [
                 'Da Vinci Code' => 1,
             ],
+            'purchases' => [
+                $timeKey => 3,
+            ],
+            'total_purchases' => 3,
+            'unique_users_purchases' => [
+                $timeKey => 2,
+            ],
+            'total_unique_users_purchases' => 2,
             'from' => $from->format('Ymd'),
             'to' => $to->format('Ymd'),
             'days' => \intval((clone $to)->diff($from)->days),

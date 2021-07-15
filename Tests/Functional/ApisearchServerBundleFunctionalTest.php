@@ -895,6 +895,50 @@ abstract class ApisearchServerBundleFunctionalTest extends BaseDriftFunctionalTe
     );
 
     /**
+     * @param string|null $userId
+     * @param string[]    $itemsId
+     * @param string|null $appId
+     * @param string|null $index
+     * @param Token|null  $token
+     *
+     * @throws Exception
+     */
+    abstract public function purchase(
+        ?string $userId,
+        array $itemsId,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
+     * @param bool          $perDay
+     * @param DateTime|null $from
+     * @param DateTime|null $to
+     * @param string|null   $userId
+     * @param string|null   $itemId
+     * @param string|null   $count
+     * @param string|null   $appId
+     * @param string|null   $index
+     * @param Token|null    $token
+     *
+     * @return int|int[]
+     *
+     * @throws Exception
+     */
+    abstract public function getPurchases(
+        bool $perDay,
+        ?DateTime $from = null,
+        ?DateTime $to = null,
+        ?string $userId = null,
+        ?string $itemId = null,
+        ?string $count = null,
+        string $appId = null,
+        string $index = null,
+        Token $token = null
+    );
+
+    /**
      * @param int|null      $n
      * @param DateTime|null $from
      * @param DateTime|null $to

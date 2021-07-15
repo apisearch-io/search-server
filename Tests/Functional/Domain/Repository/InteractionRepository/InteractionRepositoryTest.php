@@ -157,7 +157,7 @@ trait InteractionRepositoryTest
     }
 
     /**
-     * Test filetr by app.
+     * Test filter by app.
      *
      * @return void
      */

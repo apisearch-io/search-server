@@ -53,6 +53,8 @@ class DBALPluginConfiguration extends BaseConfiguration
                 ->scalarNode('interactions_table')->end()
                 ->scalarNode('searches_table')->end()
                 ->scalarNode('logs_table')->end()
+                ->scalarNode('purchases_table')->end()
+                ->scalarNode('purchase_items_table')->end()
 
                 ->arrayNode('encrypt')
                     ->addDefaultsIfNotSet()

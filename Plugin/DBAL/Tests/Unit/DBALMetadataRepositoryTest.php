@@ -21,11 +21,8 @@ use Apisearch\Plugin\DBAL\Domain\MetadataRepository\DBALMetadataRepository;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionRepository;
 use Apisearch\Server\Domain\Repository\MetadataRepository\MetadataRepository;
 use Apisearch\Server\Tests\Unit\Domain\Repository\MetadataRepository\MetadataRepositoryTest;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\DBAL\Schema\Schema;
 use Drift\DBAL\Connection;
-use Drift\DBAL\Credentials;
-use Drift\DBAL\Driver\SQLite\SQLiteDriver;
 use React\EventLoop\LoopInterface;
 
 /**
@@ -41,29 +38,7 @@ class DBALMetadataRepositoryTest extends MetadataRepositoryTest
     public function buildEmptyRepository(LoopInterface $loop): MetadataRepository
     {
         return static::createEmptyRepository(
-            static::createConnection($loop)
-        );
-    }
-
-    /**
-     * Create connection.
-     *
-     * @param LoopInterface $loop
-     *
-     * @return Connection
-     */
-    public static function createConnection(LoopInterface $loop): Connection
-    {
-        return Connection::createConnected(
-            new SQLiteDriver($loop),
-            new Credentials(
-                '',
-                '',
-                'root',
-                'root',
-                ':memory:'
-            ),
-            new SqlitePlatform()
+            DBALConnectionFactory::create($loop)
         );
     }
 

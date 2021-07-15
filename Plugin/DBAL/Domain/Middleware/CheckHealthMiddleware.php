@@ -40,6 +40,9 @@ final class CheckHealthMiddleware implements PluginMiddleware
     private string $tokensTable;
     private bool $logsRepositoryEnabled;
     private string $logsTable;
+    private bool $purchasesRepositoryEnabled;
+    private string $purchasesTable;
+    private string $purchaseItemsTable;
 
     /**
      * @param Connection $connection
@@ -53,6 +56,9 @@ final class CheckHealthMiddleware implements PluginMiddleware
      * @param string     $tokensTable
      * @param bool       $logsRepositoryEnabled
      * @param string     $logsTable
+     * @param bool       $purchasesRepositoryEnabled
+     * @param string     $purchasesTable
+     * @param string     $purchaseItemsTable
      */
     public function __construct(
         Connection $connection,
@@ -65,7 +71,10 @@ final class CheckHealthMiddleware implements PluginMiddleware
         bool $tokensRepositoryEnabled,
         string $tokensTable,
         bool $logsRepositoryEnabled,
-        string $logsTable
+        string $logsTable,
+        bool $purchasesRepositoryEnabled,
+        string $purchasesTable,
+        string $purchaseItemsTable
     ) {
         $this->connection = $connection;
         $this->interactionsRepositoryEnabled = $interactionsRepositoryEnabled;
@@ -78,6 +87,9 @@ final class CheckHealthMiddleware implements PluginMiddleware
         $this->tokensTable = $tokensTable;
         $this->logsRepositoryEnabled = $logsRepositoryEnabled;
         $this->logsTable = $logsTable;
+        $this->purchasesRepositoryEnabled = $purchasesRepositoryEnabled;
+        $this->purchasesTable = $purchasesTable;
+        $this->purchaseItemsTable = $purchaseItemsTable;
     }
 
     /**
@@ -108,6 +120,8 @@ final class CheckHealthMiddleware implements PluginMiddleware
                             $this->searchesRepositoryEnabled ? $this->getSearchLinesRows() : resolve(0),
                             $this->tokensRepositoryEnabled ? $this->getTokensRows() : resolve(0),
                             $this->logsRepositoryEnabled ? $this->getLogRows() : resolve(0),
+                            $this->purchasesRepositoryEnabled ? $this->getPurchaseRows() : resolve(0),
+                            $this->purchasesRepositoryEnabled ? $this->getPurchaseItemRows() : resolve(0),
                         ])
                             ->then(function (array $results) use ($healthCheckData, $statusInMicroseconds, $isHealth) {
                                 $healthCheckData->mergeData([
@@ -122,6 +136,8 @@ final class CheckHealthMiddleware implements PluginMiddleware
                                             'search_lines' => $results[2],
                                             'tokens' => $results[3],
                                             'logs' => $results[4],
+                                            'purchases' => $results[5],
+                                            'purchase_lines' => $results[6],
                                         ],
                                     ],
                                 ]);
@@ -220,6 +236,38 @@ final class CheckHealthMiddleware implements PluginMiddleware
         return $this
             ->connection
             ->queryBySQL('SELECT count(*) as count from '.$this->logsTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return -1;
+            });
+    }
+
+    /**
+     * @return PromiseInterface<int>
+     */
+    private function getPurchaseRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from '.$this->purchasesTable)
+            ->then(function (Result $result) {
+                return $result->fetchFirstRow()['count'];
+            })
+            ->otherwise(function (\Exception $e) {
+                return -1;
+            });
+    }
+
+    /**
+     * @return PromiseInterface<int>
+     */
+    private function getPurchaseItemRows(): PromiseInterface
+    {
+        return $this
+            ->connection
+            ->queryBySQL('SELECT count(*) as count from '.$this->purchaseItemsTable)
             ->then(function (Result $result) {
                 return $result->fetchFirstRow()['count'];
             })

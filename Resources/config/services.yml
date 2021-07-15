@@ -125,9 +125,13 @@ services:
     Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository:
     Apisearch\Server\Domain\Repository\LogRepository\TemporaryUsageRepository:
         alias: Apisearch\Server\Domain\Repository\LogRepository\InMemoryLogRepository
-
     Apisearch\Server\Domain\Repository\LogRepository\LogRepository:
         alias: Apisearch\Server\Domain\Repository\LogRepository\EmptyLogRepository
+
+    # Purchases Repositories
+    Apisearch\Server\Domain\Repository\PurchaseRepository\InMemoryPurchaseRepository:
+    Apisearch\Server\Domain\Repository\PurchaseRepository\PurchaseRepository:
+        alias: Apisearch\Server\Domain\Repository\PurchaseRepository\InMemoryPurchaseRepository
 
     #
     # Token

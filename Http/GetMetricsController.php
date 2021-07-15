@@ -19,10 +19,12 @@ use Apisearch\Repository\RepositoryReference;
 use Apisearch\Server\Domain\Model\InteractionType;
 use Apisearch\Server\Domain\Model\UserEncrypt;
 use Apisearch\Server\Domain\Query\GetInteractions;
+use Apisearch\Server\Domain\Query\GetPurchases;
 use Apisearch\Server\Domain\Query\GetSearches;
 use Apisearch\Server\Domain\Query\GetTopInteractions;
 use Apisearch\Server\Domain\Query\GetTopSearches;
 use Apisearch\Server\Domain\Repository\InteractionRepository\InteractionFilter;
+use Apisearch\Server\Domain\Repository\PurchaseRepository\PurchaseFilter;
 use Apisearch\Server\Domain\Repository\SearchesRepository\SearchesFilter;
 use function React\Promise\all;
 use React\Promise\PromiseInterface;
@@ -126,6 +128,22 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $platform, $userId, true, false,
                     $n
                 )),
+
+                // Purchases
+                $this->ask(new GetPurchases(
+                    $repositoryReference, $token,
+                    $from, $to,
+                    true,
+                    $userId, null, PurchaseFilter::LINES
+                )),
+
+                // Unique users Purchases
+                $this->ask(new GetPurchases(
+                    $repositoryReference, $token,
+                    $from, $to,
+                    true,
+                    $userId, null, PurchaseFilter::UNIQUE_USERS
+                )),
             ])
             ->then(function (array $results) use ($request, $from, $to, $days) {
                 list(
@@ -136,12 +154,14 @@ final class GetMetricsController extends ControllerWithQueryBus
                     $uniqueUsersSearches,
                     $searchesWithoutResults,
                     $topSearchesWithResults,
-                    $topSearchesWithoutResults
+                    $topSearchesWithoutResults,
+                    $purchases,
+                    $uniqueUsersPurchases
                     ) = $results;
 
                 $totalSearchesWithResults = \array_sum($searchesWithResults);
                 $totalSearchesWithoutResults = \array_sum($searchesWithoutResults);
-                $totalsearches = $totalSearchesWithResults + $totalSearchesWithoutResults;
+                $totalSearches = $totalSearchesWithResults + $totalSearchesWithoutResults;
 
                 return new JsonResponse(
                     [
@@ -154,11 +174,15 @@ final class GetMetricsController extends ControllerWithQueryBus
                         'total_searches_with_results' => $totalSearchesWithResults,
                         'searches_without_results' => $searchesWithoutResults,
                         'total_searches_without_results' => $totalSearchesWithoutResults,
-                        'total_searches' => $totalsearches,
+                        'total_searches' => $totalSearches,
                         'unique_users_searching' => $uniqueUsersSearches,
                         'total_unique_users_searching' => \array_sum($uniqueUsersSearches),
                         'top_searches_with_results' => $topSearchesWithResults,
                         'top_searches_without_results' => $topSearchesWithoutResults,
+                        'purchases' => $purchases,
+                        'total_purchases' => \array_sum($purchases),
+                        'unique_users_purchases' => $uniqueUsersPurchases,
+                        'total_unique_users_purchases' => \array_sum($uniqueUsersPurchases),
 
                         'from' => DateTimeFormatter::formatDateTime($from),
                         'to' => DateTimeFormatter::formatDateTime($to),

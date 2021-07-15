@@ -182,6 +182,16 @@ class DBALPluginExtension extends BaseExtension
                 $config['logs_table'] ?? null,
                 true
             ),
+            'apisearch_plugin.dbal.purchases_table' => Env::get(
+                'DBAL_PURCHASES_TABLE',
+                $config['purchases_table'] ?? null,
+                true
+            ),
+            'apisearch_plugin.dbal.purchase_items_table' => Env::get(
+                'DBAL_PURCHASE_ITEMS_TABLE',
+                $config['purchase_items_table'] ?? null,
+                true
+            ),
 
             'apisearch_plugin.dbal.encrypt_private_key' => Env::get(
                 'DBAL_ENCRYPT_PRIVATE_KEY',

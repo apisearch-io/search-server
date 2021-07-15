@@ -430,6 +430,57 @@ apisearch_v1_get_top_searches_all_indices:
         tags: [searches, full_metrics]
 
 #
+# Purchase API
+#
+apisearch_v1_post_purchase:
+    path: /v1/{app_id}/indices/{index_id}/purchase
+    methods: ["POST"]
+    controller: Apisearch\Server\Http\PostPurchaseController
+    defaults:
+        tags: [purchases, full_metrics]
+
+apisearch_v1_post_purchase_preflight:
+    path: /v1/{app_id}/indices/{index_id}/items/{item_id}/purchase/{purchase}
+    methods: ["OPTIONS"]
+    controller: Apisearch\Server\Http\QueryCORSController
+    defaults:
+        allowed_method: POST
+
+apisearch_v1_get_purchases:
+    path: /v1/{app_id}/indices/{index_id}/purchases
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetPurchasesController
+    defaults:
+        per_day: false
+        tags: [purchases, full_metrics]
+
+apisearch_v1_get_purchases_all_indices:
+    path: /v1/{app_id}/purchases
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetPurchasesController
+    defaults:
+        index_id: "*"
+        per_day: false
+        tags: [purchases, full_metrics]
+
+apisearch_v1_get_purchases_per_day:
+    path: /v1/{app_id}/indices/{index_id}/purchases/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetPurchasesController
+    defaults:
+        per_day: true
+        tags: [purchases, full_metrics]
+
+apisearch_v1_get_purchases_all_indices_per_day:
+    path: /v1/{app_id}/purchases/per-day
+    methods: ["GET"]
+    controller: Apisearch\Server\Http\GetPurchasesController
+    defaults:
+        index_id: "*"
+        per_day: true
+        tags: [purchases, full_metrics]
+
+#
 # Metrics
 #
 apisearch_v1_get_metrics:

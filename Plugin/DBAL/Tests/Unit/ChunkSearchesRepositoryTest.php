@@ -34,7 +34,7 @@ class ChunkSearchesRepositoryTest extends SearchesRepositoryTest
         $repository = new ChunkSearchesRepository(
             new InMemorySearchesRepository(),
             DBALSearchesRepositoryTest::createEmptyRepository(
-                DBALSearchesRepositoryTest::createConnection($loop)
+                DBALConnectionFactory::create($loop)
             ),
             $loop
         );
