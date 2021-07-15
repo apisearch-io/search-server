@@ -115,4 +115,153 @@ trait ExactMatchingMetadataTest
             ['nobita nob NOEXISTE', 1, null, null, false],
         ];
     }
+
+    public function testProgressiveExactMatchingCollisions()
+    {
+        $result = $this->query(Query::create('exact1')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(2, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact1 specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact2')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(2, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact2 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact3')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact3 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact4')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact4 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact4 more specific exact2 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact4 more specific barcelon exact2 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact4 more specific exact2')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+    }
+
+    /**
+     * @group lalmen
+     */
+    public function testProgressiveExactMatchingCollisionsSynonyms()
+    {
+        $result = $this->query(Query::create('exact5')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('4', $result->getFirstItem()->getUUID()->getId());
+
+        $result = $this->query(Query::create('exact5 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(1, $result->getItems());
+        $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
+
+        $this->configureIndex(Config::createEmpty()
+            ->addSynonym(Synonym::createByWords([
+                'exact5',
+                'exact5 more specific',
+            ]))
+        );
+
+        $result = $this->query(Query::create('exact5')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(2, $result->getItems());
+
+        $result = $this->query(Query::create('exact5 more specific')
+            ->setMetadataValue('progressive_exact_matching_metadata', true)
+            ->setMetadataValue('fuzzy_progressive_exact_matching_metadata', false)
+            ->sortBy(SortBy::create()->byValue(SortBy::ID_ASC))
+        );
+
+        $this->assertCount(2, $result->getItems());
+    }
 }

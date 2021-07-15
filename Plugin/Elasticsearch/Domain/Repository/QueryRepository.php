@@ -38,7 +38,7 @@ use Elastica\Multi\ResultSet as ElasticaMultiResultSet;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\ConstantScore;
 use Elastica\Query\MatchQuery;
-use Elastica\ResultSet;
+use Elastica\Result as ElasticaResult;
 use Elastica\ResultSet as ElasticaResultSet;
 use React\EventLoop\LoopInterface;
 use function React\Promise\all;
@@ -304,7 +304,7 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         $queryText = \trim($queryText);
 
         $words = \explode(' ', $queryText);
-        $words = \array_values(\array_unique(\array_filter($words, fn ($word) => !empty($word))));
+        $words = \array_values(\array_filter($words, fn ($word) => !empty($word)));
         $maxWords = $queryMetadata['max_words_progressive_exact_matching_metadata'] ?? 3;
         $partialWords = $this->createPartialWords($words, $maxWords);
 
@@ -314,15 +314,15 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
         $elasticaQuery->setSource([false]);
         $search = new Search(
             $elasticaQuery,
-            0, 1
+            0, 10
         );
 
         return $this
             ->elasticaWrapper
             ->simpleSearch($repositoryReference, $search)
-            ->then(function (ResultSet $resultSet) use ($query, $boolQuery, $queryText, $partialWords, $allowFuzzy) {
+            ->then(function (ElasticaResultSet $resultSet) use ($query, $boolQuery, $queryText, $partialWords, $allowFuzzy) {
                 if ($resultSet->getTotalHits() > 0) {
-                    $firstResult = $resultSet->getResults()[0];
+                    $firstResult = $this->getBestFoundWordFromMatchedWords($resultSet);
                     $score = $firstResult->getScore();
                     $matchedQueries = $firstResult->getParam('matched_queries');
                     $newMatchingWords = \array_intersect($partialWords, $matchedQueries);
@@ -398,11 +398,41 @@ class QueryRepository extends WithElasticaWrapper implements QueryRepositoryInte
      */
     private function cleanQueryTextFromMatchedPartialWords(string $queryText, array $matchedPartialWords): string
     {
+        \usort($matchedPartialWords, fn ($a, $b) => \strlen($b) - \strlen($a));
+
         foreach ($matchedPartialWords as $word) {
             $queryText = \str_replace($word, '', $queryText);
         }
 
         return \trim($queryText);
+    }
+
+    /**
+     * @param ElasticaResultSet $resultSet
+     *
+     * @return ElasticaResult
+     */
+    private function getBestFoundWordFromMatchedWords(ElasticaResultSet $resultSet): ElasticaResult
+    {
+        $results = $resultSet->getResults();
+        $desiredScore = $results[0]->getScore();
+        $results = \array_filter($results, fn (ElasticaResult $result) => $result->getScore() === $desiredScore);
+        $desiredResult = $results[0];
+        $desiredResultStrLen = \array_reduce($desiredResult->getParam('matched_queries'), function (int $carry, string $word) {
+            return $carry + \strlen($word);
+        }, 0);
+        foreach ($results as $result) {
+            $partialStrLen = \array_reduce($result->getParam('matched_queries'), function (int $carry, string $word) {
+                return $carry + \strlen($word);
+            }, 0);
+
+            if ($partialStrLen > $desiredResultStrLen) {
+                $desiredResult = $result;
+                $desiredResultStrLen = $partialStrLen;
+            }
+        }
+
+        return $desiredResult;
     }
 
     /**
