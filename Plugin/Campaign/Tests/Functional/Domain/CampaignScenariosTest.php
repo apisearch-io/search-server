@@ -448,4 +448,44 @@ trait CampaignScenariosTest
             ['1', '2', '!5', '!3', '!4']
         );
     }
+
+    public function testDisablingProgressiveExactMatchingMetadata()
+    {
+        $result = $this->query(
+            Query::create('exact5')
+                ->setMetadataValue('progressive_exact_matching_metadata', true)
+        );
+
+        $this->assertEquals('4', $result->getFirstItem()->getId());
+
+        $campaign1 = new Campaign(
+            new CampaignUID('123'),
+            null, null, IndexUUID::createById(self::$index),
+            [
+                new CampaignCriteria(
+                    CampaignCriteria::MATCH_TYPE_EXACT,
+                    'exact5'
+                ),
+            ], Campaign::MATCH_CRITERIA_MODE_MUST_ALL, [
+            new CampaignBoostingFilter(
+                [
+                    Filter::create('id', ['5'], Filter::MUST_ALL, Filter::TYPE_FIELD),
+                ],
+                500,
+                true
+            ),
+        ],
+            CampaignModifiers::createFromArray([
+                'disable_progressive_exact_matching_metadata' => true,
+            ])
+        );
+
+        $this->putCampaign($campaign1);
+        $result = $this->query(
+            Query::create('exact5')
+                ->setMetadataValue('progressive_exact_matching_metadata', true)
+        );
+
+        $this->assertEquals('5', $result->getFirstItem()->getId());
+    }
 }

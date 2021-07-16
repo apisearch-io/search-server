@@ -218,9 +218,6 @@ trait ExactMatchingMetadataTest
         $this->assertEquals('5', $result->getFirstItem()->getUUID()->getId());
     }
 
-    /**
-     * @group lalmen
-     */
     public function testProgressiveExactMatchingCollisionsSynonyms()
     {
         $result = $this->query(Query::create('exact5')

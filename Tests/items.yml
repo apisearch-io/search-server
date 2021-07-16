@@ -230,6 +230,7 @@ items:
             title: álamo
             exact_brand: "brandA"
             exact_subbrand: "subwhateverB"
+            exact5: "exact5"
         exact_matching_metadata:
             - "brandA"
             - "subwhateverB"
@@ -288,6 +289,7 @@ items:
             exact_subbrand: "subwhateverA"
             color: "coloryellow"
             color_2: "colorred"
+            exact5: "exact5"
         exact_matching_metadata:
             - Vinci
             - another composed word
