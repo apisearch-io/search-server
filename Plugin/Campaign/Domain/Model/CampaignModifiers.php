@@ -24,6 +24,7 @@ use Apisearch\Query\Query;
 class CampaignModifiers implements HttpTransportable
 {
     private ?int $minScore;
+    private ?bool $disableProgressiveExactMatchingMetadata;
 
     /**
      * @param Query $query
@@ -35,6 +36,10 @@ class CampaignModifiers implements HttpTransportable
         if (\is_int($this->minScore)) {
             $query->setMinScore($this->minScore);
         }
+
+        if (true === $this->disableProgressiveExactMatchingMetadata) {
+            $query->setMetadataValue('progressive_exact_matching_metadata', false);
+        }
     }
 
     /**
@@ -44,6 +49,7 @@ class CampaignModifiers implements HttpTransportable
     {
         return [
             'min_score' => $this->minScore,
+            'disable_progressive_exact_matching_metadata' => $this->disableProgressiveExactMatchingMetadata,
         ];
     }
 
@@ -55,7 +61,8 @@ class CampaignModifiers implements HttpTransportable
     public static function createFromArray(array $array)
     {
         $modifiers = new self();
-        $modifiers->minScore = $array['min_score'] ?? null;
+        $modifiers->minScore = \intval($array['min_score'] ?? null);
+        $modifiers->disableProgressiveExactMatchingMetadata = \boolval($array['disable_progressive_exact_matching_metadata'] ?? false);
 
         return $modifiers;
     }
